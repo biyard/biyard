@@ -197,7 +197,7 @@ web/src/features/<feature-name>/
 ## Backend Development Notes
 
 ### Axum + Askama Architecture
-- **REST APIs:** Use Axum handlers for JSON API endpoints (`/api/v1/*`, `/api/v2/*`)
+- **REST APIs:** Use Axum handlers for JSON API endpoints (`/v1/*`, `/m1/*`)
 - **SSR Pages:** Use Askama templates for SEO-critical pages (landing, public profiles)
 - **Routing:** Separate routers for API endpoints vs SSR pages
 - **DynamoDB Integration:** Use AWS SDK for Rust to interact with DynamoDB tables
@@ -247,10 +247,10 @@ api/src/features/<feature-name>/
 
 ## Build Verification
 
-When implementing v2 APIs:
+When implementing v1 APIs:
 1. Add DynamoDB client dependencies to `api/Cargo.toml` (e.g., `aws-sdk-dynamodb`)
 2. Implement handlers/routes in separate feature modules
-3. Update `web/src/features/` to call v2 endpoints using React Query
+3. Update `web/src/features/` to call v1 endpoints using React Query
 4. Run `cargo build` to verify backend builds
 5. Run `cd web && pnpm build` to verify frontend builds
 6. Run tests: `cargo test` (backend) and `make test` (frontend with Playwright)

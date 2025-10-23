@@ -75,7 +75,8 @@
     "error": "오류",
     "success": "성공",
     "warning": "경고",
-    "info": "정보"
+    "info": "정보",
+    "actions": "작업"
   },
   "theme": {
     "light": "밝게",

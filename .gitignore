@@ -2,3 +2,9 @@
 node_modules/
 dist/
 target/
+
+# Smart contracts
+contracts/cache/
+contracts/artifacts/
+contracts/typechain-types/
+contracts/coverage/

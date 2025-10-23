@@ -18,4 +18,5 @@ pub enum EntityType {
 
     Account,
     Session,
+    Credential,
 }

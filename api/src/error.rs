@@ -47,6 +47,17 @@ pub enum Error {
     #[error("Account not found")]
     #[rest_error(code = 302, status = 404)]
     AccountNotFound,
+
+    // Credential errors (400-499)
+    #[error("Credential not found")]
+    #[rest_error(code = 400, status = 404)]
+    CredentialNotFound,
+    #[error("Invalid API key")]
+    #[rest_error(code = 401, status = 401)]
+    InvalidApiKey,
+    #[error("Credential limit exceeded")]
+    #[rest_error(code = 402, status = 400)]
+    CredentialLimitExceeded,
 }
 
 impl From<String> for Error {

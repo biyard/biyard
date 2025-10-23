@@ -1,29 +1,20 @@
 use crate::*;
-
 use serde_with::{DeserializeFromStr, SerializeDisplay};
 
 #[derive(
     Debug,
     Clone,
+    Copy,
+    PartialEq,
+    Eq,
     SerializeDisplay,
     DeserializeFromStr,
     Default,
     DynamoEnum,
     JsonSchema,
-    PartialEq,
-    Eq,
-    OperationIo,
 )]
-pub enum Partition {
+pub enum CredentialStatus {
     #[default]
-    None,
-
-    // Account
-    Account(String),
-
-    // Session
-    Session(String),
-
-    // Credential
-    Credential(String),
+    Active,
+    Revoked,
 }
