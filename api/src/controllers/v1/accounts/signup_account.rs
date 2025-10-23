@@ -5,7 +5,7 @@ use crate::*;
 pub async fn signup_account_handler(
     State(AppState { cli, .. }): State<AppState>,
     Json(req): Json<SignupAccountRequest>,
-) -> Result<Json<SignupAccountResponse>> {
+) -> Result<Json<AccountResponse>> {
     debug!("Handling signup request for email: {}", req.email);
 
     let (accounts, _bookmark) =

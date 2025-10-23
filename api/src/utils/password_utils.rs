@@ -1,11 +1,17 @@
 use sha3::{Digest, Sha3_256};
 
-/// Hash a password using bcrypt with default cost
+/// Hash a password using SHA3-256
 pub fn hash_password(password: &str) -> String {
     let mut hasher = Sha3_256::new();
     hasher.update(password.as_bytes());
     let result = hasher.finalize();
     hex::encode(result)
+}
+
+/// Verify a password against a hash
+pub fn verify_password(password: &str, hash: &str) -> bool {
+    let computed_hash = hash_password(password);
+    computed_hash == hash
 }
 
 #[cfg(test)]

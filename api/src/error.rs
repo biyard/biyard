@@ -32,8 +32,14 @@ pub enum Error {
 
     // Account errors (300-399)
     #[error("Email already exists")]
-    #[rest_error(code = 300)]
+    #[rest_error(code = 300, status = 400)]
     EmailAlreadyExists,
+    #[error("Invalid credentials")]
+    #[rest_error(code = 301, status = 401)]
+    InvalidCredentials,
+    #[error("Account not found")]
+    #[rest_error(code = 302, status = 404)]
+    AccountNotFound,
 }
 
 impl From<String> for Error {
