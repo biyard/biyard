@@ -1,0 +1,9 @@
+RUST_FLAG ?=
+WATCH_TARGET = -w src -w $(PWD)/..
+DYNAMO_TABLE_PREFIX ?= ratel-$(ENV)
+
+BUILD_ENV ?= ENV=$(ENV) \
+						DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX)
+
+run:
+	$(BUILD_ENV) cargo watch -x "run $(RUST_FLAG)" $(WATCH_TARGET)
