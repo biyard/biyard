@@ -16,6 +16,7 @@ pub type Error = error::Error;
 use aide::{NoApi, OperationIo};
 use axum::extract::*;
 use by_axum;
+use by_axum::axum;
 use by_axum::axum::{Json, Router};
 use by_axum::*;
 use by_macros::*;
@@ -26,3 +27,6 @@ use types::*;
 use utils::*;
 
 use by_axum::axum::routing::*;
+
+#[cfg(test)]
+pub mod tests;

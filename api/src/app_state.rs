@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use aws_config::Region;
 use aws_sdk_dynamodb::{Config, config::Credentials};
 

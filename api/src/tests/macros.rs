@@ -8,9 +8,9 @@ macro_rules! call {
         headers: $headers:expr,
         response_type: $resp_ty:ty
     ) => {{
+        use crate::*;
         use axum::body::HttpBody;
         use axum::http::header::{self, HeaderValue};
-        use bdk::prelude::by_axum::axum;
 
         let path = $path.replace("#", "%23");
         let mut req_builder = axum::http::Request::builder()
@@ -40,7 +40,7 @@ macro_rules! call {
             .to_vec();
 
         let body_str = String::from_utf8(body_bytes).unwrap();
-        tracing::debug!("Response Body: {}", body_str);
+        tracing::info!("Response Body: {}", body_str);
         let body = serde_json::from_str::<$resp_ty>(&body_str);
         if let Err(e) = body {
             tracing::error!("Failed to parse response body: {}\nBody: {}", e, body_str);
@@ -61,7 +61,7 @@ macro_rules! send {
         body: { $($body:tt)* },
         response_type: $resp_ty:ty
     ) => {{
-        use bdk::prelude::by_axum::axum;
+        use crate::*;
         let body = axum::body::Body::from(serde_json::to_vec(&serde_json::json!({ $($body)* })).unwrap());
         $crate::call! { app: $app, path: $path, method: $method, body: body, headers: $headers, response_type: $resp_ty }
     }};
@@ -74,7 +74,7 @@ macro_rules! send {
         headers: $headers:expr,
         response_type: $resp_ty:ty
     ) => {{
-        use bdk::prelude::by_axum::axum;
+        use crate::*;
         let body = axum::body::Body::empty();
         $crate::call! { app: $app, path: $path, method: $method, body: body, headers: $headers, response_type: $resp_ty }
     }};
