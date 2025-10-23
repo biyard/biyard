@@ -14,7 +14,6 @@ use serde_with::{DeserializeFromStr, SerializeDisplay};
     Eq,
     OperationIo,
 )]
-#[dynamo_enum(error = "crate::Error2")]
 pub enum Partition {
     #[default]
     None,

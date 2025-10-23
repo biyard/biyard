@@ -11,7 +11,6 @@ pub mod utils;
 pub use app_state::*;
 
 pub type Result<T> = std::result::Result<T, error::Error>;
-pub type Error2 = error::Error;
 pub type Error = error::Error;
 
 use aide::{NoApi, OperationIo};
