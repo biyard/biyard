@@ -1,4 +1,4 @@
-use crate::features::accounts::AccountType;
+use crate::features::accounts::{AccountResponse, AccountType};
 use crate::utils::password_utils::hash_password;
 use crate::*;
 use crate::{api_main, features::accounts::Account};
@@ -69,35 +69,35 @@ pub async fn create_account_session(
     cli: &aws_sdk_dynamodb::Client,
 ) -> (Account, axum::http::HeaderMap) {
     let uid = uuid::Uuid::new_v4().to_string();
-    let micros_now = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .unwrap()
-        .as_micros();
 
-    let email = format!("setup-{}@biyard.co", micros_now);
+    let email = format!("setup-{}@biyard.co", uid);
     let password = hash_password(&uid);
 
-    let user = Account::new(format!("displayName{}", uid), email.clone(), password);
-
-    user.create(&cli).await.expect("Failed to create user");
-
     // For mocking user.
-    let (_, header, _) = post! {
+    let (_, header, account) = post! {
         app: &app,
         path: "/v1/accounts/signup",
         body: {
             "email": email,
-            "hashed_password": uid,
+            "hashed_password": password,
             "name": format!("displayName{}", uid),
-        }
+        },
+        response_type: AccountResponse,
     };
+
+    let account = Account::get(cli, &account.pk, Some(EntityType::Account))
+        .await
+        .expect("Failed to get account from DynamoDB")
+        .expect("Account not found in DynamoDB");
+
     let session_cookie = header
         .get("set-cookie")
         .expect("No set-cookie header found")
         .to_str()
         .expect("Failed to convert set-cookie header to str")
         .to_string();
+
     let mut headers = axum::http::HeaderMap::new();
     headers.insert("cookie", session_cookie.parse().unwrap());
-    (user, headers)
+    (account, headers)
 }
