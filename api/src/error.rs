@@ -9,6 +9,13 @@ pub enum Error {
     #[rest_error(status = 500)]
     InternalServerError(String),
 
+    // Session error (50 ~ 99)
+    #[error("Session error")]
+    #[rest_error(code = 50)]
+    SessionError(#[from] tower_sessions::session::Error),
+    #[error("No session found")]
+    NoSessionFound,
+
     // DynamoDB Common Errors (100-199)
     #[error("Not Found")]
     #[rest_error(code = 100)]

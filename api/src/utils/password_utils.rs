@@ -8,12 +8,6 @@ pub fn hash_password(password: &str) -> String {
     hex::encode(result)
 }
 
-/// Verify a password against a hash
-pub fn verify_password(password: &str, hash: &str) -> bool {
-    let computed_hash = hash_password(password);
-    computed_hash == hash
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

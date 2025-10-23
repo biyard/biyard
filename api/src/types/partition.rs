@@ -21,4 +21,7 @@ pub enum Partition {
 
     // Account
     Account(String),
+
+    // Session
+    Session(String),
 }

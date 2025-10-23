@@ -1,9 +1,13 @@
+use tower_sessions::Session;
+
 use crate::features::accounts::*;
+use crate::features::session::SESSION_KEY_ACCOUNT_ID;
 use crate::utils::password_utils;
 use crate::*;
 
 pub async fn signup_account_handler(
     State(AppState { cli, .. }): State<AppState>,
+    Extension(session): Extension<Session>,
     Json(req): Json<SignupAccountRequest>,
 ) -> Result<Json<AccountResponse>> {
     debug!("Handling signup request for email: {}", req.email);
@@ -23,6 +27,10 @@ pub async fn signup_account_handler(
 
     // Save to DynamoDB
     account.create(&cli).await?;
+
+    session
+        .insert(SESSION_KEY_ACCOUNT_ID, account.pk.to_string())
+        .await?;
 
     Ok(Json(account.into()))
 }

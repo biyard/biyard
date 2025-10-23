@@ -34,6 +34,8 @@ impl Default for Config {
     DynamoEnum,
     schemars::JsonSchema,
     aide::OperationIo,
+    PartialEq,
+    Eq,
 )]
 pub enum Env {
     #[default]

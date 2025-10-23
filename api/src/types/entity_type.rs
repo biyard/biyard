@@ -17,4 +17,5 @@ pub enum EntityType {
     None,
 
     Account,
+    Session,
 }
