@@ -1,12 +1,15 @@
 use crate::*;
 use aws_config::AwsConfig;
+use dynamo_config::DynamoConfig;
 
 pub mod aws_config;
+pub mod dynamo_config;
 
 #[derive(Debug)]
 pub struct Config {
     pub env: Env,
     pub aws: AwsConfig,
+    pub dynamo: DynamoConfig,
 }
 
 impl Default for Config {
@@ -17,6 +20,7 @@ impl Default for Config {
                 .parse()
                 .expect("env: dev, local, prod"),
             aws: AwsConfig::default(),
+            dynamo: DynamoConfig::default(),
         }
     }
 }

@@ -29,6 +29,11 @@ pub enum Error {
     Base64DecodingError(#[from] base64::DecodeError),
     #[error("Decoding error: {0}")]
     Utf8Decoding(#[from] std::str::Utf8Error),
+
+    // Account errors (300-399)
+    #[error("Email already exists")]
+    #[rest_error(code = 300)]
+    EmailAlreadyExists,
 }
 
 impl From<String> for Error {

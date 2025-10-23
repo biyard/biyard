@@ -19,6 +19,6 @@ pub enum Partition {
     #[default]
     None,
 
-    // Organization
-    Organization(String),
+    // Account
+    Account(String),
 }

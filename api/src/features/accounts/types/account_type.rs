@@ -15,7 +15,9 @@ use crate::*;
 #[repr(u8)]
 pub enum AccountType {
     #[default]
+    #[schemars(title = "Regular User")]
     User = 1,
 
+    #[schemars(title = "System Administrator")]
     SystemAdmin = 99,
 }

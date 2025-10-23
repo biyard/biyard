@@ -16,5 +16,5 @@ pub enum EntityType {
     #[default]
     None,
 
-    Organization,
+    Account,
 }

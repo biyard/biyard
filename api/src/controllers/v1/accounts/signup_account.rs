@@ -1,12 +1,28 @@
 use crate::features::accounts::*;
+use crate::utils::password_utils;
 use crate::*;
 
 pub async fn signup_account_handler(
-    State(AppState { .. }): State<AppState>,
-    Json(_req): Json<SignupAccountRequest>,
+    State(AppState { cli, .. }): State<AppState>,
+    Json(req): Json<SignupAccountRequest>,
 ) -> Result<Json<SignupAccountResponse>> {
-    debug!("Handling request: {:?}", _req);
-    // TODO: Implement the handler logic here
+    debug!("Handling signup request for email: {}", req.email);
 
-    unimplemented!()
+    let (accounts, _bookmark) =
+        Account::find_by_email(&cli, &req.email, AccountQueryOption::builder().limit(1)).await?;
+
+    if accounts.len() > 0 {
+        return Err(Error::EmailAlreadyExists);
+    }
+
+    // Hash the password (note: hashed_password field actually contains plain password)
+    let hashed_password = password_utils::hash_password(&req.hashed_password);
+
+    // Create a new account with hashed password
+    let account = Account::new(req.name.clone(), req.email.clone(), hashed_password);
+
+    // Save to DynamoDB
+    account.create(&cli).await?;
+
+    Ok(Json(account.into()))
 }
