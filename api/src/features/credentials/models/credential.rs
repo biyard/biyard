@@ -21,7 +21,12 @@ pub struct Credential {
     pub name: String,
 
     #[schemars(description = "Hashed API key")]
+    #[dynamo(index = "gsi2", pk, prefix = "KEY", name = "find_by_api_key_hash")]
     pub api_key_hash: String,
+
+    #[schemars(description = "GSI2 sort key (EntityType)")]
+    #[dynamo(index = "gsi2", sk, name = "find_by_api_key_hash")]
+    pub gsi2_sk: EntityType,
 
     #[schemars(description = "Prefix of the API key for display (e.g., 'biyard_abc...')")]
     pub api_key_prefix: String,
@@ -59,6 +64,7 @@ impl Credential {
             gsi1_sk: EntityType::Credential,
             name,
             api_key_hash,
+            gsi2_sk: EntityType::Credential,
             api_key_prefix,
             status: CredentialStatus::Active,
             created_at: now,

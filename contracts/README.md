@@ -1,6 +1,6 @@
 # Biyard Smart Contracts
 
-This directory contains the Solidity smart contracts for the Biyard platform, including the BiyardToken (ERC20) and DAOTreasury governance system.
+This directory contains the Solidity smart contracts for the Biyard platform, including the BiyardToken (ERC20) and DAOTreasury governance system with integrated token exchange.
 
 ## Overview
 
@@ -22,21 +22,35 @@ A decentralized autonomous organization treasury contract with proposal-based go
 - **Time-Based Voting**: Configurable voting periods
 - **Proposal Lifecycle**: Complete proposal state management (Pending, Active, Succeeded, Defeated, Executed, Cancelled)
 
+### DAOTreasuryWithExchange (Enhanced)
+
+The enhanced treasury contract includes all governance features PLUS:
+- **Automated Token Exchange**: Built-in DEX for USDT ↔ BiyardToken
+- **Dynamic Pricing**: Price calculated from reserves: `Price = USDT Reserve / Circulating BIYARD Supply`
+- **Slippage Protection**: Minimum output amount parameter on exchanges
+- **Exchange Fees**: Configurable fee percentage (default 0.3%)
+- **Reserve Management**: Separate tracking of treasury reserves vs circulating supply
+- **Enable/Disable**: Owner can enable/disable exchange functionality
+
 ## Project Structure
 
 ```
 contracts/
 ├── contracts/
-│   ├── BiyardToken.sol       # ERC20 token implementation
-│   └── DAOTreasury.sol        # DAO treasury with governance
+│   ├── BiyardToken.sol                # ERC20 token implementation
+│   ├── DAOTreasury.sol                # DAO treasury with governance
+│   ├── DAOTreasuryWithExchange.sol    # Enhanced DAO with token exchange
+│   └── MockUSDT.sol                   # Mock USDT for testing
 ├── test/
-│   ├── BiyardToken.test.ts    # Token contract tests
-│   └── DAOTreasury.test.ts    # Treasury contract tests
+│   ├── BiyardToken.test.ts            # Token contract tests (20 tests)
+│   ├── DAOTreasury.test.ts            # Treasury contract tests (31 tests)
+│   └── DAOTreasuryWithExchange.test.ts # Exchange tests (32 tests)
 ├── scripts/
-│   └── deploy.ts              # Deployment script
-├── hardhat.config.ts          # Hardhat configuration
-├── package.json               # Dependencies
-└── README.md                  # This file
+│   ├── deploy.ts                      # Basic deployment script
+│   └── deployWithExchange.ts          # Deployment with exchange setup
+├── hardhat.config.ts                  # Hardhat configuration
+├── package.json                       # Dependencies
+└── README.md                          # This file
 ```
 
 ## Prerequisites
@@ -145,6 +159,36 @@ pnpm --filter @biyard/contracts deploy:local
 - `updateVotingPeriod(uint256)`: Update voting period
 - `updateQuorumPercentage(uint256)`: Update quorum requirement
 
+### DAOTreasuryWithExchange
+
+**Constructor Parameters:**
+- `_governanceToken`: BiyardToken address
+- `_usdtToken`: USDT token address
+- `_proposalThreshold`: Minimum tokens for proposals
+- `_votingPeriod`: Voting period in seconds
+- `_quorumPercentage`: Quorum percentage (1-100)
+- `_exchangeFeePercentage`: Fee percentage (e.g., 30 = 0.3%)
+
+**Exchange Functions:**
+- `getCurrentPrice()`: Get current BIYARD price in USDT
+- `getExchangeInfo()`: Get detailed exchange information
+- `calculateBiyardToUsdt(uint256 biyardAmount)`: Calculate USDT output for BIYARD input
+- `calculateUsdtToBiyard(uint256 usdtAmount)`: Calculate BIYARD output for USDT input
+- `exchangeBiyardForUsdt(uint256 biyardAmount, uint256 minUsdtOut)`: Exchange BIYARD for USDT
+- `exchangeUsdtForBiyard(uint256 usdtAmount, uint256 minBiyardOut)`: Exchange USDT for BIYARD
+
+**Exchange Configuration (Owner Only):**
+- `setExchangeEnabled(bool enabled)`: Enable/disable exchange
+- `setExchangeFee(uint256 newFee)`: Update exchange fee
+
+**Price Formula:**
+```
+Price (USDT per BIYARD) = USDT Reserve / Circulating BIYARD Supply
+Circulating Supply = Total BIYARD Supply - Treasury BIYARD Reserve
+```
+
+All governance functions from DAOTreasury are also available.
+
 ## Deployment Configuration
 
 The default deployment script (`scripts/deploy.ts`) deploys:
@@ -163,7 +207,53 @@ The default deployment script (`scripts/deploy.ts`) deploys:
 
 The script also transfers 100,000 BIYARD tokens to the treasury for testing.
 
-## Usage Example
+### Enhanced Deployment with Exchange
+
+The exchange deployment script (`scripts/deployWithExchange.ts`) deploys:
+
+1. **BiyardToken** (same as above)
+2. **MockUSDT** (for testing - use real USDT in production)
+   - Symbol: "USDT"
+   - Decimals: 6
+3. **DAOTreasuryWithExchange**
+   - All governance parameters same as above
+   - Exchange Fee: 0.3%
+   - Initial Reserves: 100,000 BIYARD + 100,000 USDT
+   - Initial Price: ~0.111 USDT per BIYARD
+
+Run with: `pnpm --filter @biyard/contracts deploy:exchange`
+
+## Usage Examples
+
+### Token Exchange
+
+```typescript
+// Get current exchange information
+const info = await treasury.getExchangeInfo();
+console.log("Current price:", info.currentPrice);
+console.log("USDT reserve:", info.usdtReserve);
+console.log("BIYARD reserve:", info.biyardReserve);
+
+// Exchange BIYARD for USDT
+const biyardAmount = ethers.parseEther("100"); // 100 BIYARD
+const [expectedUsdt, fee] = await treasury.calculateBiyardToUsdt(biyardAmount);
+
+await biyardToken.approve(treasuryAddress, biyardAmount);
+await treasury.exchangeBiyardForUsdt(
+  biyardAmount,
+  expectedUsdt * 95n / 100n  // 5% slippage tolerance
+);
+
+// Exchange USDT for BIYARD
+const usdtAmount = 1000n * 10n ** 6n; // 1000 USDT
+const [expectedBiyard, fee2] = await treasury.calculateUsdtToBiyard(usdtAmount);
+
+await usdtToken.approve(treasuryAddress, usdtAmount);
+await treasury.exchangeUsdtForBiyard(
+  usdtAmount,
+  expectedBiyard * 95n / 100n  // 5% slippage tolerance
+);
+```
 
 ### Creating and Executing a Proposal
 
@@ -207,7 +297,7 @@ The test suite includes comprehensive coverage:
 - Pausable functionality
 - Token transfers
 
-**DAOTreasury Tests:**
+**DAOTreasury Tests (31 tests):**
 - Deployment and configuration
 - Native and ERC20 token deposits
 - Proposal creation and validation
@@ -217,10 +307,32 @@ The test suite includes comprehensive coverage:
 - Governance parameter updates
 - View functions
 
+**DAOTreasuryWithExchange Tests (32 tests):**
+- Exchange deployment and initialization
+- Dynamic price calculation based on reserves
+- BIYARD to USDT exchange calculations
+- USDT to BIYARD exchange calculations
+- Exchange execution with slippage protection
+- Exchange fee calculations
+- Exchange enable/disable functionality
+- Fee configuration updates
+- Price impact from exchanges
+- Governance integration with exchange
+- Edge cases and error handling
+
+**Total: 83 tests passing**
+
 Run tests with:
 ```bash
 pnpm --filter @biyard/contracts test
 ```
+
+Test output shows all contracts functioning correctly with comprehensive coverage of:
+- Token operations
+- Governance workflows
+- Exchange mechanisms
+- Security controls
+- Edge cases
 
 ## License
 
@@ -233,3 +345,6 @@ These contracts are designed to integrate with the Biyard platform's backend API
 - The DAO treasury manages community funds and governance
 - Proposals can be created through the platform UI and voted on by token holders
 - The backend can listen to contract events to update the database
+- **Token Exchange**: Users can swap between BIYARD and USDT directly through the DAO treasury
+- **Price Discovery**: Dynamic pricing based on reserve ratios provides automatic market-making
+- **Event Listening**: Backend should listen to `TokensExchanged` events to track trades

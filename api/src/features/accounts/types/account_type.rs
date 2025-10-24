@@ -11,6 +11,7 @@ use crate::*;
     Default,
     DynamoEnum,
     schemars::JsonSchema_repr,
+    OperationIo,
 )]
 #[repr(u8)]
 pub enum AccountType {

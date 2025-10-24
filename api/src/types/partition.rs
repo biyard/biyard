@@ -26,4 +26,17 @@ pub enum Partition {
 
     // Credential
     Credential(String),
+
+    // Project
+    Project(String),
+
+    // Point Feature
+    #[schemars(description = "Customer's mapping key")]
+    MetaUser(String),
+
+    // Token
+    Token(String),
+
+    // Token Balance
+    TokenBalance(String),
 }

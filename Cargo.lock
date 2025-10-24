@@ -92,6 +92,7 @@ dependencies = [
  "bcrypt",
  "by-axum",
  "by-macros",
+ "chrono",
  "hex",
  "percent-encoding",
  "serde",
@@ -794,8 +795,6 @@ dependencies = [
 [[package]]
 name = "by-macros"
 version = "0.6.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b18df54fc3c0b7aca7983a5ca2ac760392a1344f935ac8f408a532c4f76c9e5"
 dependencies = [
  "Inflector",
  "bigdecimal",

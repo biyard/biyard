@@ -1,8 +1,12 @@
-use by_axum::axum::http::request::Parts;
+use by_axum::axum::http::{header::AUTHORIZATION, request::Parts};
 use tower_sessions::Session;
 
 use crate::{
-    features::{accounts::AccountType, session::SESSION_KEY_ACCOUNT_ID},
+    features::{
+        accounts::AccountType,
+        credentials::{Credential, CredentialQueryOption, CredentialStatus},
+        session::SESSION_KEY_ACCOUNT_ID,
+    },
     *,
 };
 
@@ -52,61 +56,8 @@ impl Account {
             user_type: AccountType::User,
         }
     }
-}
 
-impl FromRequestParts<AppState> for Option<Account> {
-    type Rejection = Error;
-
-    async fn from_request_parts(
-        parts: &mut Parts,
-        state: &AppState,
-    ) -> std::result::Result<Self, Self::Rejection> {
-        tracing::debug!("extracting optional user from request parts");
-        let session = Session::from_request_parts(parts, state).await;
-
-        if let Err(_e) = &session {
-            return Ok(None);
-        }
-
-        let session = session.unwrap();
-
-        let account_pk: Partition = if let Ok(Some(u)) = session.get(SESSION_KEY_ACCOUNT_ID).await {
-            tracing::debug!("found user id in session: {:?}", u);
-            u
-        } else {
-            let _ = session.flush().await;
-            return Ok(None);
-        };
-
-        let user = if let Ok(Some(u)) =
-            Account::get(&state.cli, account_pk, Some(EntityType::Account)).await
-        {
-            u
-        } else {
-            let _ = session.flush().await;
-            return Ok(None);
-        };
-
-        Ok(Some(user))
-    }
-}
-
-// For authenticated routes where User must be present
-impl FromRequestParts<AppState> for Account {
-    type Rejection = Error;
-
-    async fn from_request_parts(
-        parts: &mut Parts,
-        state: &AppState,
-    ) -> std::result::Result<Self, Self::Rejection> {
-        tracing::debug!("extracting user from request parts");
-        let session = Session::from_request_parts(parts, state)
-            .await
-            .map_err(|e| {
-                tracing::error!("no session found from request: {:?}", e);
-                Error::NoSessionFound
-            })?;
-
+    pub async fn from_session(session: Session, state: &AppState) -> Result<Self> {
         let account_pk: Partition = session
             .get(SESSION_KEY_ACCOUNT_ID)
             .await
@@ -141,5 +92,116 @@ impl FromRequestParts<AppState> for Account {
         }
 
         Ok(account.unwrap())
+    }
+
+    pub async fn from_credential(auth_str: &str, state: &AppState) -> Result<Self> {
+        tracing::debug!("attempting API key authentication");
+
+        // Hash the API key to look it up
+        let api_key_hash = password_utils::hash_password(auth_str);
+
+        // Look up credential by API key hash using GSI
+        let (credentials, _) = Credential::find_by_api_key_hash(
+            &state.cli,
+            &api_key_hash,
+            CredentialQueryOption::builder().limit(1),
+        )
+        .await
+        .map_err(|e| {
+            tracing::error!("failed to query credential by api key: {:?}", e);
+            Error::InvalidCredentials
+        })?;
+
+        if credentials.is_empty() {
+            tracing::warn!("API key not found");
+            return Err(Error::InvalidCredentials);
+        }
+
+        let credential = &credentials[0];
+
+        // Check if credential is active
+        if credential.status != CredentialStatus::Active {
+            tracing::warn!("credential is not active: {:?}", credential.status);
+            return Err(Error::InvalidCredentials);
+        }
+
+        // Update last_used_at timestamp (async, don't wait for it)
+        let credential_pk = credential.pk.clone();
+        let credential_sk = credential.sk.clone();
+        let cli = state.cli.clone();
+        tokio::spawn(async move {
+            let _ = Credential::updater(credential_pk, credential_sk)
+                .with_last_used_at(time_utils::get_now())
+                .execute(&cli)
+                .await;
+        });
+
+        // Get the account
+        let account = Account::get(
+            &state.cli,
+            credential.account_id.clone(),
+            Some(EntityType::Account),
+        )
+        .await
+        .map_err(|e| {
+            tracing::error!("failed to get account from db: {:?}", e);
+            Error::AccountNotFound
+        })?
+        .ok_or_else(|| {
+            tracing::error!("account not found for credential");
+            Error::AccountNotFound
+        })?;
+
+        tracing::debug!(
+            "successfully authenticated via API key for account: {:?}",
+            account.pk
+        );
+        return Ok(account);
+    }
+}
+
+impl FromRequestParts<AppState> for Option<Account> {
+    type Rejection = Error;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> std::result::Result<Self, Self::Rejection> {
+        tracing::debug!("extracting optional user from request parts");
+
+        Ok(Account::from_request_parts(parts, state).await.ok())
+    }
+}
+
+// For authenticated routes where User must be present
+// Supports both session-based auth (cookie) and API key auth (Bearer token)
+impl FromRequestParts<AppState> for Account {
+    type Rejection = Error;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> std::result::Result<Self, Self::Rejection> {
+        tracing::debug!("extracting user from request parts");
+
+        // First, try API key authentication via Authorization header
+        if let Some(auth_header) = parts.headers.get(AUTHORIZATION) {
+            if let Ok(auth_str) = auth_header.to_str() {
+                if auth_str.starts_with("Bearer ") {
+                    return Self::from_credential(auth_str.trim_start_matches("Bearer ").trim(), state).await;
+                }
+            }
+        }
+
+        // Fall back to session-based authentication
+        tracing::debug!("attempting session-based authentication");
+        let session = Session::from_request_parts(parts, state)
+            .await
+            .map_err(|e| {
+                tracing::error!("no session found from request: {:?}", e);
+                Error::NoSessionFound
+            })?;
+
+        Self::from_session(session, state).await
     }
 }

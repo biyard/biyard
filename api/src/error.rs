@@ -22,6 +22,9 @@ pub enum Error {
     DynamoError(#[from] aws_sdk_dynamodb::Error),
     #[error("Validation error: {0}")]
     ValidationError(#[from] validator::ValidationError),
+    #[error("Validation errors: {0}")]
+    #[rest_error(code = 101, status = 400)]
+    ValidationErrors(#[from] validator::ValidationErrors),
     #[error("SerdeDynamo error: {0}")]
     #[rest_error(status = 500)]
     DynamoEncodingError(#[from] serde_dynamo::Error),
@@ -58,6 +61,48 @@ pub enum Error {
     #[error("Credential limit exceeded")]
     #[rest_error(code = 402, status = 400)]
     CredentialLimitExceeded,
+
+    // Project errors (500-599)
+    #[error("Project not found")]
+    #[rest_error(code = 500, status = 404)]
+    ProjectNotFound,
+    #[error("Project access denied")]
+    #[rest_error(code = 501, status = 403)]
+    ProjectAccessDenied,
+    #[error("Invalid exchange rate")]
+    #[rest_error(code = 502, status = 400)]
+    InvalidExchangeRate,
+    #[error("Insufficient supply")]
+    #[rest_error(code = 503, status = 400)]
+    InsufficientSupply,
+
+    // Point errors (600-699)
+    #[error("Point balance not found")]
+    #[rest_error(code = 600, status = 404)]
+    PointBalanceNotFound,
+    #[error("Insufficient points")]
+    #[rest_error(code = 601, status = 400)]
+    InsufficientPoints,
+    #[error("Invalid point amount")]
+    #[rest_error(code = 602, status = 400)]
+    InvalidPointAmount,
+    #[error("Meta user not found")]
+    #[rest_error(code = 603, status = 404)]
+    MetaUserNotFound,
+
+    // Token errors (700-799)
+    #[error("Token not found")]
+    #[rest_error(code = 700, status = 404)]
+    TokenNotFound,
+    #[error("Insufficient tokens")]
+    #[rest_error(code = 701, status = 400)]
+    InsufficientTokens,
+    #[error("Invalid token amount")]
+    #[rest_error(code = 702, status = 400)]
+    InvalidTokenAmount,
+    #[error("Token already exists")]
+    #[rest_error(code = 703, status = 400)]
+    TokenAlreadyExists,
 }
 
 impl From<String> for Error {

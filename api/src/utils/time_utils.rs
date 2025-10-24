@@ -6,3 +6,8 @@ pub fn get_now() -> i64 {
         .expect("Time went backwards")
         .as_millis() as i64
 }
+
+pub fn timestamp_to_yyyy_mm() -> String {
+    let now = chrono::Utc::now();
+    now.format("%Y-%m").to_string()
+}

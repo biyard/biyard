@@ -6,6 +6,7 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:exchange": "hardhat run scripts/deployWithExchange.ts --network localhost",
     "node": "hardhat node"
   },
   "devDependencies": {
