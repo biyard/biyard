@@ -38,8 +38,7 @@ mod tests {
                 "tx_type": "award",
                 "amount": 100,
                 "description": "Test award",
-            },
-            response_type: serde_json::Value,
+            }
         };
 
         assert_eq!(status, 200, "Should successfully award points");
@@ -78,8 +77,7 @@ mod tests {
                     "tx_type": "award",
                     "amount": i * 50,
                     "description": format!("Award #{}", i),
-                },
-                response_type: serde_json::Value,
+                }
             };
             assert_eq!(status, 200, "Award #{} should succeed", i);
         }
@@ -118,8 +116,7 @@ mod tests {
                 "amount": 200,
                 "month": "2025-01",
                 "description": "January award",
-            },
-            response_type: serde_json::Value,
+            }
         };
 
         assert_eq!(status, 200);
@@ -157,8 +154,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 0,
                 "description": "Invalid award",
-            },
-            response_type: serde_json::Value,
+            }
         };
 
         assert_eq!(status, 400, "Should return 400 for invalid amount");
@@ -188,7 +184,7 @@ mod tests {
         let meta_user_id = "balance-test-user";
 
         // Award some points first
-        let (status, _, _) = post! {
+        let (status, _, _body) = post! {
             app: &ctx.app,
             path: format!("/v1/projects/{}/points/{}", project_id, meta_user_id),
             headers: headers.clone(),
@@ -196,8 +192,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 500,
                 "description": "Initial balance",
-            },
-            response_type: serde_json::Value,
+            }
         };
         assert_eq!(status, 200);
 
@@ -288,8 +283,7 @@ mod tests {
                 "amount": 100,
                 "month": "2025-01",
                 "description": "January",
-            },
-            response_type: serde_json::Value,
+            }
         };
         assert_eq!(status, 200);
 
@@ -302,8 +296,7 @@ mod tests {
                 "amount": 200,
                 "month": "2025-02",
                 "description": "February",
-            },
-            response_type: serde_json::Value,
+            }
         };
         assert_eq!(status, 200);
 
@@ -356,8 +349,7 @@ mod tests {
                     "tx_type": "Award",
                     "amount": i * 100,
                     "description": format!("Transaction {}", i),
-                },
-                response_type: serde_json::Value,
+                }
             };
             assert_eq!(status, 200);
         }
@@ -444,8 +436,7 @@ mod tests {
                     "tx_type": "Award",
                     "amount": i * 10,
                     "description": format!("TX {}", i),
-                },
-                response_type: serde_json::Value,
+                }
             };
             assert_eq!(status, 200);
         }
@@ -499,8 +490,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 100,
                 "description": "Unauthorized award",
-            },
-            response_type: serde_json::Value,
+            }
         };
 
         assert_eq!(status, 403, "Should return 403 Forbidden");
@@ -537,8 +527,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 100,
                 "description": "Unauthenticated award",
-            },
-            response_type: serde_json::Value,
+            }
         };
 
         assert_eq!(status, 401, "Should return 401 Unauthorized");
@@ -575,8 +564,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 100,
                 "description": "User1 points",
-            },
-            response_type: serde_json::Value,
+            }
         };
         assert_eq!(status, 200);
 
@@ -589,8 +577,7 @@ mod tests {
                 "tx_type": "Award",
                 "amount": 200,
                 "description": "User2 points",
-            },
-            response_type: serde_json::Value,
+            }
         };
         assert_eq!(status, 200);
 
