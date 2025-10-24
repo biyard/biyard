@@ -2,6 +2,9 @@ pub mod get_balance;
 pub mod list_transactions;
 pub mod transact_points;
 
+#[cfg(test)]
+mod tests;
+
 use crate::*;
 
 pub use get_balance::*;

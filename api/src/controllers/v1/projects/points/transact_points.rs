@@ -47,7 +47,7 @@ pub async fn transact_points_handler(
 
     transact_write!(
         &cli,
-        point_balance.transact_write_item(),
+        point_balance.transact_upsert_item(),
         transaction.create_transact_write_item(),
     )?;
 
