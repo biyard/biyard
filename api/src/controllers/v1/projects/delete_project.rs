@@ -9,22 +9,13 @@ pub struct DeleteProjectResponse {
 
 pub async fn delete_project_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
-    Path(project_id): Path<String>,
+    Extension(Project { pk: project_pk, .. }): Extension<Project>,
+    Path(_p): ProjectPath,
 ) -> Result<Json<DeleteProjectResponse>> {
-    info!("Deleting project: {}", project_id);
-
-    let project_pk = Partition::Project(project_id);
-    let project = Project::get(&cli, project_pk.clone(), Some(EntityType::Project))
-        .await?
-        .ok_or(Error::ProjectNotFound)?;
-
-    // Verify ownership
-    project.verify_ownership(&account)?;
+    debug!("Deleting project: {}", project_pk);
 
     // Delete the project
     Project::delete(&cli, project_pk, Some(EntityType::Project)).await?;
 
-    info!("Project deleted successfully");
     Ok(Json(DeleteProjectResponse { success: true }))
 }

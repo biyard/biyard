@@ -5,22 +5,14 @@ use validator::Validate;
 
 pub async fn update_project_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
-    Path(project_id): Path<String>,
+    Extension(Project { pk: project_pk, .. }): Extension<Project>,
+    Path(_p): ProjectPath,
     Json(req): Json<UpdateProjectRequest>,
 ) -> Result<Json<ProjectResponse>> {
-    info!("Updating project: {}", project_id);
+    info!("Updating project: {}", project_pk);
 
     // Validate the request
     req.validate()?;
-
-    let project_pk = Partition::Project(project_id);
-    let project = Project::get(&cli, project_pk.clone(), Some(EntityType::Project))
-        .await?
-        .ok_or(Error::ProjectNotFound)?;
-
-    // Verify ownership
-    project.verify_ownership(&account)?;
 
     // Build updater
     let mut updater = Project::updater(project_pk, EntityType::Project);

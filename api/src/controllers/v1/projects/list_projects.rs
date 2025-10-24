@@ -9,16 +9,19 @@ pub struct ListProjectsResponse {
 
 pub async fn list_projects_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
-) -> Result<Json<ListProjectsResponse>> {
+    NoApi(account): NoApi<Account>,
+    Query(params): PaginationQuery,
+) -> Result<Json<ListResponse<ProjectResponse>>> {
     info!("Listing projects for account: {:?}", account.pk);
+    let mut opt = ProjectQueryOption::builder().limit(params.limit.unwrap_or(100));
 
-    let (projects, _) = Project::find_by_account_id(&cli, &account.pk, ProjectQueryOption::builder())
-        .await?;
+    if let Some(bookmark) = params.bookmark {
+        opt = opt.bookmark(bookmark);
+    }
 
-    let project_responses: Vec<ProjectResponse> = projects.into_iter().map(|p| p.into()).collect();
+    let (projects, bookmark) = Project::find_by_account_id(&cli, &account.pk, opt).await?;
 
-    Ok(Json(ListProjectsResponse {
-        projects: project_responses,
-    }))
+    let projects: Vec<ProjectResponse> = projects.into_iter().map(|p| p.into()).collect();
+
+    Ok(Json((projects, bookmark).into()))
 }

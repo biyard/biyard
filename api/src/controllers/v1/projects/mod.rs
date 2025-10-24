@@ -9,61 +9,16 @@ pub mod update_project;
 #[cfg(test)]
 mod tests;
 
-use by_axum::axum::{
-    body::Body,
-    extract::{Request, State},
-    http::StatusCode,
-    middleware::{self, Next},
-    response::Response,
+use crate::{
+    features::{accounts::Account, projects::Project},
+    *,
 };
-
-use crate::{features::projects::Project, *};
 
 pub use create_project::*;
 pub use delete_project::*;
 pub use get_project::*;
 pub use list_projects::*;
 pub use update_project::*;
-
-/// Helper function to fetch project and verify ownership
-///
-/// This utility function:
-/// 1. Fetches the project from DynamoDB by ID
-/// 2. Verifies that the account owns the project
-/// 3. Returns the project if successful
-/// 4. Returns 404 if project not found, 403 if access denied
-///
-/// # Usage in handlers
-/// ```rust
-/// let project = verify_and_get_project(&state.cli, &project_id, &account).await?;
-/// ```
-pub async fn verify_and_get_project(
-    ddb_client: &aws_sdk_dynamodb::Client,
-    project_id: &str,
-    account: &features::accounts::Account,
-) -> Result<Project> {
-    tracing::debug!(
-        "Verifying project ownership for project_id: {} by account: {:?}",
-        project_id,
-        account.pk
-    );
-
-    // Get the project from DynamoDB
-    let project_pk = Partition::Project(project_id.to_string());
-    let project = Project::get(ddb_client, project_pk, Some(EntityType::Project))
-        .await?
-        .ok_or(Error::ProjectNotFound)?;
-
-    // Verify ownership
-    project.verify_ownership(account)?;
-
-    tracing::debug!(
-        "Project ownership verified successfully for project: {}",
-        project_id
-    );
-
-    Ok(project)
-}
 
 pub fn route() -> Result<Router<AppState>> {
     let conf = config::get();
@@ -105,10 +60,9 @@ pub async fn authorize_project_permission(
     let (mut parts, body) = req.into_parts();
 
     // Extract authenticated account from request
-    let account = match features::accounts::Account::from_request_parts(&mut parts, &state).await {
-        Ok(account) => account,
-        Err(e) => {
-            tracing::warn!("Authentication failed in project authorization: {:?}", e);
+    let account: &Account = match parts.extensions.get() {
+        Some(account) => account,
+        _ => {
             // Return 401 Unauthorized if authentication fails
             return Err(StatusCode::UNAUTHORIZED);
         }
@@ -174,7 +128,6 @@ pub async fn authorize_project_permission(
         project_id
     );
 
-    parts.extensions.insert(account);
     parts.extensions.insert(project);
 
     // Reconstruct request and continue to the handler

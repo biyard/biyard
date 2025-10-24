@@ -184,11 +184,19 @@ impl FromRequestParts<AppState> for Account {
     ) -> std::result::Result<Self, Self::Rejection> {
         tracing::debug!("extracting user from request parts");
 
+        if let Some(acc) = parts.extensions.get::<Self>() {
+            return Ok(acc.clone());
+        }
+
         // First, try API key authentication via Authorization header
         if let Some(auth_header) = parts.headers.get(AUTHORIZATION) {
             if let Ok(auth_str) = auth_header.to_str() {
                 if auth_str.starts_with("Bearer ") {
-                    return Self::from_credential(auth_str.trim_start_matches("Bearer ").trim(), state).await;
+                    return Self::from_credential(
+                        auth_str.trim_start_matches("Bearer ").trim(),
+                        state,
+                    )
+                    .await;
                 }
             }
         }

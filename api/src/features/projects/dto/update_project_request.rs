@@ -1,7 +1,7 @@
 use crate::*;
 use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo, Validate)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, OperationIo, Validate)]
 pub struct UpdateProjectRequest {
     #[validate(length(min = 1, max = 255))]
     #[schemars(description = "Name of the project")]
