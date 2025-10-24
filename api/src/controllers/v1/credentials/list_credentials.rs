@@ -1,19 +1,19 @@
-use by_axum::axum::{extract::State, Json};
+use by_axum::axum::{Json, extract::State};
 
-use crate::{features::{accounts::Account, credentials::*}, *};
+use crate::{
+    features::{accounts::Account, credentials::*},
+    *,
+};
 
 pub async fn list_credentials_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
+    NoApi(account): NoApi<Account>,
 ) -> Result<Json<Vec<CredentialResponse>>> {
     tracing::info!("Listing credentials for account: {:?}", account.pk);
 
     // Find all credentials for this account using GSI1
-    let (credentials, _bookmark) = Credential::find_by_account_id(
-        &cli,
-        account.pk,
-        CredentialQueryOption::default()
-    ).await?;
+    let (credentials, _bookmark) =
+        Credential::find_by_account_id(&cli, account.pk, CredentialQueryOption::default()).await?;
 
     // Convert to response DTOs (without api_key)
     let responses: Vec<CredentialResponse> = credentials

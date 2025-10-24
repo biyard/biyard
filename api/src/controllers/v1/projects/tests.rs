@@ -49,7 +49,7 @@ mod tests {
             response_type: ProjectResponse,
         };
 
-        let project_id = created_project.pk.to_string().replace("Project(", "").replace(")", "");
+        let project_id = created_project.id.to_string();
 
         // Get the project
         let (status, _header, response) = get! {
@@ -114,7 +114,7 @@ mod tests {
         };
         assert_eq!(status, 200, "Failed to create project");
 
-        let project_id = created_project.pk.to_string().replace("Project(", "").replace(")", "");
+        let project_id = created_project.id.to_string();
 
         // Account 2 tries to access Account 1's project - should be FORBIDDEN (403)
         let (status, _, _) = get! {
@@ -124,7 +124,10 @@ mod tests {
             response_type: serde_json::Value,
         };
 
-        assert_eq!(status, 403, "Should return 403 Forbidden when accessing another user's project");
+        assert_eq!(
+            status, 403,
+            "Should return 403 Forbidden when accessing another user's project"
+        );
     }
 
     #[tokio::test]
@@ -147,7 +150,7 @@ mod tests {
         };
         assert_eq!(status, 200, "Failed to create project");
 
-        let project_id = created_project.pk.to_string().replace("Project(", "").replace(")", "");
+        let project_id = created_project.id.to_string();
 
         // Try to access without authentication - should be UNAUTHORIZED (401)
         let (status, _, _) = get! {
@@ -156,7 +159,10 @@ mod tests {
             response_type: serde_json::Value,
         };
 
-        assert_eq!(status, 401, "Should return 401 Unauthorized when not authenticated");
+        assert_eq!(
+            status, 401,
+            "Should return 401 Unauthorized when not authenticated"
+        );
     }
 
     #[tokio::test]
@@ -174,6 +180,9 @@ mod tests {
             response_type: serde_json::Value,
         };
 
-        assert_eq!(status, 404, "Should return 404 Not Found for non-existent project");
+        assert_eq!(
+            status, 404,
+            "Should return 404 Not Found for non-existent project"
+        );
     }
 }

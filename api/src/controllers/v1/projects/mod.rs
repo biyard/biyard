@@ -53,7 +53,7 @@ pub async fn authorize_project_permission(
     State(state): State<AppState>,
     req: Request,
     next: Next,
-) -> std::result::Result<Response<Body>, StatusCode> {
+) -> std::result::Result<Response<Body>, Error> {
     tracing::debug!("Project authorization middleware");
 
     // Extract request parts to access headers and URI
@@ -64,7 +64,7 @@ pub async fn authorize_project_permission(
         Some(account) => account,
         _ => {
             // Return 401 Unauthorized if authentication fails
-            return Err(StatusCode::UNAUTHORIZED);
+            return Err(Error::Unauthorized);
         }
     };
 
@@ -74,22 +74,7 @@ pub async fn authorize_project_permission(
     let path_segments: Vec<&str> = path.split('/').collect();
 
     // Find the segment after "projects"
-    let project_id = path_segments
-        .iter()
-        .position(|&seg| seg == "projects")
-        .and_then(|idx| path_segments.get(idx + 1))
-        .filter(|&&seg| !seg.is_empty())
-        .map(|&seg| seg.to_string());
-
-    let project_id = match project_id {
-        Some(id) => id,
-        None => {
-            tracing::debug!("No project_id found in path, allowing request to proceed");
-            // No project_id in path (e.g., /v1/projects/), allow request to proceed
-            let req = Request::from_parts(parts, body);
-            return Ok(next.run(req).await);
-        }
-    };
+    let project_id = path_segments[1].to_string();
 
     tracing::debug!(
         "Verifying project access for project_id: {} by account: {:?}",
@@ -103,11 +88,11 @@ pub async fn authorize_project_permission(
         Ok(Some(project)) => project,
         Ok(None) => {
             tracing::warn!("Project not found: {}", project_id);
-            return Err(StatusCode::NOT_FOUND);
+            return Err(Error::ProjectNotFound);
         }
         Err(e) => {
             tracing::error!("Failed to fetch project {}: {:?}", project_id, e);
-            return Err(StatusCode::INTERNAL_SERVER_ERROR);
+            return Err(Error::Forbidden);
         }
     };
 
@@ -119,7 +104,7 @@ pub async fn authorize_project_permission(
             project_id,
             e
         );
-        return Err(StatusCode::UNAUTHORIZED);
+        return Err(Error::Forbidden);
     }
 
     tracing::debug!(

@@ -1,10 +1,16 @@
-use by_axum::axum::{extract::{Path, State}, Json};
+use by_axum::axum::{
+    Json,
+    extract::{Path, State},
+};
 
-use crate::{features::{accounts::Account, credentials::*}, *};
+use crate::{
+    features::{accounts::Account, credentials::*},
+    *,
+};
 
 pub async fn revoke_credential_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
+    NoApi(account): NoApi<Account>,
     Path(credential_id): Path<String>,
 ) -> Result<Json<CredentialResponse>> {
     tracing::info!(

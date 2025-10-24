@@ -1,10 +1,13 @@
-use by_axum::axum::{extract::State, Json};
+use by_axum::axum::{Json, extract::State};
 
-use crate::{features::{accounts::Account, credentials::*}, *};
+use crate::{
+    features::{accounts::Account, credentials::*},
+    *,
+};
 
 pub async fn create_credential_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
+    NoApi(account): NoApi<Account>,
     Json(req): Json<CreateCredentialRequest>,
 ) -> Result<Json<CredentialResponse>> {
     tracing::info!("Creating credential for account: {:?}", account.pk);

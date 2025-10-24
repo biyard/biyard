@@ -3,7 +3,7 @@ use crate::*;
 #[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema, OperationIo)]
 pub struct ProjectResponse {
     #[schemars(description = "ID of the project")]
-    pub pk: Partition,
+    pub id: String,
 
     #[schemars(description = "Account ID that owns this project")]
     pub account_id: Partition,
@@ -39,8 +39,13 @@ pub struct ProjectResponse {
 impl From<crate::features::projects::Project> for ProjectResponse {
     fn from(project: crate::features::projects::Project) -> Self {
         let token_value = project.calculate_token_value();
+        let project_id = match &project.pk {
+            Partition::Project(id) => id.clone(),
+            _ => "".to_string(),
+        };
+
         Self {
-            pk: project.pk,
+            id: project_id,
             account_id: project.account_id,
             name: project.name,
             description: project.description,

@@ -8,13 +8,19 @@ pub enum Error {
     #[error("Internal server error: {0}")]
     #[rest_error(status = 500)]
     InternalServerError(String),
+    #[error("Forbidden")]
+    #[rest_error(status = 403)]
+    Forbidden,
 
-    // Session error (50 ~ 99)
+    // Session/Authentication error (50 ~ 99)
     #[error("Session error")]
     #[rest_error(code = 50)]
     SessionError(#[from] tower_sessions::session::Error),
     #[error("No session found")]
     NoSessionFound,
+    #[error("Unauthorized")]
+    #[rest_error(status = 401)]
+    Unauthorized,
 
     // DynamoDB Common Errors (100-199)
     #[error("Not Found")]
