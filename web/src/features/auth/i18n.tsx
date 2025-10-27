@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 export const auth = {
   en: {
     // Common Auth fields used by both SignIn and SignUp
@@ -32,3 +34,41 @@ export const auth = {
     hasAccount: "이미 계정이 있으신가요?",
   },
 };
+
+export interface AuthI18n {
+  // Common Auth fields used by both SignIn and SignUp
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  enterName: string;
+  enterEmail: string;
+  enterPassword: string;
+  enterConfirmPassword: string;
+  signIn: string;
+  signUp: string;
+  signOut: string;
+  noAccount: string;
+  hasAccount: string;
+}
+
+export function useAuthI18n(): AuthI18n {
+  const { t } = useTranslation();
+
+  return {
+    // Common Auth fields used by both SignIn and SignUp
+    name: t("auth.name"),
+    email: t("auth.email"),
+    password: t("auth.password"),
+    confirmPassword: t("auth.confirmPassword"),
+    enterName: t("auth.enterName"),
+    enterEmail: t("auth.enterEmail"),
+    enterPassword: t("auth.enterPassword"),
+    enterConfirmPassword: t("auth.enterConfirmPassword"),
+    signIn: t("auth.signIn"),
+    signUp: t("auth.signUp"),
+    signOut: t("auth.signOut"),
+    noAccount: t("auth.noAccount"),
+    hasAccount: t("auth.hasAccount"),
+  };
+}
