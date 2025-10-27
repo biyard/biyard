@@ -1,8 +1,4 @@
 {
-  "app": {
-    "title": "Biyard Console",
-    "tagline": "Blockchain Token & Point Management Platform"
-  },
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
@@ -64,19 +60,6 @@
     "generateKey": "Generate API Key",
     "keyGenerated": "API key generated successfully. Make sure to copy it now as you won't be able to see it again.",
     "noCredentials": "No API credentials yet. Create your first one to get started."
-  },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "confirm": "Confirm",
-    "close": "Close",
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "warning": "Warning",
-    "info": "Info",
-    "actions": "Actions"
   },
   "theme": {
     "light": "Light",

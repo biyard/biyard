@@ -1,8 +1,4 @@
 {
-  "app": {
-    "title": "Biyard 콘솔",
-    "tagline": "블록체인 토큰 & 포인트 관리 플랫폼"
-  },
   "auth": {
     "signIn": "로그인",
     "signUp": "회원가입",
@@ -64,19 +60,6 @@
     "generateKey": "API 키 생성",
     "keyGenerated": "API 키가 생성되었습니다. 다시 볼 수 없으니 지금 복사해두세요.",
     "noCredentials": "아직 API 인증이 없습니다. 첫 번째 인증을 만들어보세요."
-  },
-  "common": {
-    "save": "저장",
-    "cancel": "취소",
-    "delete": "삭제",
-    "confirm": "확인",
-    "close": "닫기",
-    "loading": "로딩 중...",
-    "error": "오류",
-    "success": "성공",
-    "warning": "경고",
-    "info": "정보",
-    "actions": "작업"
   },
   "theme": {
     "light": "밝게",

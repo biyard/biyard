@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { Account } from '../types/account';
+import { createContext, useContext, useState } from "react";
+import type { ReactNode } from "react";
+import type { Account } from "@/types/account";
 
 interface AuthContextType {
   account: Account | null;
@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         account,
         setAccount,
-        isAuthenticated: !!account
+        isAuthenticated: !!account,
       }}
     >
       {children}
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

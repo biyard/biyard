@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../../auth/contexts/AuthContext";
-import { useTheme } from "../../../contexts/ThemeContext";
-import { useNavigate, Link } from "react-router-dom";
-import { Sun, Moon, Globe, Settings, Key, LogOut } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../../contexts/AuthContext';
+import { useTheme } from '../../../../contexts/ThemeContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { Sun, Moon, Globe, Settings, Key, LogOut } from 'lucide-react';
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation();
@@ -12,59 +12,55 @@ export function DashboardPage() {
 
   const handleSignOut = () => {
     setAccount(null);
-    navigate("/signin");
+    navigate('/signin');
   };
 
   const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "ko" : "en";
+    const newLang = i18n.language === 'en' ? 'ko' : 'en';
     i18n.changeLanguage(newLang);
-    localStorage.setItem("language", newLang);
+    localStorage.setItem('language', newLang);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white shadow dark:bg-gray-800">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <header className="bg-white dark:bg-gray-800 shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t("app.title")}
+                {t('app.title')}
               </h1>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {t("app.tagline")}
+                {t('app.tagline')}
               </p>
             </div>
             <div className="flex items-center space-x-4">
               {/* Language Toggle */}
               <button
                 onClick={toggleLanguage}
-                className="p-2 text-gray-600 rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={i18n.language === "en" ? "한국어" : "English"}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                title={i18n.language === 'en' ? '한국어' : 'English'}
               >
-                <Globe className="w-5 h-5" />
+                <Globe className="h-5 w-5" />
               </button>
 
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
-                className="p-2 text-gray-600 rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={theme === "light" ? t("theme.dark") : t("theme.light")}
+                className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                title={theme === 'light' ? t('theme.dark') : t('theme.light')}
               >
-                {theme === "light" ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
+                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </button>
 
               {/* Sign Out */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center py-2 px-4 text-sm font-medium text-gray-700 rounded-md dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
               >
-                <LogOut className="mr-2 w-4 h-4" />
-                {t("auth.signOut")}
+                <LogOut className="h-4 w-4 mr-2" />
+                {t('auth.signOut')}
               </button>
             </div>
           </div>
@@ -72,37 +68,37 @@ export function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Welcome Section */}
-        <div className="py-6 px-4 sm:px-0">
-          <div className="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
-            <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
-              {t("dashboard.welcome")}
+        <div className="px-4 py-6 sm:px-0">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              {t('dashboard.welcome')}
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              {t("account.myAccount")}: {account?.name} ({account?.email})
+              {t('account.myAccount')}: {account?.name} ({account?.email})
             </p>
           </div>
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="py-6 px-4 sm:px-0">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="px-4 py-6 sm:px-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* API Credentials Card */}
             <Link
               to="/credentials"
-              className="p-6 bg-white rounded-lg shadow transition-shadow dark:bg-gray-800 hover:shadow-lg"
+              className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <Key className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                  <Key className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t("dashboard.apiCredentials")}
+                    {t('dashboard.apiCredentials')}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t("credentials.description")}
+                    {t('credentials.description')}
                   </p>
                 </div>
               </div>
@@ -111,18 +107,18 @@ export function DashboardPage() {
             {/* Account Settings Card */}
             <Link
               to="/settings"
-              className="p-6 bg-white rounded-lg shadow transition-shadow dark:bg-gray-800 hover:shadow-lg"
+              className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <Settings className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                  <Settings className="h-8 w-8 text-gray-600 dark:text-gray-400" />
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t("account.accountSettings")}
+                    {t('account.accountSettings')}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t("account.profile")}, {t("account.security")}
+                    {t('account.profile')}, {t('account.security')}
                   </p>
                 </div>
               </div>
@@ -131,15 +127,15 @@ export function DashboardPage() {
         </div>
 
         {/* Account Info */}
-        <div className="py-6 px-4 sm:px-0">
-          <div className="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
-            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white">
-              {t("account.profile")}
+        <div className="px-4 py-6 sm:px-0">
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              {t('account.profile')}
             </h3>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t("auth.name")}
+                  {t('auth.name')}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                   {account?.name}
@@ -147,7 +143,7 @@ export function DashboardPage() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t("auth.email")}
+                  {t('auth.email')}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                   {account?.email}
@@ -157,17 +153,16 @@ export function DashboardPage() {
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   Account ID
                 </dt>
-                <dd className="mt-1 font-mono text-sm text-gray-900 dark:text-white">
+                <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
                   {account?.pk}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t("credentials.createdAt")}
+                  {t('credentials.createdAt')}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.created_at &&
-                    new Date(account.created_at * 1000).toLocaleString()}
+                  {account?.created_at && new Date(account.created_at * 1000).toLocaleString()}
                 </dd>
               </div>
             </dl>

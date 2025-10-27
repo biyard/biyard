@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Plus, Copy, Check, Key, Loader2, Trash2 } from 'lucide-react';
-import { useListCredentials } from '../api/use-list-credentials';
-import { useCreateCredential } from '../api/use-create-credential';
-import { useRevokeCredential } from '../api/use-revoke-credential';
+import { useListCredentials } from '../../api/use-list-credentials';
+import { useCreateCredential } from '../../api/use-create-credential';
+import { useRevokeCredential } from '../../api/use-revoke-credential';
 
 export function CredentialsPage() {
   const { t } = useTranslation();
