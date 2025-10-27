@@ -3,8 +3,15 @@ import { initReactI18next } from "react-i18next";
 import en from "./locales/en.json";
 import ko from "./locales/ko.json";
 import { SignInPage } from "@/features/auth/components/SignInPage/i18n";
+import { SignUpPage } from "@/features/auth/components/SignUpPage/i18n";
+import { DashboardPage } from "@/features/dashboard/components/DashboardPage/i18n";
+import { SettingsPage } from "@/features/settings/components/SettingsPage/i18n";
+import { CredentialsPage } from "@/features/credentials/components/CredentialsPage/i18n";
 
-export const resources = {
+export const resources: {
+  en: Record<string, unknown>;
+  ko: Record<string, unknown>;
+} = {
   en: {},
   ko: {},
 };
@@ -53,6 +60,10 @@ Object.entries({
   app,
   common,
   SignInPage,
+  SignUpPage,
+  DashboardPage,
+  SettingsPage,
+  CredentialsPage,
 }).forEach(([key, value]) => {
   resources.en[key] = value.en;
   resources.ko[key] = value.ko;

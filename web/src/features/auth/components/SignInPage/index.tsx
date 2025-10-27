@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useSignin } from "../../api/use-signin";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { Mail, Lock, Loader2 } from "lucide-react";
 import { useSignInPageI18n } from "./i18n";
 
 export function SignInPage() {
-  /* const { t } = useTranslation(); */
   const t = useSignInPageI18n();
   const navigate = useNavigate();
   const { setAccount } = useAuth();

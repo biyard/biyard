@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useSignup } from '../../api/use-signup';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
+import { useSignUpPageI18n } from './i18n';
 
 export function SignUpPage() {
-  const { t } = useTranslation();
+  const t = useSignUpPageI18n();
   const navigate = useNavigate();
   const { setAccount } = useAuth();
   const [name, setName] = useState('');
@@ -22,12 +22,12 @@ export function SignUpPage() {
     setError('');
 
     if (!name || !email || !password) {
-      setError(t('auth.nameRequired'));
+      setError(t.nameRequired);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
+      setError(t.passwordMismatch);
       return;
     }
 
@@ -40,7 +40,7 @@ export function SignUpPage() {
       setAccount(account);
       navigate('/dashboard');
     } catch (_err) {
-      setError(t('auth.signUpError'));
+      setError(t.signUpError);
     }
   };
 
@@ -49,13 +49,13 @@ export function SignUpPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            {t('app.title')}
+            {t.title}
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {t('app.tagline')}
+            {t.tagline}
           </p>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-            {t('auth.signUpWithEmail')}
+            {t.signUpWithEmail}
           </h2>
         </div>
 
@@ -69,7 +69,7 @@ export function SignUpPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('auth.name')}
+                {t.name}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -84,14 +84,14 @@ export function SignUpPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-                  placeholder={t('auth.enterName')}
+                  placeholder={t.enterName}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('auth.email')}
+                {t.email}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -106,14 +106,14 @@ export function SignUpPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-                  placeholder={t('auth.enterEmail')}
+                  placeholder={t.enterEmail}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('auth.password')}
+                {t.password}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -128,14 +128,14 @@ export function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-                  placeholder={t('auth.enterPassword')}
+                  placeholder={t.enterPassword}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('auth.confirmPassword')}
+                {t.confirmPassword}
               </label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -150,7 +150,7 @@ export function SignUpPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-                  placeholder={t('auth.enterConfirmPassword')}
+                  placeholder={t.enterConfirmPassword}
                 />
               </div>
             </div>
@@ -165,19 +165,19 @@ export function SignUpPage() {
               {signupMutation.isPending ? (
                 <>
                   <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
-                  {t('common.loading')}
+                  {t.loading}
                 </>
               ) : (
-                t('auth.signUp')
+                t.signUp
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t('auth.hasAccount')}{' '}
+              {t.hasAccount}{' '}
               <Link to="/signin" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400">
-                {t('auth.signIn')}
+                {t.signIn}
               </Link>
             </p>
           </div>
