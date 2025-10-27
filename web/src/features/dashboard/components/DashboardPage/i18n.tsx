@@ -10,7 +10,6 @@ export const DashboardPage = {
     security: "Security",
     accountId: "Account ID",
     createdAt: "Created At",
-    signOut: "Sign Out",
     themeDark: "Dark Mode",
     themeLight: "Light Mode",
   },
@@ -23,16 +22,22 @@ export const DashboardPage = {
     security: "보안",
     accountId: "계정 ID",
     createdAt: "생성일",
-    signOut: "로그아웃",
     themeDark: "다크 모드",
     themeLight: "라이트 모드",
   },
 };
 
 export interface DashboardPageI18n {
+  // From app
   title: string;
   tagline: string;
 
+  // From auth (cross-feature reference)
+  name: string;
+  email: string;
+  signOut: string;
+
+  // DashboardPage specific
   welcome: string;
   myAccount: string;
   apiCredentials: string;
@@ -41,13 +46,8 @@ export interface DashboardPageI18n {
   security: string;
   accountId: string;
   createdAt: string;
-  signOut: string;
   themeDark: string;
   themeLight: string;
-
-  name: string;
-  email: string;
-
   credentialsDescription: string;
 }
 
@@ -55,6 +55,16 @@ export function useDashboardPageI18n(): DashboardPageI18n {
   const { t } = useTranslation();
 
   return {
+    // From app
+    title: t("app:title"),
+    tagline: t("app:tagline"),
+
+    // From auth (cross-feature reference)
+    name: t("auth:name"),
+    email: t("auth:email"),
+    signOut: t("auth:signOut"),
+
+    // DashboardPage specific
     welcome: t("DashboardPage:welcome"),
     myAccount: t("DashboardPage:myAccount"),
     apiCredentials: t("DashboardPage:apiCredentials"),
@@ -63,16 +73,8 @@ export function useDashboardPageI18n(): DashboardPageI18n {
     security: t("DashboardPage:security"),
     accountId: t("DashboardPage:accountId"),
     createdAt: t("DashboardPage:createdAt"),
-    signOut: t("DashboardPage:signOut"),
     themeDark: t("DashboardPage:themeDark"),
     themeLight: t("DashboardPage:themeLight"),
-
-    title: t("app.title"),
-    tagline: t("app.tagline"),
-
-    name: t("SignInPage:name") || "Name",
-    email: t("SignInPage:email") || "Email",
-
-    credentialsDescription: t("credentials.description") || "Manage your API credentials",
+    credentialsDescription: t("CredentialsPage:description"),
   };
 }

@@ -3,9 +3,11 @@ import { useAuth } from '../../../../contexts/AuthContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sun, Moon, Globe, Settings, Key, LogOut } from 'lucide-react';
+import { useDashboardPageI18n } from './i18n';
 
 export function DashboardPage() {
-  const { t, i18n } = useTranslation();
+  const t = useDashboardPageI18n();
+  const { i18n } = useTranslation();
   const { account, setAccount } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -29,10 +31,10 @@ export function DashboardPage() {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t('app.title')}
+                {t.title}
               </h1>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {t('app.tagline')}
+                {t.tagline}
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -49,7 +51,7 @@ export function DashboardPage() {
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={theme === 'light' ? t('theme.dark') : t('theme.light')}
+                title={theme === 'light' ? t.themeDark : t.themeLight}
               >
                 {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </button>
@@ -60,7 +62,7 @@ export function DashboardPage() {
                 className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                {t('auth.signOut')}
+                {t.signOut}
               </button>
             </div>
           </div>
@@ -73,10 +75,10 @@ export function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {t('dashboard.welcome')}
+              {t.welcome}
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              {t('account.myAccount')}: {account?.name} ({account?.email})
+              {t.myAccount}: {account?.name} ({account?.email})
             </p>
           </div>
         </div>
@@ -95,10 +97,10 @@ export function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t('dashboard.apiCredentials')}
+                    {t.apiCredentials}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t('credentials.description')}
+                    {t.credentialsDescription}
                   </p>
                 </div>
               </div>
@@ -115,10 +117,10 @@ export function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t('account.accountSettings')}
+                    {t.accountSettings}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t('account.profile')}, {t('account.security')}
+                    {t.profile}, {t.security}
                   </p>
                 </div>
               </div>
@@ -130,12 +132,12 @@ export function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-              {t('account.profile')}
+              {t.profile}
             </h3>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t('auth.name')}
+                  {t.name}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                   {account?.name}
@@ -143,7 +145,7 @@ export function DashboardPage() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t('auth.email')}
+                  {t.email}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                   {account?.email}
@@ -151,7 +153,7 @@ export function DashboardPage() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Account ID
+                  {t.accountId}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
                   {account?.pk}
@@ -159,7 +161,7 @@ export function DashboardPage() {
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t('credentials.createdAt')}
+                  {t.createdAt}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                   {account?.created_at && new Date(account.created_at * 1000).toLocaleString()}

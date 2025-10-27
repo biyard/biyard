@@ -4,8 +4,6 @@ export const SettingsPage = {
   en: {
     accountSettings: "Account Settings",
     profile: "Profile",
-    name: "Name",
-    email: "Email",
     accountId: "Account ID",
     withdrawal: "Delete Account",
     withdrawalWarning:
@@ -15,8 +13,6 @@ export const SettingsPage = {
   ko: {
     accountSettings: "계정 설정",
     profile: "프로필",
-    name: "이름",
-    email: "이메일",
     accountId: "계정 ID",
     withdrawal: "계정 삭제",
     withdrawalWarning:
@@ -26,35 +22,43 @@ export const SettingsPage = {
 };
 
 export interface SettingsPageI18n {
-  accountSettings: string;
-  profile: string;
+  // From auth (cross-feature reference)
   name: string;
   email: string;
+
+  // From common
+  cancel: string;
+  confirm: string;
+  loading: string;
+
+  // SettingsPage specific
+  accountSettings: string;
+  profile: string;
   accountId: string;
   withdrawal: string;
   withdrawalWarning: string;
   confirmWithdrawal: string;
-
-  cancel: string;
-  confirm: string;
-  loading: string;
 }
 
 export function useSettingsPageI18n(): SettingsPageI18n {
   const { t } = useTranslation();
 
   return {
+    // From auth (cross-feature reference)
+    name: t("auth:name"),
+    email: t("auth:email"),
+
+    // From common
+    cancel: t("common:cancel"),
+    confirm: t("common:confirm"),
+    loading: t("common:loading"),
+
+    // SettingsPage specific
     accountSettings: t("SettingsPage:accountSettings"),
     profile: t("SettingsPage:profile"),
-    name: t("SettingsPage:name"),
-    email: t("SettingsPage:email"),
     accountId: t("SettingsPage:accountId"),
     withdrawal: t("SettingsPage:withdrawal"),
     withdrawalWarning: t("SettingsPage:withdrawalWarning"),
     confirmWithdrawal: t("SettingsPage:confirmWithdrawal"),
-
-    cancel: t("common.cancel"),
-    confirm: t("common.confirm"),
-    loading: t("common.loading"),
   };
 }

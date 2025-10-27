@@ -34,12 +34,18 @@ export const CredentialsPage = {
     confirmRevoke: "이 인증 정보를 취소하시겠습니까?",
     generateKey: "키 생성",
     keyGenerated: "API 키가 생성되었습니다",
-    keyGeneratedWarning:
-      "지금 이 키를 복사하세요. 다시 볼 수 없습니다!",
+    keyGeneratedWarning: "지금 이 키를 복사하세요. 다시 볼 수 없습니다!",
   },
 };
 
 export interface CredentialsPageI18n {
+  // From common
+  loading: string;
+  cancel: string;
+  close: string;
+  actions: string;
+
+  // CredentialsPage specific
   title: string;
   description: string;
   createNew: string;
@@ -55,17 +61,19 @@ export interface CredentialsPageI18n {
   generateKey: string;
   keyGenerated: string;
   keyGeneratedWarning: string;
-
-  loading: string;
-  cancel: string;
-  close: string;
-  actions: string;
 }
 
 export function useCredentialsPageI18n(): CredentialsPageI18n {
   const { t } = useTranslation();
 
   return {
+    // From common
+    loading: t("common:loading"),
+    cancel: t("common:cancel"),
+    close: t("common:close"),
+    actions: t("common:actions"),
+
+    // CredentialsPage specific
     title: t("CredentialsPage:title"),
     description: t("CredentialsPage:description"),
     createNew: t("CredentialsPage:createNew"),
@@ -81,10 +89,5 @@ export function useCredentialsPageI18n(): CredentialsPageI18n {
     generateKey: t("CredentialsPage:generateKey"),
     keyGenerated: t("CredentialsPage:keyGenerated"),
     keyGeneratedWarning: t("CredentialsPage:keyGeneratedWarning"),
-
-    loading: t("common.loading"),
-    cancel: t("common.cancel"),
-    close: t("common.close"),
-    actions: t("common.actions"),
   };
 }

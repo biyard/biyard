@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Plus, Copy, Check, Key, Loader2, Trash2 } from 'lucide-react';
 import { useListCredentials } from '../../api/use-list-credentials';
 import { useCreateCredential } from '../../api/use-create-credential';
 import { useRevokeCredential } from '../../api/use-revoke-credential';
+import { useCredentialsPageI18n } from './i18n';
 
 export function CredentialsPage() {
-  const { t } = useTranslation();
+  const t = useCredentialsPageI18n();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newCredentialName, setNewCredentialName] = useState('');
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export function CredentialsPage() {
   };
 
   const handleRevokeCredential = async (credentialId: string) => {
-    if (!confirm(t('credentials.confirmRevoke') || 'Are you sure you want to revoke this credential?')) {
+    if (!confirm(t.confirmRevoke)) {
       return;
     }
 
@@ -77,10 +77,10 @@ export function CredentialsPage() {
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {t('credentials.title')}
+                  {t.title}
                 </h1>
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                  {t('credentials.description')}
+                  {t.description}
                 </p>
               </div>
             </div>
@@ -89,7 +89,7 @@ export function CredentialsPage() {
               className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <Plus className="h-5 w-5 mr-2" />
-              {t('credentials.createNew')}
+              {t.createNew}
             </button>
           </div>
         </div>
@@ -101,13 +101,13 @@ export function CredentialsPage() {
           {isLoading ? (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
               <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
-              <p className="mt-4 text-gray-600 dark:text-gray-400">{t('common.loading')}</p>
+              <p className="mt-4 text-gray-600 dark:text-gray-400">{t.loading}</p>
             </div>
           ) : !credentials || credentials.length === 0 ? (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
               <Key className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-                {t('credentials.noCredentials')}
+                {t.noCredentials}
               </h3>
               <div className="mt-6">
                 <button
@@ -115,7 +115,7 @@ export function CredentialsPage() {
                   className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <Plus className="h-5 w-5 mr-2" />
-                  {t('credentials.createNew')}
+                  {t.createNew}
                 </button>
               </div>
             </div>
@@ -125,19 +125,19 @@ export function CredentialsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('credentials.name')}
+                      {t.name}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('credentials.apiKey')}
+                      {t.apiKey}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('credentials.createdAt')}
+                      {t.createdAt}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('credentials.status')}
+                      {t.status}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('common.actions')}
+                      {t.actions}
                     </th>
                   </tr>
                 </thead>
@@ -153,7 +153,7 @@ export function CredentialsPage() {
                           <button
                             onClick={() => handleCopyKey(credential.api_key_prefix)}
                             className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
-                            title={t('credentials.copy')}
+                            title={t.copy}
                           >
                             {copiedKey === credential.api_key_prefix ? (
                               <Check className="h-4 w-4 text-green-600" />
@@ -174,7 +174,7 @@ export function CredentialsPage() {
                               : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                           }`}
                         >
-                          {credential.status === 'Active' ? t('credentials.active') : t('credentials.inactive')}
+                          {credential.status === 'Active' ? t.active : t.inactive}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -202,11 +202,11 @@ export function CredentialsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('credentials.createNew')}
+              {t.createNew}
             </h3>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('credentials.name')}
+                {t.name}
               </label>
               <input
                 type="text"
@@ -225,7 +225,7 @@ export function CredentialsPage() {
                 disabled={createMutation.isPending}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
               >
-                {t('common.cancel')}
+                {t.cancel}
               </button>
               <button
                 onClick={handleCreateCredential}
@@ -235,10 +235,10 @@ export function CredentialsPage() {
                 {createMutation.isPending ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                    {t('common.loading')}
+                    {t.loading}
                   </>
                 ) : (
-                  t('credentials.generateKey')
+                  t.generateKey
                 )}
               </button>
             </div>
@@ -251,7 +251,7 @@ export function CredentialsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t('credentials.keyGenerated')}
+              {t.keyGenerated}
             </h3>
             <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-md mb-4">
               <div className="flex items-center justify-between">
@@ -271,14 +271,14 @@ export function CredentialsPage() {
               </div>
             </div>
             <p className="text-sm text-red-600 dark:text-red-400 mb-4">
-              {t('credentials.keyGenerated')}
+              {t.keyGeneratedWarning}
             </p>
             <div className="flex justify-end">
               <button
                 onClick={() => setGeneratedKey(null)}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
-                {t('common.close')}
+                {t.close}
               </button>
             </div>
           </div>
