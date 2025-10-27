@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useSignup } from '../../api/use-signup';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { Mail, Lock, User, Loader2 } from 'lucide-react';
-import { useSignUpPageI18n } from './i18n';
+import { useSignUpPageI18n } from '../../hooks/use-sign-up-page-i18n';
 
 export function SignUpPage() {
   const t = useSignUpPageI18n();

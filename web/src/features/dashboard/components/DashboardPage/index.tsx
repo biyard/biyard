@@ -3,7 +3,7 @@ import { useAuth } from '../../../../contexts/AuthContext';
 import { useTheme } from '../../../../contexts/ThemeContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Sun, Moon, Globe, Settings, Key, LogOut } from 'lucide-react';
-import { useDashboardPageI18n } from './i18n';
+import { useDashboardPageI18n } from '../../hooks/use-dashboard-page-i18n';
 
 export function DashboardPage() {
   const t = useDashboardPageI18n();

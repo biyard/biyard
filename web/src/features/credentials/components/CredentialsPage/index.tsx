@@ -4,7 +4,7 @@ import { ArrowLeft, Plus, Copy, Check, Key, Loader2, Trash2 } from 'lucide-react
 import { useListCredentials } from '../../api/use-list-credentials';
 import { useCreateCredential } from '../../api/use-create-credential';
 import { useRevokeCredential } from '../../api/use-revoke-credential';
-import { useCredentialsPageI18n } from './i18n';
+import { useCredentialsPageI18n } from '../../hooks/use-credentials-page-i18n';
 
 export function CredentialsPage() {
   const t = useCredentialsPageI18n();

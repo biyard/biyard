@@ -1,60 +1,31 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useSignin } from "../../api/use-signin";
-import { useAuth } from "../../../../contexts/AuthContext";
 import { Mail, Lock, Loader2 } from "lucide-react";
-import { useSignInPageI18n } from "./i18n";
+import { useController } from "./use-controller";
+import { Link } from "react-router-dom";
 
 export function SignInPage() {
-  const t = useSignInPageI18n();
-  const navigate = useNavigate();
-  const { setAccount } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const signinMutation = useSignin();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError(t.emailRequired);
-      return;
-    }
-
-    try {
-      const account = await signinMutation.mutateAsync({
-        email,
-        password,
-      });
-      setAccount(account);
-      navigate("/dashboard");
-    } catch (_err) {
-      setError(t.signInError);
-    }
-  };
+  const ctrl = useController();
 
   return (
     <div className="flex justify-center items-center px-4 min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="space-y-8 w-full max-w-md">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-            {t.title}
+            {ctrl.t.title}
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            {t.tagline}
+            {ctrl.t.tagline}
           </p>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-            {t.signInWithEmail}
+            {ctrl.t.signInWithEmail}
           </h2>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
+        <form className="mt-8 space-y-6" onSubmit={ctrl.handleSubmit}>
+          {ctrl.error.get() && (
             <div className="p-4 bg-red-50 rounded-md dark:bg-red-900/20">
-              <p className="text-sm text-red-800 dark:text-red-400">{error}</p>
+              <p className="text-sm text-red-800 dark:text-red-400">
+                {ctrl.error.get()}
+              </p>
             </div>
           )}
 
@@ -64,7 +35,7 @@ export function SignInPage() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                {t.email}
+                {ctrl.t.email}
               </label>
               <div className="relative mt-1">
                 <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -76,10 +47,10 @@ export function SignInPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={ctrl.email.get()}
+                  onChange={(e) => ctrl.email.set(e.target.value)}
                   className="block py-2 pr-3 pl-10 w-full placeholder-gray-400 rounded-md border border-gray-300 shadow-sm appearance-none dark:text-white dark:bg-gray-800 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                  placeholder={t.enterEmail}
+                  placeholder={ctrl.t.enterEmail}
                 />
               </div>
             </div>
@@ -89,7 +60,7 @@ export function SignInPage() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                {t.password}
+                {ctrl.t.password}
               </label>
               <div className="relative mt-1">
                 <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
@@ -101,10 +72,10 @@ export function SignInPage() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={ctrl.password.get()}
+                  onChange={(e) => ctrl.password.set(e.target.value)}
                   className="block py-2 pr-3 pl-10 w-full placeholder-gray-400 rounded-md border border-gray-300 shadow-sm appearance-none dark:text-white dark:bg-gray-800 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                  placeholder={t.enterPassword}
+                  placeholder={ctrl.t.enterPassword}
                 />
               </div>
             </div>
@@ -113,28 +84,28 @@ export function SignInPage() {
           <div>
             <button
               type="submit"
-              disabled={signinMutation.isPending}
+              disabled={ctrl.signinMutation.isPending}
               className="flex justify-center py-2 px-4 w-full text-sm font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {signinMutation.isPending ? (
+              {ctrl.signinMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 -ml-1 w-5 h-5 animate-spin" />
-                  {t.loading}
+                  {ctrl.t.loading}
                 </>
               ) : (
-                t.signIn
+                ctrl.t.signIn
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              {t.noAccount}{" "}
+              {ctrl.t.noAccount}{" "}
               <Link
                 to="/signup"
                 className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500"
               >
-                {t.signUp}
+                {ctrl.t.signUp}
               </Link>
             </p>
           </div>

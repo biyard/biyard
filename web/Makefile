@@ -1,4 +1,4 @@
-PORT ?= 8080
+PORT ?= 5000
 
 .PHONY: run node_module
 node_module:

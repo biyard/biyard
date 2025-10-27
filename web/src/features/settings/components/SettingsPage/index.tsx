@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { useWithdrawal } from '../../../auth/api/use-withdrawal';
 import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
-import { useSettingsPageI18n } from './i18n';
+import { useSettingsPageI18n } from '../../hooks/use-settings-page-i18n';
 
 export function SettingsPage() {
   const t = useSettingsPageI18n();
