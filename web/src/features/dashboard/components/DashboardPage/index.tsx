@@ -1,27 +1,9 @@
-import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../../../contexts/AuthContext';
-import { useTheme } from '../../../../contexts/ThemeContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Sun, Moon, Globe, Settings, Key, LogOut } from 'lucide-react';
-import { useDashboardPageI18n } from '../../hooks/use-dashboard-page-i18n';
+import { Link } from "react-router-dom";
+import { Sun, Moon, Globe, Settings, Key, LogOut } from "lucide-react";
+import { useController } from "./use-controller";
 
 export function DashboardPage() {
-  const t = useDashboardPageI18n();
-  const { i18n } = useTranslation();
-  const { account, setAccount } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
-
-  const handleSignOut = () => {
-    setAccount(null);
-    navigate('/signin');
-  };
-
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'ko' : 'en';
-    i18n.changeLanguage(newLang);
-    localStorage.setItem('language', newLang);
-  };
+  const ctrl = useController();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -31,38 +13,46 @@ export function DashboardPage() {
           <div className="flex justify-between items-center py-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t.title}
+                {ctrl.t.title}
               </h1>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {t.tagline}
+                {ctrl.t.tagline}
               </p>
             </div>
             <div className="flex items-center space-x-4">
               {/* Language Toggle */}
               <button
-                onClick={toggleLanguage}
+                onClick={ctrl.toggleLanguage}
                 className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={i18n.language === 'en' ? '한국어' : 'English'}
+                title={ctrl.i18n.language === "en" ? "한국어" : "English"}
               >
                 <Globe className="h-5 w-5" />
               </button>
 
               {/* Theme Toggle */}
               <button
-                onClick={toggleTheme}
+                onClick={ctrl.theme.toggleTheme}
                 className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={theme === 'light' ? t.themeDark : t.themeLight}
+                title={
+                  ctrl.theme.theme === "light"
+                    ? ctrl.t.themeDark
+                    : ctrl.t.themeLight
+                }
               >
-                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+                {ctrl.theme.theme === "light" ? (
+                  <Moon className="h-5 w-5" />
+                ) : (
+                  <Sun className="h-5 w-5" />
+                )}
               </button>
 
               {/* Sign Out */}
               <button
-                onClick={handleSignOut}
+                onClick={ctrl.handleSignOut}
                 className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                {t.signOut}
+                {ctrl.t.signOut}
               </button>
             </div>
           </div>
@@ -75,10 +65,10 @@ export function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {t.welcome}
+              {ctrl.t.welcome}
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              {t.myAccount}: {account?.name} ({account?.email})
+              {ctrl.t.myAccount}: {ctrl.account?.name} ({ctrl.account?.email})
             </p>
           </div>
         </div>
@@ -97,10 +87,10 @@ export function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t.apiCredentials}
+                    {ctrl.t.apiCredentials}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t.credentialsDescription}
+                    {ctrl.t.credentialsDescription}
                   </p>
                 </div>
               </div>
@@ -117,10 +107,10 @@ export function DashboardPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                    {t.accountSettings}
+                    {ctrl.t.accountSettings}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {t.profile}, {t.security}
+                    {ctrl.t.profile}, {ctrl.t.security}
                   </p>
                 </div>
               </div>
@@ -132,39 +122,40 @@ export function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-              {t.profile}
+              {ctrl.t.profile}
             </h3>
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t.name}
+                  {ctrl.t.name}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.name}
+                  {ctrl.account?.name}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t.email}
+                  {ctrl.t.email}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.email}
+                  {ctrl.account?.email}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t.accountId}
+                  {ctrl.t.accountId}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
-                  {account?.pk}
+                  {ctrl.account?.pk}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {t.createdAt}
+                  {ctrl.t.createdAt}
                 </dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.created_at && new Date(account.created_at * 1000).toLocaleString()}
+                  {ctrl.account?.created_at &&
+                    new Date(ctrl.account.created_at * 1000).toLocaleString()}
                 </dd>
               </div>
             </dl>

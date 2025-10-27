@@ -1,26 +1,9 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../../../contexts/AuthContext';
-import { useWithdrawal } from '../../../auth/api/use-withdrawal';
-import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
-import { useSettingsPageI18n } from '../../hooks/use-settings-page-i18n';
+import { Link } from "react-router-dom";
+import { ArrowLeft, AlertTriangle, Loader2 } from "lucide-react";
+import { useController } from "./use-controller";
 
 export function SettingsPage() {
-  const t = useSettingsPageI18n();
-  const navigate = useNavigate();
-  const { account, setAccount } = useAuth();
-  const withdrawalMutation = useWithdrawal();
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-
-  const handleWithdrawal = async () => {
-    try {
-      await withdrawalMutation.mutateAsync();
-      setAccount(null);
-      navigate('/signin');
-    } catch (error) {
-      console.error('Withdrawal failed:', error);
-    }
-  };
+  const ctrl = useController();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -36,7 +19,7 @@ export function SettingsPage() {
             </Link>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {t.accountSettings}
+                {ctrl.t.accountSettings}
               </h1>
             </div>
           </div>
@@ -49,31 +32,31 @@ export function SettingsPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              {t.profile}
+              {ctrl.t.profile}
             </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t.name}
+                  {ctrl.t.name}
                 </label>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.name}
+                  {ctrl.account?.name}
                 </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t.email}
+                  {ctrl.t.email}
                 </label>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {account?.email}
+                  {ctrl.account?.email}
                 </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Account ID
+                  {ctrl.t.accountId}
                 </label>
                 <p className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
-                  {account?.pk}
+                  {ctrl.account?.pk}
                 </p>
               </div>
             </div>
@@ -87,16 +70,16 @@ export function SettingsPage() {
               <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
               <div className="ml-3 flex-1">
                 <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">
-                  {t.withdrawal}
+                  {ctrl.t.withdrawal}
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {t.withdrawalWarning}
+                  {ctrl.t.withdrawalWarning}
                 </p>
                 <button
-                  onClick={() => setShowConfirmDialog(true)}
+                  onClick={() => ctrl.showConfirmDialog.set(true)}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                 >
-                  {t.withdrawal}
+                  {ctrl.t.withdrawal}
                 </button>
               </div>
             </div>
@@ -105,38 +88,38 @@ export function SettingsPage() {
       </main>
 
       {/* Confirmation Dialog */}
-      {showConfirmDialog && (
+      {ctrl.showConfirmDialog.get() && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
             <div className="flex items-center mb-4">
               <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
               <h3 className="ml-2 text-lg font-semibold text-gray-900 dark:text-white">
-                {t.confirmWithdrawal}
+                {ctrl.t.confirmWithdrawal}
               </h3>
             </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-              {t.withdrawalWarning}
+              {ctrl.t.withdrawalWarning}
             </p>
             <div className="flex justify-end space-x-3">
               <button
-                onClick={() => setShowConfirmDialog(false)}
-                disabled={withdrawalMutation.isPending}
+                onClick={() => ctrl.showConfirmDialog.set(false)}
+                disabled={ctrl.withdrawalMutation.isPending}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
               >
-                {t.cancel}
+                {ctrl.t.cancel}
               </button>
               <button
-                onClick={handleWithdrawal}
-                disabled={withdrawalMutation.isPending}
+                onClick={ctrl.handleWithdrawal}
+                disabled={ctrl.withdrawalMutation.isPending}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
-                {withdrawalMutation.isPending ? (
+                {ctrl.withdrawalMutation.isPending ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                    {t.loading}
+                    {ctrl.t.loading}
                   </>
                 ) : (
-                  t.confirm
+                  ctrl.t.confirm
                 )}
               </button>
             </div>
