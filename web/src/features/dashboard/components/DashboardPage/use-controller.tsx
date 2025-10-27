@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useDashboardPageI18n } from "../../hooks/use-dashboard-page-i18n";
+import { useDashboardPageI18n } from "./i18n";
 
 export class Controller {
   constructor(

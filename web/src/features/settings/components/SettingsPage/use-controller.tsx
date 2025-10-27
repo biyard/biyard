@@ -3,7 +3,7 @@ import { State } from "@/types/state";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWithdrawal } from "../../../auth/hooks/use-withdrawal";
-import { useSettingsPageI18n } from "../../hooks/use-settings-page-i18n";
+import { useSettingsPageI18n } from "./i18n";
 
 export class Controller {
   constructor(
