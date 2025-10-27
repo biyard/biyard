@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useCommonI18n } from "@/i18n/locales/common";
 
 export const CredentialsPage = {
   en: {
@@ -65,13 +66,14 @@ export interface CredentialsPageI18n {
 
 export function useCredentialsPageI18n(): CredentialsPageI18n {
   const { t } = useTranslation();
+  const common = useCommonI18n();
 
   return {
     // From common
-    loading: t("common:loading"),
-    cancel: t("common:cancel"),
-    close: t("common:close"),
-    actions: t("common:actions"),
+    loading: common.loading,
+    cancel: common.cancel,
+    close: common.close,
+    actions: common.actions,
 
     // CredentialsPage specific
     title: t("CredentialsPage:title"),

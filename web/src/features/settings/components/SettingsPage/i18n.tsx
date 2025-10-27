@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useCommonI18n } from "@/i18n/locales/common";
+import { useAuthI18n } from "../../../auth/i18n";
 
 export const SettingsPage = {
   en: {
@@ -42,16 +44,18 @@ export interface SettingsPageI18n {
 
 export function useSettingsPageI18n(): SettingsPageI18n {
   const { t } = useTranslation();
+  const common = useCommonI18n();
+  const auth = useAuthI18n();
 
   return {
     // From auth (cross-feature reference)
-    name: t("auth:name"),
-    email: t("auth:email"),
+    name: auth.name,
+    email: auth.email,
 
     // From common
-    cancel: t("common:cancel"),
-    confirm: t("common:confirm"),
-    loading: t("common:loading"),
+    cancel: common.cancel,
+    confirm: common.confirm,
+    loading: common.loading,
 
     // SettingsPage specific
     accountSettings: t("SettingsPage:accountSettings"),

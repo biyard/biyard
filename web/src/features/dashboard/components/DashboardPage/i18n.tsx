@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { useAppI18n } from "@/i18n/locales/app";
+import { useAuthI18n } from "../../../auth/i18n";
 
 export const DashboardPage = {
   en: {
@@ -53,16 +55,18 @@ export interface DashboardPageI18n {
 
 export function useDashboardPageI18n(): DashboardPageI18n {
   const { t } = useTranslation();
+  const app = useAppI18n();
+  const auth = useAuthI18n();
 
   return {
     // From app
-    title: t("app:title"),
-    tagline: t("app:tagline"),
+    title: app.title,
+    tagline: app.tagline,
 
     // From auth (cross-feature reference)
-    name: t("auth:name"),
-    email: t("auth:email"),
-    signOut: t("auth:signOut"),
+    name: auth.name,
+    email: auth.email,
+    signOut: auth.signOut,
 
     // DashboardPage specific
     welcome: t("DashboardPage:welcome"),

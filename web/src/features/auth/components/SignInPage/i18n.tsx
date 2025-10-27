@@ -47,13 +47,20 @@ export function useSignInPageI18n(): SignInPageI18n {
 
   return {
     // From app
-    ...app,
+    title: app.title,
+    tagline: app.tagline,
 
     // From common
-    ...common,
+    loading: common.loading,
 
     // From auth (feature-level shared)
-    ...auth,
+    email: auth.email,
+    password: auth.password,
+    enterEmail: auth.enterEmail,
+    enterPassword: auth.enterPassword,
+    signIn: auth.signIn,
+    signUp: auth.signUp,
+    noAccount: auth.noAccount,
 
     // SignInPage specific
     signInWithEmail: t("SignInPage:signInWithEmail"),

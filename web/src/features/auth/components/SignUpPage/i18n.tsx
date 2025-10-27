@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { useAppI18n } from "@/i18n/locales/app";
+import { useCommonI18n } from "@/i18n/locales/common";
+import { useAuthI18n } from "../../i18n";
 
 export const SignUpPage = {
   en: {
@@ -45,27 +48,30 @@ export interface SignUpPageI18n {
 
 export function useSignUpPageI18n(): SignUpPageI18n {
   const { t } = useTranslation();
+  const app = useAppI18n();
+  const common = useCommonI18n();
+  const auth = useAuthI18n();
 
   return {
     // From app
-    title: t("app:title"),
-    tagline: t("app:tagline"),
+    title: app.title,
+    tagline: app.tagline,
 
     // From common
-    loading: t("common:loading"),
+    loading: common.loading,
 
     // From auth (feature-level shared)
-    name: t("auth:name"),
-    email: t("auth:email"),
-    password: t("auth:password"),
-    confirmPassword: t("auth:confirmPassword"),
-    enterName: t("auth:enterName"),
-    enterEmail: t("auth:enterEmail"),
-    enterPassword: t("auth:enterPassword"),
-    enterConfirmPassword: t("auth:enterConfirmPassword"),
-    signIn: t("auth:signIn"),
-    signUp: t("auth:signUp"),
-    hasAccount: t("auth:hasAccount"),
+    name: auth.name,
+    email: auth.email,
+    password: auth.password,
+    confirmPassword: auth.confirmPassword,
+    enterName: auth.enterName,
+    enterEmail: auth.enterEmail,
+    enterPassword: auth.enterPassword,
+    enterConfirmPassword: auth.enterConfirmPassword,
+    signIn: auth.signIn,
+    signUp: auth.signUp,
+    hasAccount: auth.hasAccount,
 
     // SignUpPage specific
     signUpWithEmail: t("SignUpPage:signUpWithEmail"),
