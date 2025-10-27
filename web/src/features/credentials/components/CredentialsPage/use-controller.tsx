@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { State } from "@/types/state";
-import { useListCredentials } from "../../api/use-list-credentials";
-import { useCreateCredential } from "../../api/use-create-credential";
-import { useRevokeCredential } from "../../api/use-revoke-credential";
+import { useListCredentials } from "../../hooks/use-list-credentials";
+import { useCreateCredential } from "../../hooks/use-create-credential";
+import { useRevokeCredential } from "../../hooks/use-revoke-credential";
 import { useCredentialsPageI18n } from "../../hooks/use-credentials-page-i18n";
 
 export class Controller {

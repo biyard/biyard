@@ -2,7 +2,7 @@ import { useState } from "react";
 import { State } from "@/types/state";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWithdrawal } from "../../../auth/api/use-withdrawal";
+import { useWithdrawal } from "../../../auth/hooks/use-withdrawal";
 import { useSettingsPageI18n } from "../../hooks/use-settings-page-i18n";
 
 export class Controller {

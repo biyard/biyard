@@ -2,7 +2,7 @@ import { useState } from "react";
 import { State } from "@/types/state";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useSignin } from "../../api/use-signin";
+import { useSignin } from "../../hooks/use-signin";
 import { useSignInPageI18n } from "../../hooks/use-sign-in-page-i18n";
 
 export class Controller {
