@@ -1,5 +1,4 @@
 use crate::*;
-use serde_with::{DeserializeFromStr, SerializeDisplay};
 
 #[derive(
     Debug,
@@ -7,14 +6,15 @@ use serde_with::{DeserializeFromStr, SerializeDisplay};
     Copy,
     PartialEq,
     Eq,
-    SerializeDisplay,
-    DeserializeFromStr,
+    serde_repr::Serialize_repr,
+    serde_repr::Deserialize_repr,
     Default,
     DynamoEnum,
-    JsonSchema,
+    JsonSchema_repr,
 )]
+#[repr(u8)]
 pub enum CredentialStatus {
     #[default]
-    Active,
-    Revoked,
+    Active = 1,
+    Revoked = 2,
 }

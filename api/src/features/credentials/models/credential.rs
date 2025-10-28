@@ -10,7 +10,7 @@ pub struct Credential {
     pub sk: EntityType,
 
     #[schemars(description = "Account ID that owns this credential")]
-    #[dynamo(index = "gsi1", pk, name = "find_by_account_id")]
+    #[dynamo(index = "gsi1", prefix = "CRED", pk, name = "find_by_account_id")]
     pub account_id: Partition,
 
     #[schemars(description = "GSI1 sort key (EntityType)")]
@@ -21,7 +21,7 @@ pub struct Credential {
     pub name: String,
 
     #[schemars(description = "Hashed API key")]
-    #[dynamo(index = "gsi2", pk, prefix = "KEY", name = "find_by_api_key_hash")]
+    #[dynamo(index = "gsi2", pk, prefix = "CRED", name = "find_by_api_key_hash")]
     pub api_key_hash: String,
 
     #[schemars(description = "GSI2 sort key (EntityType)")]

@@ -18,9 +18,7 @@ pub async fn create_project_handler(
         account.pk.clone(),
         req.name,
         req.description,
-        req.monthly_points_supply,
         req.monthly_token_supply,
-        req.exchange_ratio,
     );
 
     // Save to DynamoDB

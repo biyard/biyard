@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sun, Moon, Globe, Settings, Key, LogOut } from "lucide-react";
+import { Sun, Moon, Globe, Settings, Key, LogOut, FolderKanban } from "lucide-react";
 import { useController } from "./use-controller";
 
 export function DashboardPage() {
@@ -76,6 +76,26 @@ export function DashboardPage() {
         {/* Quick Actions Grid */}
         <div className="px-4 py-6 sm:px-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* My Projects Card */}
+            <Link
+              to="/projects"
+              className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <FolderKanban className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                    {ctrl.t.myProjects}
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {ctrl.t.projectsDescription}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
             {/* API Credentials Card */}
             <Link
               to="/credentials"

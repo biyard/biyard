@@ -4,6 +4,7 @@ import { auth } from "@/features/auth/i18n";
 import { credentials } from "@/features/credentials/i18n";
 import { dashboard } from "@/features/dashboard/i18n";
 import { settings } from "@/features/settings/i18n";
+import { projects } from "@/features/projects/i18n";
 import { app } from "./locales/app";
 import { common } from "./locales/common";
 import { SignInPage } from "@/features/auth/components/SignInPage/i18n";
@@ -11,6 +12,7 @@ import { SignUpPage } from "@/features/auth/components/SignUpPage/i18n";
 import { CredentialsPage } from "@/features/credentials/components/CredentialsPage/i18n";
 import { DashboardPage } from "@/features/dashboard/components/DashboardPage/i18n";
 import { SettingsPage } from "@/features/settings/components/SettingsPage/i18n";
+import { ProjectsPage } from "@/features/projects/components/ProjectsPage/i18n";
 
 export const resources: {
   en: Record<string, unknown>;
@@ -30,6 +32,7 @@ Object.entries({
   credentials,
   dashboard,
   settings,
+  projects,
 
   // Component-level i18n
   SignInPage,
@@ -37,6 +40,7 @@ Object.entries({
   CredentialsPage,
   DashboardPage,
   SettingsPage,
+  ProjectsPage,
 }).forEach(([key, value]) => {
   resources.en[key] = value.en;
   resources.ko[key] = value.ko;

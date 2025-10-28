@@ -14,6 +14,7 @@ export const DashboardPage = {
     createdAt: "Created At",
     themeDark: "Dark Mode",
     themeLight: "Light Mode",
+    myProjects: "My Projects",
   },
   ko: {
     welcome: "Biyard 콘솔에 오신 것을 환영합니다",
@@ -26,6 +27,7 @@ export const DashboardPage = {
     createdAt: "생성일",
     themeDark: "다크 모드",
     themeLight: "라이트 모드",
+    myProjects: "내 프로젝트",
   },
 };
 
@@ -51,6 +53,8 @@ export interface DashboardPageI18n {
   themeDark: string;
   themeLight: string;
   credentialsDescription: string;
+  myProjects: string;
+  projectsDescription: string;
 }
 
 export function useDashboardPageI18n(): DashboardPageI18n {
@@ -80,5 +84,7 @@ export function useDashboardPageI18n(): DashboardPageI18n {
     themeDark: t("DashboardPage.themeDark"),
     themeLight: t("DashboardPage.themeLight"),
     credentialsDescription: t("CredentialsPage.description"),
+    myProjects: t("DashboardPage.myProjects"),
+    projectsDescription: t("ProjectsPage.description"),
   };
 }

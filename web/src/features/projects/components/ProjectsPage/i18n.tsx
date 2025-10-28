@@ -1,0 +1,160 @@
+import { useTranslation } from "react-i18next";
+import { useAppI18n } from "@/i18n/locales/app";
+import { useCommonI18n } from "@/i18n/locales/common";
+
+export const ProjectsPage = {
+  en: {
+    title: "My Projects",
+    description: "Manage your blockchain projects and track tokens & points",
+    createNew: "Create New Project",
+    noProjects: "No projects yet",
+    noProjectsDescription: "Create your first project to get started",
+    projectName: "Project Name",
+    projectDescription: "Description",
+    monthlyTokenSupply: "Monthly Token Supply",
+    status: "Status",
+    createdAt: "Created",
+    actions: "Actions",
+    view: "View",
+    delete: "Delete",
+    confirmDelete: "Are you sure you want to delete this project?",
+    createProject: "Create Project",
+    enterProjectName: "Enter project name",
+    enterDescription: "Enter description (optional)",
+    enterTokenSupply: "Enter monthly token supply (0 for manual provisioning)",
+    creating: "Creating...",
+    projectNameRequired: "Project name is required",
+    tokenSupplyMustBeNonNegative: "Token supply must be zero or a positive number",
+    errorLoadingProjects: "Failed to load projects",
+    errorLoadingProjectsDescription: "Please try again later",
+    errorCreatingProject: "Failed to create project",
+    errorCreatingProjectDescription: "Please check your input and try again",
+    errorDeletingProject: "Failed to delete project",
+    errorDeletingProjectDescription: "Please try again later",
+    projectCreatedSuccess: "Project created successfully",
+    projectDeletedSuccess: "Project deleted successfully",
+  },
+  ko: {
+    title: "내 프로젝트",
+    description: "블록체인 프로젝트를 관리하고 토큰 및 포인트를 추적하세요",
+    createNew: "새 프로젝트 생성",
+    noProjects: "프로젝트가 없습니다",
+    noProjectsDescription: "첫 번째 프로젝트를 생성하여 시작하세요",
+    projectName: "프로젝트 이름",
+    projectDescription: "설명",
+    monthlyTokenSupply: "월별 토큰 공급량",
+    status: "상태",
+    createdAt: "생성일",
+    actions: "작업",
+    view: "보기",
+    delete: "삭제",
+    confirmDelete: "이 프로젝트를 삭제하시겠습니까?",
+    createProject: "프로젝트 생성",
+    enterProjectName: "프로젝트 이름 입력",
+    enterDescription: "설명 입력 (선택사항)",
+    enterTokenSupply: "월별 토큰 공급량 입력 (수동 프로비저닝은 0)",
+    creating: "생성 중...",
+    projectNameRequired: "프로젝트 이름은 필수입니다",
+    tokenSupplyMustBeNonNegative: "토큰 공급량은 0 또는 양수여야 합니다",
+    errorLoadingProjects: "프로젝트를 불러오는데 실패했습니다",
+    errorLoadingProjectsDescription: "나중에 다시 시도해주세요",
+    errorCreatingProject: "프로젝트 생성에 실패했습니다",
+    errorCreatingProjectDescription: "입력 내용을 확인하고 다시 시도해주세요",
+    errorDeletingProject: "프로젝트 삭제에 실패했습니다",
+    errorDeletingProjectDescription: "나중에 다시 시도해주세요",
+    projectCreatedSuccess: "프로젝트가 성공적으로 생성되었습니다",
+    projectDeletedSuccess: "프로젝트가 성공적으로 삭제되었습니다",
+  },
+};
+
+export interface ProjectsPageI18n {
+  // From app
+  title: string;
+  tagline: string;
+
+  // From common
+  loading: string;
+  cancel: string;
+  close: string;
+  save: string;
+  delete: string;
+  confirm: string;
+  actions: string;
+
+  // ProjectsPage specific
+  description: string;
+  createNew: string;
+  noProjects: string;
+  noProjectsDescription: string;
+  projectName: string;
+  projectDescription: string;
+  monthlyTokenSupply: string;
+  status: string;
+  createdAt: string;
+  view: string;
+  confirmDelete: string;
+  createProject: string;
+  enterProjectName: string;
+  enterDescription: string;
+  enterTokenSupply: string;
+  creating: string;
+  projectNameRequired: string;
+  tokenSupplyMustBeNonNegative: string;
+  errorLoadingProjects: string;
+  errorLoadingProjectsDescription: string;
+  errorCreatingProject: string;
+  errorCreatingProjectDescription: string;
+  errorDeletingProject: string;
+  errorDeletingProjectDescription: string;
+  projectCreatedSuccess: string;
+  projectDeletedSuccess: string;
+}
+
+export function useProjectsPageI18n(): ProjectsPageI18n {
+  const { t } = useTranslation();
+  const app = useAppI18n();
+  const common = useCommonI18n();
+
+  return {
+    // From app
+    title: app.title,
+    tagline: app.tagline,
+
+    // From common
+    loading: common.loading,
+    cancel: common.cancel,
+    close: common.close,
+    save: common.save,
+    delete: common.delete,
+    confirm: common.confirm,
+    actions: common.actions,
+
+    // ProjectsPage specific
+    description: t("ProjectsPage.description"),
+    createNew: t("ProjectsPage.createNew"),
+    noProjects: t("ProjectsPage.noProjects"),
+    noProjectsDescription: t("ProjectsPage.noProjectsDescription"),
+    projectName: t("ProjectsPage.projectName"),
+    projectDescription: t("ProjectsPage.projectDescription"),
+    monthlyTokenSupply: t("ProjectsPage.monthlyTokenSupply"),
+    status: t("ProjectsPage.status"),
+    createdAt: t("ProjectsPage.createdAt"),
+    view: t("ProjectsPage.view"),
+    confirmDelete: t("ProjectsPage.confirmDelete"),
+    createProject: t("ProjectsPage.createProject"),
+    enterProjectName: t("ProjectsPage.enterProjectName"),
+    enterDescription: t("ProjectsPage.enterDescription"),
+    enterTokenSupply: t("ProjectsPage.enterTokenSupply"),
+    creating: t("ProjectsPage.creating"),
+    projectNameRequired: t("ProjectsPage.projectNameRequired"),
+    tokenSupplyMustBeNonNegative: t("ProjectsPage.tokenSupplyMustBeNonNegative"),
+    errorLoadingProjects: t("ProjectsPage.errorLoadingProjects"),
+    errorLoadingProjectsDescription: t("ProjectsPage.errorLoadingProjectsDescription"),
+    errorCreatingProject: t("ProjectsPage.errorCreatingProject"),
+    errorCreatingProjectDescription: t("ProjectsPage.errorCreatingProjectDescription"),
+    errorDeletingProject: t("ProjectsPage.errorDeletingProject"),
+    errorDeletingProjectDescription: t("ProjectsPage.errorDeletingProjectDescription"),
+    projectCreatedSuccess: t("ProjectsPage.projectCreatedSuccess"),
+    projectDeletedSuccess: t("ProjectsPage.projectDeletedSuccess"),
+  };
+}

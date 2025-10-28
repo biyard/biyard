@@ -24,12 +24,15 @@ pub struct Project {
     pub description: Option<String>,
 
     #[schemars(description = "Monthly points supply")]
+    #[serde(default)]
     pub monthly_points_supply: i64,
 
     #[schemars(description = "Monthly token supply")]
+    #[serde(default)]
     pub monthly_token_supply: i64,
 
     #[schemars(description = "Exchange ratio for point-to-token conversion")]
+    #[serde(default)]
     pub exchange_ratio: f64,
 
     #[schemars(description = "Project status")]
@@ -47,9 +50,7 @@ impl Project {
         account_id: Partition,
         name: String,
         description: Option<String>,
-        monthly_points_supply: i64,
         monthly_token_supply: i64,
-        exchange_ratio: f64,
     ) -> Self {
         let now = time_utils::get_now();
         let uuid = uuid::Uuid::new_v4().to_string();
@@ -61,9 +62,9 @@ impl Project {
             gsi1_sk: EntityType::Project,
             name,
             description,
-            monthly_points_supply,
+            monthly_points_supply: 0,
             monthly_token_supply,
-            exchange_ratio,
+            exchange_ratio: 0.0,
             status: "active".to_string(),
             created_at: now,
             updated_at: now,
@@ -81,20 +82,24 @@ impl Project {
         if self.monthly_token_supply == 0 {
             return 0.0;
         }
-        (self.monthly_points_supply as f64) / (self.monthly_token_supply as f64) * self.exchange_ratio
+        (self.monthly_points_supply as f64) / (self.monthly_token_supply as f64)
+            * self.exchange_ratio
     }
 
     pub fn calculate_point_to_token_rate(&self) -> f64 {
         if self.monthly_points_supply == 0 {
             return 0.0;
         }
-        (self.monthly_token_supply as f64) / (self.monthly_points_supply as f64) * self.exchange_ratio
+        (self.monthly_token_supply as f64) / (self.monthly_points_supply as f64)
+            * self.exchange_ratio
     }
 
     pub fn calculate_token_to_point_rate(&self) -> f64 {
         if self.monthly_token_supply == 0 {
             return 0.0;
         }
-        (self.monthly_points_supply as f64) / (self.monthly_token_supply as f64) / self.exchange_ratio
+        (self.monthly_points_supply as f64)
+            / (self.monthly_token_supply as f64)
+            / self.exchange_ratio
     }
 }

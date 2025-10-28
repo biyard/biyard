@@ -7,7 +7,9 @@ import { SignUpPage } from "./features/auth/components/SignUpPage";
 import { DashboardPage } from "./features/dashboard/components/DashboardPage";
 import { SettingsPage } from "./features/settings/components/SettingsPage";
 import { CredentialsPage } from "./features/credentials/components/CredentialsPage";
+import { ProjectsPage } from "./features/projects/components/ProjectsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Toaster } from "./components/ui/toaster";
 import "./i18n/config";
 
 const queryClient = new QueryClient({
@@ -53,8 +55,17 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/projects"
+                element={
+                  <ProtectedRoute>
+                    <ProjectsPage />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </BrowserRouter>
+          <Toaster />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

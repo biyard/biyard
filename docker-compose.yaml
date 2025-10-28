@@ -161,6 +161,7 @@ services:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
       AWS_DEFAULT_REGION: ${AWS_REGION:-us-east-1}
+      DYNAMO_ENDPOINT: http://localstack:4566
       LOCALSTACK_ENDPOINT: http://localstack:4566
     volumes:
       - ./scripts:/scripts

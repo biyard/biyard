@@ -13,7 +13,7 @@ pub async fn list_projects_handler(
     Query(params): PaginationQuery,
 ) -> Result<Json<ListResponse<ProjectResponse>>> {
     debug!("Listing projects for account: {:?}", account.pk);
-    let mut opt = ProjectQueryOption::builder().limit(params.limit.unwrap_or(100));
+    let mut opt = ProjectQueryOption::builder().limit(params.limit.unwrap_or(10));
 
     if let Some(bookmark) = params.bookmark {
         opt = opt.bookmark(bookmark);

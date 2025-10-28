@@ -10,15 +10,7 @@ pub struct CreateProjectRequest {
     #[schemars(description = "Description of the project")]
     pub description: Option<String>,
 
-    #[validate(range(min = 1))]
-    #[schemars(description = "Monthly points supply")]
-    pub monthly_points_supply: i64,
-
-    #[validate(range(min = 1))]
-    #[schemars(description = "Monthly token supply")]
+    #[validate(range(min = 0))]
+    #[schemars(description = "Monthly token supply, 0 means manual provisioning")]
     pub monthly_token_supply: i64,
-
-    #[validate(range(min = 0.0))]
-    #[schemars(description = "Exchange ratio for point-to-token conversion")]
-    pub exchange_ratio: f64,
 }
