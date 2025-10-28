@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../../lib/api-client';
-import type { CredentialResponse } from './use-create-credential';
+import type { CredentialResponse } from '../dto/credential-response';
 
 export function useRevokeCredential() {
   const queryClient = useQueryClient();

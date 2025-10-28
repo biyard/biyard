@@ -1,19 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '../../../lib/api-client';
-
-export interface CreateCredentialRequest {
-  name: string;
-}
-
-export interface CredentialResponse {
-  pk: string;
-  name: string;
-  api_key_prefix: string;
-  status: 'Active' | 'Revoked';
-  created_at: number;
-  last_used_at?: number;
-  api_key?: string; // Only present on creation
-}
+import type { CreateCredentialRequest } from '../dto/create-credential-request';
+import type { CredentialResponse } from '../dto/credential-response';
 
 export function useCreateCredential() {
   const queryClient = useQueryClient();

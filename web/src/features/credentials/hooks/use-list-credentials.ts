@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../../lib/api-client';
-import type { CredentialResponse } from './use-create-credential';
+import type { CredentialResponse } from '../dto/credential-response';
 
 export function useListCredentials() {
   return useQuery({

@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '../../../lib/api-client';
-import type { SigninRequest, AccountResponse } from '../../../types/account';
+import type { SigninRequest } from '../dto/signin-request';
+import type { AccountResponse } from '../dto/account-response';
 
 export function useSignin() {
   return useMutation({

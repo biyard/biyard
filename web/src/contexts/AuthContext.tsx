@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import type { Account } from "@/types/account";
+import type { Account } from "@/features/auth/dto/account";
 
 interface AuthContextType {
   account: Account | null;
