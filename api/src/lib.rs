@@ -28,7 +28,7 @@ use by_axum::axum::{
 use by_axum::*;
 use by_macros::*;
 use macros::*;
-use schemars::JsonSchema;
+use schemars::{JsonSchema, JsonSchema_repr};
 use serde::{Deserialize, Serialize};
 pub use tracing::{debug, error, info, trace, warn};
 use types::*;

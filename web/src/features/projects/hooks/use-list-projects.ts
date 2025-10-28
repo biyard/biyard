@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { apiClient } from '../../../lib/api-client';
 import { useProjectToasts } from './use-project-toasts';
+import { Project } from '../models/project';
 import type { ProjectResponse } from '../dto/project-response';
 
 interface ListProjectsResponse {
@@ -16,7 +17,7 @@ export function useListProjects() {
     queryKey: ['projects'],
     queryFn: async () => {
       const response = await apiClient.get<ListProjectsResponse>('/v1/projects');
-      return response.items;
+      return Project.fromResponses(response.items);
     },
   });
 

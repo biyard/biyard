@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useController } from "./use-controller";
+import { CredentialStatus } from "../../types/credential-status";
 
 export function CredentialsPage() {
   const ctrl = useController();
@@ -103,17 +104,17 @@ export function CredentialsPage() {
                       <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                         <div className="flex items-center">
                           <code className="mr-2">
-                            {ctrl.maskKey(credential.api_key_prefix)}
+                            {ctrl.maskKey(credential.apiKeyPrefix)}
                           </code>
                           <button
                             onClick={() =>
-                              ctrl.handleCopyKey(credential.api_key_prefix)
+                              ctrl.handleCopyKey(credential.apiKeyPrefix)
                             }
                             className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                             title={ctrl.t.copy}
                           >
                             {ctrl.copiedKey.get() ===
-                            credential.api_key_prefix ? (
+                            credential.apiKeyPrefix ? (
                               <Check className="w-4 h-4 text-green-600" />
                             ) : (
                               <Copy className="w-4 h-4" />
@@ -122,19 +123,13 @@ export function CredentialsPage() {
                         </div>
                       </td>
                       <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
-                        {new Date(
-                          credential.created_at * 1000,
-                        ).toLocaleDateString()}
+                        {credential.getFormattedCreatedAt()}
                       </td>
                       <td className="py-4 px-6 whitespace-nowrap">
                         <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            credential.status === "Active"
-                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                              : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                          }`}
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${credential.getStatusColorClass()}`}
                         >
-                          {credential.status === "Active"
+                          {credential.isActive()
                             ? ctrl.t.active
                             : ctrl.t.inactive}
                         </span>
