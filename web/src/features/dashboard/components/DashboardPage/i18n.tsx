@@ -69,16 +69,16 @@ export function useDashboardPageI18n(): DashboardPageI18n {
     signOut: auth.signOut,
 
     // DashboardPage specific
-    welcome: t("DashboardPage:welcome"),
-    myAccount: t("DashboardPage:myAccount"),
-    apiCredentials: t("DashboardPage:apiCredentials"),
-    accountSettings: t("DashboardPage:accountSettings"),
-    profile: t("DashboardPage:profile"),
-    security: t("DashboardPage:security"),
-    accountId: t("DashboardPage:accountId"),
-    createdAt: t("DashboardPage:createdAt"),
-    themeDark: t("DashboardPage:themeDark"),
-    themeLight: t("DashboardPage:themeLight"),
-    credentialsDescription: t("CredentialsPage:description"),
+    welcome: t("DashboardPage.welcome"),
+    myAccount: t("DashboardPage.myAccount"),
+    apiCredentials: t("DashboardPage.apiCredentials"),
+    accountSettings: t("DashboardPage.accountSettings"),
+    profile: t("DashboardPage.profile"),
+    security: t("DashboardPage.security"),
+    accountId: t("DashboardPage.accountId"),
+    createdAt: t("DashboardPage.createdAt"),
+    themeDark: t("DashboardPage.themeDark"),
+    themeLight: t("DashboardPage.themeLight"),
+    credentialsDescription: t("CredentialsPage.description"),
   };
 }

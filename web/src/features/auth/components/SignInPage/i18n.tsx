@@ -63,8 +63,8 @@ export function useSignInPageI18n(): SignInPageI18n {
     noAccount: auth.noAccount,
 
     // SignInPage specific
-    signInWithEmail: t("SignInPage:signInWithEmail"),
-    emailRequired: t("SignInPage:emailRequired"),
-    signInError: t("SignInPage:signInError"),
+    signInWithEmail: t("SignInPage.signInWithEmail"),
+    emailRequired: t("SignInPage.emailRequired"),
+    signInError: t("SignInPage.signInError"),
   };
 }

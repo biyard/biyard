@@ -8,3 +8,4 @@ contracts/cache/
 contracts/artifacts/
 contracts/typechain-types/
 contracts/coverage/
+.projectile
