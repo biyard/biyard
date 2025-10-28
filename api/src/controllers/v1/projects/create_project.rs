@@ -8,7 +8,7 @@ pub async fn create_project_handler(
     account: Account,
     Json(req): Json<CreateProjectRequest>,
 ) -> Result<Json<ProjectResponse>> {
-    info!("Creating project for account: {:?}", account.pk);
+    debug!("Creating project for account: {:?}", account.pk);
 
     // Validate the request
     req.validate()?;
@@ -26,6 +26,6 @@ pub async fn create_project_handler(
     // Save to DynamoDB
     project.create(&cli).await?;
 
-    info!("Project created: {:?}", project.pk);
+    debug!("Project created: {:?}", project.pk);
     Ok(Json(project.into()))
 }

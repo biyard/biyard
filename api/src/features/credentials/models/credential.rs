@@ -72,9 +72,4 @@ impl Credential {
             last_used_at: None,
         }
     }
-
-    pub fn revoke(&mut self) {
-        self.status = CredentialStatus::Revoked;
-        self.updated_at = time_utils::get_now();
-    }
 }

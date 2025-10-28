@@ -16,15 +16,15 @@ export function CredentialsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-6">
+      <header className="bg-white shadow dark:bg-gray-800">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
               <Link
                 to="/dashboard"
-                className="mr-4 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="p-2 mr-4 text-gray-600 rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="w-5 h-5" />
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -37,9 +37,9 @@ export function CredentialsPage() {
             </div>
             <button
               onClick={() => ctrl.showCreateDialog.set(true)}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="flex items-center py-2 px-4 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
             >
-              <Plus className="h-5 w-5 mr-2" />
+              <Plus className="mr-2 w-5 h-5" />
               {ctrl.t.createNew}
             </button>
           </div>
@@ -47,60 +47,60 @@ export function CredentialsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0">
           {ctrl.isLoading ? (
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
-              <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
+            <div className="p-12 text-center bg-white rounded-lg shadow dark:bg-gray-800">
+              <Loader2 className="mx-auto w-12 h-12 text-gray-400 animate-spin" />
               <p className="mt-4 text-gray-600 dark:text-gray-400">
                 {ctrl.t.loading}
               </p>
             </div>
           ) : !ctrl.credentials || ctrl.credentials.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
-              <Key className="mx-auto h-12 w-12 text-gray-400" />
+            <div className="p-12 text-center bg-white rounded-lg shadow dark:bg-gray-800">
+              <Key className="mx-auto w-12 h-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
                 {ctrl.t.noCredentials}
               </h3>
               <div className="mt-6">
                 <button
                   onClick={() => ctrl.showCreateDialog.set(true)}
-                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                 >
-                  <Plus className="h-5 w-5 mr-2" />
+                  <Plus className="mr-2 w-5 h-5" />
                   {ctrl.t.createNew}
                 </button>
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <div className="overflow-hidden bg-white rounded-lg shadow dark:bg-gray-800">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
                       {ctrl.t.name}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
                       {ctrl.t.apiKey}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
                       {ctrl.t.createdAt}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
                       {ctrl.t.status}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
                       {ctrl.t.actions}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                   {ctrl.credentials.map((credential) => (
-                    <tr key={credential.pk}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    <tr key={credential.id}>
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {credential.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                         <div className="flex items-center">
                           <code className="mr-2">
                             {ctrl.maskKey(credential.api_key_prefix)}
@@ -114,19 +114,19 @@ export function CredentialsPage() {
                           >
                             {ctrl.copiedKey.get() ===
                             credential.api_key_prefix ? (
-                              <Check className="h-4 w-4 text-green-600" />
+                              <Check className="w-4 h-4 text-green-600" />
                             ) : (
-                              <Copy className="h-4 w-4" />
+                              <Copy className="w-4 h-4" />
                             )}
                           </button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap dark:text-gray-400">
                         {new Date(
-                          credential.created_at * 1000
+                          credential.created_at * 1000,
                         ).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="py-4 px-6 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             credential.status === "Active"
@@ -139,20 +139,16 @@ export function CredentialsPage() {
                             : ctrl.t.inactive}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {credential.status === "Active" && (
-                          <button
-                            onClick={() =>
-                              ctrl.handleRevokeCredential(
-                                ctrl.extractCredentialId(credential.pk)
-                              )
-                            }
-                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                            disabled={ctrl.revokeMutation.isPending}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        )}
+                      <td className="py-4 px-6 text-sm whitespace-nowrap">
+                        <button
+                          onClick={() =>
+                            ctrl.handleRevokeCredential(credential.id)
+                          }
+                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                          disabled={ctrl.revokeMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -165,20 +161,20 @@ export function CredentialsPage() {
 
       {/* Create Credential Dialog */}
       {ctrl.showCreateDialog.get() && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black bg-opacity-50">
+          <div className="p-6 w-full max-w-md bg-white rounded-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
               {ctrl.t.createNew}
             </h3>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                 {ctrl.t.name}
               </label>
               <input
                 type="text"
                 value={ctrl.newCredentialName.get()}
                 onChange={(e) => ctrl.newCredentialName.set(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                className="py-2 px-3 w-full rounded-md border border-gray-300 shadow-sm dark:text-white dark:bg-gray-700 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
                 placeholder="My API Key"
               />
             </div>
@@ -189,7 +185,7 @@ export function CredentialsPage() {
                   ctrl.newCredentialName.set("");
                 }}
                 disabled={ctrl.createMutation.isPending}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
+                className="py-2 px-4 text-sm font-medium text-gray-700 bg-gray-100 rounded-md dark:text-gray-300 dark:bg-gray-700 hover:bg-gray-200 disabled:opacity-50 dark:hover:bg-gray-600"
               >
                 {ctrl.t.cancel}
               </button>
@@ -199,11 +195,11 @@ export function CredentialsPage() {
                   !ctrl.newCredentialName.get().trim() ||
                   ctrl.createMutation.isPending
                 }
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="flex items-center py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {ctrl.createMutation.isPending ? (
                   <>
-                    <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                    <Loader2 className="mr-2 -ml-1 w-4 h-4 animate-spin" />
                     {ctrl.t.loading}
                   </>
                 ) : (
@@ -217,37 +213,37 @@ export function CredentialsPage() {
 
       {/* Generated Key Dialog */}
       {ctrl.generatedKey.get() && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="flex fixed inset-0 z-50 justify-center items-center p-4 bg-black bg-opacity-50">
+          <div className="p-6 w-full max-w-md bg-white rounded-lg dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
               {ctrl.t.keyGenerated}
             </h3>
-            <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-md mb-4">
-              <div className="flex items-center justify-between">
-                <code className="text-sm text-gray-900 dark:text-white break-all">
+            <div className="p-4 mb-4 bg-gray-50 rounded-md dark:bg-gray-900">
+              <div className="flex justify-between items-center">
+                <code className="text-sm text-gray-900 break-all dark:text-white">
                   {ctrl.generatedKey.get()}
                 </code>
                 <button
                   onClick={() =>
                     ctrl.handleCopyKey(ctrl.generatedKey.get() || "")
                   }
-                  className="ml-2 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="p-2 ml-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   {ctrl.copiedKey.get() === ctrl.generatedKey.get() ? (
-                    <Check className="h-5 w-5 text-green-600" />
+                    <Check className="w-5 h-5 text-green-600" />
                   ) : (
-                    <Copy className="h-5 w-5" />
+                    <Copy className="w-5 h-5" />
                   )}
                 </button>
               </div>
             </div>
-            <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+            <p className="mb-4 text-sm text-red-600 dark:text-red-400">
               {ctrl.t.keyGeneratedWarning}
             </p>
             <div className="flex justify-end">
               <button
                 onClick={() => ctrl.generatedKey.set(null)}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                className="py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
               >
                 {ctrl.t.close}
               </button>

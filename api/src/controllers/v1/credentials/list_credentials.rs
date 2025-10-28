@@ -8,26 +8,16 @@ use crate::{
 pub async fn list_credentials_handler(
     State(AppState { cli, .. }): State<AppState>,
     NoApi(account): NoApi<Account>,
-) -> Result<Json<Vec<CredentialResponse>>> {
-    tracing::info!("Listing credentials for account: {:?}", account.pk);
+) -> Result<Json<Vec<CredentialSummaryResponse>>> {
+    tracing::debug!("Listing credentials for account: {:?}", account.pk);
 
     // Find all credentials for this account using GSI1
     let (credentials, _bookmark) =
         Credential::find_by_account_id(&cli, account.pk, CredentialQueryOption::default()).await?;
 
     // Convert to response DTOs (without api_key)
-    let responses: Vec<CredentialResponse> = credentials
-        .into_iter()
-        .map(|c| CredentialResponse {
-            pk: c.pk,
-            name: c.name,
-            api_key_prefix: c.api_key_prefix,
-            status: c.status,
-            created_at: c.created_at,
-            last_used_at: c.last_used_at,
-            api_key: None, // Never return full key on list
-        })
-        .collect();
+    let responses: Vec<CredentialSummaryResponse> =
+        credentials.into_iter().map(|c| c.into()).collect();
 
     Ok(Json(responses))
 }

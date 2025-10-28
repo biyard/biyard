@@ -10,7 +10,7 @@ pub async fn create_credential_handler(
     NoApi(account): NoApi<Account>,
     Json(req): Json<CreateCredentialRequest>,
 ) -> Result<Json<CredentialResponse>> {
-    tracing::info!("Creating credential for account: {:?}", account.pk);
+    tracing::debug!("Creating credential for account: {:?}", account.pk);
 
     // Generate a random API key
     let api_key = format!(
@@ -24,16 +24,7 @@ pub async fn create_credential_handler(
     // Save to DynamoDB
     credential.create(&cli).await?;
 
-    tracing::info!("Created credential: {:?}", credential.pk);
+    tracing::debug!("Created credential: {:?}", credential.pk);
 
-    // Return response with full API key (only time it's shown)
-    Ok(Json(CredentialResponse {
-        pk: credential.pk,
-        name: credential.name,
-        api_key_prefix: credential.api_key_prefix,
-        status: credential.status,
-        created_at: credential.created_at,
-        last_used_at: credential.last_used_at,
-        api_key: Some(api_key), // Full key only on creation
-    }))
+    Ok(Json(credential.into()))
 }

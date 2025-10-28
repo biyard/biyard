@@ -4,7 +4,7 @@ use crate::{
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, OperationIo, JsonSchema, Default)]
-pub struct CredentialResponse {
+pub struct CredentialSummaryResponse {
     #[schemars(description = "ID of the credential")]
     pub id: String,
 
@@ -22,12 +22,9 @@ pub struct CredentialResponse {
 
     #[schemars(description = "Last used timestamp")]
     pub last_used_at: Option<i64>,
-
-    #[schemars(description = "The full API key (only returned on creation)")]
-    pub api_key: String,
 }
 
-impl From<Credential> for CredentialResponse {
+impl From<Credential> for CredentialSummaryResponse {
     fn from(credential: Credential) -> Self {
         Self {
             id: match credential.pk {
@@ -39,7 +36,6 @@ impl From<Credential> for CredentialResponse {
             status: credential.status,
             created_at: credential.created_at,
             last_used_at: credential.last_used_at,
-            api_key: credential.api_key_hash,
         }
     }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { State } from "@/types/state";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,6 +57,13 @@ export function useController() {
   const error = useState("");
 
   const signupMutation = useSignup();
+
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (auth.isAuthenticated && !auth.isLoading) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [auth.isAuthenticated, auth.isLoading, navigate]);
 
   return new Controller(
     new State(name),

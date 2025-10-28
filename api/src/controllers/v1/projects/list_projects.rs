@@ -12,7 +12,7 @@ pub async fn list_projects_handler(
     NoApi(account): NoApi<Account>,
     Query(params): PaginationQuery,
 ) -> Result<Json<ListResponse<ProjectResponse>>> {
-    info!("Listing projects for account: {:?}", account.pk);
+    debug!("Listing projects for account: {:?}", account.pk);
     let mut opt = ProjectQueryOption::builder().limit(params.limit.unwrap_or(100));
 
     if let Some(bookmark) = params.bookmark {

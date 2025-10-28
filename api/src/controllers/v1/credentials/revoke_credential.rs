@@ -11,9 +11,9 @@ use crate::{
 pub async fn revoke_credential_handler(
     State(AppState { cli, .. }): State<AppState>,
     NoApi(account): NoApi<Account>,
-    Path(credential_id): Path<String>,
+    Path(CredentialPathParam { credential_id }): CredentialPath,
 ) -> Result<Json<CredentialResponse>> {
-    tracing::info!(
+    tracing::debug!(
         "Revoking credential {} for account: {:?}",
         credential_id,
         account.pk
@@ -22,7 +22,7 @@ pub async fn revoke_credential_handler(
     let credential_pk = Partition::Credential(credential_id);
 
     // Get the credential
-    let mut credential = Credential::get(&cli, credential_pk.clone(), Some(EntityType::Credential))
+    let credential = Credential::get(&cli, credential_pk.clone(), Some(EntityType::Credential))
         .await?
         .ok_or(Error::CredentialNotFound)?;
 
@@ -31,21 +31,13 @@ pub async fn revoke_credential_handler(
         return Err(Error::CredentialNotFound);
     }
 
-    // Revoke it
-    credential.revoke();
+    let credential = Credential::updater(credential.pk, credential.sk)
+        .with_status(CredentialStatus::Revoked)
+        .with_updated_at(time_utils::get_now())
+        .execute(&cli)
+        .await?;
 
-    // Save updated credential (recreate with new status)
-    credential.create(&cli).await?;
+    tracing::debug!("Revoked credential: {:?}", credential.pk);
 
-    tracing::info!("Revoked credential: {:?}", credential.pk);
-
-    Ok(Json(CredentialResponse {
-        pk: credential.pk,
-        name: credential.name,
-        api_key_prefix: credential.api_key_prefix,
-        status: credential.status,
-        created_at: credential.created_at,
-        last_used_at: credential.last_used_at,
-        api_key: None,
-    }))
+    Ok(Json(credential.into()))
 }

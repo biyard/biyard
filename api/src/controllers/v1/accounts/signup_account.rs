@@ -10,12 +10,12 @@ pub async fn signup_account_handler(
     Extension(session): Extension<Session>,
     Json(req): Json<SignupAccountRequest>,
 ) -> Result<Json<AccountResponse>> {
-    info!("Handling signup request for email: {}", req.email);
+    debug!("Handling signup request for email: {}", req.email);
 
     let (accounts, _bookmark) =
         Account::find_by_email(&cli, &req.email, AccountQueryOption::builder().limit(1)).await?;
 
-    info!("Checked existing accounts for email: {:?}", accounts);
+    debug!("Checked existing accounts for email: {:?}", accounts);
 
     if accounts.len() > 0 {
         return Err(Error::EmailAlreadyExists);
@@ -23,7 +23,7 @@ pub async fn signup_account_handler(
 
     // Hash the password (note: hashed_password field actually contains plain password)
     let hashed_password = password_utils::hash_password(&req.hashed_password);
-    info!("Password hashed successfully for email: {}", req.email);
+    debug!("Password hashed successfully for email: {}", req.email);
 
     // Create a new account with hashed password
     let account = Account::new(req.name.clone(), req.email.clone(), hashed_password);

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useSignout } from "../../../auth/hooks/use-signout";
 import { useDashboardPageI18n } from "./i18n";
 
 export class Controller {
@@ -11,15 +12,21 @@ export class Controller {
     public auth: ReturnType<typeof useAuth>,
     public theme: ReturnType<typeof useTheme>,
     public navigate: ReturnType<typeof useNavigate>,
+    public signoutMutation: ReturnType<typeof useSignout>,
   ) {}
 
   get account() {
     return this.auth.account;
   }
 
-  handleSignOut = () => {
-    this.auth.setAccount(null);
-    this.navigate("/signin");
+  handleSignOut = async () => {
+    try {
+      await this.signoutMutation.mutateAsync();
+      this.auth.setAccount(null);
+      this.navigate("/signin");
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    }
   };
 
   toggleLanguage = () => {
@@ -35,6 +42,7 @@ export function useController() {
   const auth = useAuth();
   const theme = useTheme();
   const navigate = useNavigate();
+  const signoutMutation = useSignout();
 
-  return new Controller(t, i18n, auth, theme, navigate);
+  return new Controller(t, i18n, auth, theme, navigate, signoutMutation);
 }
