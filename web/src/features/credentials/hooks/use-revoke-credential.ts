@@ -9,9 +9,9 @@ export function useRevokeCredential() {
     mutationFn: async (credentialId: string) => {
       return apiClient.delete<CredentialResponse>(`/v1/credentials/${credentialId}`);
     },
-    onSuccess: () => {
-      // Invalidate credentials list to refetch
-      queryClient.invalidateQueries({ queryKey: ['credentials'] });
+    onSuccess: async () => {
+      // Invalidate and refetch credentials list
+      await queryClient.invalidateQueries({ queryKey: ['credentials'] });
     },
   });
 }

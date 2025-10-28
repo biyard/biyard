@@ -22,9 +22,9 @@ export function useCreateCredential() {
     mutationFn: async (data: CreateCredentialRequest) => {
       return apiClient.post<CredentialResponse>('/v1/credentials', data);
     },
-    onSuccess: () => {
-      // Invalidate credentials list to refetch
-      queryClient.invalidateQueries({ queryKey: ['credentials'] });
+    onSuccess: async () => {
+      // Invalidate and refetch credentials list
+      await queryClient.invalidateQueries({ queryKey: ['credentials'] });
     },
   });
 }

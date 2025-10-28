@@ -20,7 +20,7 @@ pub fn session_manage_layer(
         } else {
             tower_sessions::cookie::SameSite::None
         })
-        .with_name(format!("{}_bsid", conf.env))
+        .with_name(format!("{}_bsid", conf.env.to_string().to_lowercase()))
         .with_path("/")
         .with_expiry(tower_sessions::Expiry::AtDateTime(
             OffsetDateTime::now_utc()
