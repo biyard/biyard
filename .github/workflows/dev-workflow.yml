@@ -48,3 +48,19 @@ jobs:
           path: ${{ github.workspace }}/landing-dist.tar.gz
           if-no-files-found: error
           retention-days: 7
+
+  create-release-pr:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    needs: [web]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.PULL_KEY_REPO }}
+      - name: Git pr release action
+        uses: grassedge/git-pr-release-action@v1.0
+        with:
+          base: main
+          head: dev
+          token: ${{ secrets.GITHUB_TOKEN }}
