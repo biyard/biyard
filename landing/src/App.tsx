@@ -1,7 +1,6 @@
 import { RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { Toaster } from "./components/ui/toaster";
 import "./i18n/config";
 import { routes } from "./router";
 
@@ -19,7 +18,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <RouterProvider router={routes} />,
-        <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   );

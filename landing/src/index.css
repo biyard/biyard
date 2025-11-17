@@ -231,3 +231,13 @@ button {
 
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 60.1%, rgba(0, 0, 0, 0.5) 78.05%, rgba(0, 0, 0, 0.8) 100%);
 }
+
+.scrollbar-hide {
+  /* Firefox */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Safari and Chrome */
+  &::-webkit-scrollbar: {
+    display: "none";
+  };
+}

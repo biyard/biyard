@@ -13,7 +13,7 @@ export function TeamSection() {
           Our <span className="text-primary">Team</span>
         </h2>
 
-        <div className="grid grid-cols-4 gap-24 w-full max-tablet:flex max-tablet:flex-row max-tablet:overflow-x-scroll">
+        <div className="grid grid-cols-4 gap-24 w-full max-tablet:flex max-tablet:flex-row max-tablet:overflow-x-scroll scrollbar-hide">
           {teamMembers.map((member) => (
             <MemberCard member={member} />
           ))}

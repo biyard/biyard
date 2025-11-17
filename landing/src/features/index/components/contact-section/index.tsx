@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useContactForm } from "../../hooks/useContactForm";
 import { LabeledInput } from "@/components/ui/labeled_input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +15,7 @@ export function ContactSection() {
       className="flex relative flex-col justify-center mx-auto w-full max-w-wrapper"
     >
       <div className="absolute top-[1/2] left-[2/3] h-1328 w-1328 bg-purple-blur/40 blur-[500px] max-tablet:w-614 max-tablet:h-614 max-tablet:bg-purple-blur/80" />
-      <div className="flex flex-row justify-between w-full">
+      <div className="flex flex-row justify-between w-full gap-50 max-tablet:flex-col">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white md:text-5xl">
             Contact <span className="text-green-400">Us</span>

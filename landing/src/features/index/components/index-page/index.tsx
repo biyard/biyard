@@ -5,7 +5,6 @@ import { TeamSection } from "../team-section";
 import { ContactSection } from "../contact-section";
 import { FooterSection } from "../footer-section";
 import { Navigation } from "../hero-section/navigation";
-import { Updates } from "../footer-section/updates";
 
 export function IndexPage() {
   return (
@@ -16,7 +15,6 @@ export function IndexPage() {
       <WhatWeDoSection />
       <TeamSection />
       <ContactSection />
-      <Updates />
       <FooterSection />
     </div>
   );
