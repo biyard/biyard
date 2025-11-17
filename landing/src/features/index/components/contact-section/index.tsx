@@ -22,7 +22,7 @@ export function ContactSection() {
           </h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-24">
+        <form onSubmit={handleSubmit} className="space-y-24 z-2">
           <div className="grid grid-cols-2 gap-24 max-tablet:grid-cols-1">
             <LabeledInput
               labelTitle="First name"
