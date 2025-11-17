@@ -22,6 +22,7 @@ export function IndexPage() {
       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
       <script src="/js/intro-animation.js"></script>
 
+      <title>Biyard</title>
       <meta
         name="keywords"
         content="blockchain, ai, security, cryptography, web3, metaverse, digital twin, digital asset, NFT, tokenization, digital identity, digital wallet, digital currency, Physical AI, DID, Cryptocurrency, DAO, Deeptech"
