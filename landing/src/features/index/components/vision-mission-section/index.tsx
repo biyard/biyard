@@ -3,7 +3,6 @@ import {
   Innovation,
   Integrity,
   LogoSymbol,
-  MeetBiyard,
   Sustainability,
 } from "@/components/icons";
 import { useIntroI18n } from "./i18n";
@@ -14,7 +13,7 @@ export function VisionMissionSection() {
   return (
     <section
       id="intro"
-      className="flex flex-col gap-96 justify-center w-full min-h-screen max-w-wrapper py-100 max-desktop:max-w-full"
+      className="flex flex-col gap-96 justify-center mx-auto w-full min-h-screen max-w-wrapper py-100 max-desktop:max-w-full"
     >
       <div className="flex flex-row justify-between items-start py-40 w-full border border-gray-800 backdrop-blur-sm rounded-[16px] px-118 gap-120 max-desktop:flex-col max-desktop:gap-40 max-desktop:px-20 max-tablet:flex-col max-tablet:py-24 max-tablet:px-16">
         <LabeledTextWithLogo
@@ -31,8 +30,6 @@ export function VisionMissionSection() {
       </div>
 
       <div className="flex flex-row justify-between items-center w-full">
-        <MeetBiyard className="max-tablet:hidden" />
-
         <div className="flex flex-col gap-48 items-start max-tablet:w-full">
           <h2 className="font-medium text-[45px]/64 max-tablet:w-full max-tablet:text-center">
             Core <span className="text-primary">Values</span>
