@@ -48,6 +48,39 @@ export class GlobalAccelStack extends Stack {
         originAccessIdentity: oai,
       },
     );
+    const spaRoutingFunction = new cloudfront.Function(
+      this,
+      `SpaRoutingFunction`,
+      {
+        code: cloudfront.FunctionCode.fromInline(`
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      // Check if URI has a file extension
+      var hasFileExtension = /\\.[a-zA-Z0-9]+$/.test(uri);
+
+      // If no file extension, it's a page route - append index.html
+      if (!hasFileExtension) {
+        // Special handling for /admin route
+        if (uri === '/admin' || uri === '/admin/') {
+          request.uri = '/admin/index.html';
+        }
+        // For other routes without trailing slash, add /index.html
+        else if (!uri.endsWith('/')) {
+          request.uri = uri + '/index.html';
+        }
+        // For routes with trailing slash, add index.html
+        else {
+          request.uri = uri + 'index.html';
+        }
+      }
+
+      return request;
+    }
+          `),
+      },
+    );
 
     // CloudFront cert (must be in us-east-1). Use provided ARN or create DNS‑validated one.
     const cachedS3Prop = {
@@ -61,7 +94,14 @@ export class GlobalAccelStack extends Stack {
         origin: s3Origin,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        functionAssociations: [
+          {
+            function: spaRoutingFunction,
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
+      defaultRootObject: "index.html",
       additionalBehaviors: {
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,
