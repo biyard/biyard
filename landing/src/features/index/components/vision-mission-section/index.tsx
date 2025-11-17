@@ -1,72 +1,102 @@
-import { motion } from 'framer-motion';
-import { coreValues } from '../../data';
+import {
+  Inclusivity,
+  Innovation,
+  Integrity,
+  LogoSymbol,
+  MeetBiyard,
+  Sustainability,
+} from "@/components/icons";
+import { useIntroI18n } from "./i18n";
 
 export function VisionMissionSection() {
+  const t = useIntroI18n();
+
   return (
-    <section id="intro" className="bg-slate-900 py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-8 mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="bg-slate-800 p-8 rounded-lg border border-slate-700"
-          >
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">👁️</span>
-              <h3 className="text-2xl font-bold text-green-400">Vision</h3>
-            </div>
-            <p className="text-slate-300">
-              To create a future where technology bridges gaps and transforms
-              global challenges into sustainable opportunities.
-            </p>
-          </motion.div>
+    <section
+      id="intro"
+      className="flex flex-col gap-96 justify-center w-full min-h-screen max-w-wrapper py-100 max-desktop:max-w-full"
+    >
+      <div className="flex flex-row justify-between items-start py-40 w-full border border-gray-800 backdrop-blur-sm rounded-[16px] px-118 gap-120 max-desktop:flex-col max-desktop:gap-40 max-desktop:px-20 max-tablet:flex-col max-tablet:py-24 max-tablet:px-16">
+        <LabeledTextWithLogo
+          icon={<LogoSymbol />}
+          title={t.vision.title}
+          description={t.vision.description}
+        />
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="bg-slate-800 p-8 rounded-lg border border-slate-700"
-          >
-            <div className="flex items-center mb-4">
-              <span className="text-4xl mr-4">🎯</span>
-              <h3 className="text-2xl font-bold text-green-400">Mission</h3>
-            </div>
-            <p className="text-slate-300">
-              Harness cutting-edge deep-tech innovations, including Blockchain,
-              AI, and Security, to deliver practical solutions that empower
-              communities, enhance transparency, and foster inclusive growth.
-            </p>
-          </motion.div>
-        </div>
+        <LabeledTextWithLogo
+          icon={<LogoSymbol />}
+          title={t.mission.title}
+          description={t.mission.description}
+        />
+      </div>
 
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Core <span className="text-green-400">Values</span>
+      <div className="flex flex-row justify-between items-center w-full">
+        <MeetBiyard className="max-tablet:hidden" />
+
+        <div className="flex flex-col gap-48 items-start max-tablet:w-full">
+          <h2 className="font-medium text-[45px]/64 max-tablet:w-full max-tablet:text-center">
+            Core <span className="text-primary">Values</span>
           </h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {coreValues.map((value, index) => (
-            <motion.div
-              key={value.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-slate-800 p-6 rounded-lg border border-slate-700 hover:border-green-400 transition-colors"
-            >
-              <div className="text-4xl mb-4">{value.icon}</div>
-              <h4 className="text-xl font-bold text-white mb-2">
-                {value.title}
-              </h4>
-              <p className="text-slate-400 text-sm">{value.description}</p>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-2 gap-y-80 w-full gap-x-51 max-tablet:grid-cols-1 max-tablet:gap-y-32">
+            <LabeledTextWithLogo
+              icon={<Innovation />}
+              title={t.innovation.title}
+              description={t.innovation.description}
+            />
+            <LabeledTextWithLogo
+              icon={<Inclusivity />}
+              title={t.inclusivity.title}
+              description={t.inclusivity.description}
+            />
+            <LabeledTextWithLogo
+              icon={<Integrity />}
+              title={t.integrity.title}
+              description={t.integrity.description}
+            />
+            <LabeledTextWithLogo
+              icon={<Sustainability />}
+              title={t.sustainability.title}
+              description={t.sustainability.description}
+            />
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function LabeledTextWithLogo({
+  icon,
+  title,
+  description,
+  smallGap = false,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  smallGap?: boolean;
+}) {
+  return (
+    <>
+      <div className="flex flex-col flex-1 gap-24">
+        <div className="flex flex-row gap-12">
+          <div
+            className="flex flex-row justify-start items-center w-54 aria-sm:w-44"
+            aria-sm={smallGap}
+          >
+            {icon}
+          </div>
+          <label className="font-semibold text-[28px]/36 tracking-[0px]">
+            {title}
+          </label>
+        </div>
+        <p
+          className="font-extralight text-gray-300 whitespace-pre-line text-[15px]/23 tracking-[0px] ml-54 aria-sm:ml-44"
+          aria-sm={smallGap}
+        >
+          {description}
+        </p>
+      </div>
+    </>
   );
 }

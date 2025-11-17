@@ -2,34 +2,34 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { app } from "./locales/app";
 import { common } from "./locales/common";
+import { Intro } from "@/features/index/components/vision-mission-section/i18n";
+import { WhatWeDoSection } from "@/features/index/components/what-we-do-section/i18n";
 
-export const resources: {
-  en: Record<string, unknown>;
-  ko: Record<string, unknown>;
-} = {
-  en: {},
-  ko: {},
-};
-
-Object.entries({
-  // Common i18n
+const namespaces = {
   app,
   common,
-}).forEach(([key, value]) => {
+  Intro,
+  WhatWeDoSection,
+};
+
+const resources = {
+  en: {} as Record<string, any>,
+  ko: {} as Record<string, any>,
+};
+
+Object.entries(namespaces).forEach(([key, value]) => {
   resources.en[key] = value.en;
   resources.ko[key] = value.ko;
 });
 
 i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: resources.en },
-    ko: { translation: resources.ko },
-  },
+  resources,
   lng: localStorage.getItem("language") || "en",
   fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },
+  defaultNS: "app",
 });
 
 export default i18n;

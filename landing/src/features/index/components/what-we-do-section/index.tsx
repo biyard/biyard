@@ -1,81 +1,61 @@
-import { motion } from 'framer-motion';
-import { services, approachItems } from '../../data';
-import { ArrowRight } from 'lucide-react';
+import { ServiceCard } from "./service-card";
+import { useWhatWeDoSectionI18n } from "./i18n";
+import { Approach } from "./approach";
+import { PeopleCentric, Practical, Scalable } from "@/components/icons";
 
 export function WhatWeDoSection() {
+  const t = useWhatWeDoSectionI18n();
+
   return (
-    <section id="what-we-do" className="bg-slate-950 py-20 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-            What <span className="text-green-400">we do</span>
-          </h2>
-          <p className="text-slate-400 max-w-3xl mx-auto">
-            At Biyard, we leverage advanced technologies like Blockchain,
-            Artificial Intelligence, and Security to solve real-world problems.
-            Our focus spans critical sectors including
-          </p>
+    <section id="what-we-do" className="relative my-auto w-full">
+      <div className="absolute left-[1/2] h-879 w-879 bg-purple-blur/50 blur-[300px]" />
+      <div className="flex relative flex-col gap-48 justify-center items-center w-full min-h-screen max-w-wrapper">
+        <div className="flex flex-col gap-24 items-center w-full z-1">
+          <h1
+            className="font-medium text-center text-white text-[45px]/64"
+            dangerouslySetInnerHTML={{ __html: t.title }}
+          />
+          <p className="mx-auto max-w-3xl text-slate-400">{t.description}</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
-          {services.map((service, index) => (
-            <motion.div
+        <div className="grid grid-cols-3 gap-25 max-tablet:grid-cols-1">
+          {t.services.map((service) => (
+            <ServiceCard
               key={service.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-slate-900 rounded-lg overflow-hidden border border-slate-800 hover:border-green-400 transition-all group"
+              title={service.title}
+              description={service.description}
             >
-              <div className="aspect-video bg-slate-800 flex items-center justify-center">
-                <span className="text-6xl">
-                  {index === 0 ? '🎨' : index === 1 ? '🗳️' : '🌱'}
-                </span>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-slate-400 mb-4">{service.description}</p>
-                {service.link && (
-                  <a
-                    href={service.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors"
-                  >
-                    Explore the service
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </a>
-                )}
-              </div>
-            </motion.div>
+              <img src={service.image} />
+            </ServiceCard>
           ))}
         </div>
 
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            + Our <span className="text-green-400">Approach</span>
+        <div className="flex flex-row justify-start items-center w-full gap-58 max-tablet:flex-col max-tablet:gap-32">
+          <h2 className="font-medium text-left text-white text-[45px]/64 max-tablet:text-[32px]/42 max-tablet:w-full max-tablet:text-center w-263">
+            + Our <br />
+            <span className="text-primary">Approach</span>
           </h2>
-        </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {approachItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-slate-900 p-8 rounded-lg border border-slate-800 text-center"
+          <div className="grid grid-cols-3 gap-64 justify-start items-start w-full max-tablet:grid-cols-1 max-tablet:gap-32">
+            <Approach
+              title={t.approaches.practical.title}
+              description={t.approaches.practical.description}
             >
-              <div className="text-5xl mb-4">{item.icon}</div>
-              <h3 className="text-2xl font-bold text-white mb-3">
-                {item.title}
-              </h3>
-              <p className="text-slate-400">{item.description}</p>
-            </motion.div>
-          ))}
+              <Practical />
+            </Approach>
+            <Approach
+              title={t.approaches.people_centric.title}
+              description={t.approaches.people_centric.description}
+            >
+              <PeopleCentric />
+            </Approach>
+            <Approach
+              title={t.approaches.scalable.title}
+              description={t.approaches.scalable.description}
+            >
+              <Scalable />
+            </Approach>
+          </div>
         </div>
       </div>
     </section>
