@@ -237,7 +237,7 @@ button {
   scrollbar-width: none;
   -ms-overflow-style: none;
   /* Safari and Chrome */
-  &::-webkit-scrollbar: {
+  &::-webkit-scrollbar:{
     display: "none";
   };
 }
