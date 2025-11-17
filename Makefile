@@ -33,4 +33,4 @@ clean:
 	rm -rf landing/dist
 
 landing/dist:
-	cd landing && pnpm run build
+	cd landing && make build
