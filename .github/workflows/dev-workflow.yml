@@ -24,12 +24,6 @@ jobs:
           corepack enable
           corepack prepare pnpm@10.15.0 --activate
 
-      - name: Build
-        env:
-          REGION: us-east-1
-        run: |
-          make build
-
       - name: Deploy to S3
         env:
           ENV: dev
