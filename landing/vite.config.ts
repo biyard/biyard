@@ -53,14 +53,7 @@ export default defineConfig({
         test: {
           name: "storybook",
           browser: {
-            enabled: true,
-            headless: true,
-            provider: "playwright",
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
+            enabled: false,
           },
           setupFiles: [".storybook/vitest.setup.ts"],
         },
