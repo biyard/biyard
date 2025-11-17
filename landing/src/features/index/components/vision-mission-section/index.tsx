@@ -6,6 +6,8 @@ import {
   Sustainability,
 } from "@/components/icons";
 import { useIntroI18n } from "./i18n";
+import { MeetBiyard } from "@/components/icons";
+import "./meet-biyard-animation.js";
 
 export function VisionMissionSection() {
   const t = useIntroI18n();
@@ -29,12 +31,13 @@ export function VisionMissionSection() {
         />
       </div>
 
-      <div className="flex flex-row justify-between items-center w-full">
-        <div className="flex flex-col gap-48 items-start max-tablet:w-full">
+      <div className="flex flex-row justify-between items-center w-full gap-50 max-tablet:flex-col">
+        <MeetBiyard />
+        <div className="flex flex-col gap-48 items-start max-tablet:w-full max-tablet:items-center">
           <h2 className="font-medium text-[45px]/64 max-tablet:w-full max-tablet:text-center">
             Core <span className="text-primary">Values</span>
           </h2>
-          <div className="grid grid-cols-2 gap-y-80 w-full gap-x-51 max-tablet:grid-cols-1 max-tablet:gap-y-32">
+          <div className="grid grid-cols-2 gap-y-80 w-full gap-x-51 max-mobile:grid-cols-1 max-tablet:gap-y-32 max-tablet:w-fit">
             <LabeledTextWithLogo
               icon={<Innovation />}
               title={t.innovation.title}
@@ -75,7 +78,7 @@ function LabeledTextWithLogo({
 }) {
   return (
     <>
-      <div className="flex flex-col flex-1 gap-24">
+      <div className="flex flex-col gap-24">
         <div className="flex flex-row gap-12">
           <div
             className="flex flex-row justify-start items-center w-54 aria-sm:w-44"
