@@ -15,12 +15,15 @@ import {
 } from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import { Construct } from "constructs";
-import { RegionalClusterStack } from "./regional-cluster-stack";
 
 export interface RegionalServiceStackProps extends StackProps {
   repoName: string;
   commit: string;
-  cluster: RegionalClusterStack;
+
+  // Pass individual resources instead of entire stack
+  vpc: ec2.IVpc;
+  cluster: ecs.ICluster;
+  listener: elbv2.ApplicationListener;
 
   healthPath?: string;
   maxCapacity?: number;
@@ -37,6 +40,9 @@ export class RegionalServiceStack extends Stack {
       containerPort = 3000,
       maxCapacity = 50,
       healthPath = "/health",
+      vpc,
+      cluster,
+      listener,
     } = props;
     const desiredCount = 2;
     const maxHealthyPercent = 200;
@@ -44,7 +50,15 @@ export class RegionalServiceStack extends Stack {
     const memoryMiB = "512";
     const cpu = "256";
 
-    const { vpc, cluster, taskExecutionRole, listener } = props.cluster;
+    // Create task execution role in the service stack to avoid cross-stack dependencies
+    const taskExecutionRole = new iam.Role(this, "TaskExecutionRole", {
+      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          "service-role/AmazonECSTaskExecutionRolePolicy"
+        ),
+      ],
+    });
 
     const taskDefinition = new ecs.TaskDefinition(this, "TaskDefinition", {
       compatibility: ecs.Compatibility.FARGATE,
@@ -113,8 +127,13 @@ export class RegionalServiceStack extends Stack {
       },
     });
 
-    listener.addTargetGroups("TgRuleApiHost", {
-      targetGroups: [targetGroup],
+    // Create a listener rule instead of modifying the listener's default action
+    // This avoids circular dependency between cluster and service stacks
+    new elbv2.ApplicationListenerRule(this, "ListenerRule", {
+      listener,
+      priority: 1,
+      conditions: [elbv2.ListenerCondition.pathPatterns(["/*"])],
+      action: elbv2.ListenerAction.forward([targetGroup]),
     });
   }
 }

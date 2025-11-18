@@ -39,17 +39,22 @@ const serviceAp = new RegionalServiceStack(
       region: "ap-northeast-2",
     },
     stackName: `${stackName}-api-ap-northeast-2`,
-    cluster: clusterAp,
+
+    // Pass individual resources from the cluster stack
+    vpc: clusterAp.vpc,
+    cluster: clusterAp.cluster,
+    listener: clusterAp.listener,
+
     repoName: apiRepoName,
     commit,
-
     containerPort: 3000,
     maxCapacity: 20,
     healthPath: "/version",
   },
 );
 
-serviceAp.addDependency(clusterAp);
+// Dependency is automatically handled by CDK through resource references
+// No need for explicit addDependency which can cause cyclic references
 
 new GlobalAccelStack(app, "GlobalAccel", {
   stackName,

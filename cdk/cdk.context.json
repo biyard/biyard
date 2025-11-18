@@ -134,5 +134,9 @@
   "hosted-zone:account=385474633683:domainName=biyard.co:region=us-east-1": {
     "Id": "/hostedzone/Z01931081NPCG088QNZXX",
     "Name": "biyard.co."
+  },
+  "hosted-zone:account=385474633683:domainName=biyard.co:region=ap-northeast-2": {
+    "Id": "/hostedzone/Z01931081NPCG088QNZXX",
+    "Name": "biyard.co."
   }
 }
