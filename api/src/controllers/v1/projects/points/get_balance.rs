@@ -6,7 +6,7 @@ use crate::*;
 pub async fn get_balance_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
-    Path(ProjectPointPathParam { meta_user_id, .. }): ProjectPointPath,
+    Path(ProjectPointPathParam { meta_user_id, .. }): Path<ProjectPointPathParam>,
     Query(req): Query<GetPointBalanceRequest>,
 ) -> Result<Json<ListResponse<PointBalanceResponse>>> {
     debug!(

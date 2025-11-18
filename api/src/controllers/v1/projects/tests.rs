@@ -26,7 +26,7 @@ mod tests {
 
         assert_eq!(status, 200, "Failed to create project");
         assert_eq!(response.name, "Test Project");
-        assert_eq!(response.monthly_points_supply, 1000000);
+        assert_eq!(response.monthly_token_supply, 10000);
     }
 
     #[tokio::test]

@@ -58,16 +58,19 @@ fn award_points(
     );
 
     // Increase Monthly Points Supply
-    let user_pk = Partition::MetaUser(to.clone());
-    let pk = CompositePartition(project.pk.clone(), user_pk);
-    let sk = EntityType::Month(month.clone());
-
     let now = time_utils::get_now();
 
-    let point_balance = PointBalance::updater(pk, sk)
-        .increase_balance(amount)
+    let (bal_pk, bal_sk) = PointBalance::keys(project.pk.clone(), to.clone(), month.clone());
+
+    let balance = PointBalance::updater(bal_pk, bal_sk)
+        .with_project_id(project.pk.clone())
+        .with_meta_user_id(to.clone())
+        .with_month(month.clone())
         .increase_total_earned(amount)
+        .increase_balance(amount)
         .with_updated_at(now);
+
+    let point_balance = balance;
 
     let transaction = PointTransaction::new(
         project.pk.clone(),
@@ -113,6 +116,9 @@ fn deduct_points(
 
     // Decrease balance and increase total_spent
     let point_balance = PointBalance::updater(pk, sk)
+        .with_project_id(project.pk.clone())
+        .with_meta_user_id(from.clone())
+        .with_month(month.clone())
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
@@ -162,6 +168,9 @@ fn transfer_points(
     let from_sk = EntityType::Month(month.clone());
 
     let from_balance = PointBalance::updater(from_pk, from_sk)
+        .with_project_id(project.pk.clone())
+        .with_meta_user_id(from.clone())
+        .with_month(month.clone())
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
@@ -172,6 +181,9 @@ fn transfer_points(
     let to_sk = EntityType::Month(month.clone());
 
     let to_balance = PointBalance::updater(to_pk, to_sk)
+        .with_project_id(project.pk.clone())
+        .with_meta_user_id(to.clone())
+        .with_month(month.clone())
         .increase_balance(amount)
         .increase_total_earned(amount)
         .with_updated_at(now);
@@ -234,6 +246,9 @@ fn exchange_points(
 
     // Decrease balance and increase total_spent
     let point_balance = PointBalance::updater(pk, sk)
+        .with_project_id(project.pk.clone())
+        .with_meta_user_id(from.clone())
+        .with_month(month.clone())
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);

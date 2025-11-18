@@ -2,155 +2,119 @@ import {
   Duration,
   Stack,
   StackProps,
-  aws_lambda as lambda,
-  aws_apigatewayv2 as apigw,
+  aws_ec2 as ec2,
+  aws_ecs as ecs,
+  aws_ecs_patterns as ecs_patterns,
+  aws_elasticloadbalancingv2 as elbv2,
   aws_route53 as route53,
   aws_certificatemanager as acm,
+  aws_cloudfront as cloudfront,
+  aws_cloudfront_origins as origins,
   aws_route53_targets as targets,
   aws_iam as iam,
 } from "aws-cdk-lib";
-import * as cdk from "aws-cdk-lib";
+import { Repository } from "aws-cdk-lib/aws-ecr";
 import { Construct } from "constructs";
-import * as r53Targets from "aws-cdk-lib/aws-route53-targets";
-import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
-import * as apigateway from "aws-cdk-lib/aws-apigateway";
+import { RegionalClusterStack } from "./regional-cluster-stack";
 
 export interface RegionalServiceStackProps extends StackProps {
-  // Domain parts, e.g. "dev2.ratel.foundation"
-  fullDomainName: string;
-  // Health check path for ALB target group
-  healthCheckPath?: string;
+  repoName: string;
   commit: string;
-  // Repository names
-  apiRepoName?: string;
-  webRepoName?: string;
-  minCapacity?: number;
-  maxCapacity?: number;
-  enableDaemon?: boolean;
-  pghost: string;
+  cluster: RegionalClusterStack;
 
-  apiDomain: string;
-  baseDomain: string;
+  healthPath?: string;
+  maxCapacity?: number;
+  containerPort?: number;
 }
 
 export class RegionalServiceStack extends Stack {
   constructor(scope: Construct, id: string, props: RegionalServiceStackProps) {
     super(scope, id, { ...props, crossRegionReferences: true });
 
-    const { apiDomain, baseDomain } = props;
-    const zone = route53.HostedZone.fromLookup(this, "RootZone", {
-      domainName: baseDomain,
+    const {
+      commit,
+      repoName,
+      containerPort = 3000,
+      maxCapacity = 50,
+      healthPath = "/health",
+    } = props;
+    const desiredCount = 2;
+    const maxHealthyPercent = 200;
+    const minHealthyPercent = 50;
+    const memoryMiB = "512";
+    const cpu = "256";
+
+    const { vpc, cluster, taskExecutionRole, listener } = props.cluster;
+
+    const taskDefinition = new ecs.TaskDefinition(this, "TaskDefinition", {
+      compatibility: ecs.Compatibility.FARGATE,
+      cpu,
+      memoryMiB,
+      executionRole: taskExecutionRole,
     });
 
-    const apiLambda = new lambda.Function(this, "Function", {
-      runtime: lambda.Runtime.PROVIDED_AL2023,
-      code: lambda.Code.fromAsset("main-api"),
-      handler: "bootstrap",
-      environment: {
-        REGION: this.region,
-        DISABLE_ANSI: "true",
-        NO_COLOR: "true",
+    const repository = Repository.fromRepositoryName(
+      this,
+      "Repository",
+      repoName,
+    );
+    const container = taskDefinition.addContainer(
+      `${this.stackName}-Container`,
+      {
+        image: ecs.ContainerImage.fromEcrRepository(repository, commit),
+        logging: new ecs.AwsLogDriver({
+          streamPrefix: `${this.stackName}-logging`,
+        }),
+        environment: {
+          REGION: this.region,
+        },
       },
-      memorySize: 128,
-      timeout: cdk.Duration.seconds(30),
-    });
-
-    // --- API Gateway HTTP API ---
-    const httpApi = new apigw.HttpApi(this, "HttpApi", {
-      apiName: `ratel-api-${this.stackName}`,
-      description: "Ratel API Gateway",
-    });
-
-    // Lambda integration
-    const lambdaIntegration = new HttpLambdaIntegration(
-      "LambdaIntegration",
-      apiLambda,
     );
 
-    // Add route for all methods and paths
-    httpApi.addRoutes({
-      path: "/{proxy+}",
-      methods: [apigw.HttpMethod.ANY],
-      integration: lambdaIntegration,
+    container.addPortMappings({
+      containerPort,
+      protocol: ecs.Protocol.TCP,
     });
 
-    // Add root path route
-    httpApi.addRoutes({
-      path: "/",
-      methods: [apigw.HttpMethod.ANY],
-      integration: lambdaIntegration,
+    const service = new ecs.FargateService(this, "Service", {
+      cluster,
+      taskDefinition: taskDefinition,
+      desiredCount,
+      maxHealthyPercent,
+      minHealthyPercent,
+      assignPublicIp: true,
     });
 
-    // Certificate for custom domain
-    const cert = new acm.Certificate(this, "Cert", {
-      domainName: apiDomain,
-      validation: acm.CertificateValidation.fromDns(zone),
+    const scaling = service.autoScaleTaskCount({
+      minCapacity: desiredCount,
+      maxCapacity,
     });
 
-    // Custom domain for API Gateway
-    const domainName = new apigw.DomainName(this, "CustomDomain", {
-      domainName: apiDomain,
-      certificate: cert,
+    scaling.scaleOnCpuUtilization("CpuScaling", {
+      targetUtilizationPercent: 70,
+      scaleInCooldown: Duration.seconds(60),
+      scaleOutCooldown: Duration.seconds(60),
     });
 
-    // API mapping
-    new apigw.ApiMapping(this, "ApiMapping", {
-      api: httpApi,
-      domainName: domainName,
-    });
-
-    const region = this.region;
-    const rid = region;
-
-    // Latency-based routing for multi-region deployment
-    new route53.CfnRecordSet(this, `LatencyA-${rid}`, {
-      hostedZoneId: zone.hostedZoneId,
-      name: apiDomain,
-      type: "A",
-      setIdentifier: `apigw-${rid}`,
-      region,
-      aliasTarget: {
-        dnsName: domainName.regionalDomainName,
-        hostedZoneId: domainName.regionalHostedZoneId,
-        evaluateTargetHealth: false,
+    const targetGroup = new elbv2.ApplicationTargetGroup(this, "TargetGroup", {
+      targets: [
+        service.loadBalancerTarget({
+          containerName: `${this.stackName}-Container`,
+          containerPort,
+        }),
+      ],
+      protocol: elbv2.ApplicationProtocol.HTTP,
+      vpc,
+      port: containerPort,
+      deregistrationDelay: Duration.seconds(30),
+      healthCheck: {
+        path: healthPath,
+        healthyHttpCodes: "200",
       },
     });
 
-    new route53.CfnRecordSet(this, `LatencyAAAA-${rid}`, {
-      hostedZoneId: zone.hostedZoneId,
-      name: apiDomain,
-      type: "AAAA",
-      setIdentifier: `apigw6-${rid}`,
-      region,
-      aliasTarget: {
-        dnsName: domainName.regionalDomainName,
-        hostedZoneId: domainName.regionalHostedZoneId,
-        evaluateTargetHealth: false,
-      },
-    });
-
-    // Regional domain for debugging/testing
-    const d = apiDomain.replace(`.${baseDomain}`, "");
-    const regionalDomain = `${this.region}.${d}`;
-    new route53.ARecord(this, "RegionalAliasV4", {
-      zone: zone,
-      recordName: regionalDomain,
-      target: route53.RecordTarget.fromAlias(
-        new r53Targets.ApiGatewayv2DomainProperties(
-          domainName.regionalDomainName,
-          domainName.regionalHostedZoneId,
-        ),
-      ),
-    });
-    new route53.AaaaRecord(this, "RegionalAliasV6", {
-      zone: zone,
-      recordName: regionalDomain,
-      target: route53.RecordTarget.fromAlias(
-        new r53Targets.ApiGatewayv2DomainProperties(
-          domainName.regionalDomainName,
-          domainName.regionalHostedZoneId,
-        ),
-      ),
+    listener.addTargetGroups("TgRuleApiHost", {
+      targetGroups: [targetGroup],
     });
   }
 }

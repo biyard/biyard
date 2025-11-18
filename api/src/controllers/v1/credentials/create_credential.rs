@@ -26,5 +26,19 @@ pub async fn create_credential_handler(
 
     tracing::debug!("Created credential: {:?}", credential.pk);
 
-    Ok(Json(credential.into()))
+    // Manually construct response to include the full API key (only returned on creation)
+    let response = CredentialResponse {
+        id: match &credential.pk {
+            Partition::Credential(id) => id.clone(),
+            _ => panic!("Invalid partition key for Credential"),
+        },
+        name: credential.name,
+        api_key_prefix: credential.api_key_prefix,
+        status: credential.status,
+        created_at: credential.created_at,
+        last_used_at: credential.last_used_at,
+        api_key, // Include the full API key on creation
+    };
+
+    Ok(Json(response))
 }

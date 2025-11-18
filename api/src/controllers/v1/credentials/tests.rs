@@ -24,7 +24,7 @@ async fn test_api_key_authentication_success() {
         response_type: CredentialResponse,
     };
     assert_eq!(create_status, 200);
-    let api_key = created.api_key.expect("Should have API key");
+    let api_key = created.api_key.clone();
 
     // Use the API key to list credentials (authenticate with Bearer token)
     let mut auth_headers = by_axum::axum::http::HeaderMap::new();
@@ -37,14 +37,14 @@ async fn test_api_key_authentication_success() {
         app: &app,
         path: "/v1/credentials",
         headers: auth_headers.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
 
     assert_eq!(status, 200, "Should authenticate with API key");
     assert!(!body.is_empty(), "Should return credentials");
 
     // Verify we got credentials for the correct account
-    let has_our_credential = body.iter().any(|c| c.pk == created.pk);
+    let has_our_credential = body.iter().any(|c| c.id == created.id);
     assert!(has_our_credential, "Should include the credential we created");
 }
 
@@ -89,13 +89,10 @@ async fn test_api_key_authentication_revoked_key() {
         response_type: CredentialResponse,
     };
     assert_eq!(create_status, 200);
-    let _api_key = created.api_key.expect("Should have API key");
+    let _api_key = created.api_key.clone();
 
     // Extract credential ID
-    let _credential_id = match &created.pk {
-        crate::Partition::Credential(id) => id.clone(),
-        _ => panic!("Expected Credential partition"),
-    };
+    let _credential_id = created.id.clone();
 
     // Revoke the credential using session auth
     // Note: Revoke handler has issues, so we'll skip this part for now
@@ -148,7 +145,7 @@ async fn test_api_key_updates_last_used_at() {
     };
     assert_eq!(create_status, 200);
     assert!(created.last_used_at.is_none(), "Should not have last_used_at initially");
-    let api_key = created.api_key.expect("Should have API key");
+    let api_key = created.api_key.clone();
 
     // Use the API key
     let mut auth_headers = by_axum::axum::http::HeaderMap::new();
@@ -161,7 +158,7 @@ async fn test_api_key_updates_last_used_at() {
         app: &app,
         path: "/v1/credentials",
         headers: auth_headers,
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(status, 200);
 
@@ -170,9 +167,9 @@ async fn test_api_key_updates_last_used_at() {
 
     // Check if last_used_at was updated by fetching the credential directly
     use crate::features::credentials::Credential;
-    use crate::EntityType;
+    use crate::{EntityType, Partition};
 
-    let updated_credential = Credential::get(&ddb, created.pk.clone(), Some(EntityType::Credential))
+    let updated_credential = Credential::get(&ddb, Partition::Credential(created.id.clone()), Some(EntityType::Credential))
         .await
         .expect("Should be able to query credential")
         .expect("Credential should exist");
@@ -208,9 +205,9 @@ async fn test_create_credential_success() {
 
     assert_eq!(status, 200);
     assert_eq!(body.name, credential_name, "Name should match");
-    assert!(body.api_key.is_some(), "Should return full API key on creation");
+    assert!(!body.api_key.is_empty(), "Should return full API key on creation");
     assert!(
-        body.api_key.as_ref().unwrap().starts_with("biyard_"),
+        body.api_key.starts_with("biyard_"),
         "API key should start with 'biyard_'"
     );
     assert!(
@@ -256,7 +253,7 @@ async fn test_create_credential_multiple() {
     assert_eq!(status2, 200);
 
     // Ensure they have different IDs and keys
-    assert_ne!(body1.pk, body2.pk, "Credentials should have different IDs");
+    assert_ne!(body1.id, body2.id, "Credentials should have different IDs");
     assert_ne!(
         body1.api_key, body2.api_key,
         "Credentials should have different API keys"
@@ -295,7 +292,7 @@ async fn test_list_credentials_empty() {
         app: &app,
         path: "/v1/credentials",
         headers: headers.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
 
     assert_eq!(status, 200);
@@ -340,20 +337,19 @@ async fn test_list_credentials_success() {
         app: &app,
         path: "/v1/credentials",
         headers: headers.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
 
     assert_eq!(status, 200);
     assert_eq!(body.len(), 2, "Should have 2 credentials");
 
     // Verify credentials are in the list
-    let ids: Vec<_> = body.iter().map(|c| c.pk.clone()).collect();
-    assert!(ids.contains(&created1.pk), "Should contain first credential");
-    assert!(ids.contains(&created2.pk), "Should contain second credential");
+    let ids: Vec<_> = body.iter().map(|c| c.id.clone()).collect();
+    assert!(ids.contains(&created1.id), "Should contain first credential");
+    assert!(ids.contains(&created2.id), "Should contain second credential");
 
-    // Verify full API keys are NOT returned in list
+    // Verify API key prefix is returned
     for cred in &body {
-        assert!(cred.api_key.is_none(), "Should not return full API key in list");
         assert!(
             !cred.api_key_prefix.is_empty(),
             "Should have api_key_prefix"
@@ -400,7 +396,7 @@ async fn test_list_credentials_isolation() {
         app: &app,
         path: "/v1/credentials",
         headers: headers1.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(list_status1, 200);
     assert_eq!(body1.len(), 1, "Account 1 should see only their credential");
@@ -410,14 +406,14 @@ async fn test_list_credentials_isolation() {
         app: &app,
         path: "/v1/credentials",
         headers: headers2.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(list_status2, 200);
     assert_eq!(body2.len(), 1, "Account 2 should see only their credential");
 
     // Ensure the credentials are different
     assert_ne!(
-        body1[0].pk, body2[0].pk,
+        body1[0].id, body2[0].id,
         "Different accounts should have different credentials"
     );
 }
@@ -460,21 +456,18 @@ async fn test_revoke_credential_success() {
     assert_eq!(create_status, 200);
     assert_eq!(created.status, CredentialStatus::Active);
 
-    // Extract credential ID from the Partition (for future use when revoke is fixed)
-    let _credential_id = match &created.pk {
-        crate::Partition::Credential(id) => id.clone(),
-        _ => panic!("Expected Credential partition"),
-    };
+    // Extract credential ID
+    let _credential_id = created.id.clone();
 
     // Verify the credential appears in the list
     let (list_status, _, list_body) = get! {
         app: &app,
         path: "/v1/credentials",
         headers: headers.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(list_status, 200, "Should be able to list credentials");
-    let found_cred = list_body.iter().find(|c| c.pk == created.pk);
+    let found_cred = list_body.iter().find(|c| c.id == created.id);
     assert!(found_cred.is_some(), "Credential should appear in list before revoking");
 
     // Note: There's currently an issue with direct .get() in revoke_credential_handler
@@ -505,7 +498,7 @@ async fn test_revoke_credential_success() {
         app: &app,
         path: "/v1/credentials",
         headers: headers.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(list_status, 200);
     let revoked_cred = list_body.iter().find(|c| c.pk == created.pk);
@@ -562,10 +555,7 @@ async fn test_revoke_credential_unauthorized() {
     assert_eq!(create_status, 200);
 
     // Extract credential ID
-    let credential_id = match &created.pk {
-        crate::Partition::Credential(id) => id.clone(),
-        _ => panic!("Expected Credential partition"),
-    };
+    let credential_id = created.id.clone();
 
     // Try to revoke it as account2
     let (status, _, _) = delete! {
@@ -585,10 +575,10 @@ async fn test_revoke_credential_unauthorized() {
         app: &app,
         path: "/v1/credentials",
         headers: headers1.clone(),
-        response_type: Vec<CredentialResponse>,
+        response_type: Vec<CredentialSummaryResponse>,
     };
     assert_eq!(list_status, 200);
-    let cred = list_body.iter().find(|c| c.pk == created.pk);
+    let cred = list_body.iter().find(|c| c.id == created.id);
     assert!(cred.is_some(), "Credential should still exist");
     assert_eq!(
         cred.unwrap().status,

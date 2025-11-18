@@ -55,6 +55,16 @@ impl PointBalance {
         }
     }
 
+    pub fn keys(
+        project_pk: Partition,
+        meta_user_id: String,
+        month: String,
+    ) -> (CompositePartition, EntityType) {
+        let pk = (project_pk, Partition::MetaUser(meta_user_id)).into();
+        let sk = EntityType::Month(month);
+        (pk, sk)
+    }
+
     pub fn add_points(&mut self, amount: i64) {
         self.balance += amount;
         self.total_earned += amount;

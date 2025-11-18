@@ -1,6 +1,9 @@
 import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
+import { RegionalClusterStack } from "../lib/regional-cluster-stack";
+import cluster from "cluster";
+import { RegionalServiceStack } from "../lib/regional-service-stack";
 
 const app = new App();
 const service = "biyard";
@@ -14,25 +17,36 @@ const webDomain = host;
 const consoleDomain = `console.${host}`;
 const apiDomain = `api.${host}`;
 const baseDomain = "biyard.co";
+const apiRepoName = "biyard/api";
+const commit = process.env.COMMIT!;
 
 const deployWeb = process.env.DEPLOY_WEB === "true";
 const deployConsole = process.env.DEPLOY_CONSOLE === "true";
 const deployAll = process.env.DEPLOY_ALL === "true";
 const deployDynamo = process.env.DEPLOY_DYNAMO === "true";
 
-// new RegionalServiceStack(app, `${stackName}-ap-northeast-2`, {
-//   env: {
-//     account: process.env.CDK_DEFAULT_ACCOUNT,
-//     region: "ap-northeast-2",
-//   },
-//   fullDomainName: host,
-//   healthCheckPath: "/version",
-//   commit: process.env.COMMIT!,
-//   pghost: process.env.PGHOST_AP!,
-//   enableDaemon: true,
-//   baseDomain,
-//   apiDomain,
-// });
+const clusterAp = new RegionalClusterStack(app, `${stackName}-cluster`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "ap-northeast-2",
+  },
+  baseDomain,
+  apiDomain,
+});
+
+new RegionalServiceStack(app, `${stackName}-api-ap-northeast-2`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "ap-northeast-2",
+  },
+  cluster: clusterAp,
+  repoName: apiRepoName,
+  commit,
+
+  containerPort: 3000,
+  maxCapacity: 20,
+  healthPath: "/version",
+});
 
 if (deployAll || deployWeb) {
   new GlobalAccelStack(app, "GlobalAccel", {
