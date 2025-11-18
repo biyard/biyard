@@ -62,18 +62,7 @@ export class GlobalAccelStack extends Stack {
 
       // If no file extension, it's a page route - append index.html
       if (!hasFileExtension) {
-        // Special handling for /admin route
-        if (uri === '/admin' || uri === '/admin/') {
-          request.uri = '/admin/index.html';
-        }
-        // For other routes without trailing slash, add /index.html
-        else if (!uri.endsWith('/')) {
-          request.uri = uri + '/index.html';
-        }
-        // For routes with trailing slash, add index.html
-        else {
-          request.uri = uri + 'index.html';
-        }
+          request.uri = '/index.html';
       }
 
       return request;

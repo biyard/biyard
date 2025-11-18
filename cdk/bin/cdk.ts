@@ -1,7 +1,9 @@
 import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
+import { GlobalTableStack } from "../lib/dynamodb-stack";
 
 const app = new App();
+const service = "biyard";
 
 const stackName = process.env.STACK;
 
@@ -15,6 +17,8 @@ const baseDomain = "biyard.co";
 
 const deployWeb = process.env.DEPLOY_WEB === "true";
 const deployConsole = process.env.DEPLOY_CONSOLE === "true";
+const deployAll = process.env.DEPLOY_ALL === "true";
+const deployDynamo = process.env.DEPLOY_DYNAMO === "true";
 
 // new RegionalServiceStack(app, `${stackName}-ap-northeast-2`, {
 //   env: {
@@ -30,7 +34,7 @@ const deployConsole = process.env.DEPLOY_CONSOLE === "true";
 //   apiDomain,
 // });
 
-if (deployWeb) {
+if (deployAll || deployWeb) {
   new GlobalAccelStack(app, "GlobalAccel", {
     stackName,
     env: {
@@ -46,7 +50,7 @@ if (deployWeb) {
   });
 }
 
-if (deployConsole) {
+if (deployAll || deployConsole) {
   new GlobalAccelStack(app, "Console", {
     stackName: `${stackName}-console`,
     env: {
@@ -62,9 +66,13 @@ if (deployConsole) {
   });
 }
 
-// new GlobalTableStack(app, `${stackName}-dynamodb`, {
-//   env: {
-//     account: process.env.CDK_DEFAULT_ACCOUNT,
-//     region: "ap-northeast-2",
-//   },
-// });
+if (deployAll || deployDynamo) {
+  new GlobalTableStack(app, `${stackName}-dynamodb`, {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: "ap-northeast-2",
+    },
+    stage: env,
+    service,
+  });
+}

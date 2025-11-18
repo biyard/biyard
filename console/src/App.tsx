@@ -9,6 +9,7 @@ import { SettingsPage } from "./features/settings/components/SettingsPage";
 import { CredentialsPage } from "./features/credentials/components/CredentialsPage";
 import { ProjectsPage } from "./features/projects/components/ProjectsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ConsoleLayout } from "./components/layout/ConsoleLayout";
 import { Toaster } from "./components/ui/toaster";
 import "./i18n/config";
 
@@ -35,7 +36,9 @@ function App() {
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
-                    <DashboardPage />
+                    <ConsoleLayout>
+                      <DashboardPage />
+                    </ConsoleLayout>
                   </ProtectedRoute>
                 }
               />
@@ -43,7 +46,9 @@ function App() {
                 path="/settings"
                 element={
                   <ProtectedRoute>
-                    <SettingsPage />
+                    <ConsoleLayout>
+                      <SettingsPage />
+                    </ConsoleLayout>
                   </ProtectedRoute>
                 }
               />
@@ -51,7 +56,9 @@ function App() {
                 path="/credentials"
                 element={
                   <ProtectedRoute>
-                    <CredentialsPage />
+                    <ConsoleLayout>
+                      <CredentialsPage />
+                    </ConsoleLayout>
                   </ProtectedRoute>
                 }
               />
@@ -59,7 +66,9 @@ function App() {
                 path="/projects"
                 element={
                   <ProtectedRoute>
-                    <ProjectsPage />
+                    <ConsoleLayout>
+                      <ProjectsPage />
+                    </ConsoleLayout>
                   </ProtectedRoute>
                 }
               />

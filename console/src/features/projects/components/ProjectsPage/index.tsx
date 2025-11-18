@@ -1,43 +1,29 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Loader2, Trash2, FolderOpen } from "lucide-react";
+import { Plus, Loader2, Trash2, FolderOpen } from "lucide-react";
 import { useController } from "./use-controller";
 
 export function ProjectsPage() {
   const ctrl = useController();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-6">
-            <div className="flex items-center">
-              <Link
-                to="/dashboard"
-                className="mr-4 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {ctrl.t.description}
-                </h1>
-              </div>
-            </div>
-            <button
-              onClick={() => ctrl.showCreateDialog.set(true)}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              {ctrl.t.createNew}
-            </button>
-          </div>
+    <div>
+      {/* Page Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {ctrl.t.description}
+          </h1>
         </div>
-      </header>
+        <button
+          onClick={() => ctrl.showCreateDialog.set(true)}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          {ctrl.t.createNew}
+        </button>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0">
+      <div>
           {ctrl.isLoading ? (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
               <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
@@ -119,8 +105,7 @@ export function ProjectsPage() {
               </table>
             </div>
           )}
-        </div>
-      </main>
+      </div>
 
       {/* Create Project Dialog */}
       {ctrl.showCreateDialog.get() && (

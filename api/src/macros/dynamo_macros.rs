@@ -16,10 +16,14 @@ macro_rules! transact_write {
 #[macro_export]
 macro_rules! transact_write_items {
     ($cli:expr, $tx:expr $(,)? ) => {{
-        $cli.transact_write_items()
-            .set_transact_items(Some($tx))
-            .send()
-            .await
-            .map_err(Into::<aws_sdk_dynamodb::Error>::into)
+        let mut iter = $tx.chunks(100);
+
+        while let Some(txs) = iter.next() {
+            $cli.transact_write_items()
+                .set_transact_items(Some(txs.to_vec()))
+                .send()
+                .await
+                .map_err(Into::<aws_sdk_dynamodb::Error>::into)?;
+        }
     }};
 }

@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::*;
 
 use serde_with::{DeserializeFromStr, SerializeDisplay};
@@ -13,6 +15,7 @@ use serde_with::{DeserializeFromStr, SerializeDisplay};
     PartialEq,
     Eq,
     OperationIo,
+    SubPartition,
 )]
 pub enum Partition {
     #[default]

@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{features::projects::ProjectStatus, *};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema, OperationIo)]
 pub struct ProjectResponse {
@@ -14,20 +14,11 @@ pub struct ProjectResponse {
     #[schemars(description = "Description of the project")]
     pub description: Option<String>,
 
-    #[schemars(description = "Monthly points supply")]
-    pub monthly_points_supply: i64,
-
     #[schemars(description = "Monthly token supply")]
     pub monthly_token_supply: i64,
 
-    #[schemars(description = "Exchange ratio for point-to-token conversion")]
-    pub exchange_ratio: f64,
-
-    #[schemars(description = "Estimated token value based on point supply")]
-    pub token_value: f64,
-
     #[schemars(description = "Project status")]
-    pub status: String,
+    pub status: ProjectStatus,
 
     #[schemars(description = "Creation timestamp")]
     pub created_at: i64,
@@ -38,7 +29,6 @@ pub struct ProjectResponse {
 
 impl From<crate::features::projects::Project> for ProjectResponse {
     fn from(project: crate::features::projects::Project) -> Self {
-        let token_value = project.calculate_token_value();
         let project_id = match &project.pk {
             Partition::Project(id) => id.clone(),
             _ => "".to_string(),
@@ -49,10 +39,7 @@ impl From<crate::features::projects::Project> for ProjectResponse {
             account_id: project.account_id,
             name: project.name,
             description: project.description,
-            monthly_points_supply: project.monthly_points_supply,
             monthly_token_supply: project.monthly_token_supply,
-            exchange_ratio: project.exchange_ratio,
-            token_value,
             status: project.status,
             created_at: project.created_at,
             updated_at: project.updated_at,

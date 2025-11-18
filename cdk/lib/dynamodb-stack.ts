@@ -4,13 +4,17 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
 
 export class GlobalTableStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: StackProps & { service: string; stage: string },
+  ) {
     super(scope, id, props);
 
-    const env = process.env.ENV;
+    const { stage, service } = props;
 
-    new dynamodb.Table(this, "GlobalTable", {
-      tableName: `ratel-${env}-main`,
+    const ddb = new dynamodb.Table(this, "GlobalTable", {
+      tableName: `${service}-${stage}-main`,
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -18,6 +22,30 @@ export class GlobalTableStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
       replicationRegions: ["eu-central-1", "us-east-1"],
       deletionProtection: true,
+    });
+    ddb.addGlobalSecondaryIndex({
+      indexName: "type-index",
+      projectionType: dynamodb.ProjectionType.ALL,
+      partitionKey: {
+        name: "sk",
+        type: dynamodb.AttributeType.STRING,
+      },
+    });
+
+    for (const i of [1, 2, 3, 4, 5, 6]) {
+      ddb.addGlobalSecondaryIndex({
+        indexName: `gsi${i}-index`,
+        projectionType: dynamodb.ProjectionType.ALL,
+        partitionKey: {
+          name: `gsi${i}_pk`,
+          type: dynamodb.AttributeType.STRING,
+        },
+        sortKey: { name: `gsi${i}_sk`, type: dynamodb.AttributeType.STRING },
+      });
+    }
+
+    new cdk.CfnOutput(this, "DDBTableName", {
+      value: ddb.tableName,
     });
   }
 }

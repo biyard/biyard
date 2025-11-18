@@ -2,5 +2,4 @@
 
 corepack enable
 corepack prepare pnpm@10.15.0 --activate
-pnpm install
-pnpm -C web dev
+make run

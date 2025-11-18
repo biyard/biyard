@@ -4,6 +4,9 @@ echo "start"
 yum update
 yum install -y awscli
 
+# set default dynamo_endpoint if absent
+DYNAMO_ENDPOINT=${DYNAMO_ENDPOINT:-http://localhost:4566}
+
 echo 'Waiting for LocalStack to be ready...'
 until aws dynamodb --endpoint-url=$DYNAMO_ENDPOINT  list-tables >/dev/null 2>&1; do
     sleep 2
