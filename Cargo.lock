@@ -794,7 +794,9 @@ dependencies = [
 
 [[package]]
 name = "by-macros"
-version = "0.6.13"
+version = "0.6.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "333d55d10d19f9cc71a44d79520ff3fa1fcd40cc183dddad6b56d09846fc8e90"
 dependencies = [
  "Inflector",
  "bigdecimal",

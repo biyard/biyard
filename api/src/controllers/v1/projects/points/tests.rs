@@ -396,7 +396,7 @@ mod tests {
         // List all transactions for the project
         let (status, _, response) = get! {
             app: &ctx.app,
-            path: format!("/v1/projects/{}/points", project_id),
+            path: format!("/v1/projects/{}/points/transactions", project_id),
             headers: headers.clone(),
             response_type: ListResponse<PointTransactionResponse>,
         };
@@ -433,7 +433,7 @@ mod tests {
         // List transactions without creating any
         let (status, _, response) = get! {
             app: &ctx.app,
-            path: format!("/v1/projects/{}/points", project_id),
+            path: format!("/v1/projects/{}/points/transactions", project_id),
             headers: headers.clone(),
             response_type: ListResponse<PointTransactionResponse>,
         };
@@ -488,7 +488,7 @@ mod tests {
         // List with pagination (limit 2)
         let (status, _, response) = get! {
             app: &ctx.app,
-            path: format!("/v1/projects/{}/points?limit=2", project_id),
+            path: format!("/v1/projects/{}/points/transactions?limit=2", project_id),
             headers: headers.clone(),
             response_type: ListResponse<PointTransactionResponse>,
         };

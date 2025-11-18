@@ -22,7 +22,7 @@ export interface StorybookStackProps extends StackProps {
 
 export class StorybookStack extends Stack {
   constructor(scope: Construct, id: string, props: StorybookStackProps) {
-    super(scope, id, { ...props, crossRegionReferences: true });
+    super(scope, id, { ...props });
 
     const { commit, webDomain, baseDomain, stage } = props;
     const zone = route53.HostedZone.fromLookup(this, "RootZone", {

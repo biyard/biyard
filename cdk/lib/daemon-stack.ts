@@ -15,7 +15,7 @@ export interface DaemonStackProps extends StackProps {
 
 export class DaemonStack extends Stack {
   constructor(scope: Construct, id: string, props: DaemonStackProps) {
-    super(scope, id, { ...props, crossRegionReferences: true });
+    super(scope, id, { ...props });
 
     const vpc = ec2.Vpc.fromLookup(this, "Vpc", { isDefault: true });
     const cluster = new ecs.Cluster(this, "Cluster", { vpc });

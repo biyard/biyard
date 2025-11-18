@@ -62,15 +62,14 @@ fn award_points(
 
     let (bal_pk, bal_sk) = PointBalance::keys(project.pk.clone(), to.clone(), month.clone());
 
-    let balance = PointBalance::updater(bal_pk, bal_sk)
+    let point_balance = PointBalance::updater(bal_pk, bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(to.clone())
         .with_month(month.clone())
+        .with_total_spent(0)  // Initialize if not exists
         .increase_total_earned(amount)
         .increase_balance(amount)
         .with_updated_at(now);
-
-    let point_balance = balance;
 
     let transaction = PointTransaction::new(
         project.pk.clone(),
@@ -108,17 +107,16 @@ fn deduct_points(
         amount, from, project.name
     );
 
-    let user_pk = Partition::MetaUser(from.clone());
-    let pk = CompositePartition(project.pk.clone(), user_pk);
-    let sk = EntityType::Month(month.clone());
-
     let now = time_utils::get_now();
 
     // Decrease balance and increase total_spent
-    let point_balance = PointBalance::updater(pk, sk)
+    let (bal_pk, bal_sk) = PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
+
+    let point_balance = PointBalance::updater(bal_pk, bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
+        .with_total_earned(0)  // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
@@ -163,27 +161,25 @@ fn transfer_points(
     let now = time_utils::get_now();
 
     // Deduct from sender
-    let from_user_pk = Partition::MetaUser(from.clone());
-    let from_pk = CompositePartition(project.pk.clone(), from_user_pk);
-    let from_sk = EntityType::Month(month.clone());
+    let (from_bal_pk, from_bal_sk) = PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
 
-    let from_balance = PointBalance::updater(from_pk, from_sk)
+    let from_balance = PointBalance::updater(from_bal_pk, from_bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
+        .with_total_earned(0)  // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
 
     // Add to recipient
-    let to_user_pk = Partition::MetaUser(to.clone());
-    let to_pk = CompositePartition(project.pk.clone(), to_user_pk);
-    let to_sk = EntityType::Month(month.clone());
+    let (to_bal_pk, to_bal_sk) = PointBalance::keys(project.pk.clone(), to.clone(), month.clone());
 
-    let to_balance = PointBalance::updater(to_pk, to_sk)
+    let to_balance = PointBalance::updater(to_bal_pk, to_bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(to.clone())
         .with_month(month.clone())
+        .with_total_spent(0)  // Initialize if not exists
         .increase_balance(amount)
         .increase_total_earned(amount)
         .with_updated_at(now);
@@ -238,17 +234,16 @@ fn exchange_points(
         amount, from, project.name
     );
 
-    let user_pk = Partition::MetaUser(from.clone());
-    let pk = CompositePartition(project.pk.clone(), user_pk);
-    let sk = EntityType::Month(month.clone());
-
     let now = time_utils::get_now();
 
     // Decrease balance and increase total_spent
-    let point_balance = PointBalance::updater(pk, sk)
+    let (bal_pk, bal_sk) = PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
+
+    let point_balance = PointBalance::updater(bal_pk, bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
+        .with_total_earned(0)  // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);

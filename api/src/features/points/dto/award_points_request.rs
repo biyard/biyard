@@ -1,7 +1,7 @@
 use crate::{features::points::TransactionType, *};
 use validator::Validate;
 
-#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, OperationIo, Validate)]
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, OperationIo)]
 pub struct TransactPointsRequest {
     #[schemars(
         description = "Month for point tracking (YYYY-MM format). If not provided, current month is used"
@@ -54,5 +54,26 @@ pub enum Transaction {
 impl TransactPointsRequest {
     pub fn default_month() -> String {
         time_utils::timestamp_to_yyyy_mm()
+    }
+}
+
+impl Validate for TransactPointsRequest {
+    fn validate(&self) -> std::result::Result<(), validator::ValidationErrors> {
+        let amount = match &self.tx {
+            Transaction::Award { amount, .. } => *amount,
+            Transaction::Deduct { amount, .. } => *amount,
+            Transaction::Transfer { amount, .. } => *amount,
+            Transaction::Exchange { amount, .. } => *amount,
+        };
+
+        if amount <= 0 {
+            let mut errors = validator::ValidationErrors::new();
+            let mut error = validator::ValidationError::new("range");
+            error.message = Some(std::borrow::Cow::Borrowed("Amount must be greater than 0"));
+            errors.add("amount", error);
+            return Err(errors);
+        }
+
+        Ok(())
     }
 }

@@ -29,7 +29,7 @@ export class RegionalClusterStack extends Stack {
   readonly alb: elbv2.ApplicationLoadBalancer;
 
   constructor(scope: Construct, id: string, props: RegionalClusterStackProps) {
-    super(scope, id, { ...props, crossRegionReferences: true });
+    super(scope, id, { ...props });
 
     const { apiDomain, baseDomain } = props;
     const zone = route53.HostedZone.fromLookup(this, "RootZone", {

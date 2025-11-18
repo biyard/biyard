@@ -4,6 +4,7 @@ REGION ?= $(shell aws configure get region)
 
 ENV ?= dev
 STACK ?= biyard-$(ENV)-stack
+COMMIT ?= $(shell git rev-parse --short HEAD)
 
 WEB_CDN_ID=$(shell aws cloudformation describe-stacks \
   --region us-east-1 \
@@ -29,7 +30,7 @@ CONSOLE_BUCKET=$(shell aws cloudformation describe-stacks \
   --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucket'].OutputValue" \
   --output text)
 
-BUILD_CDK_ENV=AWS_ACCESS_KEY_ID=$(ACCESS_KEY_ID) AWS_SECRET_ACCESS_KEY=$(SECRET_ACCESS_KEY) AWS_REGION=$(REGION) ENV=$(ENV) STACK=$(STACK)
+BUILD_CDK_ENV=AWS_ACCESS_KEY_ID=$(ACCESS_KEY_ID) AWS_SECRET_ACCESS_KEY=$(SECRET_ACCESS_KEY) AWS_REGION=$(REGION) ENV=$(ENV) STACK=$(STACK) COMMIT=$(COMMIT)
 
 deploy:
 	cd cdk && npm i

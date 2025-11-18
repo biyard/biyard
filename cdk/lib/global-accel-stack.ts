@@ -22,7 +22,7 @@ export interface GlobalAccelStackProps extends StackProps {
 
 export class GlobalAccelStack extends Stack {
   constructor(scope: Construct, id: string, props: GlobalAccelStackProps) {
-    super(scope, id, { ...props, crossRegionReferences: true });
+    super(scope, id, { ...props });
 
     const { webDomain, baseDomain } = props;
     const zone = route53.HostedZone.fromLookup(this, "RootZone", {

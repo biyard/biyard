@@ -18,7 +18,9 @@ export class GlobalTableStack extends Stack {
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      pointInTimeRecovery: true,
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: true,
+      },
       removalPolicy: RemovalPolicy.RETAIN,
       replicationRegions: ["eu-central-1", "us-east-1"],
       deletionProtection: true,

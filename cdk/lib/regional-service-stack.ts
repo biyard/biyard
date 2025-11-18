@@ -29,7 +29,7 @@ export interface RegionalServiceStackProps extends StackProps {
 
 export class RegionalServiceStack extends Stack {
   constructor(scope: Construct, id: string, props: RegionalServiceStackProps) {
-    super(scope, id, { ...props, crossRegionReferences: true });
+    super(scope, id, { ...props });
 
     const {
       commit,
