@@ -9,7 +9,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { useController } from "./use-controller";
-import { CredentialStatus } from "../../types/credential-status";
 
 export function CredentialsPage() {
   const ctrl = useController();

@@ -17,6 +17,18 @@ WEB_BUCKET=$(shell aws cloudformation describe-stacks \
   --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucket'].OutputValue" \
   --output text)
 
+CONSOLE_CDN_ID=$(shell aws cloudformation describe-stacks \
+  --region us-east-1 \
+  --stack-name $(STACK)-console \
+  --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue" \
+  --output text)
+
+CONSOLE_BUCKET=$(shell aws cloudformation describe-stacks \
+  --region us-east-1 \
+  --stack-name $(STACK)-console \
+  --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucket'].OutputValue" \
+  --output text)
+
 BUILD_CDK_ENV=AWS_ACCESS_KEY_ID=$(ACCESS_KEY_ID) AWS_SECRET_ACCESS_KEY=$(SECRET_ACCESS_KEY) AWS_REGION=$(REGION) ENV=$(ENV) STACK=$(STACK)
 
 deploy:
@@ -29,8 +41,13 @@ sync-landing: clean landing/dist
 	@aws s3 sync landing/dist s3://$(WEB_BUCKET) > /dev/null
 	@aws cloudfront create-invalidation --distribution-id $(WEB_CDN_ID) --paths "/*" > /dev/null
 
+sync-console: clean console/dist
+	@aws s3 sync console/dist s3://$(CONSOLE_BUCKET) > /dev/null
+	@aws cloudfront create-invalidation --distribution-id $(CONSOLE_CDN_ID) --paths "/*" > /dev/null
+
 clean:
 	rm -rf landing/dist
+	rm -rf console/dist
 
-landing/dist:
-	cd landing && make build
+%/dist:
+	cd $* && make build

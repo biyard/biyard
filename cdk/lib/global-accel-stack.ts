@@ -50,7 +50,7 @@ export class GlobalAccelStack extends Stack {
     );
     const spaRoutingFunction = new cloudfront.Function(
       this,
-      `SpaRoutingFunction`,
+      `${this.stackName}-SpaRoutingFunction`,
       {
         code: cloudfront.FunctionCode.fromInline(`
     function handler(event) {
