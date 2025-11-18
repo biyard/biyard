@@ -32,6 +32,7 @@ pub enum Partition {
 
     // Project
     Project(String),
+    MonthlyPoints(String),
 
     // Point Feature
     #[schemars(description = "Customer's mapping key")]

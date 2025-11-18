@@ -2,7 +2,7 @@ use crate::{utils::time_utils::timestamp_to_yyyy_mm, *};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema, OperationIo, DynamoEntity)]
 pub struct MonthlyPointAggregation {
-    pub pk: CompositePartition<ProjectPartition, MetaUserPartition>,
+    pub pk: CompositePartition<ProjectPartition, Partition>,
     pub sk: EntityType,
 
     pub supplied_points: i64,
@@ -12,13 +12,19 @@ pub struct MonthlyPointAggregation {
     pub exchanged_points: i64,
 
     pub updated_at: i64,
+
+    pub project_pk: Partition,
 }
 
 impl MonthlyPointAggregation {
-    pub fn new(project_pk: ProjectPartition, meta_user_pk: MetaUserPartition) -> Self {
+    pub fn new(project_pk: ProjectPartition) -> Self {
         Self {
-            pk: CompositePartition(project_pk, meta_user_pk),
-            sk: EntityType::MonthlyPointAggregation(timestamp_to_yyyy_mm()),
+            pk: CompositePartition(
+                project_pk.clone(),
+                Partition::MonthlyPoints(timestamp_to_yyyy_mm()),
+            ),
+            sk: EntityType::MonthlyPointAggregation,
+            project_pk: project_pk.into(),
             supplied_points: 0,
             traded_points: 0,
             awarded_points: 0,
@@ -30,15 +36,14 @@ impl MonthlyPointAggregation {
 
     pub fn keys(
         project_pk: ProjectPartition,
-        meta_user_pk: MetaUserPartition,
         date: String,
     ) -> (
-        CompositePartition<ProjectPartition, MetaUserPartition>,
+        CompositePartition<ProjectPartition, MonthlyPointsPartition>,
         EntityType,
     ) {
         (
-            CompositePartition(project_pk, meta_user_pk),
-            EntityType::MonthlyPointAggregation(date),
+            CompositePartition(project_pk, MonthlyPointsPartition(date)),
+            EntityType::MonthlyPointAggregation,
         )
     }
 }

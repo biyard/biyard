@@ -36,5 +36,5 @@ pub enum EntityType {
     PointTransaction(String),
     Token,
     TokenBalance,
-    MonthlyPointAggregation(String),
+    MonthlyPointAggregation,
 }

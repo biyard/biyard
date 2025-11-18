@@ -5,11 +5,6 @@ use crate::features::points::*;
 use crate::features::projects::*;
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo)]
-pub struct ListTransactionsResponse {
-    pub transactions: Vec<PointTransactionResponse>,
-}
-
 pub async fn list_transactions_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
