@@ -1,4 +1,7 @@
-use crate::{utils::time_utils::timestamp_to_yyyy_mm, *};
+use crate::{
+    utils::time_utils::{get_year_and_month, timestamp_to_yyyy_mm},
+    *,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema, OperationIo, DynamoEntity)]
 pub struct MonthlyPointAggregation {
@@ -13,7 +16,11 @@ pub struct MonthlyPointAggregation {
 
     pub updated_at: i64,
 
+    #[dynamo(index = "gsi1", pk, prefix = "MPA", name = "find_by_date")]
     pub project_pk: Partition,
+
+    #[dynamo(index = "gsi1", sk, name = "find_by_date")]
+    pub date: String,
 }
 
 impl MonthlyPointAggregation {
@@ -31,6 +38,7 @@ impl MonthlyPointAggregation {
             deducted_points: 0,
             exchanged_points: 0,
             updated_at: time_utils::get_now(),
+            date: timestamp_to_yyyy_mm(),
         }
     }
 

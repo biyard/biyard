@@ -18,5 +18,10 @@ pub struct Pagination {
 
     #[validate(range(min = 1, max = 100))]
     #[schemars(description = "Maximum number of items to return")]
-    pub limit: Option<i32>,
+    #[serde(default = "default_limit")]
+    pub limit: i32,
+}
+
+pub fn default_limit() -> i32 {
+    10
 }

@@ -16,7 +16,7 @@ pub async fn list_transactions_handler(
     params.validate()?;
 
     // Query transactions by project
-    let mut opt = PointTransactionQueryOption::builder().limit(params.limit.unwrap_or(100));
+    let mut opt = PointTransactionQueryOption::builder().limit(params.limit);
 
     if let Some(bookmark) = params.bookmark {
         opt = opt.bookmark(bookmark);
