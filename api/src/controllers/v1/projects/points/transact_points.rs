@@ -8,40 +8,44 @@ use chrono::prelude::*;
 pub async fn transact_points_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
-    Json(req): Json<TransactPointsRequest>,
+    Json(req): Json<Vec<TransactPointsRequest>>,
 ) -> Result<()> {
     debug!("Awarding points in project: {:?}", project);
 
-    // Validate the request
-    req.validate()?;
+    let mut txs = vec![];
+    for req in req {
+        // Validate the request
+        req.validate()?;
 
-    let TransactPointsRequest {
-        month,
-        description,
-        tx,
-    } = req;
+        let TransactPointsRequest {
+            month,
+            description,
+            tx,
+        } = req;
 
-    let txs = match tx {
-        Transaction::Award { to, amount } => {
-            award_points(project, to, amount, month, description).await?
-        }
-        _ => {
-            todo!()
-        }
-    };
+        let tx = match tx {
+            Transaction::Award { to, amount } => {
+                award_points(&project, to, amount, month, description)
+            }
+            _ => {
+                todo!()
+            }
+        };
+        txs.extend(tx);
+    }
 
     transact_write_items!(&cli, txs);
 
     Ok(())
 }
 
-async fn award_points(
-    project: Project,
+fn award_points(
+    project: &Project,
     to: String,
     amount: i64,
     month: String,
     description: Option<String>,
-) -> Result<Vec<TransactWriteItem>> {
+) -> Vec<TransactWriteItem> {
     debug!(
         "Awarding {} points to {} in project {}",
         amount, to, project.name
@@ -60,20 +64,29 @@ async fn award_points(
         .with_updated_at(now);
 
     let transaction = PointTransaction::new(
-        project.pk,
-        to,
-        month,
+        project.pk.clone(),
+        to.clone(),
+        month.clone(),
         TransactionType::Award,
         amount,
         None,
         description,
     );
 
+    let (pk, sk) =
+        MonthlyPointAggregation::keys(project.pk.clone().into(), to.clone().into(), month.clone());
+
+    let aggregation = MonthlyPointAggregation::updater(pk, sk)
+        .increase_awarded_points(amount)
+        .increase_supplied_points(amount)
+        .with_updated_at(now);
+
     // Business logic for awarding points can be added here
     // For now, we just log the action
 
-    Ok(vec![
+    vec![
         point_balance.transact_upsert_item(),
         transaction.create_transact_write_item(),
-    ])
+        aggregation.transact_upsert_item(),
+    ]
 }
