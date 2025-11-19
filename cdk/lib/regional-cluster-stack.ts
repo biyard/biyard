@@ -15,18 +15,25 @@ import {
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as r53Targets from "aws-cdk-lib/aws-route53-targets";
+import {
+  RegionalServiceStack,
+  RegionalServiceStackProps,
+} from "./regional-service-stack";
 
 export interface RegionalClusterStackProps extends StackProps {
   apiDomain: string;
   baseDomain: string;
+
+  // For Service stack
+  apiServiceProps: RegionalServiceStackProps;
 }
 
 export class RegionalClusterStack extends Stack {
   readonly cluster: ecs.Cluster;
   readonly vpc: ec2.IVpc;
-  readonly listener: elbv2.ApplicationListener;
   readonly taskExecutionRole: iam.Role;
   readonly alb: elbv2.ApplicationLoadBalancer;
+  readonly cert: acm.Certificate;
 
   constructor(scope: Construct, id: string, props: RegionalClusterStackProps) {
     super(scope, id, { ...props });
@@ -60,15 +67,14 @@ export class RegionalClusterStack extends Stack {
       internetFacing: true,
     });
 
-    const listener = alb.addListener("HttpsListener", {
-      port: 443,
-      certificates: [cert],
-      open: true,
-    });
+    this.vpc = vpc;
+    this.cluster = cluster;
+    this.taskExecutionRole = taskExecutionRole;
+    this.alb = alb;
+    this.cert = cert;
 
-    listener.addAction("RedirectToHttps", {
-      action: elbv2.ListenerAction.redirect({ protocol: "HTTPS", port: "443" }),
-    });
+    // Regional API service
+    new RegionalServiceStack(this, props.apiServiceProps);
 
     const d = apiDomain.replace(`.${baseDomain}`, "");
     const regionalDomain = `${this.region}.${d}`;
@@ -115,11 +121,5 @@ export class RegionalClusterStack extends Stack {
         evaluateTargetHealth: false,
       },
     });
-
-    this.vpc = vpc;
-    this.cluster = cluster;
-    this.listener = listener;
-    this.taskExecutionRole = taskExecutionRole;
-    this.alb = alb;
   }
 }

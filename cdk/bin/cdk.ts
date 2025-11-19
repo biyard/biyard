@@ -2,7 +2,6 @@ import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
 import { RegionalClusterStack } from "../lib/regional-cluster-stack";
-import { RegionalServiceStack } from "../lib/regional-service-stack";
 
 const app = new App();
 const service = "biyard";
@@ -19,7 +18,7 @@ const baseDomain = "biyard.co";
 const apiRepoName = "biyard/api";
 const commit = process.env.COMMIT!;
 
-const clusterAp = new RegionalClusterStack(app, `${stackName}-cluster`, {
+new RegionalClusterStack(app, `${stackName}-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "ap-northeast-2",
@@ -27,30 +26,16 @@ const clusterAp = new RegionalClusterStack(app, `${stackName}-cluster`, {
   stackName: `${stackName}-cluster`,
   baseDomain,
   apiDomain,
-});
 
-const serviceAp = new RegionalServiceStack(
-  app,
-  `${stackName}-api-ap-northeast-2`,
-  {
-    env: {
-      account: process.env.CDK_DEFAULT_ACCOUNT,
-      region: "ap-northeast-2",
-    },
-    stackName: `${stackName}-api-ap-northeast-2`,
-
-    // Pass individual resources from the cluster stack
-    vpc: clusterAp.vpc,
-    cluster: clusterAp.cluster,
-    listener: clusterAp.listener,
-
+  apiServiceProps: {
     repoName: apiRepoName,
-    commit,
     containerPort: 3000,
     maxCapacity: 20,
     healthPath: "/version",
+
+    commit,
   },
-);
+});
 
 new GlobalAccelStack(app, "GlobalAccel", {
   stackName,
