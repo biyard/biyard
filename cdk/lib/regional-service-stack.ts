@@ -14,36 +14,28 @@ import {
   aws_iam as iam,
 } from "aws-cdk-lib";
 import { Repository } from "aws-cdk-lib/aws-ecr";
-import { Construct } from "constructs";
+import { RegionalClusterStack } from "./regional-cluster-stack";
 
-export interface RegionalServiceStackProps extends StackProps {
+export interface RegionalServiceStackProps {
   repoName: string;
   commit: string;
-
-  // Pass individual resources instead of entire stack
-  vpc: ec2.IVpc;
-  cluster: ecs.ICluster;
-  listener: elbv2.ApplicationListener;
 
   healthPath?: string;
   maxCapacity?: number;
   containerPort?: number;
 }
 
-export class RegionalServiceStack extends Stack {
-  constructor(scope: Construct, id: string, props: RegionalServiceStackProps) {
-    super(scope, id, { ...props });
-
+export class RegionalServiceStack {
+  constructor(scope: RegionalClusterStack, props: RegionalServiceStackProps) {
     const {
       commit,
       repoName,
       containerPort = 3000,
       maxCapacity = 50,
       healthPath = "/health",
-      vpc,
-      cluster,
-      listener,
     } = props;
+    const { vpc, cluster, alb, cert, taskExecutionRole } = scope;
+
     const desiredCount = 2;
     const maxHealthyPercent = 200;
     const minHealthyPercent = 50;
@@ -51,16 +43,7 @@ export class RegionalServiceStack extends Stack {
     const cpu = "256";
 
     // Create task execution role in the service stack to avoid cross-stack dependencies
-    const taskExecutionRole = new iam.Role(this, "TaskExecutionRole", {
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
-          "service-role/AmazonECSTaskExecutionRolePolicy"
-        ),
-      ],
-    });
-
-    const taskDefinition = new ecs.TaskDefinition(this, "TaskDefinition", {
+    const taskDefinition = new ecs.TaskDefinition(scope, "TaskDefinition", {
       compatibility: ecs.Compatibility.FARGATE,
       cpu,
       memoryMiB,
@@ -68,19 +51,19 @@ export class RegionalServiceStack extends Stack {
     });
 
     const repository = Repository.fromRepositoryName(
-      this,
+      scope,
       "Repository",
       repoName,
     );
     const container = taskDefinition.addContainer(
-      `${this.stackName}-Container`,
+      `${scope.stackName}-Container`,
       {
         image: ecs.ContainerImage.fromEcrRepository(repository, commit),
         logging: new ecs.AwsLogDriver({
-          streamPrefix: `${this.stackName}-logging`,
+          streamPrefix: `${scope.stackName}-logging`,
         }),
         environment: {
-          REGION: this.region,
+          REGION: scope.region,
         },
       },
     );
@@ -90,7 +73,7 @@ export class RegionalServiceStack extends Stack {
       protocol: ecs.Protocol.TCP,
     });
 
-    const service = new ecs.FargateService(this, "Service", {
+    const service = new ecs.FargateService(scope, "Service", {
       cluster,
       taskDefinition: taskDefinition,
       desiredCount,
@@ -110,10 +93,10 @@ export class RegionalServiceStack extends Stack {
       scaleOutCooldown: Duration.seconds(60),
     });
 
-    const targetGroup = new elbv2.ApplicationTargetGroup(this, "TargetGroup", {
+    const targetGroup = new elbv2.ApplicationTargetGroup(scope, "TargetGroup", {
       targets: [
         service.loadBalancerTarget({
-          containerName: `${this.stackName}-Container`,
+          containerName: `${scope.stackName}-Container`,
           containerPort,
         }),
       ],
@@ -128,12 +111,18 @@ export class RegionalServiceStack extends Stack {
     });
 
     // Create a listener rule instead of modifying the listener's default action
-    // This avoids circular dependency between cluster and service stacks
-    new elbv2.ApplicationListenerRule(this, "ListenerRule", {
-      listener,
-      priority: 1,
-      conditions: [elbv2.ListenerCondition.pathPatterns(["/*"])],
-      action: elbv2.ListenerAction.forward([targetGroup]),
+    // Scope avoids circular dependency between cluster and service stacks
+    const listener = alb.addListener("HttpsListener", {
+      port: 443,
+      certificates: [cert],
+      open: true,
+    });
+
+    listener.addAction("RedirectToHttps", {
+      action: elbv2.ListenerAction.redirect({ protocol: "HTTPS", port: "443" }),
+    });
+    listener.addTargetGroups("TargetGroupRule", {
+      targetGroups: [targetGroup],
     });
   }
 }
