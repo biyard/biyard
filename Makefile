@@ -33,10 +33,10 @@ CONSOLE_BUCKET=$(shell aws cloudformation describe-stacks \
 BUILD_CDK_ENV=AWS_ACCESS_KEY_ID=$(ACCESS_KEY_ID) AWS_SECRET_ACCESS_KEY=$(SECRET_ACCESS_KEY) AWS_REGION=$(REGION) ENV=$(ENV) STACK=$(STACK) COMMIT=$(COMMIT)
 
 deploy:
-	cd cdk && npm i
-	cd cdk && $(BUILD_CDK_ENV) npm run build
-	cd cdk && $(BUILD_CDK_ENV) cdk synth
-	cd cdk && $(BUILD_CDK_ENV) cdk deploy --require-approval never $(AWS_FLAG) --all --concurrency 3
+	@cd cdk && npm i
+	@cd cdk && $(BUILD_CDK_ENV) npm run build
+	@cd cdk && $(BUILD_CDK_ENV) cdk synth
+	@cd cdk && $(BUILD_CDK_ENV) cdk deploy --require-approval never $(AWS_FLAG) --all --concurrency 5
 
 sync-landing: clean landing/dist
 	@aws s3 sync landing/dist s3://$(WEB_BUCKET) > /dev/null
