@@ -11,7 +11,7 @@ aws-config = "1.0"
 aws-sdk-dynamodb = "1.96.0"
 base64 = "0.22.1"
 bcrypt = "0.16"
-by-axum = { version = "0.2", git="https://github.com/biyard/ratel.git" }
+by-axum = { version = "0.2.16" }
 by-macros.workspace = true
 chrono = "0.4"
 percent-encoding = "2.3.2"
