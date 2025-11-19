@@ -17,6 +17,9 @@ pub enum EntityType {
     #[default]
     None,
 
+    // Timestamp
+    TS(i64), // TS#<unix_timestamp>
+
     // Account feature
     Account,
 
@@ -37,4 +40,10 @@ pub enum EntityType {
     Token,
     TokenBalance,
     MonthlyPointAggregation,
+
+    // Update
+    Update,
+
+    // Contact
+    Contact,
 }

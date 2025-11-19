@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 export function ContactSection() {
-  const { formData, handleChange, handleSubmit, isSubmitting } =
+  const { formData, handleChange, handleSubmit, isSubmitting, dropdownItems } =
     useContactForm();
 
   return (
@@ -61,7 +61,10 @@ export function ContactSection() {
 
           <div className="flex flex-col">
             <Label>Which topic best fit your needs?</Label>
-            <TopicDropdownMenu />
+            <TopicDropdownMenu
+              items={dropdownItems}
+              onChange={(key) => handleChange("topic", key)}
+            />
           </div>
 
           <div className="flex flex-col">

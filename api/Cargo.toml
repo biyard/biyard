@@ -31,6 +31,8 @@ hex = "0.4.3"
 tower-sessions = "0.14.0"
 async-trait = "0.1.89"
 tower-http = "0.6.6"
+btracing.workspace = true
+reqwest.workspace = true
 
 [dev-dependencies]
 tower = "0.5"

@@ -2,7 +2,6 @@ import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
 import { RegionalClusterStack } from "../lib/regional-cluster-stack";
-import cluster from "cluster";
 import { RegionalServiceStack } from "../lib/regional-service-stack";
 
 const app = new App();
@@ -52,9 +51,6 @@ const serviceAp = new RegionalServiceStack(
     healthPath: "/version",
   },
 );
-
-// Dependency is automatically handled by CDK through resource references
-// No need for explicit addDependency which can cause cyclic references
 
 new GlobalAccelStack(app, "GlobalAccel", {
   stackName,

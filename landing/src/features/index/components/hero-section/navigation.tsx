@@ -39,9 +39,9 @@ export function Navigation() {
           <MenuItem onClick={() => scrollToSection("our-team")}>
             Our Team
           </MenuItem>
-          <MenuItem onClick={() => scrollToSection("press-and-news")}>
+          {/* <MenuItem onClick={() => scrollToSection("press-and-news")}>
             Press & News
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem onClick={() => scrollToSection("contact")}>
             Contact Us
           </MenuItem>

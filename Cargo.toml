@@ -10,11 +10,14 @@ repository = "https://github.com/biyard/biyard"
 
 [workspace.dependencies]
 by-macros = { version = "0.6" }
+# by-macros = { version = "0.6", path = "../ratel/packages/by-macros" }
+# btracing = { version = "0.1", path = "../ratel/packages/btracing" }
+btracing = { version = "0.1.6" }
 
-serde = { version = "1.0.197", features = ["derive"] }
-serde_json = "1.0.133"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 tokio = { version = "1.40.0", features = ["full"] }
-tracing = "0.1.41"
+tracing = "0.1"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 reqwest = { version = "0.12.12", features = ["blocking", "json", "multipart"] }
 schemars = { version = "1.0.4", features = ["uuid1"] }

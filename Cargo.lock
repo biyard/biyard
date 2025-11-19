@@ -90,11 +90,13 @@ dependencies = [
  "aws-sdk-dynamodb",
  "base64 0.22.1",
  "bcrypt",
+ "btracing",
  "by-axum",
  "by-macros",
  "chrono",
  "hex",
  "percent-encoding",
+ "reqwest",
  "serde",
  "serde_dynamo",
  "serde_json",
@@ -758,6 +760,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "btracing"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cdc0fa8671a4229e4747953cd2b40029cba427867f5820662ffe1f6c48cfb38f"
+dependencies = [
+ "serde",
+ "tracing",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -794,9 +806,9 @@ dependencies = [
 
 [[package]]
 name = "by-macros"
-version = "0.6.14"
+version = "0.6.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "333d55d10d19f9cc71a44d79520ff3fa1fcd40cc183dddad6b56d09846fc8e90"
+checksum = "425045eb4abacc09069e2d6e4e70341171b161a6b45dda7e79c01a0a1f690560"
 dependencies = [
  "Inflector",
  "bigdecimal",

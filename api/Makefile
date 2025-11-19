@@ -26,6 +26,7 @@ BUILD_ENV ?= ENV=$(ENV) \
 						AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 						AWS_REGION=$(AWS_REGION) \
 						RUST_LOG=$(RUST_LOG) \
+						SLACK_HOOK=$(SLACK_HOOK) \
 
 run:
 	$(BUILD_ENV) cargo watch -x "run $(RUST_FLAG)" $(WATCH_TARGET)

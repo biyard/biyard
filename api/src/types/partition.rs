@@ -35,7 +35,6 @@ pub enum Partition {
     MonthlyPoints(String),
 
     // Point Feature
-    #[schemars(description = "Customer's mapping key")]
     MetaUser(String),
 
     // Token
@@ -43,4 +42,10 @@ pub enum Partition {
 
     // Token Balance
     TokenBalance(String),
+
+    // Contact
+    Contact(String), // CONTACT#{email}
+
+    // Update
+    Update(String), // UPDATE#{email}
 }

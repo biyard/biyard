@@ -8,17 +8,15 @@ import {
 import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
 
-export function TopicDropdownMenu() {
+export interface TopicDropdownMenuProps {
+  onChange: (key: string) => void;
+  items: { key: string; label: string }[];
+}
+
+export function TopicDropdownMenu({ onChange, items }: TopicDropdownMenuProps) {
   const [selected, setSelected] = useState(0);
 
-  const topics = [
-    "General Inquiry",
-    "Partnership",
-    "Investment",
-    "Technical Support",
-    "Media Inquiry",
-  ];
-  const selectedTopic = useMemo(() => topics[selected], [selected]);
+  const selectedTopic = useMemo(() => items[selected].label, [selected, items]);
 
   return (
     <DropdownMenu>
@@ -33,13 +31,16 @@ export function TopicDropdownMenu() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-gray-900 border-primary" align="start">
-        {topics.map((topic, index) => (
+        {items.map((topic, index) => (
           <DropdownMenuItem
             className="justify-between aria-selected:text-white"
             aria-selected={index === selected}
-            onClick={() => setSelected(index)}
+            onClick={() => {
+              setSelected(index);
+              onChange(topic.key);
+            }}
           >
-            <span>{topic}</span>
+            <span>{topic.label}</span>
             {index === selected && <Check className="!w-15 !h-15" />}
           </DropdownMenuItem>
         ))}
