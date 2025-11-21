@@ -33,6 +33,7 @@ async-trait = "0.1.89"
 tower-http = "0.6.6"
 btracing.workspace = true
 reqwest.workspace = true
+askama = "0.14.0"
 
 [dev-dependencies]
 tower = "0.5"
