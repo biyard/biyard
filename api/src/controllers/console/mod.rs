@@ -11,20 +11,9 @@ use tmpl_renderer::{IndexTmpl, PageMeta};
 use tower_http::services::ServeDir;
 
 pub fn route() -> Result<Router<AppState>> {
-    let path = option_env!("CONSOLE_PATH").unwrap_or("dist/console");
+    let path = option_env!("CONSOLE_FILE_PATH").unwrap_or("dist/console");
 
-    let static_routes = [
-        "/assets",
-        "/favicon.ico",
-        "/images",
-        "/animations",
-        "/documents",
-        "/logos",
-        "/sounds",
-        "/videos",
-        "/tailwind.css",
-        "/main.css",
-    ];
+    let static_routes = ["/assets", "/favicon.ico", "/tailwind.css", "/main.css"];
 
     let mut router = Router::new()
         .native_route("/", get(console_handler))
@@ -65,14 +54,15 @@ impl FromRequestParts<AppState> for ConsolePageTmpl {
             path = format!("{}?{}", path, q);
         }
 
-        let console_index_js = option_env!("CONSOLE_INDEX_JS").unwrap_or("index.js");
-        let console_index_css = option_env!("CONSOLE_INDEX_CSS").unwrap_or("index.css");
+        let base_path = config::get().console.base_path;
+        let index_js = config::get().console.index_js;
+        let index_css = config::get().console.index_css;
         let host = config::get().domain.to_string();
         let page = ConsolePage;
         let tmpl = IndexTmpl::new(page.title())
             .with_canonical_url(format!("https://{host}{path}"))
-            .with_index_js(format!("/console/{}", console_index_js))
-            .with_index_css(format!("/console/{}", console_index_css));
+            .with_index_js(format!("{}/{}", base_path, index_js))
+            .with_index_css(format!("{}/{}", base_path, index_css));
         Ok((page, tmpl))
     }
 }

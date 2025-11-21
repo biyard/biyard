@@ -46,7 +46,7 @@ export class GlobalAccelStack extends Stack {
       staticBucket,
       {
         originAccessIdentity: oai,
-      },
+      }
     );
     const spaRoutingFunction = new cloudfront.Function(
       this,
@@ -68,7 +68,7 @@ export class GlobalAccelStack extends Stack {
       return request;
     }
           `),
-      },
+      }
     );
 
     // CloudFront cert (must be in us-east-1). Use provided ARN or create DNS‑validated one.
@@ -92,6 +92,11 @@ export class GlobalAccelStack extends Stack {
       },
       defaultRootObject: "index.html",
       additionalBehaviors: {
+        // App-specific paths
+        "/landing/*": cachedS3Prop,
+        "/console/*": cachedS3Prop,
+
+        // Legacy paths (keep for backward compatibility)
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,
         "/icons/*": cachedS3Prop,
@@ -123,14 +128,14 @@ export class GlobalAccelStack extends Stack {
       zone,
       recordName: webDomain.replace(`.${baseDomain}`, ""), // e.g., 'dev'
       target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(distribution),
+        new targets.CloudFrontTarget(distribution)
       ),
     });
     new route53.AaaaRecord(this, "AliasV6", {
       zone,
       recordName: webDomain.replace(`.${baseDomain}`, ""),
       target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(distribution),
+        new targets.CloudFrontTarget(distribution)
       ),
     });
 

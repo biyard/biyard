@@ -6,11 +6,19 @@ pub mod aws_config;
 pub mod dynamo_config;
 
 #[derive(Debug)]
+pub struct PageConfig {
+    pub base_path: &'static str,
+    pub index_js: &'static str,
+    pub index_css: &'static str,
+}
+#[derive(Debug)]
 pub struct Config {
     pub env: Env,
     pub aws: AwsConfig,
     pub dynamo: DynamoConfig,
     pub domain: &'static str,
+    pub landing: PageConfig,
+    pub console: PageConfig,
 }
 
 impl Default for Config {
@@ -23,6 +31,16 @@ impl Default for Config {
             aws: AwsConfig::default(),
             dynamo: DynamoConfig::default(),
             domain: option_env!("DOMAIN").unwrap_or("dev.biyard.co"),
+            landing: PageConfig {
+                base_path: option_env!("LANDING_BASE_PATH").unwrap_or("/landing"),
+                index_js: option_env!("LANDING_INDEX_JS").unwrap_or("index.js"),
+                index_css: option_env!("LANDING_INDEX_CSS").unwrap_or("index.css"),
+            },
+            console: PageConfig {
+                base_path: option_env!("CONSOLE_BASE_PATH").unwrap_or("/console"),
+                index_js: option_env!("CONSOLE_INDEX_JS").unwrap_or("index.js"),
+                index_css: option_env!("CONSOLE_INDEX_CSS").unwrap_or("index.css"),
+            },
         }
     }
 }

@@ -29,7 +29,10 @@ fn main() {
         let (css, js) =
             build_web_project(workspace_root, "console", &console_dist, Some(base_path))
                 .expect("failed to build console");
-        println!("cargo:rustc-env=CONSOLE_PATH={}", console_dist.display());
+        println!(
+            "cargo:rustc-env=CONSOLE_FILE_PATH={}",
+            console_dist.display()
+        );
 
         let css_relative = css.strip_prefix(&console_dist).unwrap();
         let js_relative = js.strip_prefix(&console_dist).unwrap();
@@ -56,7 +59,10 @@ fn main() {
             build_web_project(workspace_root, "landing", &landing_dist, Some(base_path))
                 .expect("failed to build landing");
 
-        println!("cargo:rustc-env=LANDING_PATH={}", landing_dist.display());
+        println!(
+            "cargo:rustc-env=LANDING_FILE_PATH={}",
+            landing_dist.display()
+        );
         let css_relative = css.strip_prefix(&landing_dist).unwrap();
         let js_relative = js.strip_prefix(&landing_dist).unwrap();
         println!(

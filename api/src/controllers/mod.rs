@@ -12,8 +12,8 @@ pub fn route(app_state: AppState) -> Result<Router> {
         .nest("/v1", v1::route()?)
         // m1 is service operation admin endpoints
         .nest("/m1", m1::route()?)
-        .nest("/console", console::route()?)
-        .nest("/landing", landing::route()?)
+        .nest(config::get().console.base_path, console::route()?)
+        .nest(config::get().landing.base_path, landing::route()?)
         .layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_account_middleware,
