@@ -39,14 +39,21 @@ pub fn build_web_project(
     workspace_root: &Path,
     project_name: &str,
     dist_dst: &Path,
+    base_path: Option<&str>,
 ) -> std::io::Result<(PathBuf, PathBuf)> {
     let web_dir = workspace_root.join(project_name);
 
-    println!("cargo:warning=Building {} project...", project_name);
+    println!("Building {} project...", project_name);
 
-    let status = Command::new("make")
-        .arg("build")
-        .current_dir(&web_dir)
+    let mut cmd = Command::new("make");
+    cmd.arg("build").current_dir(&web_dir);
+
+    // Set VITE_BASE_PATH if provided
+    if let Some(path) = base_path {
+        cmd.env("VITE_BASE_PATH", path);
+    }
+
+    let status = cmd
         .status()
         .expect(&format!("failed to run `make build` for {}", project_name));
     if !status.success() {
@@ -62,7 +69,12 @@ pub fn build_web_project(
         .expect(&format!("no index-*.css found in {}", project_name));
     let js = newest_match(&format!("{}/index-*.js", assets_dir.display()))
         .expect(&format!("no index-*.js found in {}", project_name));
-
+    println!(
+        "Built {} project: {}, {}",
+        project_name,
+        css.display(),
+        js.display()
+    );
     println!("cargo:rerun-if-changed={}", web_dir.display());
     println!("cargo:rerun-if-changed={}", assets_dir.display());
     println!("cargo:rerun-if-changed={}", css.display());

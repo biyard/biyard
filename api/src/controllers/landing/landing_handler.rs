@@ -1,11 +1,13 @@
+use std::option;
+
 use tmpl_renderer::{BootData, PageMeta};
 
 use crate::axum::response::{Html, IntoResponse};
 use crate::{AppState, axum::extract::State};
 
-pub async fn console_handler(
+pub async fn landing_handler(
     State(_app_state): State<AppState>,
-    (page, tmpl): super::ConsolePageTmpl,
+    (page, tmpl): super::LandingPageTmpl,
 ) -> Result<impl IntoResponse, crate::Error> {
     let boot = BootData::new();
 

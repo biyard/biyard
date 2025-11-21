@@ -30,10 +30,10 @@ sha3 = "0.10.8"
 hex = "0.4.3"
 tower-sessions = "0.14.0"
 async-trait = "0.1.89"
-tower-http = "0.6.6"
 btracing.workspace = true
 reqwest.workspace = true
 tmpl_renderer = { path = "../tmpl_renderer" }
+tower-http = { version = "0.6.6", features = ["fs"] }
 
 [dev-dependencies]
 tower = "0.5"

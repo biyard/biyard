@@ -3,7 +3,11 @@ SERVICE ?= api
 COMMIT ?= $(shell git rev-parse --short HEAD)
 
 RUST_FLAG ?=
-WATCH_TARGET = -w src -w $(PWD)/..
+WEB_BUILD ?= true
+WATCH_TARGET = -w src -w $(PWD)/
+ifeq ($(WEB_BUILD),false)
+	WATCH_TARGET += -w ../console -w ../landing
+endif
 
 # BUILD_ENV
 ENV ?= local
@@ -19,6 +23,8 @@ DOMAIN ?= dev.biyard.co
 REPO_NAME ?= $(PROJECT)/$(SERVICE)
 ECR_NAME ?= $(shell aws ecr describe-repositories --repository-names $(REPO_NAME)  --query "repositories[0].repositoryUri" --output text)
 
+CONSOLE_BASE_PATH ?= /console
+LANDING_BASE_PATH ?= /landing
 
 BUILD_ENV ?= ENV=$(ENV) \
 						DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
@@ -28,7 +34,9 @@ BUILD_ENV ?= ENV=$(ENV) \
 						AWS_REGION=$(AWS_REGION) \
 						RUST_LOG=$(RUST_LOG) \
 						SLACK_HOOK=$(SLACK_HOOK) \
-						DOMAIN=$(DOMAIN)
+						DOMAIN=$(DOMAIN) \
+						CONSOLE_BASE_PATH=$(CONSOLE_BASE_PATH) \
+						LANDING_BASE_PATH=$(LANDING_BASE_PATH)
 
 run:
 	$(BUILD_ENV) cargo watch -x "run $(RUST_FLAG)" $(WATCH_TARGET)

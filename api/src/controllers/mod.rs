@@ -1,6 +1,7 @@
 use crate::*;
 
 mod console;
+mod landing;
 pub mod m1;
 pub mod v1;
 mod web;
@@ -12,11 +13,12 @@ pub fn route(app_state: AppState) -> Result<Router> {
         // m1 is service operation admin endpoints
         .nest("/m1", m1::route()?)
         .nest("/console", console::route()?)
-        .nest("/web", web::route()?)
+        .nest("/landing", landing::route()?)
         .layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_account_middleware,
         ))
+        .nest("/web", web::route()?)
         .with_state(app_state))
 }
 

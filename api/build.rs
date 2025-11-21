@@ -13,8 +13,8 @@ fn main() {
         println!("cargo:warning=Skipping web build due to SKIP_WEB_BUILD feature");
         return;
     }
-    if web_build_env == "ignore" {
-        println!("cargo:warning=Skipping web build due to WEB_BUILD=ignore");
+    if web_build_env == "false" {
+        println!("cargo:warning=Skipping web build due to WEB_BUILD=false");
         return;
     }
 
@@ -22,37 +22,52 @@ fn main() {
 
     let console_dist = manifest_dir.join("dist/console");
     let should_build_console =
-        web_build_env != "ignore" || !fs::exists(&console_dist).unwrap_or_default();
+        web_build_env != "false" || !fs::exists(&console_dist).unwrap_or_default();
 
     if should_build_console {
-        let (css, js) = build_web_project(workspace_root, "console", &console_dist)
-            .expect("failed to build console");
+        let base_path = option_env!("CONSOLE_BASE_PATH").unwrap_or("/console");
+        let (css, js) =
+            build_web_project(workspace_root, "console", &console_dist, Some(base_path))
+                .expect("failed to build console");
+        println!("cargo:rustc-env=CONSOLE_PATH={}", console_dist.display());
+
+        let css_relative = css.strip_prefix(&console_dist).unwrap();
+        let js_relative = js.strip_prefix(&console_dist).unwrap();
 
         println!(
             "cargo:rustc-env=CONSOLE_INDEX_CSS={}",
-            css.file_name().unwrap().to_string_lossy()
+            css_relative.display()
         );
+        println!("cargo:rustc-env=CONSOLE_INDEX_JS={}", js_relative.display());
         println!(
-            "cargo:rustc-env=CONSOLE_INDEX_JS={}",
-            js.file_name().unwrap().to_string_lossy()
+            "cargo:warning=Built console with JS: {} and CSS: {}",
+            js_relative.display(),
+            css_relative.display()
         );
     }
 
     let landing_dist = manifest_dir.join("dist/landing");
     let should_build_landing =
-        web_build_env != "ignore" || !fs::exists(&landing_dist).unwrap_or_default();
+        web_build_env != "false" || !fs::exists(&landing_dist).unwrap_or_default();
 
     if should_build_landing {
-        let (css, js) = build_web_project(workspace_root, "landing", &landing_dist)
-            .expect("failed to build landing");
+        let base_path = option_env!("LANDING_BASE_PATH").unwrap_or("/landing");
+        let (css, js) =
+            build_web_project(workspace_root, "landing", &landing_dist, Some(base_path))
+                .expect("failed to build landing");
 
+        println!("cargo:rustc-env=LANDING_PATH={}", landing_dist.display());
+        let css_relative = css.strip_prefix(&landing_dist).unwrap();
+        let js_relative = js.strip_prefix(&landing_dist).unwrap();
         println!(
             "cargo:rustc-env=LANDING_INDEX_CSS={}",
-            css.file_name().unwrap().to_string_lossy()
+            css_relative.display()
         );
+        println!("cargo:rustc-env=LANDING_INDEX_JS={}", js_relative.display());
         println!(
-            "cargo:rustc-env=LANDING_INDEX_JS={}",
-            js.file_name().unwrap().to_string_lossy()
+            "cargo:warning=Built landing with JS: {} and CSS: {}",
+            js_relative.display(),
+            css_relative.display()
         );
     }
 }

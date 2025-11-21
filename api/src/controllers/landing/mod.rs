@@ -4,31 +4,28 @@ use axum::{
     http::request::Parts,
     native_routing::{get, get_service},
 };
-mod console_handler;
+mod landing_handler;
 
-use console_handler::console_handler;
+use landing_handler::landing_handler;
 use tmpl_renderer::{IndexTmpl, PageMeta};
 use tower_http::services::ServeDir;
 
 pub fn route() -> Result<Router<AppState>> {
-    let path = option_env!("CONSOLE_PATH").unwrap_or("dist/console");
+    let path = option_env!("LANDING_PATH").unwrap_or("dist/landing");
 
     let static_routes = [
         "/assets",
         "/favicon.ico",
-        "/images",
-        "/animations",
-        "/documents",
         "/logos",
-        "/sounds",
-        "/videos",
         "/tailwind.css",
         "/main.css",
+        "/members",
+        "/services",
     ];
 
     let mut router = Router::new()
-        .native_route("/", get(console_handler))
-        .fallback(console_handler);
+        .native_route("/", get(landing_handler))
+        .fallback(landing_handler);
 
     for route in static_routes {
         router = router.nest_service(
@@ -40,19 +37,19 @@ pub fn route() -> Result<Router<AppState>> {
     Ok(router)
 }
 
-pub struct ConsolePage;
-impl PageMeta for ConsolePage {
+pub struct LandingPage;
+impl PageMeta for LandingPage {
     fn title(&self) -> &'static str {
-        "Biyard Console"
+        "Biyard - Blockchain Launchpad Platform"
     }
     fn description(&self) -> &'static str {
-        "Manage your blockchain projects on Biyard"
+        "Welcome to Biyard - Your Gateway to Blockchain Launchpads"
     }
 }
 
-pub type ConsolePageTmpl = (ConsolePage, IndexTmpl);
+pub type LandingPageTmpl = (LandingPage, IndexTmpl);
 
-impl FromRequestParts<AppState> for ConsolePageTmpl {
+impl FromRequestParts<AppState> for LandingPageTmpl {
     type Rejection = crate::Error;
 
     async fn from_request_parts(
@@ -65,14 +62,14 @@ impl FromRequestParts<AppState> for ConsolePageTmpl {
             path = format!("{}?{}", path, q);
         }
 
-        let console_index_js = option_env!("CONSOLE_INDEX_JS").unwrap_or("index.js");
-        let console_index_css = option_env!("CONSOLE_INDEX_CSS").unwrap_or("index.css");
+        let landing_index_js = option_env!("LANDING_INDEX_JS").unwrap_or("index.js");
+        let landing_index_css = option_env!("LANDING_INDEX_CSS").unwrap_or("index.css");
         let host = config::get().domain.to_string();
-        let page = ConsolePage;
+        let page = LandingPage;
         let tmpl = IndexTmpl::new(page.title())
             .with_canonical_url(format!("https://{host}{path}"))
-            .with_index_js(format!("/console/{}", console_index_js))
-            .with_index_css(format!("/console/{}", console_index_css));
+            .with_index_js(format!("/landing/{}", landing_index_js))
+            .with_index_css(format!("/landing/{}", landing_index_css));
         Ok((page, tmpl))
     }
 }

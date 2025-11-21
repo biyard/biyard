@@ -4,53 +4,53 @@ pub struct InitialQuery {
     data: serde_json::Value,
 }
 
-impl InitialQuery {
-    pub fn new<E>(
-        key: impl serde::Serialize,
-        value: impl serde::Serialize,
-    ) -> Result<Self, E>
-    where
-        E: From<serde_json::Error>,
-    {
-        Ok(Self {
-            key: serde_json::to_value(key)?,
-            data: serde_json::to_value(value)?,
-        })
-    }
-
-    pub fn new_infinite_list<E>(
-        key: impl serde::Serialize,
-        value: impl serde::Serialize,
-        bookmark: Option<String>,
-    ) -> Result<Self, E>
-    where
-        E: From<serde_json::Error>,
-    {
-        let page = serde_json::to_value(value)?;
-        Ok(Self {
-            key: serde_json::to_value(key)?,
-            data: serde_json::json!({
-                "pages": [page],
-                "pageParams": [bookmark]
-            }),
-        })
-    }
-}
-
 #[derive(serde::Serialize)]
 pub struct BootData {
     react_query: Vec<InitialQuery>,
 }
 
 impl BootData {
-    pub fn new(react_query: Vec<InitialQuery>) -> Self {
-        Self { react_query }
+    pub fn new() -> Self {
+        Self {
+            react_query: Vec::new(),
+        }
     }
 
-    pub fn to_json<E>(&self) -> Result<String, E>
+    pub fn add_query(
+        &mut self,
+        key: impl serde::Serialize,
+        value: impl serde::Serialize,
+    ) -> Result<(), serde_json::Error> {
+        let query = InitialQuery {
+            key: serde_json::to_value(key)?,
+            data: serde_json::to_value(value)?,
+        };
+        self.react_query.push(query);
+        Ok(())
+    }
+
+    pub fn add_infinite_list_query(
+        &mut self,
+        key: impl serde::Serialize,
+        value: impl serde::Serialize,
+        bookmark: Option<String>,
+    ) -> Result<(), serde_json::Error> {
+        let page = serde_json::to_value(value)?;
+        let query = InitialQuery {
+            key: serde_json::to_value(key)?,
+            data: serde_json::json!({
+                "pages": [page],
+                "pageParams": [bookmark]
+            }),
+        };
+        self.react_query.push(query);
+        Ok(())
+    }
+
+    pub fn to_json<E>(self) -> Result<String, E>
     where
         E: From<serde_json::Error>,
     {
-        Ok(serde_json::to_string(self)?.replace("</", "\\u003c/"))
+        Ok(serde_json::to_string(&self)?.replace("</", "\\u003c/"))
     }
 }

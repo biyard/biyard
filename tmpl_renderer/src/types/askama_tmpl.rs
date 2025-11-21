@@ -14,8 +14,8 @@ pub enum IndexType {
 #[template(path = "index.html")]
 pub struct IndexTmpl {
     title: String,
-    index_js: &'static str,
-    index_css: &'static str,
+    index_js: String,
+    index_css: String,
     boot_json: String,
     index_type: IndexType,
     canonical_url: Option<String>,
@@ -27,8 +27,8 @@ impl IndexTmpl {
     pub fn new(title: impl Into<String>) -> Self {
         IndexTmpl {
             title: title.into(),
-            index_js: "index.js",
-            index_css: "index.css",
+            index_js: "index.js".to_string(),
+            index_css: "index.css".to_string(),
             boot_json: "{}".to_string(),
             index_type: IndexType::IndexOnlyThisPage,
             canonical_url: None,
@@ -67,13 +67,19 @@ impl IndexTmpl {
         self
     }
 
-    pub fn with_index_js(mut self, index_js: &'static str) -> Self {
-        self.index_js = index_js;
+    pub fn with_index_js(mut self, index_js: impl Into<String>) -> Self {
+        self.index_js = index_js.into();
         self
     }
 
-    pub fn with_index_css(mut self, index_css: &'static str) -> Self {
-        self.index_css = index_css;
+    pub fn with_index_css(mut self, index_css: impl Into<String>) -> Self {
+        self.index_css = index_css.into();
         self
     }
+
+    pub fn to_html(&self) -> Result<String, RenderError> {
+        self.render()
+    }
 }
+
+pub type RenderError = askama::Error;
