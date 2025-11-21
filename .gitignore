@@ -10,3 +10,5 @@ contracts/typechain-types/
 contracts/coverage/
 .projectile
 /web/playwright-report/
+
+.vscode/settings.json
