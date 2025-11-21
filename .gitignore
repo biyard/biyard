@@ -12,3 +12,4 @@ contracts/coverage/
 /web/playwright-report/
 
 .vscode/settings.json
+*/.DS_Store

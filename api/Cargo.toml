@@ -33,10 +33,13 @@ async-trait = "0.1.89"
 tower-http = "0.6.6"
 btracing.workspace = true
 reqwest.workspace = true
-askama = "0.14.0"
+tmpl_renderer = { path = "../tmpl_renderer" }
 
 [dev-dependencies]
 tower = "0.5"
+
+[build-dependencies]
+tmpl_renderer = { path = "../tmpl_renderer" }
 
 [features]
 default = []

@@ -14,6 +14,7 @@ AWS_SECRET_ACCESS_KEY ?= $(shell aws configure get aws_secret_access_key $(AWS_F
 AWS_REGION ?= $(shell aws configure get region)
 AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output text)
 RUST_LOG ?= info
+DOMAIN ?= dev.biyard.co
 
 REPO_NAME ?= $(PROJECT)/$(SERVICE)
 ECR_NAME ?= $(shell aws ecr describe-repositories --repository-names $(REPO_NAME)  --query "repositories[0].repositoryUri" --output text)
@@ -27,6 +28,7 @@ BUILD_ENV ?= ENV=$(ENV) \
 						AWS_REGION=$(AWS_REGION) \
 						RUST_LOG=$(RUST_LOG) \
 						SLACK_HOOK=$(SLACK_HOOK) \
+						DOMAIN=$(DOMAIN)
 
 run:
 	$(BUILD_ENV) cargo watch -x "run $(RUST_FLAG)" $(WATCH_TARGET)

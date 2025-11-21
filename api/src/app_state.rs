@@ -17,7 +17,7 @@ impl AppState {
                 Credentials::builder()
                     .access_key_id(conf.aws.access_key_id)
                     .secret_access_key(conf.aws.secret_access_key)
-                    .provider_name("ratel")
+                    .provider_name("biyard")
                     .build(),
             )
             .region(Region::new(conf.aws.region))

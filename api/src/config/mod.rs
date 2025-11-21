@@ -10,6 +10,7 @@ pub struct Config {
     pub env: Env,
     pub aws: AwsConfig,
     pub dynamo: DynamoConfig,
+    pub domain: &'static str,
 }
 
 impl Default for Config {
@@ -21,6 +22,7 @@ impl Default for Config {
                 .expect("env: dev, local, prod"),
             aws: AwsConfig::default(),
             dynamo: DynamoConfig::default(),
+            domain: option_env!("DOMAIN").unwrap_or("dev.biyard.co"),
         }
     }
 }
