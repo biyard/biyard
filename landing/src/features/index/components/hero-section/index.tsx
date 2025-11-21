@@ -1,5 +1,5 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-
+import logo from "/logos/logo.json?url";
 export function HeroSection() {
   return (
     <section
@@ -12,12 +12,7 @@ export function HeroSection() {
       <div className="flex flex-col justify-center w-full min-h-screen max-w-wrapper z-2 py-100 max-tablet:max-w-full">
         <div className="flex flex-col gap-64 items-center w-full max-tablet:gap-48">
           <div className="flex flex-col gap-32 items-center w-full max-w-648 max-tablet:gap-24">
-            <DotLottieReact
-              className="w-208"
-              autoplay
-              src="/logos/logo.json"
-              speed={1}
-            />
+            <DotLottieReact className="w-208" autoplay src={logo} speed={1} />
             <h1 className="font-black text-center uppercase text-[64px]/89 tracking-[-0.69px] max-tablet:text-[44px]/65 max-tablet:w-full">
               DEEP <span className="text-primary">TECH.</span>
               <br />

@@ -5,8 +5,8 @@ COMMIT ?= $(shell git rev-parse --short HEAD)
 RUST_FLAG ?=
 WEB_BUILD ?= true
 WATCH_TARGET = -w src -w $(PWD)/
-ifeq ($(WEB_BUILD),false)
-	WATCH_TARGET += -w ../console -w ../landing
+ifneq ($(WEB_BUILD),false)
+	WATCH_TARGET += -w ../console/src -w ../landing/src
 endif
 
 # BUILD_ENV

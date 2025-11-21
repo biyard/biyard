@@ -1,5 +1,9 @@
 import { useTranslation } from "react-i18next";
 
+import ServiceRatelImg from "/services/ratel.png?url";
+import ServiceDagitImg from "/services/dagit.png?url";
+import ServiceSustainabilityImg from "/services/sus.png?url";
+
 export const WhatWeDoSection = {
   en: {
     title: 'What <span class="text-primary">we do</span>',
@@ -13,21 +17,21 @@ export const WhatWeDoSection = {
         description:
           "Strengthening democratic processes with transparent, secure digital solutions.",
         link: "https://ratel.foundation",
-        image: "/services/ratel.png",
+        image: ServiceRatelImg,
       },
       {
         id: "dagit",
         title: "Art & Culture",
         description:
           "Revolutionizing art management and marketplaces through decentralized platforms.",
-        image: "/services/dagit.png",
+        image: ServiceDagitImg,
       },
       {
         id: "sustainability",
         title: "Sustainability",
         description:
           "Ensuring our technology contributes positively to society and the planet.",
-        image: "/services/sus.png",
+        image: ServiceSustainabilityImg,
       },
     ],
 
@@ -58,21 +62,21 @@ export const WhatWeDoSection = {
         description:
           "Strengthening democratic processes with transparent, secure digital solutions.",
         link: "https://ratel.foundation",
-        image: "/services/ratel.png",
+        image: ServiceRatelImg,
       },
       {
         id: "dagit",
         title: "Art & Culture",
         description:
           "Revolutionizing art management and marketplaces through decentralized platforms.",
-        image: "/services/dagit.png",
+        image: ServiceDagitImg,
       },
       {
         id: "sustainability",
         title: "Sustainability",
         description:
           "Ensuring our technology contributes positively to society and the planet.",
-        image: "/services/sus.png",
+        image: ServiceSustainabilityImg,
       },
     ],
 

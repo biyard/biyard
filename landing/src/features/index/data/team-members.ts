@@ -1,12 +1,20 @@
 import { TeamMember } from "../types";
 
+import SummerImg from "/members/summer192.gif?url";
+import MinerImg from "/members/miner192.gif?url";
+import RosaImg from "/members/rosa192.gif?url";
+import RiaImg from "/members/ria192.gif?url";
+import VictorImg from "/members/victor192.gif?url";
+import RyanImg from "/members/ryan192.gif?url";
+import JHImg from "/members/jh192.gif?url";
+
 export const teamMembers: TeamMember[] = [
   {
     id: "summer",
     name: "Summer",
     role: "Founder & CEO",
     bio: "Our founder and CEO, Summer is an educator in the Korean Web3 industry, specializing in industry convergence and DAO technology and applications in the context of blockchain and Web3.0. In the UK, she is also a Venture Partner at Simsan Ventures. Simsan Ventures is a London-based venture capital firm focused on early stage and deep tech companies. In addition, she is the CIO of the Korea office of Simsan Ventures.",
-    image: "/members/summer192.gif",
+    image: SummerImg,
     email: "summer@biyard.co",
     linkedin: "https://www.linkedin.com/in/summerhyejinpark/",
   },
@@ -15,7 +23,7 @@ export const teamMembers: TeamMember[] = [
     name: "Miner",
     role: "CEO & CTO",
     bio: "Miner obtained his PhD in cryptography and computer security. He has published several SCI(E) papers in the field of security. He led the development of the messenger part of a game platform with 75 million concurrent users, and served as the development leader and a product owner of an EVM-based blockchain cloud platform. In addition, he has contributed various open source activities both private and public blockchains.",
-    image: "/members/miner192.gif",
+    image: MinerImg,
     email: "miner@biyard.co",
     website: "https://www.hackartist.io",
     linkedin: "https://www.linkedin.com/in/hackartist/",
@@ -26,7 +34,7 @@ export const teamMembers: TeamMember[] = [
     name: "Rosa",
     role: "Project Manager",
     bio: "Senior Project Manager with over 10 years of experience in developing and managing projects for major corporations and national research institutes in South Korea. She holds a Bachelor's and Master's degree in Engineering from Korea University, as well as a Master's in Technology Management from KAIST.",
-    image: "/members/rosa192.gif",
+    image: RosaImg,
     email: "rosa@biyard.co",
   },
   {
@@ -34,7 +42,7 @@ export const teamMembers: TeamMember[] = [
     name: "Ria",
     role: "UI/UX Designer",
     bio: "Ria is a talented UI/UX designer focused on creating intuitive and beautiful user experiences.",
-    image: "/members/ria192.gif",
+    image: RiaImg,
     email: "ria@biyard.co",
   },
   {
@@ -42,7 +50,7 @@ export const teamMembers: TeamMember[] = [
     name: "Victor",
     role: "Software Engineer",
     bio: "Victor is a computer science-trained developer specializing in web and mobile frontend development, as well as blockchain smart contract implementation. He leads the development of Incheon Universe, one of Biyard's flagship services.",
-    image: "/members/victor192.gif",
+    image: VictorImg,
     email: "victor@biyard.co",
     blog: "https://blog.naver.com/yepp0517",
     linkedin: "https://www.linkedin.com/in/victor-lee-606807302",
@@ -53,7 +61,7 @@ export const teamMembers: TeamMember[] = [
     name: "Ryan",
     role: "Software Engineer",
     bio: "Ryan is a developer who majored in Computer Science and primarily develops smart contracts and web applications that run on the blockchain. He contributes in developing various services at Biyard.",
-    image: "/members/ryan192.gif",
+    image: RyanImg,
     email: "ryan@biyard.co",
     linkedin: "https://www.linkedin.com/in/ryancho-kr",
     github: "https://github.com/RyanCho-0",
@@ -63,7 +71,7 @@ export const teamMembers: TeamMember[] = [
     name: "JH",
     role: "Researcher",
     bio: "JH is responsible for analyzing blockchain market trends and technologies. He also manages the company's investments and partnerships, contributing to strategic growth and collaboration.",
-    image: "/members/jh192.gif",
+    image: JHImg,
     email: "jihwan@biyard.co",
   },
 ];
