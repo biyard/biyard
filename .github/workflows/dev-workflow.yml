@@ -27,6 +27,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: dev
+          VITE_API_BASE_URL: https://api.dev.biyard.co
         run: |
           make sync-landing
 
@@ -61,6 +62,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: dev
+          VITE_API_BASE_URL: https://api.dev.biyard.co
         run: |
           make sync-console
 
@@ -123,7 +125,7 @@ jobs:
           path: ./api
       - name: Extract Web Artifacts
         run: |
-          mkdir -p dist
+          mkdir -p dist/console dist/landing
           tar xzf console-dist.tar.gz -C dist/console --strip-components=2
           tar xzf landing-dist.tar.gz -C dist/landing --strip-components=2
       - name: Building APIs
