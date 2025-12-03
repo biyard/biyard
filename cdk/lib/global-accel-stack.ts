@@ -10,6 +10,7 @@ import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as cdk from "aws-cdk-lib";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import { BehaviorOptions } from "aws-cdk-lib/aws-cloudfront";
 
 export interface GlobalAccelStackProps extends StackProps {
   commit: string;
@@ -52,88 +53,36 @@ export class GlobalAccelStack extends Stack {
       }
     );
 
-    // 2) API origin for Template Rendering (if provided)
-    const apiOrigin = props.apiConfig
-      ? new origins.HttpOrigin(props.apiConfig.domain, {
-          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-          httpsPort: 443,
-          originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
-          readTimeout: cdk.Duration.seconds(60),
-          keepaliveTimeout: cdk.Duration.seconds(5),
-        })
-      : undefined;
-
-    // 2.5) CloudFront Function for domain-based routing
-    const domainRoutingFunction = new cloudfront.Function(
-      this,
-      "DomainRoutingFunction",
-      {
-        code: cloudfront.FunctionCode.fromInline(`
-function handler(event) {
-  var request = event.request;
-  var host = request.headers.host.value;
-  var uri = request.uri;
-
-  // Static files (with file extensions) pass through unchanged
-  // They will be served from S3 via CloudFront behavior patterns (*.ico, *.js, etc.)
-  var hasFileExtension = /\\.[a-zA-Z0-9]+$/.test(uri);
-  if (hasFileExtension) {
-    return request;
-  }
-
-  // Already has /landing or /console prefix (avoid double-prefixing)
-  if (uri.startsWith('/landing') || uri.startsWith('/console')) {
-    return request;
-  }
-
-  // Console domain (console.dev.biyard.co) -> add /console prefix
-  // Routes to api.dev.biyard.co/console/*
-  if (host.startsWith('console.')) {
-    request.uri = '/console' + uri;
-  }
-  // Landing domain (dev.biyard.co) -> add /landing prefix
-  // Routes to api.dev.biyard.co/landing/*
-  else {
-    request.uri = '/landing' + uri;
-  }
-
-  return request;
-}
-        `),
-      }
-    );
-
     // CloudFront cert (must be in us-east-1). Use provided ARN or create DNS‑validated one.
-    const cachedS3Prop = {
+    const cachedS3Prop: BehaviorOptions = {
       origin: s3Origin,
       cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       compress: true,
     };
 
     // Determine default behavior based on whether API origin is provided
-    const defaultBehavior = apiOrigin
-      ? {
-          origin: apiOrigin,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          originRequestPolicy:
-            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          compress: true,
-          functionAssociations: [
-            {
-              function: domainRoutingFunction,
-              eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-            },
-          ],
-        }
-      : {
-          origin: s3Origin,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        };
+    let defaultBehavior = cachedS3Prop;
+
+    if (props.apiConfig) {
+      const apiOrigin = new origins.HttpOrigin(props.apiConfig.domain, {
+        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        httpsPort: 443,
+        originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
+        readTimeout: cdk.Duration.seconds(60),
+        keepaliveTimeout: cdk.Duration.seconds(5),
+        originPath: props.apiConfig.prefix,
+      });
+
+      defaultBehavior = {
+        origin: apiOrigin,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        compress: true,
+      };
+    }
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior,

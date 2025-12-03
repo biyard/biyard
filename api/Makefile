@@ -51,6 +51,13 @@ docker.build:
 	$(eval CONSOLE_INDEX_JS=$(shell basename $(shell ls dist/console/assets/index-*.js)))
 	$(eval CONSOLE_INDEX_CSS=$(shell basename $(shell ls dist/console/assets/index-*.css)))
 
+	@echo "=== Docker Build Debug Info ==="
+	@echo "LANDING_INDEX_JS=$(LANDING_INDEX_JS)"
+	@echo "LANDING_INDEX_CSS=$(LANDING_INDEX_CSS)"
+	@echo "CONSOLE_INDEX_JS=$(CONSOLE_INDEX_JS)"
+	@echo "CONSOLE_INDEX_CSS=$(CONSOLE_INDEX_CSS)"
+	@echo "==== End Debug Info ===="
+
 	@docker run --rm --name $(SERVICE) -v $(PWD)/..:/app -w /app/$(SERVICE) rust:slim-bookworm sh -c 'apt-get update && apt-get install -y libssl-dev pkg-config ca-certificates && $(BUILD_ENV) CARGO_TARGET_DIR=/app/$(SERVICE)/target cargo build --release $(RUST_FLAG)'
 
 	@docker build -t $(ECR_NAME):$(COMMIT) --no-cache -f Dockerfile $(PWD)/target/release
