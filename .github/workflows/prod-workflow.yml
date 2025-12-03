@@ -27,6 +27,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: prod
+          VITE_API_BASE_URL: https://api.biyard.co
         run: |
           make sync-landing
 
@@ -61,6 +62,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: prod
+          VITE_API_BASE_URL: https://api.biyard.co
         run: |
           make sync-console
 
@@ -111,11 +113,29 @@ jobs:
           components: clippy, rustfmt
           toolchain: stable
 
+      - name: Download Landing Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: landing-web-${{ github.sha }}
+          path: ./api
+      - name: Download Console Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: console-web-${{ github.sha }}
+          path: ./api
+      - name: Extract Web Artifacts
+        run: |
+          mkdir -p dist/console dist/landing
+          tar xzf console-dist.tar.gz -C dist/console --strip-components=2
+          tar xzf landing-dist.tar.gz -C dist/landing --strip-components=2
       - name: Building APIs
         env:
           REGION: ap-northeast-2
           ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+          DISABLE_ANSI: false
+          WEB_BUILD: false
 
           ENV: prod
           RUST_LOG: info
@@ -143,7 +163,11 @@ jobs:
       - name: Deploy
         env:
           ENV: prod
+          REGION: ap-northeast-2
+          ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           DOMAIN: biyard.co
+
         run: |
           npm i -g aws-cdk
           make deploy
