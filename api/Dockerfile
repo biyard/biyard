@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /v
 
 WORKDIR /usr/src/app
 COPY ./api ./bootstrap
-COPY ./dist ./dist
+# COPY ./dist ./dist
 
 EXPOSE 3000
 
