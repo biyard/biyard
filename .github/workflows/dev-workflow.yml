@@ -79,6 +79,7 @@ jobs:
 
   api:
     runs-on: ubuntu-22.04
+    needs: [web, console]
     defaults:
       run:
         working-directory: api
@@ -110,7 +111,21 @@ jobs:
         with:
           components: clippy, rustfmt
           toolchain: stable
-
+      - name: Download Landing Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: landing-web-${{ github.sha }}
+          path: ./api
+      - name: Download Console Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: console-web-${{ github.sha }}
+          path: ./api
+      - name: Extract Web Artifacts
+        run: |
+          mkdir -p api/dist/landing api/dist/console
+          tar xzf api/landing-dist.tar.gz -C api/dist/landing --strip-components=1
+          tar xzf api/console-dist.tar.gz -C api/dist/console --strip-components=1
       - name: Building APIs
         env:
           AWS_REGION: ap-northeast-2
@@ -118,7 +133,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
           DISABLE_ANSI: false
-
+          WEB_BUILD: false
           ENV: dev
           RUST_LOG: info
           DYNAMO_ENDPOINT: none

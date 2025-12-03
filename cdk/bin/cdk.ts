@@ -18,7 +18,7 @@ const baseDomain = "biyard.co";
 const apiRepoName = "biyard/api";
 const commit = process.env.COMMIT!;
 
-new RegionalClusterStack(app, `${stackName}-cluster`, {
+const clusterStack = new RegionalClusterStack(app, `${stackName}-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "ap-northeast-2",
@@ -49,6 +49,7 @@ new GlobalAccelStack(app, "GlobalAccel", {
   webDomain,
   apiDomain,
   baseDomain,
+  albDnsName: clusterStack.alb.loadBalancerDnsName,
 });
 
 new GlobalAccelStack(app, "Console", {
@@ -63,6 +64,7 @@ new GlobalAccelStack(app, "Console", {
   webDomain: consoleDomain,
   apiDomain,
   baseDomain,
+  albDnsName: clusterStack.alb.loadBalancerDnsName,
 });
 
 new GlobalTableStack(app, `${stackName}-dynamodb`, {
