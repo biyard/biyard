@@ -123,6 +123,8 @@ jobs:
           path: .
       - name: Extract Web Artifacts
         run: |
+          ls .
+          ls ./dist
           mkdir -p dist/landing dist/console
           tar xzf landing-dist.tar.gz -C dist/landing --strip-components=1
           tar xzf console-dist.tar.gz -C dist/console --strip-components=1
