@@ -120,17 +120,6 @@ function handler(event) {
       cookieBehavior: cloudfront.CacheCookieBehavior.all(),
     });
 
-    const originRequestPolicy = new cloudfront.OriginRequestPolicy(
-      this,
-      "OriginRequestPolicy",
-      {
-        originRequestPolicyName: `${id}-ForwardAll`,
-        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allViewer(),
-        queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
-        cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
-      }
-    );
-
     // CloudFront cert (must be in us-east-1). Use provided ARN or create DNS‑validated one.
     const cachedS3Prop = {
       origin: s3Origin,
@@ -143,7 +132,8 @@ function handler(event) {
       ? {
           origin: apiOrigin,
           cachePolicy: noCachePolicy,
-          originRequestPolicy: originRequestPolicy,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
