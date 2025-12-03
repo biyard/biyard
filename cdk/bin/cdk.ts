@@ -17,8 +17,7 @@ const apiDomain = `api.${host}`;
 const baseDomain = "biyard.co";
 const apiRepoName = "biyard/api";
 const commit = process.env.COMMIT!;
-
-const clusterStack = new RegionalClusterStack(app, `${stackName}-cluster`, {
+new RegionalClusterStack(app, `${stackName}-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "ap-northeast-2",
@@ -49,7 +48,7 @@ new GlobalAccelStack(app, "landing", {
   webDomain,
   baseDomain,
   apiConfig: {
-    domain: clusterStack.alb.loadBalancerDnsName,
+    domain: apiDomain,
     prefix: "/landing",
   },
 });
@@ -66,7 +65,7 @@ new GlobalAccelStack(app, "console", {
   webDomain: consoleDomain,
   baseDomain,
   apiConfig: {
-    domain: clusterStack.alb.loadBalancerDnsName,
+    domain: apiDomain,
     prefix: "/console",
   },
 });
