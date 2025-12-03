@@ -4,20 +4,21 @@ use axum::{
     http::request::Parts,
     native_routing::{get, get_service},
 };
-mod console_handler;
+mod landing_handler;
 
-use console_handler::console_handler;
+use landing_handler::landing_handler;
 use tmpl_renderer::{IndexTmpl, PageMeta};
 use tower_http::services::ServeDir;
 
 pub fn route() -> Result<Router<AppState>> {
-    let path = option_env!("CONSOLE_FILE_PATH").unwrap_or("dist/console");
+    // LANDING_FILE_PATH is set in build.rs
+    let path = option_env!("LANDING_FILE_PATH").unwrap_or("dist/landing");
 
     let static_routes = ["/assets", "/favicon.ico", "/tailwind.css", "/main.css"];
 
     let mut router = Router::new()
-        .native_route("/", get(console_handler))
-        .fallback(console_handler);
+        .native_route("/", get(landing_handler))
+        .fallback(landing_handler);
 
     for route in static_routes {
         router = router.nest_service(
@@ -29,19 +30,19 @@ pub fn route() -> Result<Router<AppState>> {
     Ok(router)
 }
 
-pub struct ConsolePage;
-impl PageMeta for ConsolePage {
+pub struct LandingPage;
+impl PageMeta for LandingPage {
     fn title(&self) -> &'static str {
-        "Biyard Console"
+        "Biyard - Blockchain Launchpad Platform"
     }
     fn description(&self) -> &'static str {
-        "Manage your blockchain projects on Biyard"
+        "Welcome to Biyard - Your Gateway to Blockchain Launchpads"
     }
 }
 
-pub type ConsolePageTmpl = (ConsolePage, IndexTmpl);
+pub type LandingPageTmpl = (LandingPage, IndexTmpl);
 
-impl FromRequestParts<AppState> for ConsolePageTmpl {
+impl FromRequestParts<AppState> for LandingPageTmpl {
     type Rejection = crate::Error;
 
     async fn from_request_parts(
@@ -54,11 +55,11 @@ impl FromRequestParts<AppState> for ConsolePageTmpl {
             path = format!("{}?{}", path, q);
         }
 
-        let base_path = config::get().console.base_path;
-        let index_js = config::get().console.index_js;
-        let index_css = config::get().console.index_css;
+        let base_path = config::get().landing.base_path;
+        let index_js = config::get().landing.index_js;
+        let index_css = config::get().landing.index_css;
         let host = config::get().domain.to_string();
-        let page = ConsolePage;
+        let page = LandingPage;
         let tmpl = IndexTmpl::new(page.title())
             .with_canonical_url(format!("https://{host}{path}"))
             .with_index_js(format!("{}/{}", base_path, index_js))

@@ -1,9 +1,10 @@
 import { IndexPage as RootPage } from "@/features/index/components/index-page";
+import faviconUrl from "/favicon.ico";
 
 export function IndexPage() {
   return (
     <>
-      <link href="/logos/favicon.ico" rel="icon" />
+      <link href={faviconUrl} rel="icon" />
       <link
         rel="apple-touch-icon"
         sizes="180x180"

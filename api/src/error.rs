@@ -1,7 +1,13 @@
+use tmpl_renderer::RenderError;
+
 use crate::*;
 
 #[derive(Debug, thiserror::Error, RestError, aide::OperationIo)]
 pub enum Error {
+    #[error("Web error: {0}")]
+    #[rest_error(code = 0)]
+    WebError(#[from] RenderError),
+
     #[error("Unknown")]
     #[rest_error(code = 1)]
     Unknown(String),
@@ -45,6 +51,8 @@ pub enum Error {
     Base64DecodingError(#[from] base64::DecodeError),
     #[error("Decoding error: {0}")]
     Utf8Decoding(#[from] std::str::Utf8Error),
+    #[error("SerdeJson error: {0}")]
+    SerdeJson(#[from] serde_json::Error),
 
     // Account errors (300-399)
     #[error("Email already exists")]
