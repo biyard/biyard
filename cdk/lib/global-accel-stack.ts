@@ -16,11 +16,11 @@ export interface GlobalAccelStackProps extends StackProps {
   stage: string;
 
   webDomain: string;
-  apiDomain: string;
   baseDomain: string;
-
-  // ALB DNS for SSR origin (optional - if not provided, defaults to S3-only)
-  albDnsName?: string;
+  apiConfig?: {
+    domain: string;
+    prefix: string;
+  };
 }
 
 export class GlobalAccelStack extends Stack {
@@ -52,9 +52,9 @@ export class GlobalAccelStack extends Stack {
       }
     );
 
-    // 2) ALB origin for SSR (if provided)
-    const albOrigin = props.albDnsName
-      ? new origins.HttpOrigin(props.albDnsName, {
+    // 2) API origin for Template Rendering (if provided)
+    const apiOrigin = props.apiConfig
+      ? new origins.HttpOrigin(props.apiConfig.domain, {
           protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
           httpsPort: 443,
           originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
@@ -74,22 +74,25 @@ function handler(event) {
   var host = request.headers.host.value;
   var uri = request.uri;
 
-  // Static files pass through unchanged
+  // Static files (with file extensions) pass through unchanged
+  // They will be served from S3 via CloudFront behavior patterns (*.ico, *.js, etc.)
   var hasFileExtension = /\\.[a-zA-Z0-9]+$/.test(uri);
   if (hasFileExtension) {
     return request;
   }
 
-  // Already has /landing or /console prefix
+  // Already has /landing or /console prefix (avoid double-prefixing)
   if (uri.startsWith('/landing') || uri.startsWith('/console')) {
     return request;
   }
 
-  // Console domain -> add /console prefix
+  // Console domain (console.dev.biyard.co) -> add /console prefix
+  // Routes to api.dev.biyard.co/console/*
   if (host.startsWith('console.')) {
     request.uri = '/console' + uri;
   }
-  // Landing domain (default) -> add /landing prefix
+  // Landing domain (dev.biyard.co) -> add /landing prefix
+  // Routes to api.dev.biyard.co/landing/*
   else {
     request.uri = '/landing' + uri;
   }
@@ -135,10 +138,10 @@ function handler(event) {
       compress: true,
     };
 
-    // Determine default behavior based on whether ALB is provided
-    const defaultBehavior = albOrigin
+    // Determine default behavior based on whether API origin is provided
+    const defaultBehavior = apiOrigin
       ? {
-          origin: albOrigin,
+          origin: apiOrigin,
           cachePolicy: noCachePolicy,
           originRequestPolicy: originRequestPolicy,
           viewerProtocolPolicy:
@@ -162,11 +165,6 @@ function handler(event) {
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior,
       additionalBehaviors: {
-        // App-specific paths (S3 CDN)
-        "/landing/*": cachedS3Prop,
-        "/console/*": cachedS3Prop,
-
-        // Legacy paths (keep for backward compatibility)
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,
         "/icons/*": cachedS3Prop,
@@ -194,7 +192,7 @@ function handler(event) {
 
       // Error responses for SPA routing (when using ALB)
       // When ALB returns 404, CloudFront will let the ALB handle it (for SPA fallback)
-      errorResponses: albOrigin
+      errorResponses: apiOrigin
         ? [
             {
               httpStatus: 404,

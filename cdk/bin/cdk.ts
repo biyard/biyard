@@ -37,34 +37,38 @@ const clusterStack = new RegionalClusterStack(app, `${stackName}-cluster`, {
   },
 });
 
-new GlobalAccelStack(app, "GlobalAccel", {
-  stackName,
+new GlobalAccelStack(app, "landing", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "us-east-1",
   },
+  stackName: process.env.WEB_STACK_NAME,
   stage: env,
   commit: process.env.COMMIT!,
 
   webDomain,
-  apiDomain,
   baseDomain,
-  albDnsName: clusterStack.alb.loadBalancerDnsName,
+  apiConfig: {
+    domain: clusterStack.alb.loadBalancerDnsName,
+    prefix: "/landing",
+  },
 });
 
-new GlobalAccelStack(app, "Console", {
-  stackName: `${stackName}-console`,
+new GlobalAccelStack(app, "console", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "us-east-1",
   },
+  stackName: process.env.CONSOLE_STACK_NAME,
   stage: env,
   commit: process.env.COMMIT!,
 
   webDomain: consoleDomain,
-  apiDomain,
   baseDomain,
-  albDnsName: clusterStack.alb.loadBalancerDnsName,
+  apiConfig: {
+    domain: clusterStack.alb.loadBalancerDnsName,
+    prefix: "/console",
+  },
 });
 
 new GlobalTableStack(app, `${stackName}-dynamodb`, {
