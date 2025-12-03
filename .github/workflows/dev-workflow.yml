@@ -124,8 +124,8 @@ jobs:
       - name: Extract Web Artifacts
         run: |
           mkdir -p dist
-          tar xzf landing-dist.tar.gz -C dist
-          tar xzf console-dist.tar.gz -C dist
+          tar xzf console-dist.tar.gz -C dist/console --strip-components=2
+          tar xzf landing-dist.tar.gz -C dist/landing --strip-components=2
       - name: Building APIs
         env:
           AWS_REGION: ap-northeast-2

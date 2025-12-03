@@ -103,23 +103,6 @@ function handler(event) {
       }
     );
 
-    // 3) Cache policies
-    const noCachePolicy = new cloudfront.CachePolicy(this, "NoCachePolicy", {
-      cachePolicyName: `${id}-NoCache`,
-      minTtl: cdk.Duration.seconds(0),
-      maxTtl: cdk.Duration.seconds(0),
-      defaultTtl: cdk.Duration.seconds(0),
-      enableAcceptEncodingGzip: true,
-      enableAcceptEncodingBrotli: true,
-      headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
-        "Authorization",
-        "Cookie",
-        "Host"
-      ),
-      queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-      cookieBehavior: cloudfront.CacheCookieBehavior.all(),
-    });
-
     // CloudFront cert (must be in us-east-1). Use provided ARN or create DNS‑validated one.
     const cachedS3Prop = {
       origin: s3Origin,
@@ -131,7 +114,7 @@ function handler(event) {
     const defaultBehavior = apiOrigin
       ? {
           origin: apiOrigin,
-          cachePolicy: noCachePolicy,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           viewerProtocolPolicy:
