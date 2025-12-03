@@ -115,12 +115,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: landing-web-${{ github.sha }}
-          path: .
+          path: ./api
       - name: Download Console Artifacts
         uses: actions/download-artifact@v4
         with:
           name: console-web-${{ github.sha }}
-          path: .
+          path: ./api
       - name: Extract Web Artifacts
         run: |
           ls .
