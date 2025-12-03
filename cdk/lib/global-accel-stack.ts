@@ -18,6 +18,9 @@ export interface GlobalAccelStackProps extends StackProps {
   webDomain: string;
   apiDomain: string;
   baseDomain: string;
+
+  // ALB DNS for SSR origin (optional - if not provided, defaults to S3-only)
+  albDnsName?: string;
 }
 
 export class GlobalAccelStack extends Stack {
@@ -48,26 +51,80 @@ export class GlobalAccelStack extends Stack {
         originAccessIdentity: oai,
       }
     );
-    const spaRoutingFunction = new cloudfront.Function(
+
+    // 2) ALB origin for SSR (if provided)
+    const albOrigin = props.albDnsName
+      ? new origins.HttpOrigin(props.albDnsName, {
+          protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+          httpsPort: 443,
+          originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
+          readTimeout: cdk.Duration.seconds(60),
+          keepaliveTimeout: cdk.Duration.seconds(5),
+        })
+      : undefined;
+
+    // 2.5) CloudFront Function for domain-based routing
+    const domainRoutingFunction = new cloudfront.Function(
       this,
-      `${this.stackName}-SpaRoutingFunction`,
+      "DomainRoutingFunction",
       {
         code: cloudfront.FunctionCode.fromInline(`
-    function handler(event) {
-      var request = event.request;
-      var uri = request.uri;
+function handler(event) {
+  var request = event.request;
+  var host = request.headers.host.value;
+  var uri = request.uri;
 
-      // Check if URI has a file extension
-      var hasFileExtension = /\\.[a-zA-Z0-9]+$/.test(uri);
+  // Static files pass through unchanged
+  var hasFileExtension = /\\.[a-zA-Z0-9]+$/.test(uri);
+  if (hasFileExtension) {
+    return request;
+  }
 
-      // If no file extension, it's a page route - append index.html
-      if (!hasFileExtension) {
-          request.uri = '/index.html';
+  // Already has /landing or /console prefix
+  if (uri.startsWith('/landing') || uri.startsWith('/console')) {
+    return request;
+  }
+
+  // Console domain -> add /console prefix
+  if (host.startsWith('console.')) {
+    request.uri = '/console' + uri;
+  }
+  // Landing domain (default) -> add /landing prefix
+  else {
+    request.uri = '/landing' + uri;
+  }
+
+  return request;
+}
+        `),
       }
+    );
 
-      return request;
-    }
-          `),
+    // 3) Cache policies
+    const noCachePolicy = new cloudfront.CachePolicy(this, "NoCachePolicy", {
+      cachePolicyName: `${id}-NoCache`,
+      minTtl: cdk.Duration.seconds(0),
+      maxTtl: cdk.Duration.seconds(0),
+      defaultTtl: cdk.Duration.seconds(0),
+      enableAcceptEncodingGzip: true,
+      enableAcceptEncodingBrotli: true,
+      headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+        "Authorization",
+        "Cookie",
+        "Host"
+      ),
+      queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+      cookieBehavior: cloudfront.CacheCookieBehavior.all(),
+    });
+
+    const originRequestPolicy = new cloudfront.OriginRequestPolicy(
+      this,
+      "OriginRequestPolicy",
+      {
+        originRequestPolicyName: `${id}-ForwardAll`,
+        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allViewer(),
+        queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+        cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
       }
     );
 
@@ -78,21 +135,34 @@ export class GlobalAccelStack extends Stack {
       compress: true,
     };
 
+    // Determine default behavior based on whether ALB is provided
+    const defaultBehavior = albOrigin
+      ? {
+          origin: albOrigin,
+          cachePolicy: noCachePolicy,
+          originRequestPolicy: originRequestPolicy,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+          compress: true,
+          functionAssociations: [
+            {
+              function: domainRoutingFunction,
+              eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+            },
+          ],
+        }
+      : {
+          origin: s3Origin,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        };
+
     const distribution = new cloudfront.Distribution(this, "Distribution", {
-      defaultBehavior: {
-        origin: s3Origin,
-        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        functionAssociations: [
-          {
-            function: spaRoutingFunction,
-            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          },
-        ],
-      },
-      defaultRootObject: "index.html",
+      defaultBehavior,
       additionalBehaviors: {
-        // App-specific paths
+        // App-specific paths (S3 CDN)
         "/landing/*": cachedS3Prop,
         "/console/*": cachedS3Prop,
 
@@ -121,6 +191,23 @@ export class GlobalAccelStack extends Stack {
       certificate: cert,
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
+
+      // Error responses for SPA routing (when using ALB)
+      // When ALB returns 404, CloudFront will let the ALB handle it (for SPA fallback)
+      errorResponses: albOrigin
+        ? [
+            {
+              httpStatus: 404,
+              responseHttpStatus: 404,
+              ttl: cdk.Duration.seconds(0),
+            },
+            {
+              httpStatus: 403,
+              responseHttpStatus: 403,
+              ttl: cdk.Duration.seconds(0),
+            },
+          ]
+        : undefined,
     });
 
     // ---- Route53 alias for the end-user domain → CloudFront ----
