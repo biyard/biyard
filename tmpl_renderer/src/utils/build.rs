@@ -43,7 +43,11 @@ pub fn build_web_project(
 ) -> std::io::Result<(PathBuf, PathBuf)> {
     let web_dir = workspace_root.join(project_name);
 
-    println!("Building {} project...", project_name);
+    println!(
+        "Building {} project... on {}",
+        project_name,
+        web_dir.display()
+    );
 
     let mut cmd = Command::new("make");
     cmd.arg("build").current_dir(&web_dir);
