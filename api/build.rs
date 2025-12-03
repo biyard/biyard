@@ -25,9 +25,8 @@ fn main() {
         web_build_env != "false" || !fs::exists(&console_dist).unwrap_or_default();
 
     if should_build_console {
-        let base_path = option_env!("CONSOLE_BASE_PATH").unwrap_or("/console");
         let (css, js) =
-            build_web_project(workspace_root, "console", &console_dist, Some(base_path))
+            build_web_project(workspace_root, "console", &console_dist, Some("/console"))
                 .expect("failed to build console");
         println!(
             "cargo:rustc-env=CONSOLE_FILE_PATH={}",
@@ -54,9 +53,8 @@ fn main() {
         web_build_env != "false" || !fs::exists(&landing_dist).unwrap_or_default();
 
     if should_build_landing {
-        let base_path = option_env!("LANDING_BASE_PATH").unwrap_or("/landing");
         let (css, js) =
-            build_web_project(workspace_root, "landing", &landing_dist, Some(base_path))
+            build_web_project(workspace_root, "landing", &landing_dist, Some("/landing"))
                 .expect("failed to build landing");
 
         println!(
