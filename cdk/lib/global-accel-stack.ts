@@ -40,7 +40,7 @@ export class GlobalAccelStack extends Stack {
 
     // 1) S3 for static assets
     const staticBucket = new s3.Bucket(this, "StaticBucket", {
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     const oai = new cloudfront.OriginAccessIdentity(this, "OAI");
@@ -66,7 +66,6 @@ export class GlobalAccelStack extends Stack {
     if (props.apiConfig) {
       const apiOrigin = new origins.HttpOrigin(props.apiConfig.domain, {
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-        httpsPort: 443,
         originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
         readTimeout: cdk.Duration.seconds(60),
         keepaliveTimeout: cdk.Duration.seconds(5),
@@ -86,6 +85,7 @@ export class GlobalAccelStack extends Stack {
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior,
+      defaultRootObject: "/",
       additionalBehaviors: {
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,
@@ -104,6 +104,9 @@ export class GlobalAccelStack extends Stack {
         "/*.svg": cachedS3Prop,
         "/*.avif": cachedS3Prop,
         "/*.png": cachedS3Prop,
+        "/*.jpg": cachedS3Prop,
+        "/*.jpeg": cachedS3Prop,
+        "/*.gif": cachedS3Prop,
         "/*.wasm": cachedS3Prop,
       },
 

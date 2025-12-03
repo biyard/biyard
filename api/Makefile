@@ -46,19 +46,22 @@ test:
 	$(BUILD_ENV) cargo test
 
 docker.build:
-	$(eval LANDING_INDEX_JS=$(shell basename $(shell ls dist/landing/assets/index-*.js)))
-	$(eval LANDING_INDEX_CSS=$(shell basename $(shell ls dist/landing/assets/index-*.css)))
-	$(eval CONSOLE_INDEX_JS=$(shell basename $(shell ls dist/console/assets/index-*.js)))
-	$(eval CONSOLE_INDEX_CSS=$(shell basename $(shell ls dist/console/assets/index-*.css)))
+	# set as relative paths under dist/landing and dist/console, e.g. "assets/index-<hash>.js"
+	$(eval LANDING_INDEX_JS=$(shell ls dist/landing/assets/index-*.js 2>/dev/null | sed 's|.*/dist/landing/||' | head -n1))
+	$(eval LANDING_INDEX_CSS=$(shell ls dist/landing/assets/index-*.css 2>/dev/null | sed 's|.*/dist/landing/||' | head -n1))
+	$(eval CONSOLE_INDEX_JS=$(shell ls dist/console/assets/index-*.js 2>/dev/null | sed 's|.*/dist/console/||' | head -n1))
+	$(eval CONSOLE_INDEX_CSS=$(shell ls dist/console/assets/index-*.css 2>/dev/null | sed 's|.*/dist/console/||' | head -n1))
 
-	@echo "=== Docker Build Debug Info ==="
-	@echo "LANDING_INDEX_JS=$(LANDING_INDEX_JS)"
-	@echo "LANDING_INDEX_CSS=$(LANDING_INDEX_CSS)"
-	@echo "CONSOLE_INDEX_JS=$(CONSOLE_INDEX_JS)"
-	@echo "CONSOLE_INDEX_CSS=$(CONSOLE_INDEX_CSS)"
-	@echo "==== End Debug Info ===="
 
-	@docker run --rm --name $(SERVICE) -v $(PWD)/..:/app -w /app/$(SERVICE) rust:slim-bookworm sh -c 'apt-get update && apt-get install -y libssl-dev pkg-config ca-certificates && $(BUILD_ENV) CARGO_TARGET_DIR=/app/$(SERVICE)/target cargo build --release $(RUST_FLAG)'
+	@docker run --rm --name $(SERVICE) \
+		-v $(PWD)/..:/app \
+		-w /app/$(SERVICE) \
+		rust:slim-bookworm \
+		sh -c '\
+			apt-get update && apt-get install -y libssl-dev pkg-config ca-certificates && \
+			$(BUILD_ENV) LANDING_INDEX_JS=$(LANDING_INDEX_JS) LANDING_INDEX_CSS=$(LANDING_INDEX_CSS) \
+			CONSOLE_INDEX_JS=$(CONSOLE_INDEX_JS) CONSOLE_INDEX_CSS=$(CONSOLE_INDEX_CSS) \
+			CARGO_TARGET_DIR=/app/$(SERVICE)/target cargo build --release $(RUST_FLAG)'
 
 	@docker build -t $(ECR_NAME):$(COMMIT) --no-cache -f Dockerfile $(PWD)/target/release
 
