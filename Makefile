@@ -6,7 +6,7 @@ ENV ?= dev
 STACK ?= biyard-$(ENV)-stack
 COMMIT ?= $(shell git rev-parse --short HEAD)
 
-WEB_STACK_NAME=$(STACK)-landing
+WEB_STACK_NAME=$(STACK)
 WEB_CDN_ID=$(shell aws cloudformation describe-stacks \
   --region us-east-1 \
   --stack-name $(WEB_STACK_NAME) \
