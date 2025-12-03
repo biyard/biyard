@@ -162,23 +162,6 @@ function handler(event) {
       certificate: cert,
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
-
-      // Error responses for SPA routing (when using ALB)
-      // When ALB returns 404, CloudFront will let the ALB handle it (for SPA fallback)
-      errorResponses: apiOrigin
-        ? [
-            {
-              httpStatus: 404,
-              responseHttpStatus: 404,
-              ttl: cdk.Duration.seconds(0),
-            },
-            {
-              httpStatus: 403,
-              responseHttpStatus: 403,
-              ttl: cdk.Duration.seconds(0),
-            },
-          ]
-        : undefined,
     });
 
     // ---- Route53 alias for the end-user domain → CloudFront ----
