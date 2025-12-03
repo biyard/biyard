@@ -46,11 +46,10 @@ test:
 	$(BUILD_ENV) cargo test
 
 docker.build:
-	# set as relative paths under dist/landing and dist/console, e.g. "assets/index-<hash>.js"
-	$(eval LANDING_INDEX_JS=$(shell ls dist/landing/assets/index-*.js 2>/dev/null | sed 's|.*/dist/landing/||' | head -n1))
-	$(eval LANDING_INDEX_CSS=$(shell ls dist/landing/assets/index-*.css 2>/dev/null | sed 's|.*/dist/landing/||' | head -n1))
-	$(eval CONSOLE_INDEX_JS=$(shell ls dist/console/assets/index-*.js 2>/dev/null | sed 's|.*/dist/console/||' | head -n1))
-	$(eval CONSOLE_INDEX_CSS=$(shell ls dist/console/assets/index-*.css 2>/dev/null | sed 's|.*/dist/console/||' | head -n1))
+	$(eval LANDING_INDEX_JS=assets/$(shell basename $(shell ls dist/landing/assets/index-*.js)))
+	$(eval LANDING_INDEX_CSS=assets/$(shell basename $(shell ls dist/landing/assets/index-*.css)))
+	$(eval CONSOLE_INDEX_JS=assets/$(shell basename $(shell ls dist/console/assets/index-*.js)))
+	$(eval CONSOLE_INDEX_CSS=assets/$(shell basename $(shell ls dist/console/assets/index-*.css)))
 
 
 	@docker run --rm --name $(SERVICE) \
