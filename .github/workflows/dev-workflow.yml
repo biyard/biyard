@@ -115,17 +115,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: landing-web-${{ github.sha }}
-          path: ./api
+          path: .
       - name: Download Console Artifacts
         uses: actions/download-artifact@v4
         with:
           name: console-web-${{ github.sha }}
-          path: ./api
+          path: .
       - name: Extract Web Artifacts
         run: |
-          mkdir -p api/dist/landing api/dist/console
-          tar xzf api/landing-dist.tar.gz -C api/dist/landing --strip-components=1
-          tar xzf api/console-dist.tar.gz -C api/dist/console --strip-components=1
+          mkdir -p dist/landing dist/console
+          tar xzf landing-dist.tar.gz -C dist/landing --strip-components=1
+          tar xzf console-dist.tar.gz -C dist/console --strip-components=1
       - name: Building APIs
         env:
           AWS_REGION: ap-northeast-2
