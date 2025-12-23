@@ -1,5 +1,5 @@
-const defaultApiBaseUrl = window.location.origin;
+const defaultApiUrl = window.location.origin;
 
 export const config = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || defaultApiBaseUrl,
+  apiUrl: import.meta.env.VITE_API_URL || defaultApiUrl,
 };

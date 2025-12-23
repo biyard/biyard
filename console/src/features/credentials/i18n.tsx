@@ -1,6 +1,22 @@
-// Feature-level credentials i18n (empty for now as CredentialsPage is the only component)
-// If more components are added later that share labels, move shared labels here
+import { useTranslation } from "react-i18next";
+
 export const credentials = {
-  en: {},
-  ko: {},
+  en: {
+    title: "API Credentials",
+  },
+  ko: {
+    title: "API 자격증명",
+  },
 };
+
+export interface CredentialsI18n {
+  title: string;
+}
+
+export function useCredentialsI18n(): CredentialsI18n {
+  const { t } = useTranslation();
+
+  return {
+    title: t("credentials.title"),
+  };
+}

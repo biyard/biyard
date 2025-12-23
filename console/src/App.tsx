@@ -11,7 +11,6 @@ import { ProjectsPage } from "./features/projects/components/ProjectsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ConsoleLayout } from "./components/layout/ConsoleLayout";
 import { Toaster } from "./components/ui/toaster";
-import "./i18n/config";
 
 const queryClient = new QueryClient({
   defaultOptions: {

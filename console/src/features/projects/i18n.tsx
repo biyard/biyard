@@ -1,10 +1,22 @@
+import { useTranslation } from "react-i18next";
+
 export const projects = {
-  en: {},
-  ko: {},
+  en: {
+    title: "Projects",
+  },
+  ko: {
+    title: "프로젝트",
+  },
 };
 
-export interface ProjectsI18n {}
+export interface ProjectsI18n {
+  title: string;
+}
 
 export function useProjectsI18n(): ProjectsI18n {
-  return {};
+  const { t } = useTranslation();
+
+  return {
+    title: t("projects.title"),
+  };
 }
