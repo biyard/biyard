@@ -136,7 +136,7 @@ The console integrates with Biyard's v1 DynamoDB-backed APIs:
 2. **Configure environment:**
    ```bash
    cp .env.example .env
-   # Edit .env to set VITE_API_BASE_URL if needed
+   # Edit .env to set VITE_API_URL if needed
    ```
 
 3. **Run development server:**
@@ -216,7 +216,7 @@ pnpm preview
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `VITE_API_BASE_URL` | `http://localhost:8080` | Backend API base URL |
+| `VITE_API_URL` | `http://localhost:3000` | Backend API URL |
 
 ## Security Considerations
 

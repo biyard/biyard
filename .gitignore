@@ -21,3 +21,6 @@ contracts/coverage/
 #OS
 */.DS_Store
 .dir-locals.el
+
+# Davia
+.davia/
