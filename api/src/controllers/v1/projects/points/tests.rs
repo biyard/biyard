@@ -667,4 +667,250 @@ mod tests {
         assert_eq!(status, 200);
         assert_eq!(response2.items[0].balance, 200);
     }
+
+    #[tokio::test]
+    async fn test_list_user_transactions_success() {
+        let ctx = TestContext::setup().await;
+        let (_account, headers) = &ctx.account1;
+
+        // Create a project
+        let (status, _, project) = post! {
+            app: &ctx.app,
+            path: "/v1/projects",
+            headers: headers.clone(),
+            body: {
+                "name": "User Transactions Test Project",
+                "monthly_points_supply": 1000000,
+                "monthly_token_supply": 10000,
+                "exchange_ratio": 1.0,
+            },
+            response_type: ProjectResponse,
+        };
+        assert_eq!(status, 200);
+
+        let project_id = project.id.to_string();
+        let meta_user_id = "user-tx-test";
+
+        // Create some transactions for the user using batch API
+        for i in 1..=3 {
+            let body = serde_json::json!([{
+                "tx_type": "Award",
+                "to": meta_user_id,
+                "amount": i * 100,
+                "description": format!("User Transaction {}", i),
+            }]);
+
+            let (status, _, _) = call! {
+                app: &ctx.app,
+                path: format!("/v1/projects/{}/points", project_id),
+                method: "POST",
+                body: axum::body::Body::from(serde_json::to_vec(&body).unwrap()),
+                headers: headers.clone(),
+                response_type: serde_json::Value
+            };
+            assert_eq!(status, 200);
+        }
+
+        // List transactions for the specific user
+        let (status, _, response) = get! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points/{}/transactions", project_id, meta_user_id),
+            headers: headers.clone(),
+            response_type: ListResponse<PointTransactionResponse>,
+        };
+
+        assert_eq!(status, 200);
+        assert_eq!(
+            response.items.len(),
+            3,
+            "Should have exactly 3 transactions for this user"
+        );
+
+        // Verify all transactions belong to the correct user
+        for tx in response.items {
+            assert_eq!(tx.meta_user_id, meta_user_id);
+        }
+    }
+
+    #[tokio::test]
+    async fn test_list_user_transactions_empty() {
+        let ctx = TestContext::setup().await;
+        let (_account, headers) = &ctx.account1;
+
+        // Create a project
+        let (status, _, project) = post! {
+            app: &ctx.app,
+            path: "/v1/projects",
+            headers: headers.clone(),
+            body: {
+                "name": "Empty User Transactions Project",
+                "monthly_points_supply": 1000000,
+                "monthly_token_supply": 10000,
+                "exchange_ratio": 1.0,
+            },
+            response_type: ProjectResponse,
+        };
+        assert_eq!(status, 200);
+
+        let project_id = project.id.to_string();
+        let meta_user_id = "user-no-tx";
+
+        // List transactions without creating any
+        let (status, _, response) = get! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points/{}/transactions", project_id, meta_user_id),
+            headers: headers.clone(),
+            response_type: ListResponse<PointTransactionResponse>,
+        };
+
+        assert_eq!(status, 200);
+        assert_eq!(response.items.len(), 0, "Should have no transactions");
+    }
+
+    #[tokio::test]
+    async fn test_list_user_transactions_isolation() {
+        let ctx = TestContext::setup().await;
+        let (_account, headers) = &ctx.account1;
+
+        // Create a project
+        let (status, _, project) = post! {
+            app: &ctx.app,
+            path: "/v1/projects",
+            headers: headers.clone(),
+            body: {
+                "name": "User Isolation Test Project",
+                "monthly_points_supply": 1000000,
+                "monthly_token_supply": 10000,
+                "exchange_ratio": 1.0,
+            },
+            response_type: ProjectResponse,
+        };
+        assert_eq!(status, 200);
+
+        let project_id = project.id.to_string();
+
+        // Award points to user1
+        let body = serde_json::json!([{
+            "tx_type": "Award",
+            "to": "user1",
+            "amount": 100,
+            "description": "User1 transaction",
+        }]);
+
+        let (status, _, _) = call! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points", project_id),
+            method: "POST",
+            body: axum::body::Body::from(serde_json::to_vec(&body).unwrap()),
+            headers: headers.clone(),
+            response_type: serde_json::Value
+        };
+        assert_eq!(status, 200);
+
+        // Award points to user2
+        let body = serde_json::json!([{
+            "tx_type": "Award",
+            "to": "user2",
+            "amount": 200,
+            "description": "User2 transaction",
+        }]);
+
+        let (status, _, _) = call! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points", project_id),
+            method: "POST",
+            body: axum::body::Body::from(serde_json::to_vec(&body).unwrap()),
+            headers: headers.clone(),
+            response_type: serde_json::Value
+        };
+        assert_eq!(status, 200);
+
+        // Get user1's transactions
+        let (status, _, response1) = get! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points/user1/transactions", project_id),
+            headers: headers.clone(),
+            response_type: ListResponse<PointTransactionResponse>,
+        };
+        assert_eq!(status, 200);
+        assert_eq!(response1.items.len(), 1);
+        assert_eq!(response1.items[0].meta_user_id, "user1");
+        assert_eq!(response1.items[0].amount, 100);
+
+        // Get user2's transactions
+        let (status, _, response2) = get! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points/user2/transactions", project_id),
+            headers: headers.clone(),
+            response_type: ListResponse<PointTransactionResponse>,
+        };
+        assert_eq!(status, 200);
+        assert_eq!(response2.items.len(), 1);
+        assert_eq!(response2.items[0].meta_user_id, "user2");
+        assert_eq!(response2.items[0].amount, 200);
+    }
+
+    #[tokio::test]
+    async fn test_list_user_transactions_with_pagination() {
+        let ctx = TestContext::setup().await;
+        let (_account, headers) = &ctx.account1;
+
+        // Create a project
+        let (status, _, project) = post! {
+            app: &ctx.app,
+            path: "/v1/projects",
+            headers: headers.clone(),
+            body: {
+                "name": "User Pagination Test Project",
+                "monthly_points_supply": 1000000,
+                "monthly_token_supply": 10000,
+                "exchange_ratio": 1.0,
+            },
+            response_type: ProjectResponse,
+        };
+        assert_eq!(status, 200);
+
+        let project_id = project.id.to_string();
+        let meta_user_id = "user-pagination";
+
+        // Create multiple transactions for the user
+        for i in 1..=5 {
+            let body = serde_json::json!([{
+                "tx_type": "Award",
+                "to": meta_user_id,
+                "amount": i * 10,
+                "description": format!("TX {}", i),
+            }]);
+
+            let (status, _, _) = call! {
+                app: &ctx.app,
+                path: format!("/v1/projects/{}/points", project_id),
+                method: "POST",
+                body: axum::body::Body::from(serde_json::to_vec(&body).unwrap()),
+                headers: headers.clone(),
+                response_type: serde_json::Value
+            };
+            assert_eq!(status, 200);
+        }
+
+        // List with pagination (limit 2)
+        let (status, _, response) = get! {
+            app: &ctx.app,
+            path: format!("/v1/projects/{}/points/{}/transactions?limit=2", project_id, meta_user_id),
+            headers: headers.clone(),
+            response_type: ListResponse<PointTransactionResponse>,
+        };
+
+        assert_eq!(status, 200);
+        assert_eq!(response.items.len(), 2, "Should return only 2 transactions");
+        assert!(
+            response.bookmark.is_some(),
+            "Should have bookmark for next page"
+        );
+
+        // Verify all transactions belong to the correct user
+        for tx in response.items {
+            assert_eq!(tx.meta_user_id, meta_user_id);
+        }
+    }
 }
