@@ -9,10 +9,12 @@ pub async fn transact_points_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
     Json(req): Json<Vec<TransactPointsRequest>>,
-) -> Result<()> {
+) -> Result<Json<Vec<TransactPointsResponse>>> {
     debug!("Awarding points in project: {:?}", project);
 
     let mut txs = vec![];
+    let mut responses = vec![];
+
     for req in req {
         // Validate the request
         req.validate()?;
@@ -23,7 +25,7 @@ pub async fn transact_points_handler(
             tx,
         } = req;
 
-        let tx = match tx {
+        let (write_items, tx_responses) = match tx {
             Transaction::Award { to, amount } => {
                 award_points(&project, to, amount, month, description)
             }
@@ -37,12 +39,13 @@ pub async fn transact_points_handler(
                 exchange_points(&project, from, amount, month, description)
             }
         };
-        txs.extend(tx);
+        txs.extend(write_items);
+        responses.extend(tx_responses);
     }
 
     transact_write_items!(&cli, txs);
 
-    Ok(())
+    Ok(Json(responses))
 }
 
 fn award_points(
@@ -51,7 +54,7 @@ fn award_points(
     amount: i64,
     month: String,
     description: Option<String>,
-) -> Vec<TransactWriteItem> {
+) -> (Vec<TransactWriteItem>, Vec<TransactPointsResponse>) {
     debug!(
         "Awarding {} points to {} in project {}",
         amount, to, project.name
@@ -81,6 +84,8 @@ fn award_points(
         description,
     );
 
+    let transaction_id = transaction.sk.to_string();
+
     let (pk, sk) = MonthlyPointAggregation::keys(project.pk.clone().into(), month.clone());
 
     let aggregation = MonthlyPointAggregation::updater(pk, sk)
@@ -88,11 +93,22 @@ fn award_points(
         .increase_supplied_points(amount)
         .with_updated_at(now);
 
-    vec![
-        point_balance.transact_upsert_item(),
-        transaction.create_transact_write_item(),
-        aggregation.transact_upsert_item(),
-    ]
+    let response = TransactPointsResponse {
+        transaction_id,
+        month: month.clone(),
+        meta_user_id: to,
+        transaction_type: "Award".to_string(),
+        amount,
+    };
+
+    (
+        vec![
+            point_balance.transact_upsert_item(),
+            transaction.create_transact_write_item(),
+            aggregation.transact_upsert_item(),
+        ],
+        vec![response],
+    )
 }
 
 fn deduct_points(
@@ -101,7 +117,7 @@ fn deduct_points(
     amount: i64,
     month: String,
     description: Option<String>,
-) -> Vec<TransactWriteItem> {
+) -> (Vec<TransactWriteItem>, Vec<TransactPointsResponse>) {
     debug!(
         "Deducting {} points from {} in project {}",
         amount, from, project.name
@@ -131,6 +147,8 @@ fn deduct_points(
         description,
     );
 
+    let transaction_id = transaction.sk.to_string();
+
     let (pk, sk) = MonthlyPointAggregation::keys(project.pk.clone().into(), month.clone());
 
     let aggregation = MonthlyPointAggregation::updater(pk, sk)
@@ -138,11 +156,22 @@ fn deduct_points(
         .decrease_supplied_points(amount)
         .with_updated_at(now);
 
-    vec![
-        point_balance.transact_upsert_item(),
-        transaction.create_transact_write_item(),
-        aggregation.transact_upsert_item(),
-    ]
+    let response = TransactPointsResponse {
+        transaction_id,
+        month: month.clone(),
+        meta_user_id: from,
+        transaction_type: "Deduct".to_string(),
+        amount,
+    };
+
+    (
+        vec![
+            point_balance.transact_upsert_item(),
+            transaction.create_transact_write_item(),
+            aggregation.transact_upsert_item(),
+        ],
+        vec![response],
+    )
 }
 
 fn transfer_points(
@@ -152,7 +181,7 @@ fn transfer_points(
     amount: i64,
     month: String,
     description: Option<String>,
-) -> Vec<TransactWriteItem> {
+) -> (Vec<TransactWriteItem>, Vec<TransactPointsResponse>) {
     debug!(
         "Transferring {} points from {} to {} in project {}",
         amount, from, to, project.name
@@ -195,6 +224,8 @@ fn transfer_points(
         description.clone(),
     );
 
+    let from_transaction_id = from_transaction.sk.to_string();
+
     // Create transaction record for recipient (positive amount)
     let to_transaction = PointTransaction::new(
         project.pk.clone(),
@@ -206,6 +237,8 @@ fn transfer_points(
         description,
     );
 
+    let to_transaction_id = to_transaction.sk.to_string();
+
     // Update aggregation for sender
     let (agg_pk, agg_sk) = MonthlyPointAggregation::keys(project.pk.clone().into(), month.clone());
 
@@ -213,13 +246,32 @@ fn transfer_points(
         .increase_traded_points(amount)
         .with_updated_at(now);
 
-    vec![
-        from_balance.transact_upsert_item(),
-        to_balance.transact_upsert_item(),
-        from_transaction.create_transact_write_item(),
-        to_transaction.create_transact_write_item(),
-        aggregation.transact_upsert_item(),
-    ]
+    let from_response = TransactPointsResponse {
+        transaction_id: from_transaction_id,
+        month: month.clone(),
+        meta_user_id: from,
+        transaction_type: "Transfer".to_string(),
+        amount: -amount,
+    };
+
+    let to_response = TransactPointsResponse {
+        transaction_id: to_transaction_id,
+        month: month.clone(),
+        meta_user_id: to,
+        transaction_type: "Transfer".to_string(),
+        amount,
+    };
+
+    (
+        vec![
+            from_balance.transact_upsert_item(),
+            to_balance.transact_upsert_item(),
+            from_transaction.create_transact_write_item(),
+            to_transaction.create_transact_write_item(),
+            aggregation.transact_upsert_item(),
+        ],
+        vec![from_response, to_response],
+    )
 }
 
 fn exchange_points(
@@ -228,7 +280,7 @@ fn exchange_points(
     amount: i64,
     month: String,
     description: Option<String>,
-) -> Vec<TransactWriteItem> {
+) -> (Vec<TransactWriteItem>, Vec<TransactPointsResponse>) {
     debug!(
         "Exchanging {} points from {} to tokens in project {}",
         amount, from, project.name
@@ -258,15 +310,28 @@ fn exchange_points(
         description,
     );
 
+    let transaction_id = transaction.sk.to_string();
+
     let (pk, sk) = MonthlyPointAggregation::keys(project.pk.clone().into(), month.clone());
 
     let aggregation = MonthlyPointAggregation::updater(pk, sk)
         .increase_exchanged_points(amount)
         .with_updated_at(now);
 
-    vec![
-        point_balance.transact_upsert_item(),
-        transaction.create_transact_write_item(),
-        aggregation.transact_upsert_item(),
-    ]
+    let response = TransactPointsResponse {
+        transaction_id,
+        month: month.clone(),
+        meta_user_id: from,
+        transaction_type: "Exchange".to_string(),
+        amount,
+    };
+
+    (
+        vec![
+            point_balance.transact_upsert_item(),
+            transaction.create_transact_write_item(),
+            aggregation.transact_upsert_item(),
+        ],
+        vec![response],
+    )
 }
