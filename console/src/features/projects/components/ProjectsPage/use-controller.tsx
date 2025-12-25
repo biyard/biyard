@@ -11,6 +11,8 @@ export class Controller {
     public projectName: State<string>,
     public description: State<string>,
     public monthlyTokenSupply: State<string>,
+    public symbol: State<string>,
+    public decimals: State<string>,
     public error: State<string>,
     public projectsQuery: ReturnType<typeof useListProjects>,
     public createMutation: ReturnType<typeof useCreateProject>,
@@ -34,6 +36,11 @@ export class Controller {
       return;
     }
 
+    if (!this.symbol.get().trim()) {
+      this.error.set(this.t.symbolRequired);
+      return;
+    }
+
     const tokenSupply = parseFloat(this.monthlyTokenSupply.get());
 
     // Allow zero for manual provisioning, but must be a valid non-negative number
@@ -42,22 +49,28 @@ export class Controller {
       return;
     }
 
+    const decimalsValue = this.decimals.get().trim();
+    const decimals = decimalsValue ? parseInt(decimalsValue) : undefined;
+    if (decimalsValue && (isNaN(decimals!) || decimals! < 0 || decimals! > 18)) {
+      this.error.set(this.t.decimalsMustBeValid);
+      return;
+    }
+
     try {
       await this.createMutation.mutateAsync({
         name: this.projectName.get(),
         description: this.description.get() || undefined,
         monthly_token_supply: tokenSupply,
-        // Send default values for backend compatibility
-        // Points will be dynamically supplied via transaction APIs
-        // Exchange ratio will be automatically calculated
-        monthly_points_supply: 0,
-        exchange_ratio: 0,
+        symbol: this.symbol.get(),
+        decimals,
       });
 
       // Clear form and close dialog on success
       this.projectName.set("");
       this.description.set("");
       this.monthlyTokenSupply.set("");
+      this.symbol.set("");
+      this.decimals.set("");
       this.showCreateDialog.set(false);
     } catch (_err) {
       // Error toast is already shown by the mutation hook
@@ -86,6 +99,8 @@ export function useController() {
   const projectName = useState("");
   const description = useState("");
   const monthlyTokenSupply = useState("");
+  const symbol = useState("");
+  const decimals = useState("");
   const error = useState("");
 
   const projectsQuery = useListProjects();
@@ -97,6 +112,8 @@ export function useController() {
     new State(projectName),
     new State(description),
     new State(monthlyTokenSupply),
+    new State(symbol),
+    new State(decimals),
     new State(error),
     projectsQuery,
     createMutation,

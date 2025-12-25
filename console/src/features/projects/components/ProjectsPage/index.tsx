@@ -152,6 +152,20 @@ export function ProjectsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenSymbol}
+                </label>
+                <input
+                  type="text"
+                  value={ctrl.symbol.get()}
+                  onChange={(e) => ctrl.symbol.set(e.target.value)}
+                  placeholder={ctrl.t.enterSymbol}
+                  maxLength={10}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {ctrl.t.monthlyTokenSupply}
                 </label>
                 <input
@@ -159,6 +173,21 @@ export function ProjectsPage() {
                   value={ctrl.monthlyTokenSupply.get()}
                   onChange={(e) => ctrl.monthlyTokenSupply.set(e.target.value)}
                   placeholder={ctrl.t.enterTokenSupply}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenDecimals}
+                </label>
+                <input
+                  type="number"
+                  value={ctrl.decimals.get()}
+                  onChange={(e) => ctrl.decimals.set(e.target.value)}
+                  placeholder={ctrl.t.enterDecimals}
+                  min={0}
+                  max={18}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                 />
               </div>
