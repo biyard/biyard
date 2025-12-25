@@ -11,10 +11,8 @@ pub async fn mint_token_handler(
 ) -> Result<Json<TokenBalanceResponse>> {
     info!("Minting tokens for project: {:?}", project.pk);
 
-    // Validate the request
     req.validate()?;
 
-    // Get the token (1:1 with project)
     let (token_pk, token_sk) = ProjectToken::keys(project.pk.clone());
     let mut token = ProjectToken::get(&cli, &token_pk, Some(token_sk))
         .await?
@@ -23,7 +21,6 @@ pub async fn mint_token_handler(
     // Mint tokens
     token.mint(req.amount);
 
-    // Update token
     ProjectToken::updater(token.pk.clone(), token.sk.clone())
         .with_total_supply(token.total_supply)
         .with_circulating_supply(token.circulating_supply)
@@ -31,7 +28,6 @@ pub async fn mint_token_handler(
         .execute(&cli)
         .await?;
 
-    // Get or create token balance for user
     let (balance_pk, balance_sk) =
         TokenBalance::keys(project.pk.clone().into(), meta_user_id.clone());
 
@@ -39,15 +35,11 @@ pub async fn mint_token_handler(
         .await?
         .unwrap_or_else(|| TokenBalance::new(project.pk.clone(), meta_user_id));
 
-    // Add tokens to balance
     balance.add_tokens(req.amount);
 
-    // Save balance
     if balance.created_at == balance.updated_at {
-        // New balance, create it
         balance.create(&cli).await?;
     } else {
-        // Update existing balance
         TokenBalance::updater(balance.pk.clone(), balance.sk.clone())
             .with_balance(balance.balance)
             .with_updated_at(balance.updated_at)
