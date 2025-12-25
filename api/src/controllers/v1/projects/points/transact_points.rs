@@ -43,7 +43,7 @@ pub async fn transact_points_handler(
         responses.extend(tx_responses);
     }
 
-    transact_write_items!(&cli, txs);
+    transact_write_items!(&cli, txs)?;
 
     Ok(Json(responses))
 }
@@ -69,7 +69,7 @@ fn award_points(
         .with_project_id(project.pk.clone())
         .with_meta_user_id(to.clone())
         .with_month(month.clone())
-        .with_total_spent(0)  // Initialize if not exists
+        .with_total_spent(0) // Initialize if not exists
         .increase_total_earned(amount)
         .increase_balance(amount)
         .with_updated_at(now);
@@ -132,7 +132,7 @@ fn deduct_points(
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
-        .with_total_earned(0)  // Initialize if not exists
+        .with_total_earned(0) // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
@@ -190,13 +190,14 @@ fn transfer_points(
     let now = time_utils::get_now();
 
     // Deduct from sender
-    let (from_bal_pk, from_bal_sk) = PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
+    let (from_bal_pk, from_bal_sk) =
+        PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
 
     let from_balance = PointBalance::updater(from_bal_pk, from_bal_sk)
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
-        .with_total_earned(0)  // Initialize if not exists
+        .with_total_earned(0) // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
@@ -208,7 +209,7 @@ fn transfer_points(
         .with_project_id(project.pk.clone())
         .with_meta_user_id(to.clone())
         .with_month(month.clone())
-        .with_total_spent(0)  // Initialize if not exists
+        .with_total_spent(0) // Initialize if not exists
         .increase_balance(amount)
         .increase_total_earned(amount)
         .with_updated_at(now);
@@ -295,7 +296,7 @@ fn exchange_points(
         .with_project_id(project.pk.clone())
         .with_meta_user_id(from.clone())
         .with_month(month.clone())
-        .with_total_earned(0)  // Initialize if not exists
+        .with_total_earned(0) // Initialize if not exists
         .decrease_balance(amount)
         .increase_total_spent(amount)
         .with_updated_at(now);
