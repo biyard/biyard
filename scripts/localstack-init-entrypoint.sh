@@ -93,6 +93,59 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
 
 echo 'Project and Credential added successfully'
 
+echo 'Adding Ratel Token for the project...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "TOKEN"},
+        "name": {"S": "Ratel Token"},
+        "symbol": {"S": "RATEL"},
+        "decimals": {"N": "18"},
+        "total_supply": {"N": "0"},
+        "circulating_supply": {"N": "0"},
+        "description": {"S": "Ratel governance token"},
+        "created_at": {"N": "1761621606252"},
+        "updated_at": {"N": "1761621606252"}
+    }'
+
+echo 'Ratel Token added successfully'
+
+echo 'Adding Monthly Token Distribution for December 2025...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "MONTH#2025-12"},
+        "supply_amount": {"N": "10000"},
+        "created_at": {"N": "1761621606252"},
+        "updated_at": {"N": "1761621606252"}
+    }'
+
+echo 'Adding Monthly Token Distribution for November 2025...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "MONTH#2025-11"},
+        "supply_amount": {"N": "10000"},
+        "created_at": {"N": "1761621606252"},
+        "updated_at": {"N": "1761621606252"}
+    }'
+
+echo 'Adding Monthly Token Distribution for October 2025...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "MONTH#2025-10"},
+        "supply_amount": {"N": "10000"},
+        "created_at": {"N": "1761621606252"},
+        "updated_at": {"N": "1761621606252"}
+    }'
+
+echo 'Monthly Token Distributions added successfully'
+
 echo ''
 echo '=========================================='
 echo 'Admin User'

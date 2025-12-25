@@ -1,7 +1,4 @@
-use crate::{
-    utils::time_utils::{get_year_and_month, timestamp_to_yyyy_mm},
-    *,
-};
+use crate::{utils::time_utils::timestamp_to_yyyy_mm, *};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema, OperationIo, DynamoEntity)]
 pub struct MonthlyPointAggregation {

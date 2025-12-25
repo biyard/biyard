@@ -1,4 +1,3 @@
-use crate::features::accounts::Account;
 use crate::features::projects::*;
 use crate::features::tokens::*;
 use crate::*;
@@ -6,33 +5,20 @@ use validator::Validate;
 
 pub async fn mint_token_handler(
     State(AppState { cli, .. }): State<AppState>,
-    account: Account,
-    Path((project_id, token_id)): Path<(String, String)>,
+    Extension(project): Extension<Project>,
+    Path(ProjectUserPathParam { meta_user_id, .. }): ProjectUserPath,
     Json(req): Json<MintTokenRequest>,
 ) -> Result<Json<TokenBalanceResponse>> {
-    info!("Minting tokens for token: {} in project: {}", token_id, project_id);
+    info!("Minting tokens for project: {:?}", project.pk);
 
     // Validate the request
     req.validate()?;
 
-    let project_pk = Partition::Project(project_id);
-    let project = Project::get(&cli, project_pk.clone(), Some(EntityType::Project))
-        .await?
-        .ok_or(Error::ProjectNotFound)?;
-
-    // Verify ownership
-    project.verify_ownership(&account)?;
-
-    // Get the token
-    let token_pk = Partition::Token(token_id);
-    let mut token = ProjectToken::get(&cli, token_pk.clone(), Some(EntityType::Token))
+    // Get the token (1:1 with project)
+    let (token_pk, token_sk) = ProjectToken::keys(project.pk.clone());
+    let mut token = ProjectToken::get(&cli, &token_pk, Some(token_sk))
         .await?
         .ok_or(Error::TokenNotFound)?;
-
-    // Verify token belongs to this project
-    if token.project_id != project_pk {
-        return Err(Error::TokenNotFound);
-    }
 
     // Mint tokens
     token.mint(req.amount);
@@ -46,18 +32,18 @@ pub async fn mint_token_handler(
         .await?;
 
     // Get or create token balance for user
-    let balance_pk = format!("{}#USER#{}", token_pk.to_string(), req.meta_user_id);
-    let balance_pk = Partition::TokenBalance(balance_pk);
+    let (balance_pk, balance_sk) =
+        TokenBalance::keys(project.pk.clone().into(), meta_user_id.clone());
 
-    let mut balance = TokenBalance::get(&cli, balance_pk.clone(), Some(EntityType::TokenBalance))
+    let mut balance = TokenBalance::get(&cli, &balance_pk, Some(balance_sk.clone()))
         .await?
-        .unwrap_or_else(|| TokenBalance::new(token_pk, project_pk, req.meta_user_id.clone()));
+        .unwrap_or_else(|| TokenBalance::new(project.pk.clone(), meta_user_id));
 
     // Add tokens to balance
     balance.add_tokens(req.amount);
 
     // Save balance
-    if balance.created_at == balance.updated_at && balance.created_at == time_utils::get_now() {
+    if balance.created_at == balance.updated_at {
         // New balance, create it
         balance.create(&cli).await?;
     } else {

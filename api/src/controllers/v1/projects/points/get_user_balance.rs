@@ -14,7 +14,7 @@ pub struct GetUserBalanceRequest {
 pub async fn get_balance_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
-    Path(ProjectPointPathParam { meta_user_id }): Path<ProjectPointPathParam>,
+    Path(ProjectUserPathParam { meta_user_id, .. }): ProjectUserPath,
     Query(GetUserBalanceRequest { date }): Query<GetUserBalanceRequest>,
 ) -> Result<Json<ListResponse<PointBalanceResponse>>> {
     debug!(
@@ -27,17 +27,15 @@ pub async fn get_balance_handler(
 
     let sk = EntityType::Month(date.clone());
 
-    // Get user's point balance
     let (balances, bookmark): (Vec<PointBalance>, Option<String>) =
         PointBalance::query_begins_with_sk(&cli, &pk, &sk).await?;
 
-    // Get project-level monthly aggregation
     let (agg_pk, agg_sk) = MonthlyPointAggregation::keys(project.pk.clone().into(), date.clone());
     let aggregation = MonthlyPointAggregation::get(&cli, &agg_pk, Some(agg_sk)).await?;
 
     let project_total_points = aggregation.as_ref().map(|a| a.supplied_points).unwrap_or(0);
 
-    let monthly_token_supply = 0;
+    let monthly_token_supply = project.monthly_token_supply;
 
     let items: Vec<PointBalanceResponse> = balances
         .into_iter()

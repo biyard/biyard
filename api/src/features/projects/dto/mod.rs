@@ -9,3 +9,6 @@ pub use exchange_request::*;
 pub use project_path::*;
 pub use project_response::*;
 pub use update_project_request::*;
+
+pub mod project_user_path;
+pub use project_user_path::*;

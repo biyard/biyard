@@ -16,7 +16,7 @@ pub struct ListUserTransactionsRequest {
 pub async fn list_user_transactions_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
-    Path(ProjectPointPathParam { meta_user_id }): Path<ProjectPointPathParam>,
+    Path(ProjectUserPathParam { meta_user_id, .. }): ProjectUserPath,
     Query(ListUserTransactionsRequest { pagination, date }): Query<ListUserTransactionsRequest>,
 ) -> Result<Json<ListResponse<PointTransactionResponse>>> {
     let pk = PointTransaction::generate_pk_for_find_by_user(project.pk, meta_user_id);
