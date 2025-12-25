@@ -247,7 +247,7 @@ impl PointTransaction {
         let resp = req
             .limit(opt.limit)
             .scan_index_forward(opt.scan_index_forward)
-            .key_condition_expression(key_condition.clone())
+            .key_condition_expression(key_condition)
             .send()
             .await
             .map_err(Into::<aws_sdk_dynamodb::Error>::into)?;
@@ -284,7 +284,7 @@ impl PointTransaction {
                 }
                 let resp = req
                     .scan_index_forward(opt.scan_index_forward)
-                    .key_condition_expression(key_condition.clone())
+                    .key_condition_expression(key_condition)
                     .send()
                     .await
                     .map_err(Into::<aws_sdk_dynamodb::Error>::into)?;
@@ -341,7 +341,7 @@ impl PointTransaction {
         let resp = req
             .limit(opt.limit)
             .scan_index_forward(opt.scan_index_forward)
-            .key_condition_expression(key_condition.clone())
+            .key_condition_expression(key_condition)
             .send()
             .await
             .map_err(Into::<aws_sdk_dynamodb::Error>::into)?;
@@ -378,7 +378,7 @@ impl PointTransaction {
                 }
                 let resp = req
                     .scan_index_forward(opt.scan_index_forward)
-                    .key_condition_expression(key_condition.clone())
+                    .key_condition_expression(key_condition)
                     .send()
                     .await
                     .map_err(Into::<aws_sdk_dynamodb::Error>::into)?;
