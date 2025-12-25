@@ -9,6 +9,7 @@ export const ProjectsPage = {
     createNew: "Create New Project",
     noProjects: "No projects yet",
     noProjectsDescription: "Create your first project to get started",
+    projectId: "Project ID",
     projectName: "Project Name",
     projectDescription: "Description",
     monthlyTokenSupply: "Monthly Token Supply",
@@ -46,6 +47,7 @@ export const ProjectsPage = {
     createNew: "새 프로젝트 생성",
     noProjects: "프로젝트가 없습니다",
     noProjectsDescription: "첫 번째 프로젝트를 생성하여 시작하세요",
+    projectId: "프로젝트 ID",
     projectName: "프로젝트 이름",
     projectDescription: "설명",
     monthlyTokenSupply: "월별 토큰 공급량",
@@ -98,6 +100,7 @@ export interface ProjectsPageI18n {
   createNew: string;
   noProjects: string;
   noProjectsDescription: string;
+  projectId: string;
   projectName: string;
   projectDescription: string;
   monthlyTokenSupply: string;
@@ -152,6 +155,7 @@ export function useProjectsPageI18n(): ProjectsPageI18n {
     createNew: t("ProjectsPage.createNew"),
     noProjects: t("ProjectsPage.noProjects"),
     noProjectsDescription: t("ProjectsPage.noProjectsDescription"),
+    projectId: t("ProjectsPage.projectId"),
     projectName: t("ProjectsPage.projectName"),
     projectDescription: t("ProjectsPage.projectDescription"),
     monthlyTokenSupply: t("ProjectsPage.monthlyTokenSupply"),

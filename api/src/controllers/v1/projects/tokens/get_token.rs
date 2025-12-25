@@ -4,12 +4,12 @@ use crate::*;
 
 pub async fn get_token_handler(
     State(AppState { cli, .. }): State<AppState>,
-    Extension(_project): Extension<Project>,
-    Path(ProjectPathParam { project_id }): ProjectPath,
+    Extension(project): Extension<Project>,
+    // Path(ProjectPathParam { project_id }): ProjectPath,
 ) -> Result<Json<TokenResponse>> {
-    info!("Getting token for project: {}", project_id);
+    info!("Getting token for project: {}", project.pk);
 
-    let token = ProjectToken::get(&cli, &project_id, Some(EntityType::Token))
+    let token = ProjectToken::get(&cli, &project.pk, Some(EntityType::Token))
         .await?
         .ok_or(Error::TokenNotFound)?;
 

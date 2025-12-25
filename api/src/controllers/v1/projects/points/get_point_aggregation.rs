@@ -23,7 +23,7 @@ pub async fn get_point_aggregation_handler(
 ) -> Result<Json<ListResponse<MonthlyPointAggregationResponse>>> {
     let opt = MonthlyPointAggregation::opt().limit(1).sk(date);
 
-    let pk: Partition = project_id.into();
+    let pk: Partition = Partition::Project(project_id);
 
     let res = MonthlyPointAggregation::find_by_date(&cli, pk, opt)
         .await

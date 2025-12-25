@@ -53,6 +53,11 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
 
 echo 'Test users added successfully'
 
+
+
+
+# {
+# }
 echo 'Adding ratel project for admin user...'
 aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
     --table-name biyard-local-main \
@@ -62,12 +67,11 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "gsi1_pk": {"S": "ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
         "gsi1_sk": {"S": "PROJECT"},
         "account_id": {"S": "ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
-        "name": {"S": "Ratel"},
-        "description": {"S": "Ratel Project for Local Development"},
-        "monthly_token_supply": {"N": "0"},
+        "name": {"S": "RATEL"},
+        "monthly_token_supply": {"N": "10000"},
         "status": {"S": "ACTIVE"},
-        "created_at": {"N": "1761621606252"},
-        "updated_at": {"N": "1761621606252"}
+        "created_at": {"N": "1766688564371"},
+        "updated_at": {"N": "1766688564371"}
     }'
 
 echo 'Adding API credential for admin user...'
@@ -93,58 +97,25 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
 
 echo 'Project and Credential added successfully'
 
+
+
 echo 'Adding Ratel Token for the project...'
 aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
     --table-name biyard-local-main \
     --item '{
         "pk": {"S": "PROJECT#ratel"},
         "sk": {"S": "TOKEN"},
-        "name": {"S": "Ratel Token"},
-        "symbol": {"S": "RATEL"},
-        "decimals": {"N": "18"},
+        "name": {"S": "RATEL"},
+        "symbol": {"S": "RAT"},
+        "decimals": {"N": "0"},
+        "description": {"S": "RATEL DEFAULT"},
         "total_supply": {"N": "0"},
         "circulating_supply": {"N": "0"},
-        "description": {"S": "Ratel governance token"},
-        "created_at": {"N": "1761621606252"},
-        "updated_at": {"N": "1761621606252"}
+        "created_at": {"N": "1766688564371"},
+        "updated_at": {"N": "1766688564371"}
     }'
 
 echo 'Ratel Token added successfully'
-
-echo 'Adding Monthly Token Distribution for December 2025...'
-aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
-    --table-name biyard-local-main \
-    --item '{
-        "pk": {"S": "PROJECT#ratel"},
-        "sk": {"S": "MONTH#2025-12"},
-        "supply_amount": {"N": "10000"},
-        "created_at": {"N": "1761621606252"},
-        "updated_at": {"N": "1761621606252"}
-    }'
-
-echo 'Adding Monthly Token Distribution for November 2025...'
-aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
-    --table-name biyard-local-main \
-    --item '{
-        "pk": {"S": "PROJECT#ratel"},
-        "sk": {"S": "MONTH#2025-11"},
-        "supply_amount": {"N": "10000"},
-        "created_at": {"N": "1761621606252"},
-        "updated_at": {"N": "1761621606252"}
-    }'
-
-echo 'Adding Monthly Token Distribution for October 2025...'
-aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
-    --table-name biyard-local-main \
-    --item '{
-        "pk": {"S": "PROJECT#ratel"},
-        "sk": {"S": "MONTH#2025-10"},
-        "supply_amount": {"N": "10000"},
-        "created_at": {"N": "1761621606252"},
-        "updated_at": {"N": "1761621606252"}
-    }'
-
-echo 'Monthly Token Distributions added successfully'
 
 echo ''
 echo '=========================================='
@@ -157,8 +128,8 @@ echo '  Email: test@biyard.co'
 echo '  Password: qwer1234!@#$'
 echo ''
 echo 'Project (Admin)'
-echo '  ID: ratel'
-echo '  Name: Ratel'
+echo '  Project ID: ratel'
+echo '  Project Name: RATEL'
 echo ''
 echo 'API Credential (Admin)'
 echo '  API Key: by_local_test_api_key_12345678'
