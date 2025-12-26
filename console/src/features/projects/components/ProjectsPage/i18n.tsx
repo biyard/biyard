@@ -9,9 +9,12 @@ export const ProjectsPage = {
     createNew: "Create New Project",
     noProjects: "No projects yet",
     noProjectsDescription: "Create your first project to get started",
+    projectId: "Project ID",
     projectName: "Project Name",
     projectDescription: "Description",
     monthlyTokenSupply: "Monthly Token Supply",
+    tokenSymbol: "Token Symbol",
+    tokenDecimals: "Token Decimals",
     status: "Status",
     createdAt: "Created",
     actions: "Actions",
@@ -22,9 +25,13 @@ export const ProjectsPage = {
     enterProjectName: "Enter project name",
     enterDescription: "Enter description (optional)",
     enterTokenSupply: "Enter monthly token supply (0 for manual provisioning)",
+    enterSymbol: "Enter token symbol (e.g., BTC, ETH)",
+    enterDecimals: "Enter decimals (0-18, default: 0)",
     creating: "Creating...",
     projectNameRequired: "Project name is required",
+    symbolRequired: "Token symbol is required",
     tokenSupplyMustBeNonNegative: "Token supply must be zero or a positive number",
+    decimalsMustBeValid: "Decimals must be between 0 and 18",
     errorLoadingProjects: "Failed to load projects",
     errorLoadingProjectsDescription: "Please try again later",
     errorCreatingProject: "Failed to create project",
@@ -40,9 +47,12 @@ export const ProjectsPage = {
     createNew: "새 프로젝트 생성",
     noProjects: "프로젝트가 없습니다",
     noProjectsDescription: "첫 번째 프로젝트를 생성하여 시작하세요",
+    projectId: "프로젝트 ID",
     projectName: "프로젝트 이름",
     projectDescription: "설명",
     monthlyTokenSupply: "월별 토큰 공급량",
+    tokenSymbol: "토큰 심볼",
+    tokenDecimals: "토큰 소수점",
     status: "상태",
     createdAt: "생성일",
     actions: "작업",
@@ -53,9 +63,13 @@ export const ProjectsPage = {
     enterProjectName: "프로젝트 이름 입력",
     enterDescription: "설명 입력 (선택사항)",
     enterTokenSupply: "월별 토큰 공급량 입력 (수동 프로비저닝은 0)",
+    enterSymbol: "토큰 심볼 입력 (예: BTC, ETH)",
+    enterDecimals: "소수점 입력 (0-18, 기본값: 0)",
     creating: "생성 중...",
     projectNameRequired: "프로젝트 이름은 필수입니다",
+    symbolRequired: "토큰 심볼은 필수입니다",
     tokenSupplyMustBeNonNegative: "토큰 공급량은 0 또는 양수여야 합니다",
+    decimalsMustBeValid: "소수점은 0에서 18 사이여야 합니다",
     errorLoadingProjects: "프로젝트를 불러오는데 실패했습니다",
     errorLoadingProjectsDescription: "나중에 다시 시도해주세요",
     errorCreatingProject: "프로젝트 생성에 실패했습니다",
@@ -86,9 +100,12 @@ export interface ProjectsPageI18n {
   createNew: string;
   noProjects: string;
   noProjectsDescription: string;
+  projectId: string;
   projectName: string;
   projectDescription: string;
   monthlyTokenSupply: string;
+  tokenSymbol: string;
+  tokenDecimals: string;
   status: string;
   createdAt: string;
   view: string;
@@ -97,9 +114,13 @@ export interface ProjectsPageI18n {
   enterProjectName: string;
   enterDescription: string;
   enterTokenSupply: string;
+  enterSymbol: string;
+  enterDecimals: string;
   creating: string;
   projectNameRequired: string;
+  symbolRequired: string;
   tokenSupplyMustBeNonNegative: string;
+  decimalsMustBeValid: string;
   errorLoadingProjects: string;
   errorLoadingProjectsDescription: string;
   errorCreatingProject: string;
@@ -134,9 +155,12 @@ export function useProjectsPageI18n(): ProjectsPageI18n {
     createNew: t("ProjectsPage.createNew"),
     noProjects: t("ProjectsPage.noProjects"),
     noProjectsDescription: t("ProjectsPage.noProjectsDescription"),
+    projectId: t("ProjectsPage.projectId"),
     projectName: t("ProjectsPage.projectName"),
     projectDescription: t("ProjectsPage.projectDescription"),
     monthlyTokenSupply: t("ProjectsPage.monthlyTokenSupply"),
+    tokenSymbol: t("ProjectsPage.tokenSymbol"),
+    tokenDecimals: t("ProjectsPage.tokenDecimals"),
     status: t("ProjectsPage.status"),
     createdAt: t("ProjectsPage.createdAt"),
     view: t("ProjectsPage.view"),
@@ -145,9 +169,13 @@ export function useProjectsPageI18n(): ProjectsPageI18n {
     enterProjectName: t("ProjectsPage.enterProjectName"),
     enterDescription: t("ProjectsPage.enterDescription"),
     enterTokenSupply: t("ProjectsPage.enterTokenSupply"),
+    enterSymbol: t("ProjectsPage.enterSymbol"),
+    enterDecimals: t("ProjectsPage.enterDecimals"),
     creating: t("ProjectsPage.creating"),
     projectNameRequired: t("ProjectsPage.projectNameRequired"),
+    symbolRequired: t("ProjectsPage.symbolRequired"),
     tokenSupplyMustBeNonNegative: t("ProjectsPage.tokenSupplyMustBeNonNegative"),
+    decimalsMustBeValid: t("ProjectsPage.decimalsMustBeValid"),
     errorLoadingProjects: t("ProjectsPage.errorLoadingProjects"),
     errorLoadingProjectsDescription: t("ProjectsPage.errorLoadingProjectsDescription"),
     errorCreatingProject: t("ProjectsPage.errorCreatingProject"),

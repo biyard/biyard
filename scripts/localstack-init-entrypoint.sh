@@ -53,10 +53,85 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
 
 echo 'Test users added successfully'
 
+
+
+
+# {
+# }
+echo 'Adding ratel project for admin user...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "PROJECT"},
+        "gsi1_pk": {"S": "ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
+        "gsi1_sk": {"S": "PROJECT"},
+        "account_id": {"S": "ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
+        "name": {"S": "RATEL"},
+        "monthly_token_supply": {"N": "10000"},
+        "status": {"S": "ACTIVE"},
+        "created_at": {"N": "1766688564371"},
+        "updated_at": {"N": "1766688564371"}
+    }'
+
+echo 'Adding API credential for admin user...'
+# API Key: by_local_test_api_key_12345678
+# Hash: SHA3-256 of the API key
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "CREDENTIAL#admin-api-credential"},
+        "sk": {"S": "CREDENTIAL"},
+        "gsi1_pk": {"S": "CRED#ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
+        "gsi1_sk": {"S": "CREDENTIAL"},
+        "gsi2_pk": {"S": "CRED#66a99dd5dca8c5ae22b7dd90771e9a516b7774d9d58100dd8ddb51cebe5ccd83"},
+        "gsi2_sk": {"S": "CREDENTIAL"},
+        "account_id": {"S": "ACCOUNT#75734ca2-d695-4c95-88ea-4328825cd936"},
+        "name": {"S": "Local Development API Key"},
+        "api_key_hash": {"S": "66a99dd5dca8c5ae22b7dd90771e9a516b7774d9d58100dd8ddb51cebe5ccd83"},
+        "api_key_prefix": {"S": "by_local_test"},
+        "status": {"N": "1"},
+        "created_at": {"N": "1761621606252"},
+        "updated_at": {"N": "1761621606252"}
+    }'
+
+echo 'Project and Credential added successfully'
+
+
+
+echo 'Adding Ratel Token for the project...'
+aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
+    --table-name biyard-local-main \
+    --item '{
+        "pk": {"S": "PROJECT#ratel"},
+        "sk": {"S": "TOKEN"},
+        "name": {"S": "RATEL"},
+        "symbol": {"S": "RAT"},
+        "decimals": {"N": "0"},
+        "description": {"S": "RATEL DEFAULT"},
+        "total_supply": {"N": "0"},
+        "circulating_supply": {"N": "0"},
+        "created_at": {"N": "1766688564371"},
+        "updated_at": {"N": "1766688564371"}
+    }'
+
+echo 'Ratel Token added successfully'
+
+echo ''
+echo '=========================================='
 echo 'Admin User'
 echo '  Email: admin@biyard.co'
 echo '  Password: qwer1234!@#$'
-
+echo ''
 echo 'Test User'
 echo '  Email: test@biyard.co'
 echo '  Password: qwer1234!@#$'
+echo ''
+echo 'Project (Admin)'
+echo '  Project ID: ratel'
+echo '  Project Name: RATEL'
+echo ''
+echo 'API Credential (Admin)'
+echo '  API Key: by_local_test_api_key_12345678'
+echo '  Note: Use as Bearer token in Authorization header'
+echo '=========================================='

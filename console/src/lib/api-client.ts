@@ -63,4 +63,4 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient(config.apiBaseUrl);
+export const apiClient = new ApiClient(config.apiUrl);

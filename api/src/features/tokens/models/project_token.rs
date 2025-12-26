@@ -1,21 +1,17 @@
 use crate::*;
 
+/// ProjectToken represents a token for a project.
+/// Each project can have exactly one token (1:1 relationship).
+/// pk: PROJECT#<project_id>, sk: TOKEN
 #[derive(
     Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, JsonSchema, OperationIo, Default,
 )]
 pub struct ProjectToken {
-    #[schemars(description = "Token ID")]
+    #[schemars(description = "Project ID (pk)")]
     pub pk: Partition,
-    #[schemars(description = "Entity type")]
+
+    #[schemars(description = "Entity type (TOKEN)")]
     pub sk: EntityType,
-
-    #[schemars(description = "Project ID that owns this token")]
-    #[dynamo(index = "gsi1", pk, name = "find_by_project")]
-    pub project_id: Partition,
-
-    #[schemars(description = "GSI1 sort key (EntityType)")]
-    #[dynamo(index = "gsi1", sk, name = "find_by_project")]
-    pub gsi1_sk: EntityType,
 
     #[schemars(description = "Token name")]
     pub name: String,
@@ -51,13 +47,10 @@ impl ProjectToken {
         description: Option<String>,
     ) -> Self {
         let now = time_utils::get_now();
-        let uuid = uuid::Uuid::new_v4().to_string();
 
         Self {
-            pk: Partition::Token(uuid),
+            pk: project_id,
             sk: EntityType::Token,
-            project_id,
-            gsi1_sk: EntityType::Token,
             name,
             symbol,
             decimals,
@@ -67,6 +60,10 @@ impl ProjectToken {
             created_at: now,
             updated_at: now,
         }
+    }
+
+    pub fn keys(project_id: Partition) -> (Partition, EntityType) {
+        (project_id, EntityType::Token)
     }
 
     pub fn mint(&mut self, amount: i64) {

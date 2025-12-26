@@ -1,6 +1,22 @@
-// Feature-level settings i18n (empty for now as SettingsPage is the only component)
-// If more components are added later that share labels, move shared labels here
+import { useTranslation } from "react-i18next";
+
 export const settings = {
-  en: {},
-  ko: {},
+  en: {
+    title: "Settings",
+  },
+  ko: {
+    title: "설정",
+  },
 };
+
+export interface SettingsI18n {
+  title: string;
+}
+
+export function useSettingsI18n(): SettingsI18n {
+  const { t } = useTranslation();
+
+  return {
+    title: t("settings.title"),
+  };
+}

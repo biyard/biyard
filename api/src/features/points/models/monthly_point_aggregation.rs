@@ -1,36 +1,39 @@
-use crate::{
-    utils::time_utils::{get_year_and_month, timestamp_to_yyyy_mm},
-    *,
-};
+use crate::{utils::time_utils::timestamp_to_yyyy_mm, *};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, JsonSchema, OperationIo, DynamoEntity)]
 pub struct MonthlyPointAggregation {
-    pub pk: CompositePartition<ProjectPartition, Partition>,
+    pub pk: CompositePartition<ProjectPartition, MonthlyPointsPartition>,
     pub sk: EntityType,
 
+    #[serde(default)]
     pub supplied_points: i64,
+    #[serde(default)]
     pub traded_points: i64,
+    #[serde(default)]
     pub awarded_points: i64,
+    #[serde(default)]
     pub deducted_points: i64,
+    #[serde(default)]
     pub exchanged_points: i64,
 
+    #[serde(default)]
     pub updated_at: i64,
 
+    #[serde(default)]
     #[dynamo(index = "gsi1", pk, prefix = "MPA", name = "find_by_date")]
     pub project_pk: Partition,
 
+    #[serde(default)]
     #[dynamo(index = "gsi1", sk, name = "find_by_date")]
     pub date: String,
 }
 
 impl MonthlyPointAggregation {
     pub fn new(project_pk: ProjectPartition) -> Self {
+        let (pk, sk) = Self::keys(project_pk.clone(), timestamp_to_yyyy_mm());
         Self {
-            pk: CompositePartition(
-                project_pk.clone(),
-                Partition::MonthlyPoints(timestamp_to_yyyy_mm()),
-            ),
-            sk: EntityType::MonthlyPointAggregation,
+            pk,
+            sk,
             project_pk: project_pk.into(),
             supplied_points: 0,
             traded_points: 0,

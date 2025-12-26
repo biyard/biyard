@@ -40,6 +40,8 @@ pub enum EntityType {
     Token,
     TokenBalance,
     MonthlyPointAggregation,
+    #[schemars(description = "Sort key: USER#<meta_user_id>")]
+    User(String),
 
     // Update
     Update,

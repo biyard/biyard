@@ -109,14 +109,17 @@ pub enum Error {
     #[rest_error(code = 700, status = 404)]
     TokenNotFound,
     #[error("Insufficient tokens")]
-    #[rest_error(code = 701, status = 400)]
+    #[rest_error(status = 400)]
     InsufficientTokens,
     #[error("Invalid token amount")]
-    #[rest_error(code = 702, status = 400)]
+    #[rest_error(status = 400)]
     InvalidTokenAmount,
     #[error("Token already exists")]
-    #[rest_error(code = 703, status = 400)]
+    #[rest_error(status = 400)]
     TokenAlreadyExists,
+    #[error("Token balance not found")]
+    #[rest_error(status = 404)]
+    TokenBalanceNotFound,
 }
 
 impl From<String> for Error {

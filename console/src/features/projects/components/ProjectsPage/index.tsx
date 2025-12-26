@@ -56,6 +56,9 @@ export function ProjectsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                      {ctrl.t.projectId}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                       {ctrl.t.projectName}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
@@ -72,6 +75,11 @@ export function ProjectsPage() {
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {ctrl.projects.map((project) => (
                     <tr key={project.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <code className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                          {project.id}
+                        </code>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {project.name}
@@ -152,6 +160,20 @@ export function ProjectsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenSymbol}
+                </label>
+                <input
+                  type="text"
+                  value={ctrl.symbol.get()}
+                  onChange={(e) => ctrl.symbol.set(e.target.value)}
+                  placeholder={ctrl.t.enterSymbol}
+                  maxLength={10}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {ctrl.t.monthlyTokenSupply}
                 </label>
                 <input
@@ -159,6 +181,21 @@ export function ProjectsPage() {
                   value={ctrl.monthlyTokenSupply.get()}
                   onChange={(e) => ctrl.monthlyTokenSupply.set(e.target.value)}
                   placeholder={ctrl.t.enterTokenSupply}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenDecimals}
+                </label>
+                <input
+                  type="number"
+                  value={ctrl.decimals.get()}
+                  onChange={(e) => ctrl.decimals.set(e.target.value)}
+                  placeholder={ctrl.t.enterDecimals}
+                  min={0}
+                  max={18}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                 />
               </div>

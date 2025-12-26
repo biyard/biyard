@@ -24,8 +24,9 @@ pub async fn create_token_handler(
     project.verify_ownership(&account)?;
 
     // Check if a token with this symbol already exists for this project
-    let (existing_tokens, _) = ProjectToken::find_by_project(&cli, &project_pk, ProjectTokenQueryOption::builder())
-        .await?;
+    let (existing_tokens, _) =
+        ProjectToken::find_by_project(&cli, &project_pk, ProjectTokenQueryOption::builder())
+            .await?;
 
     if existing_tokens.iter().any(|t| t.symbol == req.symbol) {
         return Err(Error::TokenAlreadyExists);
