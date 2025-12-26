@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: dev
-          VITE_API_BASE_URL: https://api.dev.biyard.co
+          API_URL: https://api.dev.biyard.co
         run: |
           make sync-landing
 
