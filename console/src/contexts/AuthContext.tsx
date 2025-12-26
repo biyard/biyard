@@ -16,12 +16,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [account, setAccount] = useState<Account | null>(null);
   const sessionQuery = useValidateSession();
 
-  // Automatically restore session on mount
   useEffect(() => {
     if (sessionQuery.data && !account) {
       setAccount(sessionQuery.data);
     }
-  }, [sessionQuery.data, account]);
+  }, [sessionQuery.data, sessionQuery.isLoading, sessionQuery.error, account]);
+
+  const isLoading = sessionQuery.isLoading || (sessionQuery.data && !account);
 
   return (
     <AuthContext.Provider
@@ -29,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         account,
         setAccount,
         isAuthenticated: !!account,
-        isLoading: sessionQuery.isLoading,
+        isLoading: !!isLoading,
       }}
     >
       {children}
