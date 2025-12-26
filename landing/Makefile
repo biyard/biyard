@@ -12,4 +12,4 @@ test: node_modules
 	$(PLAYWRIGHT_ENV) npx playwright test $(PLAYWRIGHT_ARGS)
 
 build: node_modules
-	VITE_API_BASE_URL=$(API_URL)pnpm run build
+	VITE_API_BASE_URL=$(API_URL) pnpm run build
