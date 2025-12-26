@@ -61,7 +61,7 @@ jobs:
       - name: Deploy to S3
         env:
           ENV: prod
-          VITE_API_BASE_URL: https://api.biyard.co
+          API_URL: https://api.biyard.co
         run: |
           make sync-console
 

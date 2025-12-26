@@ -6,10 +6,10 @@ node_modules:
 	pnpm i -p
 
 run: node_modules
-	PORT=$(PORT) VITE_API_URL=$(API_URL) pnpm dev
+	PORT=$(PORT) VITE_API_BASE_URL=$(API_URL) pnpm dev
 
 test: node_modules
 	$(PLAYWRIGHT_ENV) npx playwright test $(PLAYWRIGHT_ARGS)
 
 build: node_modules
-	pnpm run build
+	VITE_API_BASE_URL=$(API_URL) pnpm run build
