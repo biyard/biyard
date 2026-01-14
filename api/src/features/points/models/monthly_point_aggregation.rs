@@ -18,30 +18,22 @@ pub struct MonthlyPointAggregation {
 
     #[serde(default)]
     pub updated_at: i64,
-
-    #[serde(default)]
-    #[dynamo(index = "gsi1", pk, prefix = "MPA", name = "find_by_date")]
-    pub project_pk: Partition,
-
-    #[serde(default)]
-    #[dynamo(index = "gsi1", sk, name = "find_by_date")]
-    pub date: String,
 }
 
 impl MonthlyPointAggregation {
     pub fn new(project_pk: ProjectPartition) -> Self {
-        let (pk, sk) = Self::keys(project_pk.clone(), timestamp_to_yyyy_mm());
+        let now = time_utils::get_now();
+        let time = timestamp_to_yyyy_mm();
+        let (pk, sk) = Self::keys(project_pk.clone(), time.clone());
         Self {
             pk,
             sk,
-            project_pk: project_pk.into(),
             supplied_points: 0,
             traded_points: 0,
             awarded_points: 0,
             deducted_points: 0,
             exchanged_points: 0,
-            updated_at: time_utils::get_now(),
-            date: timestamp_to_yyyy_mm(),
+            updated_at: now,
         }
     }
 

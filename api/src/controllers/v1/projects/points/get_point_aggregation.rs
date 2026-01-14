@@ -20,24 +20,12 @@ pub async fn get_point_aggregation_handler(
     State(AppState { cli, .. }): State<AppState>,
     Path(ProjectPathParam { project_id }): ProjectPath,
     Query(GetPointAggregationRequest { date }): Query<GetPointAggregationRequest>,
-) -> Result<Json<ListResponse<MonthlyPointAggregationResponse>>> {
-    let opt = MonthlyPointAggregation::opt().limit(1).sk(date);
+) -> Result<Json<MonthlyPointAggregationResponse>> {
+    let (pk, sk) = MonthlyPointAggregation::keys(ProjectPartition(project_id), date);
 
-    let pk: Partition = Partition::Project(project_id);
-
-    let res = MonthlyPointAggregation::find_by_date(&cli, pk, opt)
-        .await
-        .map(|(res, bm)| {
-            (
-                res.into_iter()
-                    .map(|e| {
-                        let e: MonthlyPointAggregationResponse = e.into();
-                        e
-                    })
-                    .collect(),
-                bm,
-            )
-        })?;
+    let res = MonthlyPointAggregation::get(&cli, pk, Some(sk))
+        .await?
+        .ok_or(Error::PointAggregationNotFound)?;
 
     Ok(Json(res.into()))
 }

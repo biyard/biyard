@@ -103,6 +103,9 @@ pub enum Error {
     #[error("Meta user not found")]
     #[rest_error(code = 603, status = 404)]
     MetaUserNotFound,
+    #[error("Point aggregation not found")]
+    #[rest_error(code = 604, status = 404)]
+    PointAggregationNotFound,
 
     // Token errors (700-799)
     #[error("Token not found")]

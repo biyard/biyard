@@ -1,8 +1,10 @@
 import { Plus, Loader2, Trash2, FolderOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useController } from "./use-controller";
 
 export function ProjectsPage() {
   const ctrl = useController();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -55,11 +57,12 @@ export function ProjectsPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
-                      {ctrl.t.projectId}
-                    </th>
+                    
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                       {ctrl.t.projectName}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                      {ctrl.t.projectId}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                       {ctrl.t.monthlyTokenSupply}
@@ -74,21 +77,17 @@ export function ProjectsPage() {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {ctrl.projects.map((project) => (
-                    <tr key={project.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <code className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                          {project.id}
-                        </code>
-                      </td>
+                    <tr key={project.id} onClick={() => navigate(`/projects/${project.id}`)}>
+                      
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {project.name}
                         </div>
-                        {project.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {project.description}
-                          </div>
-                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <code className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                          {project.id}
+                        </code>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {project.getFormattedTokenSupply()}
