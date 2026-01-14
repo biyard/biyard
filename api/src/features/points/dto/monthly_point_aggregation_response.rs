@@ -13,8 +13,9 @@ pub struct MonthlyPointAggregationResponse {
 
 impl From<MonthlyPointAggregation> for MonthlyPointAggregationResponse {
     fn from(aggregation: MonthlyPointAggregation) -> Self {
+        let date = aggregation.pk.1.to_string();
         Self {
-            date: aggregation.date,
+            date,
             supplied_points: aggregation.supplied_points,
             traded_points: aggregation.traded_points,
             awarded_points: aggregation.awarded_points,
