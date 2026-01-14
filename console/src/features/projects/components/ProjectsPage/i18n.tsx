@@ -4,8 +4,7 @@ import { useCommonI18n } from "@/i18n/locales/common";
 
 export const ProjectsPage = {
   en: {
-    title: "My Projects",
-    description: "Manage your blockchain projects and track tokens & points",
+    description: "Projects",
     createNew: "Create New Project",
     noProjects: "No projects yet",
     noProjectsDescription: "Create your first project to get started",
@@ -42,8 +41,7 @@ export const ProjectsPage = {
     projectDeletedSuccess: "Project deleted successfully",
   },
   ko: {
-    title: "내 프로젝트",
-    description: "블록체인 프로젝트를 관리하고 토큰 및 포인트를 추적하세요",
+    description: "프로젝트",
     createNew: "새 프로젝트 생성",
     noProjects: "프로젝트가 없습니다",
     noProjectsDescription: "첫 번째 프로젝트를 생성하여 시작하세요",
