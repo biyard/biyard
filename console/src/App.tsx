@@ -8,6 +8,7 @@ import { DashboardPage } from "./features/dashboard/components/DashboardPage";
 import { SettingsPage } from "./features/settings/components/SettingsPage";
 import { CredentialsPage } from "./features/credentials/components/CredentialsPage";
 import { ProjectsPage } from "./features/projects/components/ProjectsPage";
+import { ProjectDetailPage } from "./features/projects/components/ProjectDetailPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ConsoleLayout } from "./components/layout/ConsoleLayout";
 import { Toaster } from "./components/ui/toaster";
@@ -26,7 +27,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/signin" element={<SignInPage />} />
@@ -67,6 +68,16 @@ function App() {
                   <ProtectedRoute>
                     <ConsoleLayout>
                       <ProjectsPage />
+                    </ConsoleLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/projects/:projectId"
+                element={
+                  <ProtectedRoute>
+                    <ConsoleLayout>
+                      <ProjectDetailPage />
                     </ConsoleLayout>
                   </ProtectedRoute>
                 }
