@@ -1,6 +1,6 @@
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo, Clone)]
 pub struct TokenBalanceResponse {
     #[schemars(description = "Project ID")]
     pub project_id: Partition,
