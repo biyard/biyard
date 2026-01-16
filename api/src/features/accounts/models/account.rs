@@ -129,12 +129,11 @@ impl Account {
         let credential_pk = credential.pk.clone();
         let credential_sk = credential.sk.clone();
         let cli = state.cli.clone();
-        tokio::spawn(async move {
-            let _ = Credential::updater(credential_pk, credential_sk)
-                .with_last_used_at(time_utils::get_now())
-                .execute(&cli)
-                .await;
-        });
+
+        let _ = Credential::updater(credential_pk, credential_sk)
+            .with_last_used_at(time_utils::get_now())
+            .execute(&cli)
+            .await;
 
         // Get the account
         let account = Account::get(
@@ -191,6 +190,7 @@ impl FromRequestParts<AppState> for Account {
         // First, try API key authentication via Authorization header
         if let Some(auth_header) = parts.headers.get(AUTHORIZATION) {
             if let Ok(auth_str) = auth_header.to_str() {
+                tracing::info!("key {:?}", auth_str);
                 if auth_str.starts_with("Bearer ") {
                     return Self::from_credential(
                         auth_str.trim_start_matches("Bearer ").trim(),
