@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import {
-  ArrowLeft,
   Plus,
   Copy,
   Check,
@@ -9,47 +7,33 @@ import {
   Trash2,
 } from "lucide-react";
 import { useController } from "./use-controller";
-import { CredentialStatus } from "../../types/credential-status";
 
 export function CredentialsPage() {
   const ctrl = useController();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white shadow dark:bg-gray-800">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Link
-                to="/dashboard"
-                className="p-2 mr-4 text-gray-600 rounded-md dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {ctrl.t.title}
-                </h1>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                  {ctrl.t.description}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => ctrl.showCreateDialog.set(true)}
-              className="flex items-center py-2 px-4 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-            >
-              <Plus className="mr-2 w-5 h-5" />
-              {ctrl.t.createNew}
-            </button>
-          </div>
+    <div>
+      {/* Page Header */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {ctrl.t.title}
+          </h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {ctrl.t.description}
+          </p>
         </div>
-      </header>
+        <button
+          onClick={() => ctrl.showCreateDialog.set(true)}
+          className="flex items-center py-2 px-4 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+        >
+          <Plus className="mr-2 w-5 h-5" />
+          {ctrl.t.createNew}
+        </button>
+      </div>
 
       {/* Main Content */}
-      <main className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0">
+      <div>
           {ctrl.isLoading ? (
             <div className="p-12 text-center bg-white rounded-lg shadow dark:bg-gray-800">
               <Loader2 className="mx-auto w-12 h-12 text-gray-400 animate-spin" />
@@ -151,8 +135,7 @@ export function CredentialsPage() {
               </table>
             </div>
           )}
-        </div>
-      </main>
+      </div>
 
       {/* Create Credential Dialog */}
       {ctrl.showCreateDialog.get() && (

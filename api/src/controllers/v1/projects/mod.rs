@@ -51,30 +51,53 @@ pub fn route() -> Result<Router<AppState>> {
 /// 5. Returns 401 if not authenticated, 404 if project not found, 403 if access denied
 pub async fn authorize_project_permission(
     State(state): State<AppState>,
-    req: Request,
+    mut req: Request,
     next: Next,
 ) -> std::result::Result<Response<Body>, Error> {
     tracing::debug!("Project authorization middleware");
 
-    // Extract request parts to access headers and URI
-    let (mut parts, body) = req.into_parts();
+    // Extract the project_id path parameter using Axum's Path extractor
+    let project_id: String = {
+        let (mut parts, body) = req.into_parts();
 
-    // Extract authenticated account from request
-    let account: &Account = match parts.extensions.get() {
-        Some(account) => account,
-        _ => {
-            // Return 401 Unauthorized if authentication fails
-            return Err(Error::Unauthorized);
-        }
+        // Get authenticated account from extensions
+        let account: &Account = match parts.extensions.get() {
+            Some(account) => account,
+            _ => {
+                // Return 401 Unauthorized if authentication fails
+                return Err(Error::Unauthorized);
+            }
+        };
+
+        // Extract project_id from path
+        // The middleware sees the path after /v1/projects prefix is stripped
+        // So for /v1/projects/:project_id, we see /:project_id
+        let path = parts.uri.path();
+        let path_segments: Vec<&str> = path.split('/').filter(|s| !s.is_empty()).collect();
+
+        // Get the first segment which is the project_id
+        let project_id = path_segments
+            .first()
+            .ok_or_else(|| {
+                tracing::error!("Failed to extract project_id from path: {}", path);
+                Error::ProjectNotFound
+            })?
+            .to_string();
+
+        // Store account back in extensions
+        let account_clone = account.clone();
+        parts.extensions.insert(account_clone);
+
+        // Reconstruct request
+        req = Request::from_parts(parts, body);
+
+        project_id
     };
 
-    // Extract project_id from the URI path
-    // Expected format: /v1/projects/:project_id/* or /v1/projects/:project_id
-    let path = parts.uri.path();
-    let path_segments: Vec<&str> = path.split('/').collect();
+    let (mut parts, body) = req.into_parts();
 
-    // Find the segment after "projects"
-    let project_id = path_segments[1].to_string();
+    // Get account from extensions
+    let account: &Account = parts.extensions.get().unwrap();
 
     tracing::debug!(
         "Verifying project access for project_id: {} by account: {:?}",

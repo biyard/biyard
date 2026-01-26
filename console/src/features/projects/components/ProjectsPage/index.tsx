@@ -1,43 +1,31 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Loader2, Trash2, FolderOpen } from "lucide-react";
+import { Plus, Loader2, Trash2, FolderOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useController } from "./use-controller";
 
 export function ProjectsPage() {
   const ctrl = useController();
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-6">
-            <div className="flex items-center">
-              <Link
-                to="/dashboard"
-                className="mr-4 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {ctrl.t.description}
-                </h1>
-              </div>
-            </div>
-            <button
-              onClick={() => ctrl.showCreateDialog.set(true)}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              {ctrl.t.createNew}
-            </button>
-          </div>
+    <div>
+      {/* Page Header */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {ctrl.t.description}
+          </h1>
         </div>
-      </header>
+        <button
+          onClick={() => ctrl.showCreateDialog.set(true)}
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          {ctrl.t.createNew}
+        </button>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0">
+      <div>
           {ctrl.isLoading ? (
             <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center">
               <Loader2 className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
@@ -69,8 +57,12 @@ export function ProjectsPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
+                    
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                       {ctrl.t.projectName}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                      {ctrl.t.projectId}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                       {ctrl.t.monthlyTokenSupply}
@@ -85,16 +77,17 @@ export function ProjectsPage() {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {ctrl.projects.map((project) => (
-                    <tr key={project.id}>
+                    <tr key={project.id} onClick={() => navigate(`/projects/${project.id}`)}>
+                      
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           {project.name}
                         </div>
-                        {project.description && (
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
-                            {project.description}
-                          </div>
-                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <code className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                          {project.id}
+                        </code>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {project.getFormattedTokenSupply()}
@@ -119,8 +112,7 @@ export function ProjectsPage() {
               </table>
             </div>
           )}
-        </div>
-      </main>
+      </div>
 
       {/* Create Project Dialog */}
       {ctrl.showCreateDialog.get() && (
@@ -167,6 +159,20 @@ export function ProjectsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenSymbol}
+                </label>
+                <input
+                  type="text"
+                  value={ctrl.symbol.get()}
+                  onChange={(e) => ctrl.symbol.set(e.target.value)}
+                  placeholder={ctrl.t.enterSymbol}
+                  maxLength={10}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {ctrl.t.monthlyTokenSupply}
                 </label>
                 <input
@@ -174,6 +180,21 @@ export function ProjectsPage() {
                   value={ctrl.monthlyTokenSupply.get()}
                   onChange={(e) => ctrl.monthlyTokenSupply.set(e.target.value)}
                   placeholder={ctrl.t.enterTokenSupply}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {ctrl.t.tokenDecimals}
+                </label>
+                <input
+                  type="number"
+                  value={ctrl.decimals.get()}
+                  onChange={(e) => ctrl.decimals.set(e.target.value)}
+                  placeholder={ctrl.t.enterDecimals}
+                  min={0}
+                  max={18}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                 />
               </div>

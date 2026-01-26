@@ -1,10 +1,7 @@
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo)]
+#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo, Clone)]
 pub struct TokenBalanceResponse {
-    #[schemars(description = "Token ID")]
-    pub token_id: Partition,
-
     #[schemars(description = "Project ID")]
     pub project_id: Partition,
 
@@ -24,8 +21,7 @@ pub struct TokenBalanceResponse {
 impl From<crate::features::tokens::TokenBalance> for TokenBalanceResponse {
     fn from(balance: crate::features::tokens::TokenBalance) -> Self {
         Self {
-            token_id: balance.token_id,
-            project_id: balance.project_id,
+            project_id: balance.pk,
             meta_user_id: balance.meta_user_id,
             balance: balance.balance,
             created_at: balance.created_at,

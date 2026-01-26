@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use crate::*;
 
 use serde_with::{DeserializeFromStr, SerializeDisplay};
@@ -13,6 +15,7 @@ use serde_with::{DeserializeFromStr, SerializeDisplay};
     PartialEq,
     Eq,
     OperationIo,
+    SubPartition,
 )]
 pub enum Partition {
     #[default]
@@ -29,9 +32,9 @@ pub enum Partition {
 
     // Project
     Project(String),
+    MonthlyPoints(String),
 
     // Point Feature
-    #[schemars(description = "Customer's mapping key")]
     MetaUser(String),
 
     // Token
@@ -39,4 +42,10 @@ pub enum Partition {
 
     // Token Balance
     TokenBalance(String),
+
+    // Contact
+    Contact(String), // CONTACT#{email}
+
+    // Update
+    Update(String), // UPDATE#{email}
 }

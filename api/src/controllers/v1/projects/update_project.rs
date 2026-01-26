@@ -23,14 +23,8 @@ pub async fn update_project_handler(
     if let Some(description) = req.description {
         updater = updater.with_description(description);
     }
-    if let Some(monthly_points_supply) = req.monthly_points_supply {
-        updater = updater.with_monthly_points_supply(monthly_points_supply);
-    }
     if let Some(monthly_token_supply) = req.monthly_token_supply {
         updater = updater.with_monthly_token_supply(monthly_token_supply);
-    }
-    if let Some(exchange_ratio) = req.exchange_ratio {
-        updater = updater.with_exchange_ratio(exchange_ratio);
     }
     if let Some(status) = req.status {
         updater = updater.with_status(status);

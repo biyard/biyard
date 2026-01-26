@@ -1,13 +1,11 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use chrono::Utc;
 
 pub fn get_now() -> i64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards")
-        .as_millis() as i64
+    // use UTC time
+    Utc::now().timestamp_millis()
 }
 
 pub fn timestamp_to_yyyy_mm() -> String {
-    let now = chrono::Utc::now();
+    let now = Utc::now();
     now.format("%Y-%m").to_string()
 }

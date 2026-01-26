@@ -1,35 +1,20 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { useController } from "./use-controller";
 
 export function SettingsPage() {
   const ctrl = useController();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center py-6">
-            <Link
-              to="/dashboard"
-              className="mr-4 p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {ctrl.t.accountSettings}
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="max-w-3xl">
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {ctrl.t.accountSettings}
+        </h1>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Profile Section */}
-        <div className="px-4 py-6 sm:px-0">
+      {/* Profile Section */}
+      <div className="mb-6">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               {ctrl.t.profile}
@@ -63,29 +48,28 @@ export function SettingsPage() {
           </div>
         </div>
 
-        {/* Danger Zone */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 border-2 border-red-200 dark:border-red-900">
-            <div className="flex items-start">
-              <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
-              <div className="ml-3 flex-1">
-                <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">
-                  {ctrl.t.withdrawal}
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {ctrl.t.withdrawalWarning}
-                </p>
-                <button
-                  onClick={() => ctrl.showConfirmDialog.set(true)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                >
-                  {ctrl.t.withdrawal}
-                </button>
-              </div>
+      {/* Danger Zone */}
+      <div>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 border-2 border-red-200 dark:border-red-900">
+          <div className="flex items-start">
+            <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5" />
+            <div className="ml-3 flex-1">
+              <h2 className="text-xl font-semibold text-red-600 dark:text-red-400 mb-2">
+                {ctrl.t.withdrawal}
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {ctrl.t.withdrawalWarning}
+              </p>
+              <button
+                onClick={() => ctrl.showConfirmDialog.set(true)}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              >
+                {ctrl.t.withdrawal}
+              </button>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Confirmation Dialog */}
       {ctrl.showConfirmDialog.get() && (

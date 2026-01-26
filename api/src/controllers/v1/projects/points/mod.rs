@@ -1,21 +1,30 @@
-pub mod get_balance;
-pub mod list_transactions;
-pub mod transact_points;
+mod get_user_balance;
+mod list_transactions;
+mod list_user_transactions;
+mod transact_points;
 
+mod get_point_aggregation;
 #[cfg(test)]
 mod tests;
 
 use crate::*;
 
-pub use get_balance::*;
-pub use list_transactions::*;
-pub use transact_points::*;
+use get_point_aggregation::get_point_aggregation_handler;
+use get_user_balance::*;
+use list_transactions::*;
+use list_user_transactions::*;
+use transact_points::*;
 
 pub fn route() -> Result<Router<AppState>> {
     Ok(Router::new()
+        .route("/:meta_user_id", get(get_balance_handler))
         .route(
-            "/:meta_user_id",
-            get(get_balance_handler).post(transact_points_handler),
+            "/:meta_user_id/transactions",
+            get(list_user_transactions_handler),
         )
-        .route("/", get(list_transactions_handler)))
+        .route("/transactions", get(list_transactions_handler))
+        .route(
+            "/",
+            post(transact_points_handler).get(get_point_aggregation_handler),
+        ))
 }

@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{features::projects::ProjectStatus, *};
 
 #[derive(
     Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, JsonSchema, OperationIo, Default,
@@ -23,20 +23,12 @@ pub struct Project {
     #[schemars(description = "Description of the project")]
     pub description: Option<String>,
 
-    #[schemars(description = "Monthly points supply")]
-    #[serde(default)]
-    pub monthly_points_supply: i64,
-
-    #[schemars(description = "Monthly token supply")]
+    #[schemars(description = "Monthly automatic token supply")]
     #[serde(default)]
     pub monthly_token_supply: i64,
 
-    #[schemars(description = "Exchange ratio for point-to-token conversion")]
-    #[serde(default)]
-    pub exchange_ratio: f64,
-
     #[schemars(description = "Project status")]
-    pub status: String,
+    pub status: ProjectStatus,
 
     #[schemars(description = "Creation timestamp")]
     pub created_at: i64,
@@ -62,10 +54,8 @@ impl Project {
             gsi1_sk: EntityType::Project,
             name,
             description,
-            monthly_points_supply: 0,
             monthly_token_supply,
-            exchange_ratio: 0.0,
-            status: "active".to_string(),
+            status: ProjectStatus::Active,
             created_at: now,
             updated_at: now,
         }
@@ -76,30 +66,5 @@ impl Project {
             return Err(Error::ProjectAccessDenied);
         }
         Ok(())
-    }
-
-    pub fn calculate_token_value(&self) -> f64 {
-        if self.monthly_token_supply == 0 {
-            return 0.0;
-        }
-        (self.monthly_points_supply as f64) / (self.monthly_token_supply as f64)
-            * self.exchange_ratio
-    }
-
-    pub fn calculate_point_to_token_rate(&self) -> f64 {
-        if self.monthly_points_supply == 0 {
-            return 0.0;
-        }
-        (self.monthly_token_supply as f64) / (self.monthly_points_supply as f64)
-            * self.exchange_ratio
-    }
-
-    pub fn calculate_token_to_point_rate(&self) -> f64 {
-        if self.monthly_token_supply == 0 {
-            return 0.0;
-        }
-        (self.monthly_points_supply as f64)
-            / (self.monthly_token_supply as f64)
-            / self.exchange_ratio
     }
 }

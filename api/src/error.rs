@@ -1,7 +1,13 @@
+use tmpl_renderer::RenderError;
+
 use crate::*;
 
 #[derive(Debug, thiserror::Error, RestError, aide::OperationIo)]
 pub enum Error {
+    #[error("Web error: {0}")]
+    #[rest_error(code = 0)]
+    WebError(#[from] RenderError),
+
     #[error("Unknown")]
     #[rest_error(code = 1)]
     Unknown(String),
@@ -45,6 +51,8 @@ pub enum Error {
     Base64DecodingError(#[from] base64::DecodeError),
     #[error("Decoding error: {0}")]
     Utf8Decoding(#[from] std::str::Utf8Error),
+    #[error("SerdeJson error: {0}")]
+    SerdeJson(#[from] serde_json::Error),
 
     // Account errors (300-399)
     #[error("Email already exists")]
@@ -95,20 +103,26 @@ pub enum Error {
     #[error("Meta user not found")]
     #[rest_error(code = 603, status = 404)]
     MetaUserNotFound,
+    #[error("Point aggregation not found")]
+    #[rest_error(code = 604, status = 404)]
+    PointAggregationNotFound,
 
     // Token errors (700-799)
     #[error("Token not found")]
     #[rest_error(code = 700, status = 404)]
     TokenNotFound,
     #[error("Insufficient tokens")]
-    #[rest_error(code = 701, status = 400)]
+    #[rest_error(status = 400)]
     InsufficientTokens,
     #[error("Invalid token amount")]
-    #[rest_error(code = 702, status = 400)]
+    #[rest_error(status = 400)]
     InvalidTokenAmount,
     #[error("Token already exists")]
-    #[rest_error(code = 703, status = 400)]
+    #[rest_error(status = 400)]
     TokenAlreadyExists,
+    #[error("Token balance not found")]
+    #[rest_error(status = 404)]
+    TokenBalanceNotFound,
 }
 
 impl From<String> for Error {

@@ -10,23 +10,28 @@ pub struct PointBalance {
     pub sk: EntityType,
 
     #[schemars(description = "Project ID")]
-    #[dynamo(index = "gsi1", pk, name = "find_by_project")]
+    #[dynamo(index = "gsi1", prefix = "PB", pk, name = "find_by_project")]
     pub project_id: Partition,
 
     #[schemars(description = "Month in YYYY-MM format")]
     #[dynamo(index = "gsi1", sk, prefix = "MONTH", name = "find_by_project")]
+    #[dynamo(index = "gsi2", sk, name = "find_by_meta_user")]
     pub month: String,
 
     #[schemars(description = "Meta user ID (customer's user ID)")]
+    #[dynamo(index = "gsi2", pk, prefix = "PB", name = "find_by_meta_user")]
     pub meta_user_id: String,
 
     #[schemars(description = "Current balance for this month")]
+    #[serde(default)]
     pub balance: i64,
 
     #[schemars(description = "Total points earned this month")]
+    #[serde(default)]
     pub total_earned: i64,
 
     #[schemars(description = "Total points spent this month")]
+    #[serde(default)]
     pub total_spent: i64,
 
     #[schemars(description = "Last update timestamp")]
@@ -53,6 +58,16 @@ impl PointBalance {
             total_spent: 0,
             updated_at: now,
         }
+    }
+
+    pub fn keys(
+        project_pk: Partition,
+        meta_user_id: String,
+        month: String,
+    ) -> (CompositePartition, EntityType) {
+        let pk = (project_pk, Partition::MetaUser(meta_user_id)).into();
+        let sk = EntityType::Month(month);
+        (pk, sk)
     }
 
     pub fn add_points(&mut self, amount: i64) {

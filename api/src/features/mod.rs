@@ -1,6 +1,7 @@
 pub mod accounts;
-pub mod session;
+pub mod contacts;
 pub mod credentials;
-pub mod projects;
 pub mod points;
+pub mod projects;
+pub mod session;
 pub mod tokens;

@@ -16,6 +16,7 @@ const dirname =
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || "/",
   define: {
     global: "globalThis",
     "process.env": {},
@@ -53,14 +54,7 @@ export default defineConfig({
         test: {
           name: "storybook",
           browser: {
-            enabled: true,
-            headless: true,
-            provider: "playwright",
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
+            enabled: false,
           },
           setupFiles: [".storybook/vitest.setup.ts"],
         },

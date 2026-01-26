@@ -54,38 +54,55 @@ services:
     profiles:
       - development
 
-  web:
+  landing:
     image: node:22.14
     restart: always
     ports:
       - "5000:5000"
     volumes:
-      - ./.build/web/node_modules:/app/node_modules
-      - ./.build/web/web_node_modules:/app/web/node_modules
-      - ./.build/web/pnpm-store:/app/.pnpm-store
-      - ./web:/app
+      - ./.build/landing/node_modules:/app/node_modules
+      - ./.build/landing/pnpm-store:/app/.pnpm-store
+      - ./scripts/web-entrypoint.sh:/app/entrypoint.sh
+      - ./landing:/app
     working_dir: /app
     environment:
       PORT: 5000
       VITE_API_URL: "http://localhost:3000"
       VITE_LOG_LEVEL: ${VITE_LOG_LEVEL:-debug}
-      VITE_FIREBASE_API_KEY: ${VITE_FIREBASE_API_KEY:-dummy}
-      VITE_FIREBASE_AUTH_DOMAIN: ${VITE_FIREBASE_AUTH_DOMAIN:-dummy}
-      VITE_FIREBASE_PROJECT_ID: ${VITE_FIREBASE_PROJECT_ID:-dummy}
-      VITE_FIREBASE_STORAGE_BUCKET: ${VITE_FIREBASE_STORAGE_BUCKET:-dummy}
-      VITE_FIREBASE_MESSAGING_SENDER_ID: ${VITE_FIREBASE_MESSAGING_SENDER_ID:-dummy}
-      VITE_FIREBASE_APP_ID: ${VITE_FIREBASE_APP_ID:-dummy}
-      VITE_FIREBASE_MEASUREMENT_ID: ${VITE_FIREBASE_MEASUREMENT_ID:-dummy}
 
       NODE_ENV: development
-    command: ["bash", "scripts/web-entrypoint.sh"]
+    command: ["bash", "entrypoint.sh"]
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/version || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/api/version || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 100
-    networks:
-      - ratel-network
+    profiles:
+      - development
+
+  console:
+    image: node:22.14
+    restart: always
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./.build/console/node_modules:/app/node_modules
+      - ./.build/console/pnpm-store:/app/.pnpm-store
+      - ./scripts/web-entrypoint.sh:/app/entrypoint.sh
+      - ./console:/app
+    working_dir: /app
+    environment:
+      PORT: 4000
+      VITE_API_URL: "http://localhost:3000"
+      VITE_LOG_LEVEL: ${VITE_LOG_LEVEL:-debug}
+
+      NODE_ENV: development
+    command: ["bash", "entrypoint.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/api/version || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 100
     profiles:
       - development
 
@@ -121,8 +138,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 100
-    networks:
-      - ratel-network
     profiles:
       - development
 
@@ -147,8 +162,6 @@ services:
       retries: 10
     volumes:
       - ./.build/localstack-data:/var/lib/localstack
-    networks:
-      - ratel-network
     profiles:
       - testing
       - development
@@ -165,8 +178,6 @@ services:
       LOCALSTACK_ENDPOINT: http://localstack:4566
     volumes:
       - ./scripts:/scripts
-    networks:
-      - ratel-network
     command: ["bash", "/scripts/localstack-init-entrypoint.sh"]
     depends_on:
       localstack:
@@ -191,9 +202,3 @@ services:
     profiles:
       - development
       - infra
-    networks:
-      - ratel-network
-
-networks:
-  ratel-network:
-    driver: bridge

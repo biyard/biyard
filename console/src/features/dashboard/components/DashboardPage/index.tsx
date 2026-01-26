@@ -1,80 +1,36 @@
 import { Link } from "react-router-dom";
-import { Sun, Moon, Globe, Settings, Key, LogOut, FolderKanban } from "lucide-react";
+import { Settings, Key, FolderKanban } from "lucide-react";
 import { useController } from "./use-controller";
 
 export function DashboardPage() {
   const ctrl = useController();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {ctrl.t.title}
-              </h1>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {ctrl.t.tagline}
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Language Toggle */}
-              <button
-                onClick={ctrl.toggleLanguage}
-                className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={ctrl.i18n.language === "en" ? "한국어" : "English"}
-              >
-                <Globe className="h-5 w-5" />
-              </button>
+    <div>
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {ctrl.t.title}
+        </h1>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          {ctrl.t.tagline}
+        </p>
+      </div>
 
-              {/* Theme Toggle */}
-              <button
-                onClick={ctrl.theme.toggleTheme}
-                className="p-2 rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                title={
-                  ctrl.theme.theme === "light"
-                    ? ctrl.t.themeDark
-                    : ctrl.t.themeLight
-                }
-              >
-                {ctrl.theme.theme === "light" ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Sun className="h-5 w-5" />
-                )}
-              </button>
-
-              {/* Sign Out */}
-              <button
-                onClick={ctrl.handleSignOut}
-                className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                {ctrl.t.signOut}
-              </button>
-            </div>
-          </div>
+      {/* Welcome Section */}
+      <div className="mb-6">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            {ctrl.t.welcome}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            {ctrl.t.myAccount}: {ctrl.account?.name} ({ctrl.account?.email})
+          </p>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Welcome Section */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              {ctrl.t.welcome}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              {ctrl.t.myAccount}: {ctrl.account?.name} ({ctrl.account?.email})
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Actions Grid */}
-        <div className="px-4 py-6 sm:px-0">
+      {/* Quick Actions Grid */}
+      <div className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* My Projects Card */}
             <Link
@@ -138,50 +94,49 @@ export function DashboardPage() {
           </div>
         </div>
 
-        {/* Account Info */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-              {ctrl.t.profile}
-            </h3>
-            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {ctrl.t.name}
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {ctrl.account?.name}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {ctrl.t.email}
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {ctrl.account?.email}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {ctrl.t.accountId}
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
-                  {ctrl.account?.pk}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  {ctrl.t.createdAt}
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                  {ctrl.account?.created_at &&
-                    new Date(ctrl.account.created_at * 1000).toLocaleString()}
-                </dd>
-              </div>
-            </dl>
-          </div>
+      {/* Account Info */}
+      <div>
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            {ctrl.t.profile}
+          </h3>
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {ctrl.t.name}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                {ctrl.account?.name}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {ctrl.t.email}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                {ctrl.account?.email}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {ctrl.t.accountId}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
+                {ctrl.account?.pk}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                {ctrl.t.createdAt}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 dark:text-white">
+                {ctrl.account?.created_at &&
+                  new Date(ctrl.account.created_at * 1000).toLocaleString()}
+              </dd>
+            </div>
+          </dl>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

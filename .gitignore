@@ -10,3 +10,17 @@ contracts/typechain-types/
 contracts/coverage/
 .projectile
 /web/playwright-report/
+
+.vscode/settings.json
+
+
+#Playwright test files
+*/playwright-report/*
+*/test-results/*
+
+#OS
+*/.DS_Store
+.dir-locals.el
+
+# Davia
+.davia/

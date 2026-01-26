@@ -15,6 +15,7 @@ pub type Result<T> = std::result::Result<T, error::Error>;
 pub type Error = error::Error;
 
 use aide::{NoApi, OperationIo};
+pub use btracing::notify;
 use by_axum;
 use by_axum::axum;
 use by_axum::axum::{

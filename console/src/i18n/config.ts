@@ -13,6 +13,7 @@ import { CredentialsPage } from "@/features/credentials/components/CredentialsPa
 import { DashboardPage } from "@/features/dashboard/components/DashboardPage/i18n";
 import { SettingsPage } from "@/features/settings/components/SettingsPage/i18n";
 import { ProjectsPage } from "@/features/projects/components/ProjectsPage/i18n";
+import { projectDetail } from "@/features/projects/components/ProjectDetailPage/i18n";
 
 export const resources: {
   en: Record<string, unknown>;
@@ -41,6 +42,7 @@ Object.entries({
   DashboardPage,
   SettingsPage,
   ProjectsPage,
+  projectDetail,
 }).forEach(([key, value]) => {
   resources.en[key] = value.en;
   resources.ko[key] = value.ko;

@@ -17,6 +17,9 @@ pub enum EntityType {
     #[default]
     None,
 
+    // Timestamp
+    TS(i64), // TS#<unix_timestamp>
+
     // Account feature
     Account,
 
@@ -36,4 +39,13 @@ pub enum EntityType {
     PointTransaction(String),
     Token,
     TokenBalance,
+    MonthlyPointAggregation,
+    #[schemars(description = "Sort key: USER#<meta_user_id>")]
+    User(String),
+
+    // Update
+    Update,
+
+    // Contact
+    Contact,
 }

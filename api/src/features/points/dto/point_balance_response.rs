@@ -22,6 +22,14 @@ pub struct PointBalanceResponse {
 
     #[schemars(description = "Last update timestamp")]
     pub updated_at: i64,
+
+    #[schemars(description = "Total points distributed to all users this month (project-level)")]
+    #[serde(default)]
+    pub project_total_points: i64,
+
+    #[schemars(description = "Total tokens to be distributed this month")]
+    #[serde(default)]
+    pub monthly_token_supply: i64,
 }
 
 impl From<crate::features::points::PointBalance> for PointBalanceResponse {
@@ -34,6 +42,8 @@ impl From<crate::features::points::PointBalance> for PointBalanceResponse {
             total_earned: balance.total_earned,
             total_spent: balance.total_spent,
             updated_at: balance.updated_at,
+            project_total_points: 0,
+            monthly_token_supply: 0,
         }
     }
 }

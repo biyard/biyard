@@ -11,22 +11,16 @@ pub struct PointTransaction {
     pub sk: EntityType,
 
     #[schemars(description = "Project ID")]
-    #[dynamo(index = "gsi1", pk, name = "find_by_project")]
-    #[dynamo(index = "gsi2", pk, order = 0, name = "find_by_user")]
+    #[dynamo(index = "gsi1", prefix = "PT", pk, name = "find_by_project")]
     pub project_id: Partition,
 
     #[schemars(description = "Meta user ID")]
-    #[dynamo(
-        index = "gsi2",
-        pk,
-        order = 1,
-        prefix = "META_USER",
-        name = "find_by_user"
-    )]
+    #[dynamo(index = "gsi2", pk, prefix = "PT", name = "find_by_meta_user")]
     pub meta_user_id: String,
 
     #[schemars(description = "Month in YYYY-MM format")]
-    #[dynamo(index = "gsi2", sk, prefix = "MONTH", name = "find_by_user")]
+    #[dynamo(index = "gsi1", sk, prefix = "MONTH", name = "find_by_project")]
+    #[dynamo(index = "gsi2", sk, name = "find_by_meta_user")]
     pub month: String,
 
     #[schemars(description = "Transaction type")]
@@ -42,7 +36,6 @@ pub struct PointTransaction {
     pub description: Option<String>,
 
     #[schemars(description = "Creation timestamp")]
-    #[dynamo(index = "gsi1", sk, prefix = "TX", name = "find_by_project")]
     pub created_at: i64,
 }
 

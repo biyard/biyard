@@ -2,11 +2,8 @@ use crate::*;
 
 #[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo)]
 pub struct TokenResponse {
-    #[schemars(description = "Token ID")]
-    pub pk: Partition,
-
     #[schemars(description = "Project ID")]
-    pub project_id: Partition,
+    pub pk: Partition,
 
     #[schemars(description = "Token name")]
     pub name: String,
@@ -37,7 +34,6 @@ impl From<crate::features::tokens::ProjectToken> for TokenResponse {
     fn from(token: crate::features::tokens::ProjectToken) -> Self {
         Self {
             pk: token.pk,
-            project_id: token.project_id,
             name: token.name,
             symbol: token.symbol,
             decimals: token.decimals,

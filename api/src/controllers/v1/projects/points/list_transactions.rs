@@ -1,31 +1,33 @@
-use std::sync::Arc;
-
 use crate::features::accounts::Account;
 use crate::features::points::*;
 use crate::features::projects::*;
+use crate::utils::time_utils::timestamp_to_yyyy_mm;
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize, JsonSchema, OperationIo)]
-pub struct ListTransactionsResponse {
-    pub transactions: Vec<PointTransactionResponse>,
+#[derive(Debug, Clone, Serialize, Deserialize, OperationIo, JsonSchema, Validate)]
+pub struct ListTransactionsRequest {
+    #[serde(flatten)]
+    pub pagination: Pagination,
+
+    #[schemars(description = "Date in YYYY-MM format/YYYY format")]
+    pub date: Option<String>,
 }
 
 pub async fn list_transactions_handler(
     State(AppState { cli, .. }): State<AppState>,
     Extension(project): Extension<Project>,
-    Path(_path): ProjectPath,
-    Query(params): PaginationQuery,
+    // Path(_path): ProjectPath,
+    Query(ListTransactionsRequest {
+        pagination,
+        date: _,
+    }): Query<ListTransactionsRequest>,
 ) -> Result<Json<ListResponse<PointTransactionResponse>>> {
     debug!("Listing transactions for project: {:?}", project);
 
-    params.validate()?;
+    pagination.validate()?;
 
     // Query transactions by project
-    let mut opt = PointTransactionQueryOption::builder().limit(params.limit.unwrap_or(100));
-
-    if let Some(bookmark) = params.bookmark {
-        opt = opt.bookmark(bookmark);
-    }
+    let opt = PointTransaction::opt_with_bookmark(pagination.bookmark).limit(pagination.limit);
 
     let (transactions, bookmark) =
         PointTransaction::find_by_project(&cli, &project.pk, opt).await?;
