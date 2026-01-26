@@ -144,7 +144,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [web, console, api]
+    needs: [api]
     steps:
       - uses: actions/checkout@v3
         with:
