@@ -3,8 +3,14 @@ import { LabeledInput } from "@/components/ui/labeled_input";
 import { Label } from "@/components/ui/label";
 import { TopicDropdownMenu } from "./topic-dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { Section } from "@/components/section";
+import {
+  SectionLabel,
+  SectionTitle,
+  BodyText,
+  Highlight,
+} from "@/components/typography";
+import { Button } from "@/components/button";
 
 const trustFeatures = [
   "On-chain audit trail for all treasury events.",
@@ -21,20 +27,18 @@ export function ContactSection() {
     <Section id="contact" className="bg-[#1A1D30]">
       <div className="flex flex-row w-full gap-80 max-tablet:flex-col max-tablet:gap-48">
         <div className="flex-1 flex flex-col gap-24">
-          <p className="text-primary text-xs font-semibold uppercase">
-            TRUST & COMPLIANCE
-          </p>
-          <h2 className="font-black text-[30px]/[42px]">
+          <SectionLabel className="text-xs">TRUST & COMPLIANCE</SectionLabel>
+          <SectionTitle size="small" weight="black" align="left">
             <p>Institutional-grade transparency,</p>
-            <span className="text-primary">by default</span>
-          </h2>
+            <Highlight>by default</Highlight>
+          </SectionTitle>
 
-          <p className="text-gray-400 text-sm font-light">
+          <BodyText size="small">
             Every credential, operation, and governance event is logged on-chain
             in tamper-proof, auditable format—so partners, regulators, and
             community members can verify your reserve discipline in real-time,
             just from an Etherscan (or equivalent) link.
-          </p>
+          </BodyText>
           <ul className="flex flex-col gap-32 font-semibold text-sm mt-60">
             {trustFeatures.map((feature, index) => (
               <li
@@ -50,9 +54,7 @@ export function ContactSection() {
 
         <div className="flex-1 flex flex-col gap-48 bg-white/5 p-32 rounded-3xl">
           <div className="flex flex-col gap-8">
-            <p className="text-primary text-xs font-semibold uppercase">
-              READY TO LAUNCH?
-            </p>
+            <SectionLabel className="text-xs">READY TO LAUNCH?</SectionLabel>
             <p className="text-white text-lg font-light">
               Let's design your revenue-backed launch model.
             </p>
@@ -114,9 +116,9 @@ export function ContactSection() {
               />
             </div>
 
-            <button className="w-full text-lg flex flex-row justify-center items-center px-20 py-15 gap-10 font-semibold rounded-[50px] text-black hover:opacity-90 transition-opacity max-tablet:hidden bg-[linear-gradient(93.06deg,#00D190_0%,#A9B5F3_99.39%)] shadow-[0px_20px_50px_20px_rgba(0,230,165,0.15)] whitespace-nowrap">
+            <Button size="large" shape="pill" fullWidth disabled={isSubmitting}>
               Book a Strategy Session
-            </button>
+            </Button>
 
             <p className="text-gray-400 text-xs text-left">
               By submitting, you agree to be contacted about Biyard's enterprise

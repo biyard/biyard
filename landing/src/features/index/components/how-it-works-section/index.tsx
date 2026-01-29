@@ -1,4 +1,11 @@
 import { Section } from "@/components/section";
+import {
+  SectionLabel,
+  SectionTitle,
+  CardTitle,
+  BodyText,
+  Highlight,
+} from "@/components/typography";
 
 const steps = [
   {
@@ -121,13 +128,11 @@ export function HowItWorksSection() {
       containerClassName="flex-col items-center gap-48"
     >
       <div className="flex flex-col items-center gap-16 text-center max-w-4xl">
-        <p className="text-primary text-sm font-semibold uppercase tracking-wider">
-          HOW IT WORKS
-        </p>
-        <h2 className="font-black text-[36px]/[48px] max-tablet:text-[28px]/[38px]">
+        <SectionLabel>HOW IT WORKS</SectionLabel>
+        <SectionTitle size="medium" weight="black" align="center">
           From your revenue to a live,{" "}
-          <span className="text-primary">collateral-backed token</span>
-        </h2>
+          <Highlight>collateral-backed token</Highlight>
+        </SectionTitle>
       </div>
 
       <div className="grid grid-cols-2 gap-24 w-full max-w-800 max-tablet:grid-cols-1">
@@ -162,11 +167,11 @@ function StepCard({
         <p className="text-primary text-xs font-semibold uppercase border border-primary inline-block w-fit px-12 py-4 rounded-full">
           {step}
         </p>
-        <h3 className="text-white text-xl font-bold font-outfit">{title}</h3>
+        <CardTitle size="large" weight="bold">{title}</CardTitle>
       </div>
-      <p className="text-gray-400 text-sm font-light font-outfit pt-20">
+      <BodyText size="small" className="pt-20">
         {description}
-      </p>
+      </BodyText>
       <div className="flex justify-end text-primary opacity-60 mt-auto">
         {icon}
       </div>

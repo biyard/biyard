@@ -1,5 +1,12 @@
 import { Section } from "@/components/section";
 import { TrendingUp, Shield, Target, Flag } from "lucide-react";
+import {
+  SectionLabel,
+  SectionTitle,
+  CardTitle,
+  BodyText,
+  Highlight,
+} from "@/components/typography";
 
 const solutions = [
   {
@@ -39,11 +46,11 @@ export function SolutionSection() {
       containerClassName="flex-col items-center gap-48 max-tablet:gap-32"
     >
       <div className="flex flex-col items-center gap-16 text-center">
-        <p className="text-primary text-sm font-semibold uppercase">SOLUTION</p>
-        <h2 className="font-bold text-[30px]/[42px] max-tablet:text-[24px]/[32px]">
+        <SectionLabel>SOLUTION</SectionLabel>
+        <SectionTitle size="small" weight="bold" align="center">
           Quantifiable impact{" "}
-          <span className="text-primary">for your launch and treasury</span>
-        </h2>
+          <Highlight>for your launch and treasury</Highlight>
+        </SectionTitle>
       </div>
 
       <div className="grid grid-cols-2 gap-24 w-full max-tablet:grid-cols-1 max-w-800">
@@ -68,7 +75,6 @@ interface SolutionCardProps {
 
 function SolutionCard({ icon: Icon, title, description }: SolutionCardProps) {
   return (
-    // <div className="flex flex-col gap-16 items-start p-32 rounded-2xl border border-white/10 backdrop-blur-sm hover:border-primary/30 transition-all bg-linear-to-br from-white/5 via-white/5 to-primary/5">
     <div
       className="flex flex-col gap-16 items-start p-32
       bg-white/3 backdrop-blur-sm
@@ -78,12 +84,8 @@ function SolutionCard({ icon: Icon, title, description }: SolutionCardProps) {
       <div className="size-32 flex items-center justify-center">
         <Icon size={24} className="text-primary" />
       </div>
-      <h3 className="text-white text-xl font-semibold font-outfit leading-28 tracking-[0.25px]">
-        {title}
-      </h3>
-      <p className="text-gray-400 text-sm font-light font-outfit leading-20 tracking-[0.25px]">
-        {description}
-      </p>
+      <CardTitle size="large">{title}</CardTitle>
+      <BodyText size="small">{description}</BodyText>
     </div>
   );
 }

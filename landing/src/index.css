@@ -109,4 +109,8 @@ html, body {
 
   --container-desktop: 1440px;
   --container-wrapper: 1280px;
+
+  --nav-margin-top: 24px;
+  --nav-height: 84px;
+  --nav-offset: calc(var(--nav-margin-top) + var(--nav-height));
 }

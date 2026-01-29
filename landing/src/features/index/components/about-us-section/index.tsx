@@ -1,4 +1,11 @@
 import { Section } from "@/components/section";
+import {
+  SectionLabel,
+  SectionTitle,
+  CardTitle,
+  BodyText,
+  Highlight,
+} from "@/components/typography";
 
 const features = [
   {
@@ -42,16 +49,16 @@ export function AboutUsSection() {
       containerClassName="flex-row justify-between items-start max-tablet:flex-col gap-36"
     >
       <div className="flex-1 flex flex-col items-start gap-8 max-tablet:w-full">
-        <p className="text-primary text-sm font-semibold uppercase">ABOUT US</p>
-        <h2 className="font-black text-left text-[30px]/[42px]">
+        <SectionLabel>ABOUT US</SectionLabel>
+        <SectionTitle size="small" weight="black" align="left">
           <p>Built for companies</p>
-          <span className="text-primary">that need more than hype</span>
-        </h2>
-        <p className="text-gray-400 text-[14px]/[20px] font-light font-outfit leading-24 tracking-[0.25px]">
+          <Highlight>that need more than hype</Highlight>
+        </SectionTitle>
+        <BodyText size="medium">
           Biyard turns your existing business revenue into a verifiable,
           on-chain reserve — giving every launch an instant trust layer, without
           forcing your team to become crypto infrastructure experts.
-        </p>
+        </BodyText>
         <img
           className="opacity-40 w-200 aspect-square mt-20"
           src="/images/aboutus_icon.svg"
@@ -77,13 +84,9 @@ function FeatureCard({ title, text }: { title: string; text: string }) {
     <div className="flex flex-col gap-12 items-start p-24">
       <div className="flex flex-row gap-8 justify-center items-center">
         <div className="w-6 h-6 rotate-45 bg-primary"></div>
-        <h3 className="text-white text-base font-semibold font-outfit leading-24 tracking-[0.25px]">
-          {title}
-        </h3>
+        <CardTitle size="medium">{title}</CardTitle>
       </div>
-      <p className="text-gray-400 text-sm font-light font-outfit leading-20 tracking-[0.25px]">
-        {text}
-      </p>
+      <BodyText size="small">{text}</BodyText>
     </div>
   );
 }

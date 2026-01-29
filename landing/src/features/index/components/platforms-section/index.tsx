@@ -1,6 +1,13 @@
 import { Section } from "@/components/section";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  SectionLabel,
+  SectionTitle,
+  CardTitle,
+  BodyText,
+  Highlight,
+} from "@/components/typography";
 
 const platforms = [
   {
@@ -48,17 +55,15 @@ export function PlatformsSection() {
       containerClassName="flex-col items-center gap-48 max-tablet:gap-32"
     >
       <div className="flex flex-col items-center gap-16 text-center max-w-800">
-        <p className="text-primary text-sm font-semibold uppercase tracking-wider">
-          CASE STUDY & TESTIMONIAL
-        </p>
-        <h2 className="font-bold text-[30px]/[42px] max-tablet:text-[24px]/[32px]">
-          Platforms building <span className="text-primary">on Biyard</span>
-        </h2>
-        <p className="text-gray-400 text-[14px]/[20px] font-light font-outfit tracking-[0.25px]">
+        <SectionLabel>CASE STUDY & TESTIMONIAL</SectionLabel>
+        <SectionTitle size="small" weight="bold" align="center">
+          Platforms building <Highlight>on Biyard</Highlight>
+        </SectionTitle>
+        <BodyText size="medium">
           From Web3-native protocols to Web2 payment companies, Biyard's R-DRE
           engine powers launches where revenue, reserves and governance stay
           tightly aligned.
-        </p>
+        </BodyText>
       </div>
 
       {/* Carousel */}
@@ -116,14 +121,12 @@ function PlatformCard({ platform, className = "" }: PlatformCardProps) {
       </div>
 
       <div className="flex flex-col gap-8">
-        <h3 className="text-white text-xl font-semibold font-outfit leading-28 tracking-[0.25px]">
+        <CardTitle size="large">
           {platform.name}
           {platform.subtitle && ": "}
           {platform.subtitle}
-        </h3>
-        <p className="text-gray-400 text-sm font-light font-outfit leading-20 tracking-[0.25px]">
-          {platform.description}
-        </p>
+        </CardTitle>
+        <BodyText size="small">{platform.description}</BodyText>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Logo } from "@/components/icons";
 import { useState } from "react";
 import { Menu } from "lucide-react";
+import { Button } from "@/components/button";
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -48,9 +49,9 @@ export function Navigation() {
             Contact Us
           </MenuItem>
 
-          <button className="flex flex-row justify-center items-center px-20 py-10 gap-10 font-semibold rounded-[50px] text-black hover:opacity-90 transition-opacity max-tablet:hidden bg-[linear-gradient(93.06deg,#00D190_0%,#A9B5F3_99.39%)] shadow-[0px_20px_50px_20px_rgba(0,230,165,0.15)] whitespace-nowrap">
+          <Button variant="primary" size="small" shape="pill">
             Go to Console
-          </button>
+          </Button>
         </nav>
       </div>
     </header>
