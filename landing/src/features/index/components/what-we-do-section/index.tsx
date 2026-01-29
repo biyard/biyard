@@ -2,14 +2,15 @@ import { ServiceCard } from "./service-card";
 import { useWhatWeDoSectionI18n } from "./i18n";
 import { Approach } from "./approach";
 import { PeopleCentric, Practical, Scalable } from "@/components/icons";
+import { Section } from "@/components/section";
 
 export function WhatWeDoSection() {
   const t = useWhatWeDoSectionI18n();
 
   return (
-    <section id="what-we-do" className="relative my-auto w-full">
+    <Section id="what-we-do">
       <div className="absolute left-[1/2] h-879 w-879 bg-purple-blur/50 blur-[300px]" />
-      <div className="flex relative flex-col gap-48 justify-center items-center w-full min-h-screen max-w-wrapper">
+      <div className="flex relative flex-col gap-48 justify-center items-center w-full">
         <div className="flex flex-col gap-24 items-center w-full z-1">
           <h1
             className="font-medium text-center text-white text-[45px]/64"
@@ -58,6 +59,6 @@ export function WhatWeDoSection() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

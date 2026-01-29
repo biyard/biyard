@@ -7,16 +7,14 @@ import {
 } from "@/components/icons";
 import { useIntroI18n } from "./i18n";
 import { MeetBiyard } from "@/components/icons";
+import { Section } from "@/components/section";
 import "./meet-biyard-animation.js";
 
 export function VisionMissionSection() {
   const t = useIntroI18n();
 
   return (
-    <section
-      id="intro"
-      className="flex flex-col gap-96 justify-center mx-auto w-full min-h-screen max-w-wrapper py-100 max-desktop:max-w-full"
-    >
+    <Section id="intro" containerClassName="gap-96">
       <div className="flex flex-row justify-between items-start py-40 w-full border border-gray-800 backdrop-blur-sm rounded-[16px] px-118 gap-120 max-desktop:flex-col max-desktop:gap-40 max-desktop:px-20 max-tablet:flex-col max-tablet:py-24 max-tablet:px-16">
         <LabeledTextWithLogo
           icon={<LogoSymbol />}
@@ -61,7 +59,7 @@ export function VisionMissionSection() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
 

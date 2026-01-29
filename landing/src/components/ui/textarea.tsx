@@ -5,7 +5,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
 
 export const textareaVariants = cva(
-  "w-full rounded-[4px] border-1 border-gray-600 px-16 py-11 flex flex-row items-center focus:outline-none focus:border-primary",
+  "w-full rounded-lg border border-gray-600 bg-[#2A2D40] px-20 py-12 text-white placeholder:text-gray-500 focus:outline-none focus:border-primary transition-colors resize-y min-h-[120px]",
   {
     variants: {
       variant: {

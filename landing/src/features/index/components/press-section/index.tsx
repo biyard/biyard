@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { newsArticles } from '../../data';
+import { Section } from "@/components/section";
 
 export function PressSection() {
   const [featured, ...otherNews] = newsArticles;
 
   return (
-    <section id="press-and-news" className="bg-slate-950 py-20 px-4">
-      <div className="max-w-7xl mx-auto">
+    <Section id="press-and-news">
+      <div className="mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             Press & <span className="text-green-400">News</span>
@@ -61,6 +62,6 @@ export function PressSection() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
