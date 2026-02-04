@@ -1,19 +1,20 @@
+import { Button } from "@/components/button";
 import { Section } from "@/components/section";
 import {
   SectionLabel,
   PageTitle,
   BodyText,
   Highlight,
-  Button,
 } from "@/components/typography";
+import { scrollToSection, SectionIds } from "@/lib/utils";
 
 export function HeroSection() {
   return (
     <Section
-      id="top"
+      id={SectionIds.Top}
       containerClassName="flex-row justify-between items-center max-tablet:flex-col"
     >
-      <div className="absolute opacity-50 w-849 h-849 -top-356.74 -left-90 bg-purple-blur/80 blur-[500px] z-1"></div>
+      <div className="absolute opacity-50 w-849 h-849 -top-356.74 -left-90 bg-purple-blur/80 blur-[500px] -z-1"></div>
 
       <div className="flex-1 flex flex-col items-start gap-44 max-tablet:items-center max-tablet:text-center">
         <div className="flex flex-col items-start gap-24 max-tablet:items-center">
@@ -33,9 +34,11 @@ export function HeroSection() {
           </BodyText>
         </div>
         <div className="flex flex-row gap-16 items-center max-tablet:w-full">
-          <Button variant="primary" size="medium" shape="rounded">
-            Talk to Our Team
-          </Button>
+            <Button variant="primary" size="medium" shape="rounded" onClick={() => {
+              scrollToSection(SectionIds.Contact);
+            }}>
+              Talk to Our Team
+            </Button>
           <Button variant="outline" size="medium" shape="rounded">
             Download Overview
           </Button>

@@ -19,7 +19,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <HoverEffects />
-        <RouterProvider router={routes} />,
+        <RouterProvider router={routes} />
       </ThemeProvider>
     </QueryClientProvider>
   );

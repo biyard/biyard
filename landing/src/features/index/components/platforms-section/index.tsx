@@ -8,6 +8,7 @@ import {
   BodyText,
   Highlight,
 } from "@/components/typography";
+import { SectionIds } from "@/lib/utils";
 
 const platforms = [
   {
@@ -49,7 +50,7 @@ export function PlatformsSection() {
 
   return (
     <Section
-      id="platforms"
+      id={SectionIds.Platforms}
       // FIXME: use color palette
       className="bg-[#1A1D30]"
       containerClassName="flex-col items-center gap-48 max-tablet:gap-32"

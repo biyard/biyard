@@ -1,3 +1,4 @@
+import { Dashboard3, FlightTakeoff, LaptopSettings, Wallet } from "@/assets/icons";
 import { Section } from "@/components/section";
 import {
   SectionLabel,
@@ -6,6 +7,7 @@ import {
   BodyText,
   Highlight,
 } from "@/components/typography";
+import { SectionIds } from "@/lib/utils";
 
 const steps = [
   {
@@ -14,26 +16,7 @@ const steps = [
     title: "Connect your revenue",
     description:
       "Link your settlement flows or on-chain revenue sources via API or treasury wallets.",
-    icon: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="4"
-          y="8"
-          width="24"
-          height="16"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path d="M16 14V18M14 16H18" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    ),
+    icon: <Wallet />
   },
   {
     id: 2,
@@ -41,30 +24,7 @@ const steps = [
     title: "Set your collateral ratio",
     description:
       "Choose how much revenue (e.g. 30%) you lock into Biyard's reserve engine.",
-    icon: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="6"
-          y="6"
-          width="20"
-          height="20"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M6 12H26M12 6V12M20 6V12"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
+    icon: <LaptopSettings />
   },
   {
     id: 3,
@@ -72,28 +32,7 @@ const steps = [
     title: "Launch on Biyard",
     description:
       "Deploy a revenue-backed token with liquidity rules and safety rails pre-configured.",
-    icon: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M16 6L6 11L16 16L26 11L16 6Z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M6 21L16 26L26 21M6 16L16 21L26 16"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    icon: <FlightTakeoff />
   },
   {
     id: 4,
@@ -101,35 +40,19 @@ const steps = [
     title: "Monitor with DRE",
     description:
       "Use the DRE(Dynamic Reserve Engine) dashboard to track reserves, governance decisions and launch performance in real time.",
-    icon: (
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2" />
-        <path
-          d="M16 8V16L20 20"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    icon: <Dashboard3 />
   },
 ];
 
 export function HowItWorksSection() {
   return (
     <Section
-      id="how-it-works"
+      id={SectionIds.HowItWorks}
       containerClassName="flex-col items-center gap-48"
     >
       <div className="flex flex-col items-center gap-16 text-center max-w-4xl">
         <SectionLabel>HOW IT WORKS</SectionLabel>
-        <SectionTitle size="medium" weight="black" align="center">
+        <SectionTitle size="small" weight="bold" align="center">
           From your revenue to a live,{" "}
           <Highlight>collateral-backed token</Highlight>
         </SectionTitle>
@@ -167,12 +90,12 @@ function StepCard({
         <p className="text-primary text-xs font-semibold uppercase border border-primary inline-block w-fit px-12 py-4 rounded-full">
           {step}
         </p>
-        <CardTitle size="large" weight="bold">{title}</CardTitle>
+        <CardTitle size="medium" weight="bold">{title}</CardTitle>
       </div>
       <BodyText size="small" className="pt-20">
         {description}
       </BodyText>
-      <div className="flex justify-end text-primary opacity-60 mt-auto">
+      <div className="flex justify-end text-primary mt-auto [&>svg]:size-44">
         {icon}
       </div>
     </div>

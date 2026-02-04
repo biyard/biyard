@@ -8,7 +8,7 @@ interface PageTitleProps {
 }
 
 const variantStyles = {
-  hero: "font-black uppercase text-[64px]/[72px] tracking-[-0.69px] max-tablet:text-[44px]/[52px]",
+  hero: "font-black uppercase text-[60px]/[66px] max-tablet:text-[44px]/[52px]",
   large: "font-medium text-[45px]/64",
 };
 

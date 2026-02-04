@@ -1,5 +1,5 @@
+import { TrendingUp, ShieldGood, MyLocation, Flag, } from "@/assets/icons";
 import { Section } from "@/components/section";
-import { TrendingUp, Shield, Target, Flag } from "lucide-react";
 import {
   SectionLabel,
   SectionTitle,
@@ -7,6 +7,7 @@ import {
   BodyText,
   Highlight,
 } from "@/components/typography";
+import { SectionIds } from "@/lib/utils";
 
 const solutions = [
   {
@@ -18,21 +19,21 @@ const solutions = [
   },
   {
     id: 2,
-    icon: Shield,
+    icon: ShieldGood,
     title: "Reduction in operational and regulatory risk",
     description:
       "Automated treasury rules, on-chain audits and DAO-based approval create a defensible risk posture for your team.",
   },
   {
     id: 3,
-    icon: Target,
+    icon: MyLocation,
     title: "Less infra, more product focus",
     description:
       "Use our audited smart contracts, dashboards and integrations, without co-marketing your own DeFi stack.",
   },
   {
     id: 4,
-    icon: Flag,
+    icon: Flag, 
     title: "Fast idea to revenue-backed launch",
     description:
       "Standardized modules let you launch in days, not months, while still aligning with institutional-grade expectations.",
@@ -42,7 +43,7 @@ const solutions = [
 export function SolutionSection() {
   return (
     <Section
-      id="solution"
+      id={SectionIds.Solution}
       containerClassName="flex-col items-center gap-48 max-tablet:gap-32"
     >
       <div className="flex flex-col items-center gap-16 text-center">
@@ -84,7 +85,7 @@ function SolutionCard({ icon: Icon, title, description }: SolutionCardProps) {
       <div className="size-32 flex items-center justify-center">
         <Icon size={24} className="text-primary" />
       </div>
-      <CardTitle size="large">{title}</CardTitle>
+      <CardTitle size="medium" weight="bold">{title}</CardTitle>
       <BodyText size="small">{description}</BodyText>
     </div>
   );

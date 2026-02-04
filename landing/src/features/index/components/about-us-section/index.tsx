@@ -6,6 +6,7 @@ import {
   BodyText,
   Highlight,
 } from "@/components/typography";
+import { SectionIds } from "@/lib/utils";
 
 const features = [
   {
@@ -43,7 +44,7 @@ const features = [
 export function AboutUsSection() {
   return (
     <Section
-      id="about-us"
+      id={SectionIds.AboutUs}
       // FIXME: use color palette
       className="bg-[#1A1D30]"
       containerClassName="flex-row justify-between items-start max-tablet:flex-col gap-36"

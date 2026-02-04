@@ -3,14 +3,15 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/button";
 import { config } from "@/config";
+import { scrollToSection, SectionIds } from "@/lib/utils";
+
+
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  
+  const handleSectionClick = (id: string) => {
+    scrollToSection(id);
     setMenuOpen(false);
   };
 
@@ -22,7 +23,7 @@ export function Navigation() {
       >
         <div className="flex flex-row justify-between w-full">
           <button
-            onClick={() => scrollToSection("top")}
+            onClick={() => handleSectionClick(SectionIds.Top)}
             className="flex items-center space-x-2"
           >
             <Logo />
@@ -34,19 +35,19 @@ export function Navigation() {
         </div>
 
         <nav className="flex flex-row gap-48 justify-center items-center font-semibold text-center font-outfit text-base/16 tracking-[0.5px] max-tablet:h-full max-tablet:flex-col max-tablet:z-100 max-tablet:bg-black max-tablet:hidden max-tablet:group-aria-expanded:flex">
-          <MenuItem onClick={() => scrollToSection("about-us")}>
+          <MenuItem onClick={() => handleSectionClick(SectionIds.AboutUs)}>
             About Us
           </MenuItem>
-          <MenuItem onClick={() => scrollToSection("solution")}>
+          <MenuItem onClick={() => handleSectionClick(SectionIds.Solution)}>
             Solution
           </MenuItem>
-          <MenuItem onClick={() => scrollToSection("case-study")}>
+          <MenuItem onClick={() => handleSectionClick(SectionIds.Platforms)}>
             Case Study
           </MenuItem>
-          <MenuItem onClick={() => scrollToSection("how-it-works")}>
+          <MenuItem onClick={() => handleSectionClick(SectionIds.HowItWorks)}>
             How it Works
           </MenuItem>
-          <MenuItem onClick={() => scrollToSection("contact")}>
+          <MenuItem onClick={() => handleSectionClick(SectionIds.Contact)}>
             Contact Us
           </MenuItem>
 
