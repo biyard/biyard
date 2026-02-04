@@ -39,6 +39,7 @@ const platforms = [
 
 export function PlatformsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const showNavigation = platforms.length > 3;
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? platforms.length - 1 : prev - 1));
@@ -70,28 +71,41 @@ export function PlatformsSection() {
       {/* Carousel */}
       <div className="relative w-full max-w-1200">
         <div className="flex items-center justify-between gap-32 max-tablet:flex-col">
-          <button
-            onClick={handlePrevious}
-            className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
-            aria-label="Previous platform"
-          >
-            <ChevronLeft className="text-white" size={24} />
-          </button>
+          {showNavigation && (
+            <button
+              onClick={handlePrevious}
+              className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
+              aria-label="Previous platform"
+            >
+              <ChevronLeft className="text-white" size={24} />
+            </button>
+          )}
 
           {/* Cards Container */}
-          <div className="flex-1 grid grid-cols-3 gap-24 max-tablet:grid-cols-1">
-            {platforms.map((platform, index) => (
-              <PlatformCard key={platform.id} platform={platform} />
-            ))}
+          <div className="flex-1 overflow-hidden">
+            <div
+              className="flex gap-24 transition-transform duration-300 ease-in-out"
+              style={{
+                transform: `translateX(calc(-${currentIndex} * (100% / 3 + 24px)))`,
+              }}
+            >
+              {platforms.map((platform) => (
+                <div key={platform.id} className="w-[calc((100%-48px)/3)] shrink-0 max-tablet:w-full">
+                  <PlatformCard platform={platform} />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <button
-            onClick={handleNext}
-            className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
-            aria-label="Next platform"
-          >
-            <ChevronRight className="text-white" size={24} />
-          </button>
+          {showNavigation && (
+            <button
+              onClick={handleNext}
+              className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
+              aria-label="Next platform"
+            >
+              <ChevronRight className="text-white" size={24} />
+            </button>
+          )}
         </div>
       </div>
     </Section>
