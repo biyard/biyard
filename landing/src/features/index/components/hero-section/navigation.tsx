@@ -2,6 +2,7 @@ import { Logo } from "@/components/icons";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/button";
+import { config } from "@/config";
 
 export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +50,9 @@ export function Navigation() {
             Contact Us
           </MenuItem>
 
-          <Button variant="primary" size="small" shape="pill">
+          <Button variant="primary" size="small" shape="pill" onClick={() => {
+            window.open(config.consoleUrl, "_blank");
+          }}>
             Go to Console
           </Button>
         </nav>

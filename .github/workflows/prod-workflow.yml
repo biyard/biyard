@@ -28,6 +28,7 @@ jobs:
         env:
           ENV: prod
           API_URL: https://api.biyard.co
+          CONSOLE_URL: https://console.biyard.co
         run: |
           make sync-landing
 
