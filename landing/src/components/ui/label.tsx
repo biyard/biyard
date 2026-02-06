@@ -4,19 +4,16 @@ import { cn } from "@/lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, VariantProps } from "class-variance-authority";
 
-export const labelVariants = cva(
-  "font-medium text-[15px]/22 tracking-[0.5px] text-neutral-400",
-  {
-    variants: {
-      variant: {
-        default: "",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
+export const labelVariants = cva("text-sm font-normal text-white", {
+  variants: {
+    variant: {
+      default: "",
     },
   },
-);
+  defaultVariants: {
+    variant: "default",
+  },
+});
 
 export function Label({
   className,

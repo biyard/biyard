@@ -21,10 +21,10 @@ export function TopicDropdownMenu({ onChange, items }: TopicDropdownMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex flex-row gap-20 justify-end items-center px-20 w-full h-44 border-gray-600 cursor-pointer focus:outline-none rounded-[4px] border-b-1 focus:border-b-primary">
-          <span>{selectedTopic}</span>
+        <div className="flex flex-row justify-between items-center px-20 py-12 w-full h-48 border border-gray-600 bg-[#2A2D40] cursor-pointer focus:outline-none rounded-lg focus:border-primary transition-colors">
+          <span className="text-gray-500">{selectedTopic}</span>
           <ShapedArrowDown
-            className="[&>path]:stroke-gray-700 [&>path]:fill-gray-700 transition-all group-aria-expanded:rotate-180"
+            className="[&>path]:stroke-gray-500 [&>path]:fill-gray-500 transition-all group-aria-expanded:rotate-180"
             width={20}
             height={20}
           />
@@ -33,6 +33,7 @@ export function TopicDropdownMenu({ onChange, items }: TopicDropdownMenuProps) {
       <DropdownMenuContent className="bg-gray-900 border-primary" align="start">
         {items.map((topic, index) => (
           <DropdownMenuItem
+            key={topic.key}
             className="justify-between aria-selected:text-white"
             aria-selected={index === selected}
             onClick={() => {

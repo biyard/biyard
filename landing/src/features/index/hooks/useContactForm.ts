@@ -14,6 +14,10 @@ interface ContactFormData {
 export function useContactForm() {
   const dropdownItems = [
     {
+      key: "PLACEHOLDER",
+      label: "Select your topic",
+    },
+    {
       key: "GENERAL_INQUIRY",
       label: "General Inquiry",
     },
@@ -44,7 +48,7 @@ export function useContactForm() {
     lastName: "",
     email: "",
     company: "",
-    topic: "GENERAL_INQUIRY",
+    topic: "PLACEHOLDER",
     message: "",
   });
 
