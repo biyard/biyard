@@ -2,6 +2,9 @@
 
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+
 
 html, body {
   font-family: Outfit, sans-serif !important;
