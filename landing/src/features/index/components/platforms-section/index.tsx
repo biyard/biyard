@@ -1,6 +1,4 @@
 import { Section } from "@/components/section";
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   SectionLabel,
   SectionTitle,
@@ -9,6 +7,9 @@ import {
   Highlight,
 } from "@/components/typography";
 import { SectionIds } from "@/lib/utils";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const platforms = [
   {
@@ -38,22 +39,13 @@ const platforms = [
 ];
 
 export function PlatformsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const showNavigation = platforms.length > 3;
-
-  const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? platforms.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === platforms.length - 1 ? 0 : prev + 1));
-  };
 
   return (
     <Section
       id={SectionIds.Platforms}
       // FIXME: use color palette
-      className="bg-[#1A1D30]"
+      className="bg-[#1A1D30] platforms-section"
       containerClassName="flex-col items-center gap-48 max-tablet:gap-32"
     >
       <div className="flex flex-col items-center gap-16 text-center max-w-800">
@@ -68,45 +60,54 @@ export function PlatformsSection() {
         </BodyText>
       </div>
 
-      {/* Carousel */}
       <div className="relative w-full max-w-1200">
-        <div className="flex items-center justify-between gap-32 max-tablet:flex-col">
-          {showNavigation && (
+        <Swiper
+          modules={[Navigation]}
+          navigation={showNavigation ? {
+            prevEl: '.platforms-swiper-button-prev',
+            nextEl: '.platforms-swiper-button-next',
+          } : false}
+          spaceBetween={24}
+          slidesPerView={1}
+          loop={platforms.length > 3}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+              allowTouchMove: true,
+            },
+            768: {
+              slidesPerView: 2,
+              allowTouchMove: true,
+            },
+            1024: {
+              slidesPerView: 3,
+              allowTouchMove: false, 
+            },
+          }}
+        >
+          {platforms.map((platform) => (
+            <SwiperSlide key={platform.id}>
+              <PlatformCard platform={platform} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
+        {showNavigation && (
+          <>
             <button
-              onClick={handlePrevious}
-              className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
+              className="platforms-swiper-button-prev absolute -left-80 top-1/2 -translate-y-1/2 z-10 size-48 flex items-center justify-center rounded-xl border border-white/25 hover:bg-white/5 transition-colors max-tablet:hidden disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Previous platform"
             >
-              <ChevronLeft className="text-white" size={24} />
+              <ChevronLeft />
             </button>
-          )}
-
-          {/* Cards Container */}
-          <div className="flex-1 overflow-hidden">
-            <div
-              className="flex gap-24 transition-transform duration-300 ease-in-out"
-              style={{
-                transform: `translateX(calc(-${currentIndex} * (100% / 3 + 24px)))`,
-              }}
-            >
-              {platforms.map((platform) => (
-                <div key={platform.id} className="w-[calc((100%-48px)/3)] shrink-0 max-tablet:w-full">
-                  <PlatformCard platform={platform} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {showNavigation && (
             <button
-              onClick={handleNext}
-              className="size-48 flex items-center justify-center rounded-xl border border-white/25 max-tablet:hidden"
+              className="platforms-swiper-button-next absolute -right-80 top-1/2 -translate-y-1/2 z-10 size-48 flex items-center justify-center rounded-xl border border-white/25 hover:bg-white/5 transition-colors max-tablet:hidden disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Next platform"
             >
-              <ChevronRight className="text-white" size={24} />
+              <ChevronRight />
             </button>
-          )}
-        </div>
+          </>
+        )}
       </div>
     </Section>
   );
