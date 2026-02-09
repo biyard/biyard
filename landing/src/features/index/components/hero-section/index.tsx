@@ -45,7 +45,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="flex-1 relative flex justify-center items-center max-tablet:w-full aspect-square">
+      <div className="flex-1 relative flex justify-center items-center max-tablet:w-50% max-mobile:w-full aspect-square">
         <img
           src="/images/hero-cubes.svg"
           alt="3D Cubes Illustration"

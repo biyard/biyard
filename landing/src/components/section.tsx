@@ -19,7 +19,7 @@ export function Section({
       className={`overflow-hidden relative w-full flex justify-center scroll-mt-nav-offset ${className}`}
     >
       <div
-        className={`flex flex-col w-full max-w-wrapper z-2 py-60 max-tablet:max-w-full max-tablet:px-40 ${containerClassName}`}
+        className={`flex flex-col w-full max-w-wrapper z-2 py-60 max-tablet:max-w-full max-tablet:px-20 ${containerClassName}`}
       >
         {children}
       </div>
