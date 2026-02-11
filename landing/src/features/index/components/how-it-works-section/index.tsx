@@ -1,4 +1,9 @@
-import { Dashboard3, FlightTakeoff, LaptopSettings, Wallet } from "@/assets/icons";
+import {
+  Dashboard3,
+  FlightTakeoff,
+  LaptopSettings,
+  Wallet,
+} from "@/assets/icons";
 import { Section } from "@/components/section";
 import {
   SectionLabel,
@@ -16,7 +21,7 @@ const steps = [
     title: "Connect your revenue",
     description:
       "Link your settlement flows or on-chain revenue sources via API or treasury wallets.",
-    icon: <Wallet />
+    icon: <Wallet />,
   },
   {
     id: 2,
@@ -24,7 +29,7 @@ const steps = [
     title: "Set your collateral ratio",
     description:
       "Choose how much revenue (e.g. 30%) you lock into Biyard's reserve engine.",
-    icon: <LaptopSettings />
+    icon: <LaptopSettings />,
   },
   {
     id: 3,
@@ -32,7 +37,7 @@ const steps = [
     title: "Launch on Biyard",
     description:
       "Deploy a revenue-backed token with liquidity rules and safety rails pre-configured.",
-    icon: <FlightTakeoff />
+    icon: <FlightTakeoff />,
   },
   {
     id: 4,
@@ -40,7 +45,7 @@ const steps = [
     title: "Monitor with DRE",
     description:
       "Use the DRE(Dynamic Reserve Engine) dashboard to track reserves, governance decisions and launch performance in real time.",
-    icon: <Dashboard3 />
+    icon: <Dashboard3 />,
   },
 ];
 
@@ -85,12 +90,19 @@ function StepCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col p-32 border border-white/15 rounded-lg hover:border-primary/30 transition-colors">
-      <div className="flex flex-col gap-12">
+    <div
+      className="flex flex-col gap-16 items-start p-32
+      bg-white/3 backdrop-blur-sm
+      rounded-2xl border border-white/10
+      bg-linear-to-br from-transparent to-white/4"
+    >
+      <div className="flex flex-col gap-12 backdrop-filter">
         <p className="text-primary text-xs font-semibold uppercase border border-primary inline-block w-fit px-12 py-4 rounded-full">
           {step}
         </p>
-        <CardTitle size="medium" weight="bold">{title}</CardTitle>
+        <CardTitle size="medium" weight="bold">
+          {title}
+        </CardTitle>
       </div>
       <BodyText size="small" className="pt-20">
         {description}
@@ -101,3 +113,5 @@ function StepCard({
     </div>
   );
 }
+
+// absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent opacity-30 group-hover:opacity-50 transition-opacity duration-500
