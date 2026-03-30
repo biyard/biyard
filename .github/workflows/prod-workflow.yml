@@ -32,55 +32,64 @@ jobs:
         run: |
           make sync-landing
 
-      - name: Prepare artifacts
-        run: |
-          tar czvf landing-dist.tar.gz landing/dist
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: landing-web-${{ github.sha }}
-          path: ${{ github.workspace }}/landing-dist.tar.gz
-          if-no-files-found: error
-          retention-days: 7
-
-  console:
-    runs-on: ubuntu-latest
+  app:
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.PULL_KEY_REPO }}
+
+      - name: Cache builder
+        id: app-build-cache
+        uses: actions/cache@v4
+        with:
+          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+            app-build-${{ runner.os }}-
+            app-build-
+          path: |
+            target
+
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ap-northeast-2
 
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.15.0 --activate
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy, rustfmt
+          toolchain: stable
+          targets: wasm32-unknown-unknown
 
-      - name: Deploy to S3
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli
+
+      - name: Build Dioxus app
+        working-directory: app
         env:
           ENV: prod
-          API_URL: https://api.biyard.co
-        run: |
-          make sync-console
+          DYNAMO_TABLE_PREFIX: biyard-prod
+        run: make build
 
-      - name: Prepare artifacts
-        run: |
-          tar czvf console-dist.tar.gz console/dist
+      - name: Sync static assets to S3
+        env:
+          ENV: prod
+        run: make sync-app-assets
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: console-web-${{ github.sha }}
-          path: ${{ github.workspace }}/console-dist.tar.gz
-          if-no-files-found: error
-          retention-days: 7
+      - name: Build and push Docker image
+        working-directory: app
+        env:
+          ENV: prod
+        run: |
+          make docker.login
+          make docker
+          make docker.push
 
   api:
     runs-on: ubuntu-22.04
-    needs: [web, console]
     defaults:
       run:
         working-directory: api
@@ -112,22 +121,6 @@ jobs:
         with:
           components: clippy, rustfmt
           toolchain: stable
-
-      - name: Download Landing Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: landing-web-${{ github.sha }}
-          path: ./api
-      - name: Download Console Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: console-web-${{ github.sha }}
-          path: ./api
-      - name: Extract Web Artifacts
-        run: |
-          mkdir -p dist/console dist/landing
-          tar xzf console-dist.tar.gz -C dist/console --strip-components=2
-          tar xzf landing-dist.tar.gz -C dist/landing --strip-components=2
       - name: Building APIs
         env:
           REGION: ap-northeast-2
@@ -147,7 +140,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [api]
+    needs: [web, app, api]
     steps:
       - uses: actions/checkout@v3
         with:
