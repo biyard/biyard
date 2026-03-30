@@ -26,7 +26,7 @@ version = "0.1.6"
 [workspace.dependencies.by-macros]
 version = "0.6"
 git = "https://github.com/biyard/ratel.git"
-rev = "2d153422e5157c8b6ae1f700197b7c61b3564bbd"
+rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
 
 [workspace.dependencies.reqwest]
 version = "0.12.12"
@@ -58,7 +58,7 @@ features = ["env-filter"]
 [workspace.dependencies.dioxus-translate]
 version = "0.1"
 git = "https://github.com/biyard/ratel.git"
-rev = "2d153422e5157c8b6ae1f700197b7c61b3564bbd"
+rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
 features = ["ko"]
 
 [workspace.dependencies.aws-sdk-dynamodb]

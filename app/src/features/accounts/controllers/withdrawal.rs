@@ -1,0 +1,16 @@
+use crate::common::{CommonConfig, EntityType, Extension, Result};
+use crate::features::accounts::{Account, AccountResponse};
+use dioxus::prelude::post;
+
+#[post("/v1/accounts/withdrawal", account: Account, session: Extension<tower_sessions::Session>)]
+pub async fn withdrawal_handler() -> Result<AccountResponse> {
+    let config = CommonConfig::default();
+    let cli = config.dynamodb();
+    let Extension(session) = session;
+
+    let deleted_account = Account::delete(cli, account.pk, Some(EntityType::Account)).await?;
+
+    let _ = session.flush().await;
+
+    Ok(deleted_account.into())
+}
