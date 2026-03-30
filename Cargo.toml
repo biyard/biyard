@@ -2,7 +2,7 @@
 members = [
     "api",
     "app",
-    "tmpl_renderer", "app",
+    "tmpl_renderer",
 ]
 resolver = "2"
 
@@ -15,12 +15,18 @@ edition = "2024"
 [workspace.dependencies]
 serde_json = "1.0"
 tracing = "0.1"
+thiserror = "2"
+chrono = "0.4"
+base64 = "0.22"
+async-trait = "0.1"
 
 [workspace.dependencies.btracing]
 version = "0.1.6"
 
 [workspace.dependencies.by-macros]
 version = "0.6"
+git = "https://github.com/biyard/ratel.git"
+rev = "2d153422e5157c8b6ae1f700197b7c61b3564bbd"
 
 [workspace.dependencies.reqwest]
 version = "0.12.12"
@@ -38,6 +44,9 @@ features = ["uuid1"]
 version = "1.0"
 features = ["derive"]
 
+[workspace.dependencies.serde_with]
+version = "3.15"
+
 [workspace.dependencies.tokio]
 version = "1.40.0"
 features = ["full"]
@@ -45,3 +54,16 @@ features = ["full"]
 [workspace.dependencies.tracing-subscriber]
 version = "0.3.19"
 features = ["env-filter"]
+
+[workspace.dependencies.dioxus-translate]
+version = "0.1"
+git = "https://github.com/biyard/ratel.git"
+rev = "2d153422e5157c8b6ae1f700197b7c61b3564bbd"
+features = ["ko"]
+
+[workspace.dependencies.aws-sdk-dynamodb]
+version = "1"
+
+[workspace.dependencies.serde_dynamo]
+version = "4.3"
+features = ["aws-sdk-dynamodb+1"]

@@ -1,1 +1,17 @@
 @import "tailwindcss";
+@source "./src/**/*.{rs,css}";
+
+@theme static {
+    --color-bg: #ffffff;
+    --color-fg: #09090b;
+    --color-primary: #2563eb;
+    --color-primary-fg: #ffffff;
+    --color-secondary: #f4f4f5;
+    --color-secondary-fg: #18181b;
+    --color-muted: #f4f4f5;
+    --color-muted-fg: #71717a;
+    --color-border: #e4e4e7;
+    --color-ring: #2563eb;
+    --color-destructive: #ef4444;
+    --color-destructive-fg: #ffffff;
+}
