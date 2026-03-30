@@ -1,15 +1,15 @@
-use crate::components::button::{Button, ButtonVariant};
-use crate::components::separator::Separator;
-use crate::components::sheet::{
+use super::super::button::{Button, ButtonVariant};
+use super::super::separator::Separator;
+use super::super::sheet::{
     Sheet, SheetContent, SheetDescription, SheetHeader, SheetSide, SheetTitle,
 };
-use crate::components::tooltip::{Tooltip, TooltipContent, TooltipTrigger};
+use super::super::tooltip::{Tooltip, TooltipContent, TooltipTrigger};
 use dioxus::core::use_drop;
 use dioxus::prelude::*;
 use dioxus_primitives::dioxus_attributes::attributes;
+use dioxus_primitives::icon;
 use dioxus_primitives::merge_attributes;
 use dioxus_primitives::use_controlled;
-use dioxus_primitives::icon;
 
 // constants
 const SIDEBAR_WIDTH: &str = "16rem";
@@ -248,7 +248,7 @@ pub fn SidebarProvider(
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -278,7 +278,7 @@ pub fn Sidebar(
         let merged = merge_attributes(vec![base, attributes]);
 
         return rsx! {
-            div { ..merged, {children} }
+            div { ..merged,{children} }
         };
     }
 
@@ -329,8 +329,7 @@ pub fn Sidebar(
             "data-side": side.as_str(),
             "data-slot": "sidebar",
             div { class: "sidebar-gap", "data-slot": "sidebar-gap" }
-            div {
-                ..container_attrs,
+            div {..container_attrs,
                 div {
                     class: "sidebar-inner",
                     "data-sidebar": "sidebar",
@@ -368,9 +367,7 @@ pub fn SidebarTrigger(
                 ctx.toggle();
             },
             attributes: merged,
-            icon::Icon {
-                width: "1rem",
-                height: "1rem",
+            icon::Icon { width: "1rem", height: "1rem",
                 rect {
                     x: "3",
                     y: "3",
@@ -419,7 +416,7 @@ pub fn SidebarInset(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        main { ..merged, {children} }
+        main { ..merged,{children} }
     }
 }
 
@@ -436,7 +433,7 @@ pub fn SidebarHeader(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -453,7 +450,7 @@ pub fn SidebarContent(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -470,7 +467,7 @@ pub fn SidebarFooter(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -505,7 +502,7 @@ pub fn SidebarGroup(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -566,7 +563,7 @@ pub fn SidebarGroupContent(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -583,7 +580,7 @@ pub fn SidebarMenu(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        ul { ..merged, {children} }
+        ul { ..merged,{children} }
     }
 }
 
@@ -600,7 +597,7 @@ pub fn SidebarMenuItem(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        li { ..merged, {children} }
+        li { ..merged,{children} }
     }
 }
 
@@ -668,7 +665,9 @@ pub fn SidebarMenuButton(
         return if let Some(dynamic) = r#as {
             dynamic.call(merged)
         } else {
-            rsx! { button { ..merged, {children} } }
+            rsx! {
+                button { ..merged,{children} }
+            }
         };
     };
 
@@ -676,16 +675,17 @@ pub fn SidebarMenuButton(
     let sidebar_side = ctx.side;
 
     rsx! {
-        Tooltip {
-            disabled: hidden,
+        Tooltip { disabled: hidden,
             TooltipTrigger {
-                as: move |tooltip_attrs: Vec<Attribute>| {
+                r#as: move |tooltip_attrs: Vec<Attribute>| {
                     let final_attrs = merge_attributes(vec![tooltip_attrs, merged.clone()]);
                     let children = children.clone();
                     if let Some(dynamic) = &r#as {
                         dynamic.call(final_attrs)
                     } else {
-                        rsx! { button { ..final_attrs, {children} } }
+                        rsx! {
+                            button { ..final_attrs,{children} }
+                        }
                     }
                 },
             }
@@ -737,7 +737,7 @@ pub fn SidebarMenuBadge(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div { ..merged, {children} }
+        div { ..merged,{children} }
     }
 }
 
@@ -754,8 +754,7 @@ pub fn SidebarMenuSkeleton(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        div {
-            ..merged,
+        div {..merged,
             if show_icon {
                 div { class: "skeleton sidebar-menu-skeleton-icon" }
             }
@@ -777,7 +776,7 @@ pub fn SidebarMenuSub(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        ul { ..merged, {children} }
+        ul { ..merged,{children} }
     }
 }
 
@@ -794,7 +793,7 @@ pub fn SidebarMenuSubItem(
     let merged = merge_attributes(vec![base, attributes]);
 
     rsx! {
-        li { ..merged, {children} }
+        li { ..merged,{children} }
     }
 }
 
@@ -836,7 +835,7 @@ pub fn SidebarMenuSubButton(
         dynamic.call(merged)
     } else {
         rsx! {
-            a { ..merged, {children} }
+            a { ..merged,{children} }
         }
     }
 }
