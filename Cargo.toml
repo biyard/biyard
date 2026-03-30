@@ -1,23 +1,47 @@
 [workspace]
-members = ["api", "tmpl_renderer"]
+members = [
+    "api",
+    "app",
+    "tmpl_renderer", "app",
+]
 resolver = "2"
 
 [workspace.package]
 authors = ["Biyard"]
 description = "Biyard"
-edition = "2024"
 repository = "https://github.com/biyard/biyard"
+edition = "2024"
 
 [workspace.dependencies]
-by-macros = { version = "0.6" }
-# by-macros = { version = "0.6", path = "../ratel/packages/by-macros" }
-# btracing = { version = "0.1", path = "../ratel/packages/btracing" }
-btracing = { version = "0.1.6" }
-
-serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.40.0", features = ["full"] }
 tracing = "0.1"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-reqwest = { version = "0.12.12", features = ["blocking", "json", "multipart"] }
-schemars = { version = "1.0.4", features = ["uuid1"] }
+
+[workspace.dependencies.btracing]
+version = "0.1.6"
+
+[workspace.dependencies.by-macros]
+version = "0.6"
+
+[workspace.dependencies.reqwest]
+version = "0.12.12"
+features = [
+    "blocking",
+    "json",
+    "multipart",
+]
+
+[workspace.dependencies.schemars]
+version = "1.0.4"
+features = ["uuid1"]
+
+[workspace.dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[workspace.dependencies.tokio]
+version = "1.40.0"
+features = ["full"]
+
+[workspace.dependencies.tracing-subscriber]
+version = "0.3.19"
+features = ["env-filter"]
