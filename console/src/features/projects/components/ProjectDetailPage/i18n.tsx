@@ -46,6 +46,22 @@ export const projectDetail = {
     noPointsDescription: "Point transactions will appear here when created.",
     noTokenTransactions: "No token transactions yet",
     noTokenTransactionsDescription: "Token transactions will appear here.",
+    treasury: "Treasury",
+    totalTreasury: "Total Treasury",
+    floorPrice: "Floor Price",
+    treasuryDescription: "Treasury data will be populated from purchase transactions.",
+    treasuryConnectHint: "Connect to real data by making purchases via the API.",
+    users: "Users",
+    userId: "User ID",
+    pointsBalance: "Points Balance",
+    tokenBalance: "Token Balance",
+    lastActive: "Last Active",
+    usersEmptyDescription: "Users will appear as they interact via your API.",
+    audit: "Audit",
+    date: "Date",
+    action: "Action",
+    auditDescription: "Description",
+    auditEmptyDescription: "Audit trail records all token and point operations.",
   },
   ko: {
     title: "프로젝트 상세",
@@ -92,6 +108,22 @@ export const projectDetail = {
     noPointsDescription: "포인트 트랜잭션이 생성되면 여기에 표시됩니다.",
     noTokenTransactions: "토큰 트랜잭션이 없습니다",
     noTokenTransactionsDescription: "토큰 트랜잭션이 여기에 표시됩니다.",
+    treasury: "재무",
+    totalTreasury: "총 재무",
+    floorPrice: "최저가",
+    treasuryDescription: "재무 데이터는 구매 트랜잭션에서 채워집니다.",
+    treasuryConnectHint: "API를 통해 구매하여 실제 데이터에 연결하세요.",
+    users: "사용자 목록",
+    userId: "사용자 ID",
+    pointsBalance: "포인트 잔액",
+    tokenBalance: "토큰 잔액",
+    lastActive: "마지막 활동",
+    usersEmptyDescription: "사용자가 API를 통해 상호작용하면 여기에 표시됩니다.",
+    audit: "감사",
+    date: "날짜",
+    action: "작업",
+    auditDescription: "설명",
+    auditEmptyDescription: "감사 추적은 모든 토큰 및 포인트 작업을 기록합니다.",
   },
 };
 
@@ -140,6 +172,22 @@ export interface ProjectDetailI18n {
   noPointsDescription: string;
   noTokenTransactions: string;
   noTokenTransactionsDescription: string;
+  treasury: string;
+  totalTreasury: string;
+  floorPrice: string;
+  treasuryDescription: string;
+  treasuryConnectHint: string;
+  users: string;
+  userId: string;
+  pointsBalance: string;
+  tokenBalance: string;
+  lastActive: string;
+  usersEmptyDescription: string;
+  audit: string;
+  date: string;
+  action: string;
+  auditDescription: string;
+  auditEmptyDescription: string;
 }
 
 export function useProjectDetailI18n(): ProjectDetailI18n {
@@ -190,5 +238,21 @@ export function useProjectDetailI18n(): ProjectDetailI18n {
     noPointsDescription: t("projectDetail.noPointsDescription"),
     noTokenTransactions: t("projectDetail.noTokenTransactions"),
     noTokenTransactionsDescription: t("projectDetail.noTokenTransactionsDescription"),
+    treasury: t("projectDetail.treasury"),
+    totalTreasury: t("projectDetail.totalTreasury"),
+    floorPrice: t("projectDetail.floorPrice"),
+    treasuryDescription: t("projectDetail.treasuryDescription"),
+    treasuryConnectHint: t("projectDetail.treasuryConnectHint"),
+    users: t("projectDetail.users"),
+    userId: t("projectDetail.userId"),
+    pointsBalance: t("projectDetail.pointsBalance"),
+    tokenBalance: t("projectDetail.tokenBalance"),
+    lastActive: t("projectDetail.lastActive"),
+    usersEmptyDescription: t("projectDetail.usersEmptyDescription"),
+    audit: t("projectDetail.audit"),
+    date: t("projectDetail.date"),
+    action: t("projectDetail.action"),
+    auditDescription: t("projectDetail.auditDescription"),
+    auditEmptyDescription: t("projectDetail.auditEmptyDescription"),
   };
 }

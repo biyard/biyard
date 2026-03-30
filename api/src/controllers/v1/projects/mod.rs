@@ -1,9 +1,12 @@
+pub mod activities;
 pub mod create_project;
 pub mod delete_project;
 pub mod get_project;
 pub mod list_projects;
 pub mod points;
+pub mod purchases;
 pub mod tokens;
+pub mod treasury;
 pub mod update_project;
 
 #[cfg(test)]
@@ -14,10 +17,13 @@ use crate::{
     *,
 };
 
+pub use activities::*;
 pub use create_project::*;
 pub use delete_project::*;
 pub use get_project::*;
 pub use list_projects::*;
+pub use purchases::*;
+pub use treasury::*;
 pub use update_project::*;
 
 pub fn route() -> Result<Router<AppState>> {
@@ -32,6 +38,9 @@ pub fn route() -> Result<Router<AppState>> {
                 .put(update_project_handler)
                 .delete(delete_project_handler),
         )
+        .route("/:project_id/purchases", post(create_purchase_handler))
+        .route("/:project_id/treasury", get(get_treasury_handler))
+        .route("/:project_id/activities", post(create_activity_handler))
         .nest("/:project_id/points", points::route()?)
         .nest("/:project_id/tokens", tokens::route()?)
         .layer(middleware::from_fn_with_state(
