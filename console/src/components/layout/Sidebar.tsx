@@ -15,16 +15,9 @@ import {
   LogOut,
   FolderKanban,
   Crown,
-  Footprints,
-  Wallet,
-  ArrowLeftRight,
-  Vote,
-  Building2,
-  User,
 } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { useMode } from "../../contexts/ModeContext";
 import { useTranslation } from "react-i18next";
 import { useSignout } from "../../features/auth/hooks/use-signout";
 
@@ -38,11 +31,10 @@ export function Sidebar() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const { setAccount } = useAuth();
-  const { mode, setMode } = useMode();
   const { i18n } = useTranslation();
   const signoutMutation = useSignout();
 
-  const enterpriseSections: NavSection[] = [
+  const sections: NavSection[] = [
     {
       title: "",
       items: [
@@ -81,37 +73,6 @@ export function Sidebar() {
     },
   ];
 
-  const userSections: NavSection[] = [
-    {
-      title: "",
-      items: [
-        { to: "/user/dashboard", icon: LayoutDashboard, label: "My Dashboard" },
-      ],
-    },
-    {
-      title: "Activity",
-      items: [
-        { to: "/user/challenge", icon: Footprints, label: "Challenge" },
-        { to: "/user/wallet", icon: Wallet, label: "Wallet" },
-        { to: "/user/exchange", icon: ArrowLeftRight, label: "Exchange" },
-      ],
-    },
-    {
-      title: "Community",
-      items: [
-        { to: "/user/dao", icon: Vote, label: "DAO" },
-      ],
-    },
-    {
-      title: "",
-      items: [
-        { to: "/settings", icon: Settings, label: "Settings" },
-      ],
-    },
-  ];
-
-  const sections = mode === "admin" ? enterpriseSections : userSections;
-
   const toggleLanguage = () => {
     i18n.changeLanguage(i18n.language === "en" ? "ko" : "en");
   };
@@ -126,13 +87,8 @@ export function Sidebar() {
     }
   };
 
-  const handleModeSwitch = (newMode: "admin" | "user") => {
-    setMode(newMode);
-    navigate(newMode === "admin" ? "/dashboard" : "/user/dashboard");
-  };
-
   const isActive = (path: string) => {
-    if (path === "/dashboard" || path === "/user/dashboard") return location.pathname === path;
+    if (path === "/dashboard") return location.pathname === path;
     return location.pathname.startsWith(path);
   };
 
@@ -146,34 +102,6 @@ export function Sidebar() {
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
           Launchpad Platform
         </p>
-      </div>
-
-      {/* Mode Switcher */}
-      <div className="px-4 pt-3 pb-1">
-        <div className="flex rounded-lg bg-gray-100 dark:bg-gray-700 p-1">
-          <button
-            onClick={() => handleModeSwitch("admin")}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              mode === "admin"
-                ? "bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-gray-500 dark:text-gray-400"
-            }`}
-          >
-            <Building2 className="h-3.5 w-3.5" />
-            Enterprise
-          </button>
-          <button
-            onClick={() => handleModeSwitch("user")}
-            className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              mode === "user"
-                ? "bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm"
-                : "text-gray-500 dark:text-gray-400"
-            }`}
-          >
-            <User className="h-3.5 w-3.5" />
-            User
-          </button>
-        </div>
       </div>
 
       {/* Navigation */}
