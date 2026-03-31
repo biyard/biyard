@@ -1,0 +1,14 @@
+{
+  "name": "biyard-playwright",
+  "version": "1.0.0",
+  "description": "E2E tests for Biyard console",
+  "type": "module",
+  "scripts": {
+    "ui": "npx playwright test --ui",
+    "test": "npx playwright test",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  }
+}
