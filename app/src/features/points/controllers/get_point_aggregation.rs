@@ -1,11 +1,11 @@
 use crate::common::{ProjectPartition, Result};
-use crate::features::points::{MonthlyPointAggregationResponse, PointError};
+use crate::features::points::MonthlyPointAggregationResponse;
 use dioxus::prelude::get;
 
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, ProjectAuth};
 #[cfg(feature = "server")]
-use crate::features::points::MonthlyPointAggregation;
+use crate::features::points::{MonthlyPointAggregation, PointError};
 
 #[get("/v1/projects/:project_id/points?date", auth: ProjectAuth)]
 pub async fn get_point_aggregation_handler(

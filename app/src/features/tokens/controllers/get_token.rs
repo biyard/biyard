@@ -1,11 +1,11 @@
-use crate::common::{EntityType, ProjectPartition, Result};
-use crate::features::tokens::{TokenBalanceResponse, TokenError, TokenResponse};
+use crate::common::{ProjectPartition, Result};
+use crate::features::tokens::{TokenBalanceResponse, TokenResponse};
 use dioxus::prelude::get;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, EntityType, ProjectAuth};
 #[cfg(feature = "server")]
-use crate::features::tokens::{ProjectToken, TokenBalance};
+use crate::features::tokens::{ProjectToken, TokenBalance, TokenError};
 
 #[get("/v1/projects/:project_id/tokens", auth: ProjectAuth)]
 pub async fn get_token_handler(
