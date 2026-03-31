@@ -200,11 +200,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
@@ -221,7 +216,7 @@ jobs:
           COMMIT: pr-${{ github.sha }}
           RESET_DB: "true"
         run: |
-          docker-compose --profile testing up -d
+          docker compose --profile testing up -d
 
       - name: Wait for services to be ready
         run: |
@@ -243,9 +238,9 @@ jobs:
           if [ $elapsed -ge $timeout ]; then
             echo "App failed to respond within ${timeout}s"
             echo "Docker services status:"
-            docker-compose ps
+            docker compose ps
             echo "App logs:"
-            docker-compose logs app-testing
+            docker compose logs app-testing
             exit 1
           fi
 
@@ -271,7 +266,7 @@ jobs:
       - name: Move Playwright Report
         if: always()
         run: |
-          mv playwright/playwright-report ./
+          [ -d playwright/playwright-report ] && mv playwright/playwright-report ./ || true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
