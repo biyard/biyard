@@ -46,13 +46,12 @@ sync-landing: clean landing/dist
 	@aws s3 sync landing/dist s3://$(WEB_BUCKET) > /dev/null
 	@aws cloudfront create-invalidation --distribution-id $(WEB_CDN_ID) --paths "/*" > /dev/null
 
-sync-console: clean console/dist
-	@aws s3 sync console/dist s3://$(CONSOLE_BUCKET) > /dev/null
+sync-app-assets:
+	@aws s3 sync target/dx/app/release/web/public s3://$(CONSOLE_BUCKET) > /dev/null
 	@aws cloudfront create-invalidation --distribution-id $(CONSOLE_CDN_ID) --paths "/*" > /dev/null
 
 clean:
 	rm -rf landing/dist
-	rm -rf console/dist
 
 %/dist:
 	cd $* && make build

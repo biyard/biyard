@@ -2,6 +2,7 @@ import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
 import { RegionalClusterStack } from "../lib/regional-cluster-stack";
+import { AppClusterStack } from "../lib/app-cluster-stack";
 
 const app = new App();
 const service = "biyard";
@@ -14,9 +15,13 @@ const host = process.env.DOMAIN || "dev.biyard.co";
 const webDomain = host;
 const consoleDomain = `console.${host}`;
 const apiDomain = `api.${host}`;
+const appDomain = `app.${host}`;
 const baseDomain = "biyard.co";
 const apiRepoName = "biyard/api";
+const appRepoName = "biyard/app";
 const commit = process.env.COMMIT!;
+
+// API Fargate cluster (unchanged)
 new RegionalClusterStack(app, `${stackName}-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -36,6 +41,23 @@ new RegionalClusterStack(app, `${stackName}-cluster`, {
   },
 });
 
+// App (Dioxus) Fargate cluster
+new AppClusterStack(app, `${stackName}-app-cluster`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "ap-northeast-2",
+  },
+  stackName: `${stackName}-app-cluster`,
+  baseDomain,
+  appDomain,
+  repoName: appRepoName,
+  containerPort: 8080,
+  maxCapacity: 20,
+  healthPath: "/version",
+  commit,
+});
+
+// Landing: pure S3+CloudFront CDN (no API proxy)
 new GlobalAccelStack(app, "landing", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -43,16 +65,13 @@ new GlobalAccelStack(app, "landing", {
   },
   stackName: process.env.WEB_STACK_NAME,
   stage: env,
-  commit: process.env.COMMIT!,
+  commit,
 
   webDomain,
   baseDomain,
-  apiConfig: {
-    domain: apiDomain,
-    prefix: "/landing",
-  },
 });
 
+// Console: CloudFront → App Fargate (via app ALB origin)
 new GlobalAccelStack(app, "console", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -60,16 +79,17 @@ new GlobalAccelStack(app, "console", {
   },
   stackName: process.env.CONSOLE_STACK_NAME,
   stage: env,
-  commit: process.env.COMMIT!,
+  commit,
 
   webDomain: consoleDomain,
   baseDomain,
   apiConfig: {
-    domain: apiDomain,
-    prefix: "/console",
+    domain: appDomain,
+    prefix: "",
   },
 });
 
+// DynamoDB
 new GlobalTableStack(app, `${stackName}-dynamodb`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,

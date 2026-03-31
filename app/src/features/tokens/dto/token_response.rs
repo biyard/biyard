@@ -1,0 +1,15 @@
+use crate::common::types::Partition;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TokenResponse {
+    pub pk: Partition,
+    pub name: String,
+    pub symbol: String,
+    pub decimals: u8,
+    pub total_supply: i64,
+    pub circulating_supply: i64,
+    pub description: Option<String>,
+    pub created_at: i64,
+    pub updated_at: i64,
+}
