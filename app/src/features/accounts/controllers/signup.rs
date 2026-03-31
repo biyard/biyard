@@ -1,11 +1,11 @@
 use crate::common::Result;
-use crate::features::accounts::{AccountError, AccountResponse};
+use crate::features::accounts::AccountResponse;
 use dioxus::prelude::post;
 
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, Extension};
 #[cfg(feature = "server")]
-use crate::features::accounts::{Account, AccountQueryOption};
+use crate::features::accounts::{Account, AccountError, AccountQueryOption};
 #[cfg(feature = "server")]
 use super::SESSION_KEY_ACCOUNT_ID;
 

@@ -1,9 +1,9 @@
-use crate::common::{EntityType, Result};
+use crate::common::Result;
 use crate::features::accounts::AccountResponse;
 use dioxus::prelude::post;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, Extension};
+use crate::common::{CommonConfig, EntityType, Extension};
 #[cfg(feature = "server")]
 use crate::features::accounts::Account;
 
