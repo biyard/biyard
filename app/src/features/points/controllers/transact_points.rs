@@ -1,11 +1,15 @@
-use crate::common::{CommonConfig, ProjectAuth, ProjectPartition, Result};
-use crate::features::points::{
-    MonthlyPointAggregation, PointBalance, PointTransaction, TransactPointsRequest,
-    TransactPointsResponse, Transaction, TransactionType,
-};
-use crate::features::projects::Project;
-use aws_sdk_dynamodb::types::TransactWriteItem;
+use crate::common::{ProjectPartition, Result};
+use crate::features::points::{TransactPointsRequest, TransactPointsResponse, Transaction};
 use dioxus::prelude::post;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, ProjectAuth};
+#[cfg(feature = "server")]
+use crate::features::points::{MonthlyPointAggregation, PointBalance, PointTransaction, TransactionType};
+#[cfg(feature = "server")]
+use crate::features::projects::Project;
+#[cfg(feature = "server")]
+use aws_sdk_dynamodb::types::TransactWriteItem;
 
 #[post("/v1/projects/:project_id/points", auth: ProjectAuth)]
 pub async fn transact_points_handler(
@@ -49,6 +53,7 @@ pub async fn transact_points_handler(
     Ok(responses)
 }
 
+#[cfg(feature = "server")]
 fn award_points(
     project: &Project,
     to: String,
@@ -101,6 +106,7 @@ fn award_points(
     )
 }
 
+#[cfg(feature = "server")]
 fn deduct_points(
     project: &Project,
     from: String,
@@ -153,6 +159,7 @@ fn deduct_points(
     )
 }
 
+#[cfg(feature = "server")]
 fn transfer_points(
     project: &Project,
     from: String,
@@ -238,6 +245,7 @@ fn transfer_points(
     )
 }
 
+#[cfg(feature = "server")]
 fn exchange_points(
     project: &Project,
     from: String,

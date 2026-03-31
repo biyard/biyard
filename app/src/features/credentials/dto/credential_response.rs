@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::features::credentials::CredentialStatus;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CredentialResponse {

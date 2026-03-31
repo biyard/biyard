@@ -1,0 +1,82 @@
+use dioxus_translate::{Translator, translate};
+
+translate! {
+    CredentialsTranslate;
+
+    title: {
+        en: "API Credentials",
+        ko: "API 인증 정보",
+    },
+    description: {
+        en: "Manage your API credentials for accessing Biyard services",
+        ko: "Biyard 서비스 접근을 위한 API 인증 정보를 관리합니다",
+    },
+    create_new: {
+        en: "Create New Credential",
+        ko: "새 인증 정보 생성",
+    },
+    name: {
+        en: "Name",
+        ko: "이름",
+    },
+    name_placeholder: {
+        en: "My API Key",
+        ko: "내 API 키",
+    },
+    api_key: {
+        en: "API Key",
+        ko: "API 키",
+    },
+    created_at: {
+        en: "Created At",
+        ko: "생성일",
+    },
+    status: {
+        en: "Status",
+        ko: "상태",
+    },
+    actions: {
+        en: "Actions",
+        ko: "작업",
+    },
+    active: {
+        en: "Active",
+        ko: "활성",
+    },
+    inactive: {
+        en: "Inactive",
+        ko: "비활성",
+    },
+    loading: {
+        en: "Loading...",
+        ko: "로딩 중...",
+    },
+    no_credentials: {
+        en: "No credentials yet",
+        ko: "인증 정보가 없습니다",
+    },
+    copy: {
+        en: "Copy",
+        ko: "복사",
+    },
+    cancel: {
+        en: "Cancel",
+        ko: "취소",
+    },
+    close: {
+        en: "Close",
+        ko: "닫기",
+    },
+    generate_key: {
+        en: "Generate Key",
+        ko: "키 생성",
+    },
+    key_generated: {
+        en: "API Key Generated",
+        ko: "API 키가 생성되었습니다",
+    },
+    key_generated_warning: {
+        en: "Please copy this key now. You won't be able to see it again!",
+        ko: "지금 이 키를 복사하세요. 다시 볼 수 없습니다!",
+    },
+}

@@ -1,7 +1,13 @@
-use crate::common::{CommonConfig, Result};
-use crate::features::accounts::Account;
-use crate::features::credentials::{Credential, CredentialQueryOption, CredentialSummaryResponse};
+use crate::common::Result;
+use crate::features::credentials::CredentialSummaryResponse;
 use dioxus::prelude::get;
+
+#[cfg(feature = "server")]
+use crate::common::CommonConfig;
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
+#[cfg(feature = "server")]
+use crate::features::credentials::{Credential, CredentialQueryOption};
 
 #[get("/v1/credentials", account: Account)]
 pub async fn list_credentials_handler() -> Result<Vec<CredentialSummaryResponse>> {

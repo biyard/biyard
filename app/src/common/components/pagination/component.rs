@@ -110,7 +110,7 @@ pub fn PaginationLink(props: PaginationLinkProps) -> Element {
             "data-active": props.is_active,
             "data-size": props.size.class(),
             "data-kind": data_kind,
-            aria_current: aria_current,
+            aria_current,
             onclick: move |event| {
                 if let Some(f) = &props.onclick {
                     f.call(event);
@@ -151,9 +151,7 @@ pub fn PaginationPrevious(
             onmouseup,
             attributes,
             // ChevronLeft icon from lucide https://lucide.dev/icons/chevron-left
-            icon::Icon {
-                width: "1rem",
-                height: "1rem",
+            icon::Icon { width: "1rem", height: "1rem",
                 polyline { points: "15 6 9 12 15 18" }
             }
             span { class: "pagination-label", "Previous" }
@@ -181,9 +179,7 @@ pub fn PaginationNext(
             attributes,
             span { class: "pagination-label", "Next" }
             // ChevronRight icon from lucide https://lucide.dev/icons/chevron-right
-            icon::Icon {
-                width: "1rem",
-                height: "1rem",
+            icon::Icon { width: "1rem", height: "1rem",
                 polyline { points: "9 6 15 12 9 18" }
             }
         }
@@ -201,10 +197,7 @@ pub fn PaginationEllipsis(
             aria_hidden: "true",
             ..attributes,
             // MoreHorizontal icon from lucide https://lucide.dev/icons/more-horizontal
-            icon::Icon {
-                width: "1rem",
-                height: "1rem",
-                fill: "currentColor",
+            icon::Icon { width: "1rem", height: "1rem", fill: "currentColor",
                 circle { cx: "5", cy: "12", r: "1.5" }
                 circle { cx: "12", cy: "12", r: "1.5" }
                 circle { cx: "19", cy: "12", r: "1.5" }

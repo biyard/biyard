@@ -1,12 +1,16 @@
+pub mod controllers;
 pub mod dto;
+pub mod i18n;
 pub mod types;
+pub mod views;
 
 #[cfg(feature = "server")]
 pub mod models;
-#[cfg(feature = "server")]
-pub mod controllers;
 
-pub use dto::{CreateProjectRequest, UpdateProjectRequest, ProjectResponse, ExchangeType, ExchangeRequest, ExchangeResponse};
-pub use types::{ProjectStatus, ProjectError};
+pub use dto::{
+    CreateProjectRequest, ExchangeRequest, ExchangeResponse, ExchangeType, ProjectResponse,
+    UpdateProjectRequest,
+};
 #[cfg(feature = "server")]
 pub use models::{Project, ProjectQueryOption};
+pub use types::{ProjectError, ProjectStatus};

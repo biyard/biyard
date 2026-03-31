@@ -159,3 +159,19 @@ pub fn App() -> Element {
 - Use `#[component]` attribute on all component functions
 - Props via function parameters with `#[props(default)]` for optional values
 - Server functions with `#[server]` macro for backend logic callable from client
+
+## Clone Avoidance Rules
+
+**Never `.clone()` Copy types.** These Dioxus types implement `Copy` — use direct assignment:
+- `Signal`, `ReadSignal`, `Memo`, `Resource`, `UseNavigator`
+- Example: `let x = my_signal;` NOT `let x = my_signal.clone();`
+
+**Never `.clone()` Signal read results.** `signal()` returns an owned value:
+- `let val = name();` NOT `let val = name().clone();`
+
+**Minimize String clones in for-loops:**
+- Clone once, derive others from it: `let delete_id = id.clone();` NOT `let delete_id = project.id.clone();`
+- Use `"{project.field}"` in RSX for display instead of cloning into a separate variable
+- When a value is used last, move it instead of cloning: `set(Some(key))` NOT `set(Some(key.clone()))`
+
+**Prefer `Copy` for simple enums** with only unit variants — add `Copy` to derives.

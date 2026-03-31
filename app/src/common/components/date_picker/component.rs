@@ -1,11 +1,11 @@
 use dioxus::prelude::*;
 
+use dioxus_primitives::icon;
 use dioxus_primitives::{
+    ContentAlign,
     date_picker::{self, DatePickerInputProps, DatePickerProps, DateRangePickerProps},
     popover::{PopoverContentProps, PopoverTriggerProps},
-    ContentAlign,
 };
-use dioxus_primitives::icon;
 
 use super::super::calendar::*;
 use super::super::popover::*;
@@ -27,10 +27,7 @@ pub fn DatePicker(props: DatePickerProps) -> Element {
                 disabled_ranges: props.disabled_ranges,
                 roving_loop: props.roving_loop,
                 attributes: props.attributes,
-                date_picker::DatePickerPopover {
-                    popover_root: PopoverRoot,
-                    {props.children}
-                }
+                date_picker::DatePickerPopover { popover_root: PopoverRoot, {props.children} }
             }
         }
     }
@@ -98,10 +95,8 @@ pub fn DateRangePickerInput(props: DatePickerInputProps) -> Element {
             attributes: props.attributes,
             {props.children}
             DatePickerPopoverTrigger {}
-            DatePickerPopoverContent {
-                align: ContentAlign::Center,
-                date_picker::DateRangePickerCalendar {
-                    calendar: RangeCalendar,
+            DatePickerPopoverContent { align: ContentAlign::Center,
+                date_picker::DateRangePickerCalendar { calendar: RangeCalendar,
                     CalendarView {
                         CalendarHeader {
                             CalendarNavigation {

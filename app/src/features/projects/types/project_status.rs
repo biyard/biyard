@@ -1,6 +1,8 @@
 use crate::common::*;
 
-#[derive(Debug, Clone, SerializeDisplay, DeserializeFromStr, Default, DynamoEnum, PartialEq, Eq)]
+#[derive(
+    Debug, Clone, Copy, SerializeDisplay, DeserializeFromStr, Default, DynamoEnum, PartialEq, Eq,
+)]
 pub enum ProjectStatus {
     #[default]
     Active,

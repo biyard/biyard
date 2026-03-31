@@ -1,5 +1,6 @@
 ENV ?= dev
 DYNAMO_TABLE_PREFIX ?= biyard-$(ENV)
+DYNAMODB_ENDPOINT ?= none
 PORT ?= 8080
 
 COMMIT ?= $(shell git rev-parse --short HEAD)
@@ -15,7 +16,12 @@ ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --
 .PHONY: dev build build-lambda clean fmt clippy test docker docker.push docker.login
 
 dev:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx serve --port $(PORT) --web
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
+	DYNAMODB_ENDPOINT=$(DYNAMODB_ENDPOINT) \
+	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+	AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+	AWS_REGION=$(AWS_REGION) \
+	dx serve --port $(PORT) --web
 
 build:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \

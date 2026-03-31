@@ -1,6 +1,11 @@
-use crate::common::{CommonConfig, EntityType, Extension, Result};
-use crate::features::accounts::{Account, AccountResponse};
+use crate::common::{EntityType, Result};
+use crate::features::accounts::AccountResponse;
 use dioxus::prelude::post;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, Extension};
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
 
 #[post("/v1/accounts/withdrawal", account: Account, session: Extension<tower_sessions::Session>)]
 pub async fn withdrawal_handler() -> Result<AccountResponse> {

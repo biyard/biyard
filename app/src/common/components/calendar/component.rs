@@ -62,11 +62,7 @@ pub fn CalendarView(
     children: Element,
 ) -> Element {
     rsx! {
-        div {
-            class: "calendar-view",
-            ..attributes,
-            {children}
-        }
+        div { class: "calendar-view", ..attributes, {children} }
     }
 }
 
@@ -90,9 +86,7 @@ pub fn CalendarPreviousMonthButton(
 ) -> Element {
     rsx! {
         calendar::CalendarPreviousMonthButton { attributes,
-            Icon {
-                width: "20px",
-                height: "20px",
+            Icon { width: "20px", height: "20px",
                 path { d: "m15 18-6-6 6-6" }
             }
         }
@@ -105,9 +99,7 @@ pub fn CalendarNextMonthButton(
 ) -> Element {
     rsx! {
         calendar::CalendarNextMonthButton { attributes,
-            Icon {
-                width: "20px",
-                height: "20px",
+            Icon { width: "20px", height: "20px",
                 path { d: "m9 18 6-6-6-6" }
             }
         }
@@ -117,22 +109,14 @@ pub fn CalendarNextMonthButton(
 #[component]
 pub fn CalendarSelectMonth(props: CalendarSelectMonthProps) -> Element {
     rsx! {
-        calendar::CalendarSelectMonth {
-            class: "calendar-month-select",
-            attributes: props.attributes,
-            DropDownIcon { }
-        }
+        calendar::CalendarSelectMonth { class: "calendar-month-select", attributes: props.attributes, DropDownIcon {} }
     }
 }
 
 #[component]
 pub fn CalendarSelectYear(props: CalendarSelectYearProps) -> Element {
     rsx! {
-        calendar::CalendarSelectYear {
-            class: "calendar-year-select",
-            attributes: props.attributes,
-            DropDownIcon { }
-        }
+        calendar::CalendarSelectYear { class: "calendar-year-select", attributes: props.attributes, DropDownIcon {} }
     }
 }
 

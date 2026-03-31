@@ -1,12 +1,13 @@
-pub mod dto;
-pub mod types;
-
-#[cfg(feature = "server")]
 pub mod controllers;
+pub mod dto;
+pub mod i18n;
+pub mod types;
+pub mod views;
+
 #[cfg(feature = "server")]
 pub mod models;
 
 pub use dto::{CreateCredentialRequest, CredentialResponse, CredentialSummaryResponse};
-pub use types::{CredentialStatus, CredentialError};
 #[cfg(feature = "server")]
 pub use models::{Credential, CredentialQueryOption};
+pub use types::{CredentialError, CredentialStatus};

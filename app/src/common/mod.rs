@@ -2,9 +2,11 @@
 #[cfg(feature = "server")]
 pub mod auth;
 pub mod config;
+pub mod hooks;
 mod logger;
 pub mod macros;
 mod run;
+pub mod traits;
 pub mod types;
 pub mod utils;
 

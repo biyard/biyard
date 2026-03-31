@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
 use crate::common::types::Partition;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct AccountResponse {
     pub pk: Partition,
     pub name: String,

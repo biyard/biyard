@@ -1,7 +1,12 @@
-use crate::common::{CommonConfig, Extension, Result};
-use crate::features::accounts::{Account, AccountError, AccountQueryOption, AccountResponse};
+use crate::common::Result;
+use crate::features::accounts::{AccountError, AccountResponse};
 use dioxus::prelude::post;
 
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, Extension};
+#[cfg(feature = "server")]
+use crate::features::accounts::{Account, AccountQueryOption};
+#[cfg(feature = "server")]
 use super::SESSION_KEY_ACCOUNT_ID;
 
 #[post("/v1/accounts/signin", session: Extension<tower_sessions::Session>)]

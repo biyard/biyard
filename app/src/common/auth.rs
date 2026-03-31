@@ -4,12 +4,12 @@ use dioxus::fullstack::axum::{
 };
 use tower_sessions::Session;
 
-use crate::common::{
-    CommonConfig, Error, Partition, EntityType,
-};
-use crate::features::accounts::{Account, AccountError};
+use crate::common::{CommonConfig, EntityType, Error, Partition};
 use crate::features::accounts::controllers::SESSION_KEY_ACCOUNT_ID;
-use crate::features::credentials::{Credential, CredentialQueryOption, CredentialStatus, CredentialError};
+use crate::features::accounts::{Account, AccountError};
+use crate::features::credentials::{
+    Credential, CredentialError, CredentialQueryOption, CredentialStatus,
+};
 use crate::features::projects::{Project, ProjectError};
 
 /// Extract Account from request using session only.
@@ -83,8 +83,7 @@ where
 
         // 2. Extract project_id from path
         let path = parts.uri.path();
-        let project_id = extract_project_id(path)
-            .ok_or(ProjectError::ProjectNotFound)?;
+        let project_id = extract_project_id(path).ok_or(ProjectError::ProjectNotFound)?;
 
         // 3. Get project and verify ownership
         let project_pk = Partition::Project(project_id);
@@ -145,9 +144,7 @@ async fn authenticate_by_session(
         })?
         .ok_or(Error::NoSessionFound)?;
 
-    let partition: Partition = account_pk
-        .parse()
-        .map_err(|_| Error::NoSessionFound)?;
+    let partition: Partition = account_pk.parse().map_err(|_| Error::NoSessionFound)?;
 
     let account = Account::get(cli, &partition, Some(EntityType::Account))
         .await

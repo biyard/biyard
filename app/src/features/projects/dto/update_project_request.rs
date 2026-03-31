@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::features::projects::ProjectStatus;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateProjectRequest {

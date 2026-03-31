@@ -12,10 +12,23 @@ pub struct TransactPointsRequest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "tx_type")]
 pub enum Transaction {
-    Award { to: String, amount: i64 },
-    Deduct { from: String, amount: i64 },
-    Transfer { from: String, to: String, amount: i64 },
-    Exchange { from: String, amount: i64 },
+    Award {
+        to: String,
+        amount: i64,
+    },
+    Deduct {
+        from: String,
+        amount: i64,
+    },
+    Transfer {
+        from: String,
+        to: String,
+        amount: i64,
+    },
+    Exchange {
+        from: String,
+        amount: i64,
+    },
 }
 
 fn default_month() -> String {

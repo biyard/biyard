@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use crate::common::types::Partition;
 use crate::features::projects::ProjectStatus;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct ProjectResponse {
     pub id: String,
     pub account_id: Partition,

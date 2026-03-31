@@ -56,11 +56,7 @@ pub fn DragAndDropList(props: DragAndDropListProps) -> Element {
 #[component]
 pub fn DragAndDropListItem(props: DragAndDropListItemProps) -> Element {
     rsx! {
-        drag_and_drop_list::DragAndDropListItem {
-            index: props.index,
-            attributes: props.attributes,
-            {props.children}
-        }
+        drag_and_drop_list::DragAndDropListItem { index: props.index, attributes: props.attributes, {props.children} }
     }
 }
 
@@ -71,8 +67,18 @@ fn DragIcon() -> Element {
             Icon {
                 // equal icon from lucide https://lucide.dev/icons/equal
                 stroke: "var(--secondary-color-4)",
-                line { x1: "5", x2: "19", y1: "9", y2: "9" }
-                line { x1: "5", x2: "19", y1: "15", y2: "15" }
+                line {
+                    x1: "5",
+                    x2: "19",
+                    y1: "9",
+                    y2: "9",
+                }
+                line {
+                    x1: "5",
+                    x2: "19",
+                    y1: "15",
+                    y2: "15",
+                }
             }
         }
     }

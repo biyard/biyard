@@ -1,8 +1,13 @@
-use crate::common::{CommonConfig, ListResponse, ProjectAuth, ProjectPartition, Result};
-use crate::features::points::{PointTransaction, PointTransactionResponse};
+use crate::common::{ListResponse, ProjectPartition, Result};
+use crate::features::points::PointTransactionResponse;
 use dioxus::prelude::get;
 
-#[get("/v1/projects/:project_id/points/transactions", auth: ProjectAuth)]
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, ProjectAuth};
+#[cfg(feature = "server")]
+use crate::features::points::PointTransaction;
+
+#[get("/v1/projects/:project_id/points/transactions?limit&bookmark", auth: ProjectAuth)]
 pub async fn list_transactions_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     limit: i32,

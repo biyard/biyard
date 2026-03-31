@@ -1,6 +1,11 @@
-use crate::common::{CommonConfig, EntityType, ProjectAuth, ProjectPartition, Result};
-use crate::features::projects::{Project, ProjectResponse, ProjectStatus};
+use crate::common::{EntityType, ProjectPartition, Result};
+use crate::features::projects::{ProjectResponse, ProjectStatus};
 use dioxus::prelude::put;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, ProjectAuth};
+#[cfg(feature = "server")]
+use crate::features::projects::Project;
 
 #[put("/v1/projects/:project_id", auth: ProjectAuth)]
 pub async fn update_project_handler(

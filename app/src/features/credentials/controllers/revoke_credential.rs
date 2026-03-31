@@ -1,9 +1,13 @@
-use crate::common::{CommonConfig, EntityType, Result};
-use crate::features::accounts::Account;
-use crate::features::credentials::{
-    Credential, CredentialError, CredentialResponse, CredentialStatus,
-};
+use crate::common::Result;
+use crate::features::credentials::{CredentialError, CredentialResponse, CredentialStatus};
 use dioxus::prelude::delete;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, EntityType};
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
+#[cfg(feature = "server")]
+use crate::features::credentials::Credential;
 
 #[delete("/v1/credentials/:credential_id", account: Account)]
 pub async fn revoke_credential_handler(credential_id: String) -> Result<CredentialResponse> {

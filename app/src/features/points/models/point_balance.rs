@@ -30,7 +30,11 @@ impl PointBalance {
         let month = crate::common::utils::time_utils::timestamp_to_yyyy_mm();
 
         Self {
-            pk: (project_pk.clone(), Partition::MetaUser(meta_user_id.clone())).into(),
+            pk: (
+                project_pk.clone(),
+                Partition::MetaUser(meta_user_id.clone()),
+            )
+                .into(),
             sk: EntityType::Month(month.clone()),
             project_id: project_pk,
             month,

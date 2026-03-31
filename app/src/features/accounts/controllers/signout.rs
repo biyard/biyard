@@ -1,5 +1,8 @@
-use crate::common::{Deserialize, Extension, Result, Serialize};
+use crate::common::{Deserialize, Result, Serialize};
 use dioxus::prelude::post;
+
+#[cfg(feature = "server")]
+use crate::common::Extension;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignoutResponse {

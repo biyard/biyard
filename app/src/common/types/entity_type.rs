@@ -1,6 +1,8 @@
 use crate::common::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, SerializeDisplay, DeserializeFromStr, Default, DynamoEnum)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, SerializeDisplay, DeserializeFromStr, Default, DynamoEnum,
+)]
 pub enum EntityType {
     #[default]
     None,

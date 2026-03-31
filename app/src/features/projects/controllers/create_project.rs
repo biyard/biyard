@@ -1,8 +1,15 @@
-use crate::common::{CommonConfig, Result};
-use crate::features::accounts::Account;
-use crate::features::projects::{Project, ProjectResponse};
-use crate::features::tokens::ProjectToken;
+use crate::common::Result;
+use crate::features::projects::ProjectResponse;
 use dioxus::prelude::post;
+
+#[cfg(feature = "server")]
+use crate::common::CommonConfig;
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
+#[cfg(feature = "server")]
+use crate::features::projects::Project;
+#[cfg(feature = "server")]
+use crate::features::tokens::ProjectToken;
 
 #[post("/v1/projects", account: Account)]
 pub async fn create_project_handler(
@@ -22,13 +29,7 @@ pub async fn create_project_handler(
         monthly_token_supply,
     );
 
-    let token = ProjectToken::new(
-        project.pk.clone(),
-        name,
-        symbol,
-        decimals,
-        description,
-    );
+    let token = ProjectToken::new(project.pk.clone(), name, symbol, decimals, description);
 
     crate::transact_write_items!(
         cli,

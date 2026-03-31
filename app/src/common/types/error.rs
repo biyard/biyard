@@ -72,9 +72,9 @@ impl From<dioxus::prelude::ServerFnError> for Error {
 #[cfg(feature = "server")]
 impl dioxus::fullstack::axum::response::IntoResponse for Error {
     fn into_response(self) -> dioxus::fullstack::axum::response::Response {
+        use dioxus::fullstack::AsStatusCode;
         use dioxus::fullstack::axum::http::StatusCode;
         use dioxus::fullstack::axum::response::IntoResponse;
-        use dioxus::fullstack::AsStatusCode;
 
         let status = self.as_status_code();
         (status, self.to_string()).into_response()
@@ -89,8 +89,11 @@ impl dioxus::fullstack::AsStatusCode for Error {
             Error::Unauthorized | Error::NoSessionFound => StatusCode::UNAUTHORIZED,
             Error::Forbidden => StatusCode::FORBIDDEN,
             Error::NotFound(_) => StatusCode::NOT_FOUND,
-            Error::BadRequest(_) | Error::InvalidPartitionKey(_) | Error::InvalidBookmark
-            | Error::Duplicate(_) | Error::ValidationError(_) => StatusCode::BAD_REQUEST,
+            Error::BadRequest(_)
+            | Error::InvalidPartitionKey(_)
+            | Error::InvalidBookmark
+            | Error::Duplicate(_)
+            | Error::ValidationError(_) => StatusCode::BAD_REQUEST,
             Error::Account(e) => match e {
                 AccountError::InvalidCredentials => StatusCode::UNAUTHORIZED,
                 AccountError::AccountNotFound => StatusCode::NOT_FOUND,
@@ -109,7 +112,8 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 }
             },
             Error::Point(e) => match e {
-                PointError::PointBalanceNotFound | PointError::MetaUserNotFound
+                PointError::PointBalanceNotFound
+                | PointError::MetaUserNotFound
                 | PointError::PointAggregationNotFound => StatusCode::NOT_FOUND,
                 PointError::InsufficientPoints | PointError::InvalidPointAmount => {
                     StatusCode::BAD_REQUEST
@@ -119,7 +123,8 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 TokenError::TokenNotFound | TokenError::TokenBalanceNotFound => {
                     StatusCode::NOT_FOUND
                 }
-                TokenError::InsufficientTokens | TokenError::InvalidTokenAmount
+                TokenError::InsufficientTokens
+                | TokenError::InvalidTokenAmount
                 | TokenError::TokenAlreadyExists => StatusCode::BAD_REQUEST,
             },
             _ => StatusCode::INTERNAL_SERVER_ERROR,

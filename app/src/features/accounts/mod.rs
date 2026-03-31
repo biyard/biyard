@@ -1,12 +1,13 @@
-pub mod dto;
-pub mod types;
-
-#[cfg(feature = "server")]
 pub mod controllers;
+pub mod dto;
+pub mod i18n;
+pub mod types;
+pub mod views;
+
 #[cfg(feature = "server")]
 pub mod models;
 
-pub use dto::{SignupAccountRequest, SigninAccountRequest, AccountResponse};
-pub use types::{AccountType, AccountError};
+pub use dto::{AccountResponse, SigninAccountRequest, SignupAccountRequest};
 #[cfg(feature = "server")]
 pub use models::{Account, AccountQueryOption};
+pub use types::{AccountError, AccountType};

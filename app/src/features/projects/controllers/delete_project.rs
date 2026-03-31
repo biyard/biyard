@@ -1,7 +1,11 @@
-use crate::common::{CommonConfig, EntityType, ProjectAuth, ProjectPartition, Result, Serialize};
-use crate::features::projects::Project;
+use crate::common::{EntityType, ProjectPartition, Result, Serialize};
 use dioxus::prelude::delete;
 use serde::Deserialize;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, ProjectAuth};
+#[cfg(feature = "server")]
+use crate::features::projects::Project;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteProjectResponse {

@@ -137,6 +137,7 @@ dependencies = [
  "getrandom 0.4.2",
  "gloo-timers",
  "hex",
+ "js-sys",
  "lambda_http",
  "percent-encoding",
  "reqwest",

@@ -1,4 +1,5 @@
 pub mod accounts;
+pub mod console;
 pub mod contacts;
 pub mod credentials;
 pub mod points;

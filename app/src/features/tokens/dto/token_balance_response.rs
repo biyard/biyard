@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::common::types::Partition;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TokenBalanceResponse {

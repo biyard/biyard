@@ -1,6 +1,11 @@
-use crate::common::{CommonConfig, ProjectAuth, ProjectPartition, Result};
-use crate::features::points::{MonthlyPointAggregation, PointBalance, PointBalanceResponse};
+use crate::common::{ProjectPartition, Result};
+use crate::features::points::PointBalanceResponse;
 use dioxus::prelude::get;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, ProjectAuth};
+#[cfg(feature = "server")]
+use crate::features::points::{MonthlyPointAggregation, PointBalance};
 
 #[get("/v1/projects/:project_id/points/:meta_user_id", auth: ProjectAuth)]
 pub async fn get_user_balance_handler(

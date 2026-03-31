@@ -1,9 +1,15 @@
-use crate::common::{CommonConfig, ListResponse, Result};
-use crate::features::accounts::Account;
-use crate::features::projects::{Project, ProjectQueryOption, ProjectResponse};
+use crate::common::{ListResponse, Result};
+use crate::features::projects::ProjectResponse;
 use dioxus::prelude::get;
 
-#[get("/v1/projects", account: Account)]
+#[cfg(feature = "server")]
+use crate::common::CommonConfig;
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
+#[cfg(feature = "server")]
+use crate::features::projects::{Project, ProjectQueryOption};
+
+#[get("/v1/projects?limit&bookmark", account: Account)]
 pub async fn list_projects_handler(
     limit: i32,
     bookmark: Option<String>,

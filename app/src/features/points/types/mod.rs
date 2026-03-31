@@ -1,5 +1,5 @@
-mod transaction_type;
 mod error;
+mod transaction_type;
 
-pub use transaction_type::TransactionType;
 pub use error::PointError;
+pub use transaction_type::TransactionType;

@@ -1,7 +1,13 @@
-use crate::common::{CommonConfig, Partition, Result};
-use crate::features::accounts::Account;
-use crate::features::credentials::{Credential, CredentialResponse};
+use crate::common::Result;
+use crate::features::credentials::CredentialResponse;
 use dioxus::prelude::post;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, Partition};
+#[cfg(feature = "server")]
+use crate::features::accounts::Account;
+#[cfg(feature = "server")]
+use crate::features::credentials::Credential;
 
 #[post("/v1/credentials", account: Account)]
 pub async fn create_credential_handler(name: String) -> Result<CredentialResponse> {
