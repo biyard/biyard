@@ -1,0 +1,278 @@
+name: PR Testing
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [dev]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  dx-check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy, rustfmt
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          cache: false
+
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            lld
+
+      - name: Install Dioxus-cli
+        run: |
+          cargo binstall dioxus-cli --force
+
+      - name: Dioxus compile check
+        run: |
+          dx check --web
+
+  app-build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app
+
+    outputs:
+      image: ${{ steps.build.outputs.image }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+            app-build-${{ runner.os }}-
+            app-build-
+          path: |
+            target
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy, rustfmt
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          cache: false
+
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            lld
+
+      - name: Install Dioxus-cli
+        run: |
+          cargo binstall dioxus-cli --force
+
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.0 --activate
+
+      - name: Build and create Docker image
+        id: build
+        env:
+          DYNAMO_TABLE_PREFIX: biyard-local
+          ENV: local
+          RUSTFLAGS: "-D warnings"
+          RUST_LOG: error
+          DYNAMO_ENDPOINT: http://localstack:4566
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: test
+          COMMIT: pr-${{ github.sha }}
+          ECR: biyard/app
+        run: |
+          npm i -D tailwindcss
+          make build-testing
+          make docker
+
+          docker save $ECR:$COMMIT | gzip > /tmp/app-image.tar.gz
+          echo "image=$ECR:$COMMIT" >> $GITHUB_OUTPUT
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-image-${{ github.sha }}
+          path: /tmp/app-image.tar.gz
+          retention-days: 7
+
+  app-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy, rustfmt
+          toolchain: stable
+          cache: false
+
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            lld
+
+      - name: Install Dioxus-cli
+        run: |
+          cargo binstall dioxus-cli --force
+
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.15.0 --activate
+
+      - name: Start infrastructure
+        run: |
+          make infra
+
+      - name: Run tests
+        working-directory: app
+        env:
+          DYNAMO_TABLE_PREFIX: biyard-local
+          DYNAMO_ENDPOINT: http://localhost:4566
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: test
+          RUST_LOG: info
+          ENV: local
+        run: |
+          npm install -D tailwindcss @tailwindcss/cli
+          make test
+
+  playwright-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [app-build]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-image-${{ github.sha }}
+          path: /tmp
+
+      - name: Load Docker image
+        run: |
+          docker load < /tmp/app-image.tar.gz
+          docker images
+
+      - name: Setup test environment
+        env:
+          COMMIT: pr-${{ github.sha }}
+          RESET_DB: "true"
+        run: |
+          docker compose --profile testing up -d
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to be ready..."
+
+          timeout=180
+          interval=10
+          elapsed=0
+          while [ $elapsed -lt $timeout ]; do
+            if curl -f -s http://localhost:8080/ > /dev/null 2>&1; then
+              echo "App is responding (took ${elapsed}s)"
+              break
+            fi
+            echo "App not ready yet... (${elapsed}/${timeout}s)"
+            sleep $interval
+            elapsed=$((elapsed + interval))
+          done
+
+          if [ $elapsed -ge $timeout ]; then
+            echo "App failed to respond within ${timeout}s"
+            echo "Docker services status:"
+            docker compose ps
+            echo "App logs:"
+            docker compose logs app-testing
+            exit 1
+          fi
+
+          echo "All services are ready!"
+
+      - name: Install dependencies
+        working-directory: playwright
+        run: npm i
+
+      - name: Install Playwright Browsers
+        working-directory: playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright Tests
+        env:
+          CI: true
+          PLAYWRIGHT_BASE_URL: http://localhost:8080
+          PLAYWRIGHT_TIMEOUT: 60000
+        working-directory: playwright
+        run: |
+          make test
+
+      - name: Move Playwright Report
+        if: always()
+        run: |
+          [ -d playwright/playwright-report ] && mv playwright/playwright-report ./ || true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-test-results
+          path: |
+            playwright-report/
+          retention-days: 30

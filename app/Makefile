@@ -13,7 +13,7 @@ AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output
 REPOSITORY ?= biyard/app
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
-.PHONY: dev build build-lambda clean fmt clippy test docker docker.push docker.login
+.PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login
 
 dev:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
@@ -24,6 +24,11 @@ dev:
 	dx serve --port $(PORT) --web
 
 build:
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+		@client --features web --platform web \
+		@server --features server --platform server
+
+build-testing:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features server --platform server

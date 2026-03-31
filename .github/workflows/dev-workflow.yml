@@ -74,11 +74,6 @@ jobs:
           DYNAMO_TABLE_PREFIX: biyard-dev
         run: make build
 
-      - name: Sync static assets to S3
-        env:
-          ENV: dev
-        run: make sync-app-assets
-
       - name: Build and push Docker image
         working-directory: app
         env:
@@ -88,58 +83,9 @@ jobs:
           make docker
           make docker.push
 
-  api:
-    runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: api
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          ssh-key: ${{ secrets.PULL_KEY_REPO }}
-      - name: Cache builder
-        id: api-build-cache
-        uses: actions/cache@v4
-        with:
-          key: api-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            api-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
-            api-build-${{ runner.os }}-
-            api-build-
-          path: |
-            api/target
-
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          components: clippy, rustfmt
-          toolchain: stable
-      - name: Building APIs
-        env:
-          AWS_REGION: ap-northeast-2
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-          DISABLE_ANSI: false
-          WEB_BUILD: false
-          ENV: dev
-          RUST_LOG: info
-          DYNAMO_ENDPOINT: none
-        run: |
-          make docker.build
-          make docker.login
-          make docker.push
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [web, app, api]
+    needs: [web, app]
     steps:
       - uses: actions/checkout@v3
         with:

@@ -1,9 +1,9 @@
-use crate::common::{EntityType, ProjectPartition, Result, Serialize};
+use crate::common::{ProjectPartition, Result, Serialize};
 use dioxus::prelude::delete;
 use serde::Deserialize;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, EntityType, ProjectAuth};
 #[cfg(feature = "server")]
 use crate::features::projects::Project;
 

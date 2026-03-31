@@ -175,3 +175,47 @@ pub fn App() -> Element {
 - When a value is used last, move it instead of cloning: `set(Some(key))` NOT `set(Some(key.clone()))`
 
 **Prefer `Copy` for simple enums** with only unit variants — add `Copy` to derives.
+
+## Data Loading
+
+- **Always use `use_loader`** (from dioxus-fullstack-core), NOT `use_server_future`
+- In **layouts**, do NOT use `use_loader()?` — wrap with `Ok()` and handle errors directly:
+  ```rust
+  let auth = use_loader(move || async move { Ok(get_me_handler().await.ok()) })?;
+  ```
+- Wrap `Outlet` with `SuspenseBoundary` when child components use `use_loader()?`
+
+## Type Conventions
+
+- Use `ProjectPartition` newtype instead of raw `String` for project IDs
+- Component props: `ReadSignal<ProjectPartition>` for project_id
+- Convert with `.into()`: `project_id: id.clone().into()`
+
+## RSX Translation Usage
+
+`translate!` macro fields are `&'static str`:
+- **Text content**: `{t.xxx}` (expression block)
+- **Attribute values / interpolation**: `"{t.xxx}"` or `"prefix {t.xxx} suffix"`
+
+## Form Conventions
+
+- SSR forms **must** include `method: "post"` — without it, defaults to GET and exposes form data in URL
+
+## GET Handler Query Parameters
+
+Query parameters must be declared in the `#[get]` macro URL — without curly braces:
+```rust
+// Correct: query params after ? without braces
+#[get("/v1/projects?limit&bookmark", ...)]
+
+// Wrong: missing query params (treated as body → error on GET)
+#[get("/v1/projects", ...)]
+
+// Wrong: braces around query params
+#[get("/v1/projects?{limit}&{bookmark}", ...)]
+```
+- Path params use `:param`, query params use `?param1&param2`
+
+## Reference Codebase
+
+- Follow patterns from `ratel-new/app/ratel/src/` as reference implementation
