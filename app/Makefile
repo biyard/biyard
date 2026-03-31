@@ -24,17 +24,17 @@ dev:
 	dx serve --port $(PORT) --web
 
 build:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-testing:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-lambda:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features lambda --platform server
 
