@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["./console"]
+CMD ["./landing"]

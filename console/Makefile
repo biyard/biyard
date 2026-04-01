@@ -10,7 +10,7 @@ AWS_SECRET_ACCESS_KEY ?= $(shell aws configure get aws_secret_access_key $(AWS_F
 AWS_REGION ?= $(shell aws configure get region)
 AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output text)
 
-REPOSITORY ?= biyard/app
+REPOSITORY ?= biyard/console
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
 .PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login
@@ -39,7 +39,7 @@ build-lambda:
 		@server --features lambda --platform server
 
 docker:
-	docker build -t $(ECR):$(COMMIT) -f Dockerfile ../target/dx/app/release/web
+	docker build -t $(ECR):$(COMMIT) -f Dockerfile ../target/dx/console/release/web
 
 docker.push:
 	docker tag $(ECR):$(COMMIT) $(ECR):$(ENV)

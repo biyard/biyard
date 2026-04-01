@@ -9,33 +9,67 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  web:
-    runs-on: ubuntu-latest
+  landing:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          ssh-key: ${{ secrets.PULL_KEY_REPO }}
+
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ap-northeast-2
 
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.15.0 --activate
+      - name: Login to Amazon ECR
+        id: landing-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Deploy to S3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy, rustfmt
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          cache: false
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "landing-build"
+
+      - uses: cargo-bins/cargo-binstall@main
+
+      - name: Install Dioxus CLI
+        run: cargo binstall dioxus-cli --force
+
+      - name: Build Landing (Lambda)
+        working-directory: landing
         env:
           ENV: prod
-          API_URL: https://api.biyard.co
-          CONSOLE_URL: https://console.biyard.co
+        run: |
+          npm i -D tailwindcss
+          make build-lambda
+
+      - name: Build and push Docker image
+        working-directory: landing
+        env:
+          ENV: prod
+          ECR: ${{ steps.landing-ecr.outputs.registry }}/biyard/landing
+        run: |
+          make docker
+          make docker.push
+
+      - name: Deploy static assets to S3
+        env:
+          ENV: prod
         run: |
           make sync-landing
 
-  app:
+  console:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           ssh-key: ${{ secrets.PULL_KEY_REPO }}
@@ -55,22 +89,22 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "app-build"
+          shared-key: "console-build"
 
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Dioxus CLI
         run: cargo binstall dioxus-cli --force
 
-      - name: Build Dioxus app
-        working-directory: app
+      - name: Build Dioxus console app
+        working-directory: console
         env:
           ENV: prod
           DYNAMO_TABLE_PREFIX: biyard-prod
         run: make build
 
       - name: Build and push Docker image
-        working-directory: app
+        working-directory: console
         env:
           ENV: prod
         run: |
@@ -80,9 +114,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [web, app]
+    needs: [landing, console]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           ssh-key: ${{ secrets.PULL_KEY_REPO }}

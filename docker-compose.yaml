@@ -1,6 +1,6 @@
 services:
-  app-testing:
-    image: biyard/app:${COMMIT}
+  console-testing:
+    image: biyard/console:${COMMIT}
     restart: always
     environment:
       IP: "0.0.0.0"

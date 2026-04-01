@@ -32,12 +32,6 @@ deploy:
 	@cd cdk && $(BUILD_CDK_ENV) cdk synth
 	@cd cdk && $(BUILD_CDK_ENV) cdk deploy --require-approval never $(AWS_FLAG) --all --concurrency 5
 
-sync-landing: clean landing/dist
-	@aws s3 sync landing/dist s3://$(WEB_BUCKET) > /dev/null
+sync-landing:
+	@aws s3 sync target/dx/landing/release/web/public s3://$(WEB_BUCKET) > /dev/null
 	@aws cloudfront create-invalidation --distribution-id $(WEB_CDN_ID) --paths "/*" > /dev/null
-
-clean:
-	rm -rf landing/dist
-
-%/dist:
-	cd $* && make build

@@ -13,12 +13,12 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  app-build:
+  console-build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: app
+        working-directory: console
 
     outputs:
       image: ${{ steps.build.outputs.image }}
@@ -35,7 +35,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "app-build"
+          shared-key: "console-build"
 
       - uses: cargo-bins/cargo-binstall@main
 
@@ -77,23 +77,23 @@ jobs:
           AWS_REGION: us-east-1
           AWS_ACCOUNT_ID: test
           COMMIT: pr-${{ github.sha }}
-          ECR: biyard/app
+          ECR: biyard/console
         run: |
           npm i -D tailwindcss
           make build-testing
           make docker
 
-          docker save $ECR:$COMMIT | gzip > /tmp/app-image.tar.gz
+          docker save $ECR:$COMMIT | gzip > /tmp/console-image.tar.gz
           echo "image=$ECR:$COMMIT" >> $GITHUB_OUTPUT
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-image-${{ github.sha }}
-          path: /tmp/app-image.tar.gz
+          name: console-image-${{ github.sha }}
+          path: /tmp/console-image.tar.gz
           retention-days: 7
 
-  app-testing:
+  console-testing:
     runs-on: ubuntu-latest
 
     steps:
@@ -107,7 +107,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: "app-test"
+          shared-key: "console-test"
 
       - uses: cargo-bins/cargo-binstall@main
 
@@ -138,7 +138,7 @@ jobs:
           make infra
 
       - name: Run tests
-        working-directory: app
+        working-directory: console
         env:
           DYNAMO_TABLE_PREFIX: biyard-local
           DYNAMO_ENDPOINT: http://localhost:4566
@@ -155,7 +155,7 @@ jobs:
   playwright-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [app-build]
+    needs: [console-build]
 
     steps:
       - uses: actions/checkout@v4
@@ -163,12 +163,12 @@ jobs:
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-image-${{ github.sha }}
+          name: console-image-${{ github.sha }}
           path: /tmp
 
       - name: Load Docker image
         run: |
-          docker load < /tmp/app-image.tar.gz
+          docker load < /tmp/console-image.tar.gz
           docker images
 
       - name: Setup test environment
@@ -200,7 +200,7 @@ jobs:
             echo "Docker services status:"
             docker compose ps
             echo "App logs:"
-            docker compose logs app-testing
+            docker compose logs console-testing
             exit 1
           fi
 

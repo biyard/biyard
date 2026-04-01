@@ -1,13 +1,14 @@
 [application]
 name = "biyard-landing"
+tailwind_input = "tailwind.css"
 
 [web.app]
 title = "Biyard - Blockchain Launchpad Platform"
 
 [web.resource]
 style = []
-script = ["https://cdn.tailwindcss.com"]
+script = []
 
 [web.resource.dev]
 style = []
-script = ["https://cdn.tailwindcss.com"]
+script = []

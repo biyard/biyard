@@ -43,51 +43,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "aws-config",
- "aws-credential-types",
- "aws-sdk-dynamodb",
- "base64 0.22.1",
- "bcrypt",
- "by-macros",
- "chrono",
- "dioxus",
- "dioxus-cli-config",
- "dioxus-core",
- "dioxus-fullstack",
- "dioxus-primitives",
- "dioxus-server",
- "dioxus-translate",
- "getrandom 0.4.2",
- "gloo-timers",
- "hex",
- "js-sys",
- "lambda_http",
- "percent-encoding",
- "reqwest",
- "schemars 1.0.4",
- "serde",
- "serde_dynamo",
- "serde_json",
- "serde_repr",
- "serde_with",
- "sha3",
- "thiserror 2.0.17",
- "tokio",
- "tower-sessions",
- "tracing",
- "tracing-subscriber",
- "tracing-wasm",
- "uuid",
- "validator",
- "wasm-bindgen",
- "web-sys",
-]
-
-[[package]]
 name = "askama_escape"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -932,6 +887,51 @@ checksum = "ba5a308b75df32fe02788e748662718f03fde005016435c444eea572398219fd"
 dependencies = [
  "bytes",
  "memchr",
+]
+
+[[package]]
+name = "console"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "aws-config",
+ "aws-credential-types",
+ "aws-sdk-dynamodb",
+ "base64 0.22.1",
+ "bcrypt",
+ "by-macros",
+ "chrono",
+ "dioxus",
+ "dioxus-cli-config",
+ "dioxus-core",
+ "dioxus-fullstack",
+ "dioxus-primitives",
+ "dioxus-server",
+ "dioxus-translate",
+ "getrandom 0.4.2",
+ "gloo-timers",
+ "hex",
+ "js-sys",
+ "lambda_http",
+ "percent-encoding",
+ "reqwest",
+ "schemars 1.0.4",
+ "serde",
+ "serde_dynamo",
+ "serde_json",
+ "serde_repr",
+ "serde_with",
+ "sha3",
+ "thiserror 2.0.17",
+ "tokio",
+ "tower-sessions",
+ "tracing",
+ "tracing-subscriber",
+ "tracing-wasm",
+ "uuid",
+ "validator",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
@@ -2994,6 +2994,10 @@ name = "landing"
 version = "0.1.0"
 dependencies = [
  "dioxus",
+ "dioxus-fullstack",
+ "dioxus-server",
+ "lambda_http",
+ "tokio",
  "tracing",
 ]
 
