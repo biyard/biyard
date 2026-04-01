@@ -1,15 +1,64 @@
-PORT ?= 5000
-API_URL ?= http://localhost:3000
+ENV ?= dev
+DYNAMO_TABLE_PREFIX ?= biyard-$(ENV)
+DYNAMODB_ENDPOINT ?= none
+PORT ?= 8080
 
-.PHONY: run node_modules
-node_modules:
-	pnpm i -p
+COMMIT ?= $(shell git rev-parse --short HEAD)
 
-run: node_modules
-	PORT=$(PORT) VITE_API_BASE_URL=$(API_URL) pnpm dev
+AWS_ACCESS_KEY_ID ?= $(shell aws configure get aws_access_key_id $(AWS_FLAG))
+AWS_SECRET_ACCESS_KEY ?= $(shell aws configure get aws_secret_access_key $(AWS_FLAG))
+AWS_REGION ?= $(shell aws configure get region)
+AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output text)
 
-test: node_modules
-	$(PLAYWRIGHT_ENV) npx playwright test $(PLAYWRIGHT_ARGS)
+REPOSITORY ?= biyard/app
+ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
-build: node_modules
-	VITE_API_BASE_URL=$(API_URL) pnpm run build
+.PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login
+
+dev:
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
+	DYNAMODB_ENDPOINT=$(DYNAMODB_ENDPOINT) \
+	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
+	AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
+	AWS_REGION=$(AWS_REGION) \
+	dx serve --port $(PORT) --web
+
+build:
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+		@client --features web --platform web \
+		@server --features server --platform server
+
+build-testing:
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+		@client --features web --platform web \
+		@server --features server --platform server
+
+build-lambda:
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+		@client --features web --platform web \
+		@server --features lambda --platform server
+
+docker:
+	docker build -t $(ECR):$(COMMIT) -f Dockerfile ../target/dx/app/release/web
+
+docker.push:
+	docker tag $(ECR):$(COMMIT) $(ECR):$(ENV)
+	docker push $(ECR):$(COMMIT)
+	docker push $(ECR):$(ENV)
+
+docker.login:
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+
+clean:
+	dx clean
+	cargo clean
+
+fmt:
+	cargo fmt
+
+clippy:
+	cargo clippy --features server
+	cargo clippy --features web --target wasm32-unknown-unknown
+
+test:
+	cargo test --features server

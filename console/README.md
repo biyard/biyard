@@ -1,73 +1,50 @@
-# React + TypeScript + Vite
+# Development
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Your new bare-bones project includes minimal organization with a single `main.rs` file and a few assets.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+project/
+├─ assets/ # Any assets that are used by the app should be placed here
+├─ src/
+│  ├─ main.rs # main.rs is the entry point to your application and currently contains all components for the app
+├─ Cargo.toml # The Cargo.toml file defines the dependencies and feature flags for your project
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Automatic Tailwind (Dioxus 0.7+)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+As of Dioxus 0.7, there no longer is a need to manually install tailwind. Simply `dx serve` and you're good to go!
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Automatic tailwind is supported by checking for a file called `tailwind.css` in your app's manifest directory (next to Cargo.toml). To customize the file, use the dioxus.toml:
+
+```toml
+[application]
+tailwind_input = "my.css"
+tailwind_output = "assets/out.css" # also customize the location of the out file!
 ```
+
+### Tailwind Manual Install
+
+To use tailwind plugins or manually customize tailwind, you can can install the Tailwind CLI and use it directly.
+
+### Tailwind
+1. Install npm: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
+2. Install the Tailwind CSS CLI: https://tailwindcss.com/docs/installation/tailwind-cli
+3. Run the following command in the root of the project to start the Tailwind CSS compiler:
+
+```bash
+npx @tailwindcss/cli -i ./input.css -o ./assets/tailwind.css --watch
+```
+
+### Serving Your App
+
+Run the following command in the root of your project to start developing with the default platform:
+
+```bash
+dx serve --platform web
+```
+
+To run for a different platform, use the `--platform platform` flag. E.g.
+```bash
+dx serve --platform desktop
+```
+

@@ -1,0 +1,11 @@
+[package]
+name = "landing"
+version = "0.1.0"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["web"] }
+tracing = { workspace = true }
