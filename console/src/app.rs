@@ -1,7 +1,5 @@
 use dioxus::prelude::*;
 
-use crate::features::accounts::AccountResponse;
-
 #[component]
 pub fn App() -> Element {
     let _ = crate::features::accounts::context::Context::init()?;
