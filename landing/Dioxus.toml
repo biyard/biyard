@@ -5,9 +5,13 @@ name = "biyard-landing"
 title = "Biyard - Blockchain Launchpad Platform"
 
 [web.resource]
-style = ["https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap"]
-script = ["https://cdn.tailwindcss.com"]
+style = [
+    "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap",
+]
+script = []
 
 [web.resource.dev]
-style = ["https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap"]
-script = ["https://cdn.tailwindcss.com"]
+style = [
+    "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap",
+]
+script = []

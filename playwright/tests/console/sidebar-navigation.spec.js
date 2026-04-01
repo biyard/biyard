@@ -4,28 +4,28 @@ import { goto } from "../utils.js";
 test.describe("Sidebar Navigation", () => {
   test("navigates between all console pages via sidebar", async ({ page }) => {
     await goto(page, "/dashboard");
-    await expect(page.getByText("Biyard Console")).toBeVisible();
+    await expect(page.getByText("Biyard Console", { exact: true }).first()).toBeVisible();
 
-    // Navigate to Projects
-    await page.getByRole("link", { name: "Projects" }).click();
+    // Navigate to Projects via sidebar
+    await page.getByRole("link", { name: "Projects", exact: true }).click();
     await page.waitForURL("**/projects");
     await expect(page.getByText("Projects").first()).toBeVisible();
 
-    // Navigate to Credentials
-    await page.getByRole("link", { name: "Credentials" }).click();
+    // Navigate to Credentials via sidebar
+    await page.getByRole("link", { name: "Credentials", exact: true }).click();
     await page.waitForURL("**/credentials");
-    await expect(page.getByText("API Credentials")).toBeVisible();
+    await expect(page.getByText("API Credentials").first()).toBeVisible();
 
-    // Navigate to Settings
-    await page.getByRole("link", { name: "Settings" }).click();
+    // Navigate to Settings via sidebar
+    await page.getByRole("link", { name: "Settings", exact: true }).click();
     await page.waitForURL("**/settings");
-    await expect(page.getByText("Account Settings")).toBeVisible();
+    await expect(page.getByText("Account Settings").first()).toBeVisible();
 
-    // Navigate back to Dashboard
-    await page.getByRole("link", { name: "Dashboard" }).click();
+    // Navigate back to Dashboard via sidebar
+    await page.getByRole("link", { name: "Dashboard", exact: true }).click();
     await page.waitForURL("**/dashboard");
     await expect(
-      page.getByText("Welcome to Biyard Console"),
+      page.getByText("Welcome to Biyard Console").first(),
     ).toBeVisible();
   });
 });

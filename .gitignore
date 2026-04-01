@@ -24,3 +24,7 @@ contracts/coverage/
 
 # Davia
 .davia/
+
+# Generated assets
+console/assets/
+landing/assets/

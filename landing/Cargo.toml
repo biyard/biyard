@@ -7,5 +7,16 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-dioxus = { workspace = true }
+dioxus = { workspace = true, features = ["fullstack", "router"] }
 tracing = { workspace = true }
+
+# Server-only
+tokio = { workspace = true, optional = true }
+lambda_http = { version = "1", optional = true }
+
+[features]
+default = ["full"]
+full = []
+web = ["dioxus/web"]
+server = ["dioxus/server", "tokio"]
+lambda = ["lambda_http", "server"]

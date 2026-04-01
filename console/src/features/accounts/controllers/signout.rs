@@ -1,5 +1,5 @@
 use crate::common::{Deserialize, Result, Serialize};
-use dioxus::prelude::post;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::Extension;

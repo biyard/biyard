@@ -156,9 +156,9 @@ pub fn use_is_mobile() -> Signal<bool> {
     use_drop(|| {
         _ = document::eval(
             r#"
-            window.removeEventListener('resize', window.__sidebarResizeHandler);
-            delete window.__sidebarResizeHandler;
-            "#,
+                window.removeEventListener('resize', window.__sidebarResizeHandler);
+                delete window.__sidebarResizeHandler;
+                "#,
         );
     });
 
@@ -225,9 +225,9 @@ pub fn SidebarProvider(
     use_drop(|| {
         _ = document::eval(
             r#"
-            window.removeEventListener('keydown', window.__sidebarKeyHandler);
-            delete window.__sidebarKeyHandler;
-            "#,
+                window.removeEventListener('keydown', window.__sidebarKeyHandler);
+                delete window.__sidebarKeyHandler;
+                "#,
         );
     });
 

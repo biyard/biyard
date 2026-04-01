@@ -2,12 +2,14 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
+use crate::features::accounts::context::{AccountContext, use_account_context};
 use crate::features::accounts::i18n::SignInTranslate;
 
 #[component]
 pub fn SignIn() -> Element {
     let t: SignInTranslate = use_translate();
     let nav = use_navigator();
+    let mut account_ctx = use_account_context();
     let mut email = use_signal(String::new);
     let mut password = use_signal(String::new);
     let mut error = use_signal(|| None::<String>);
@@ -23,7 +25,10 @@ pub fn SignIn() -> Element {
             error.set(None);
 
             match crate::features::accounts::controllers::signin_handler(email_val, password_val).await {
-                Ok(_) => {
+                Ok(resp) => {
+                    account_ctx.set(AccountContext {
+                        account: Some(resp),
+                    });
                     nav.push(Route::Dashboard {});
                 }
                 Err(e) => {

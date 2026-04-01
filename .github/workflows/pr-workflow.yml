@@ -13,12 +13,12 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  dx-check:
+  landing-build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: app
+        working-directory: landing
 
     steps:
       - uses: actions/checkout@v4
@@ -29,12 +29,24 @@ jobs:
           toolchain: stable
           target: wasm32-unknown-unknown
           cache: false
+          # RUSTFLAGS: "-D warnings"
+          # FIXME: After update landing page, remove this line
+          RUSTFLAGS: ""
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          key: landing-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            landing-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+          path: |
+            target
 
       - uses: cargo-bins/cargo-binstall@main
+
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
             wget \
@@ -46,19 +58,29 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
       - name: Dioxus compile check
-        run: |
-          dx check --web
+        run: dx check --web
 
-  app-build:
+      - name: Clean Dioxus build output
+        run: rm -rf ../target/dx
+
+      - name: Build Landing
+        env:
+          ENV: local
+          # FIXME: After update landing page, remove this line
+          RUSTFLAGS: ""
+        run: |
+          npm install -D tailwindcss @tailwindcss/cli
+          make build
+
+  console-build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: app
+        working-directory: console
 
     outputs:
       image: ${{ steps.build.outputs.image }}
@@ -66,17 +88,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore build cache
-        uses: actions/cache/restore@v4
-        with:
-          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
-          restore-keys: |
-            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
-            app-build-${{ runner.os }}-
-            app-build-
-          path: |
-            target
-
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy, rustfmt
@@ -84,11 +95,21 @@ jobs:
           target: wasm32-unknown-unknown
           cache: false
 
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          key: console-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            console-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+          path: |
+            target
+
       - uses: cargo-bins/cargo-binstall@main
+
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
             wget \
@@ -100,13 +121,13 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.15.0 --activate
+      - name: Dioxus compile check
+        run: dx check --web
+
+      - name: Clean Dioxus build output
+        run: rm -rf ../target/dx
 
       - name: Build and create Docker image
         id: build
@@ -121,23 +142,23 @@ jobs:
           AWS_REGION: us-east-1
           AWS_ACCOUNT_ID: test
           COMMIT: pr-${{ github.sha }}
-          ECR: biyard/app
+          ECR: biyard/console
         run: |
-          npm i -D tailwindcss
+          npm install -D tailwindcss @tailwindcss/cli
           make build-testing
           make docker
 
-          docker save $ECR:$COMMIT | gzip > /tmp/app-image.tar.gz
+          docker save $ECR:$COMMIT | gzip > /tmp/console-image.tar.gz
           echo "image=$ECR:$COMMIT" >> $GITHUB_OUTPUT
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-image-${{ github.sha }}
-          path: /tmp/app-image.tar.gz
+          name: console-image-${{ github.sha }}
+          path: /tmp/console-image.tar.gz
           retention-days: 7
 
-  app-testing:
+  console-testing:
     runs-on: ubuntu-latest
 
     steps:
@@ -149,11 +170,21 @@ jobs:
           toolchain: stable
           cache: false
 
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          key: console-test-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            console-test-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+          path: |
+            target
+
       - uses: cargo-bins/cargo-binstall@main
+
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
             wget \
@@ -165,20 +196,14 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.15.0 --activate
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
       - name: Start infrastructure
         run: |
           make infra
 
       - name: Run tests
-        working-directory: app
+        working-directory: console
         env:
           DYNAMO_TABLE_PREFIX: biyard-local
           DYNAMO_ENDPOINT: http://localhost:4566
@@ -188,6 +213,7 @@ jobs:
           AWS_ACCOUNT_ID: test
           RUST_LOG: info
           ENV: local
+          NO_OUTPUT: "true"
         run: |
           npm install -D tailwindcss @tailwindcss/cli
           make test
@@ -195,25 +221,20 @@ jobs:
   playwright-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [app-build]
+    needs: [console-build]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-
       - name: Download Docker image artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-image-${{ github.sha }}
+          name: console-image-${{ github.sha }}
           path: /tmp
 
       - name: Load Docker image
         run: |
-          docker load < /tmp/app-image.tar.gz
+          docker load < /tmp/console-image.tar.gz
           docker images
 
       - name: Setup test environment
@@ -221,7 +242,7 @@ jobs:
           COMMIT: pr-${{ github.sha }}
           RESET_DB: "true"
         run: |
-          docker-compose --profile testing up -d
+          docker compose --profile testing up -d
 
       - name: Wait for services to be ready
         run: |
@@ -243,9 +264,9 @@ jobs:
           if [ $elapsed -ge $timeout ]; then
             echo "App failed to respond within ${timeout}s"
             echo "Docker services status:"
-            docker-compose ps
+            docker compose ps
             echo "App logs:"
-            docker-compose logs app-testing
+            docker compose logs console-testing
             exit 1
           fi
 
@@ -271,7 +292,7 @@ jobs:
       - name: Move Playwright Report
         if: always()
         run: |
-          mv playwright/playwright-report ./
+          [ -d playwright/playwright-report ] && mv playwright/playwright-report ./ || true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

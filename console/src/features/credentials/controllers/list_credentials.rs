@@ -1,6 +1,6 @@
 use crate::common::Result;
 use crate::features::credentials::CredentialSummaryResponse;
-use dioxus::prelude::get;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::CommonConfig;

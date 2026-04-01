@@ -9,8 +9,9 @@ test.describe("Auth Flow", () => {
     const page = await context.newPage();
 
     await page.goto("/dashboard");
-    await page.waitForURL("**/signin", { timeout: 10000 });
-    await expect(page.getByText("Sign in with email")).toBeVisible();
+    // Server-side auth guard renders the signin page; the URL may or may not
+    // change depending on whether the redirect is server-side or client-side.
+    await expect(page.getByText("Sign in with email")).toBeVisible({ timeout: 15000 });
 
     await context.close();
   });

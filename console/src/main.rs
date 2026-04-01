@@ -1,3 +1,3 @@
 fn main() {
-    app::common::run(app::App);
+    console::common::run(console::App);
 }
