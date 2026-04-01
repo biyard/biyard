@@ -78,6 +78,23 @@ dx serve --port 8001 --web                                  # Landing dev server
 3. `cd console && dx build` — console frontend compiles
 4. `cd landing && dx build` — landing frontend compiles
 
+## Frontend Code Quality Rules
+
+### File Size & Structure
+- **Single file must not exceed ~300 lines.** If a page or component grows beyond this, split into a directory module (e.g., `home.rs` → `home/mod.rs` + sub-files).
+- **Split by logical section**, not by technical layer. Each visual section (Hero, FAQ, Footer, etc.) should be its own file.
+- **Remove dead code immediately.** Do not leave unused components, structs, or constants in the codebase.
+
+### Avoid `dangerous_inner_html`
+- **Never use `dangerous_inner_html` for CSS.** Extract to external `.css` files in `assets/` and load via `document::Link { rel: "stylesheet", href: asset!("/assets/file.css") }`.
+- **Never use `dangerous_inner_html` for JavaScript.** Extract to external `.js` files in `assets/` and load via `document::Script { src: asset!("/assets/file.js") }`.
+- **Prefer native RSX SVG elements** over `dangerous_inner_html` for SVGs. Dioxus 0.7 supports `svg {}`, `path {}`, `circle {}`, `rect {}`, `line {}` etc. natively. Use snake_case attributes: `view_box`, `stroke_width`, `stroke_linecap`, `stroke_dasharray`.
+- **Only use `dangerous_inner_html` for SVGs** when they contain elements not well-supported in RSX (e.g., `<text>`, `<defs>`, `<marker>`). In that case, define as named constants in a dedicated `svgs.rs` file.
+
+### Inline Styles
+- Prefer TailwindCSS utility classes over inline `style` attributes where possible.
+- For CSS animations (`@keyframes`), define in external CSS files, not inline Rust string constants.
+
 ## Platform Considerations
 
 - **Blockchain:** PaaS APIs handle blockchain ops; design for async processing (webhooks, callbacks)

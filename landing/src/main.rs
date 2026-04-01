@@ -1,9 +1,12 @@
 use dioxus::prelude::*;
 
+mod app;
 mod components;
 mod pages;
+mod route;
 
-use pages::{Dao, Home, SignIn, Wallet};
+pub use app::App;
+pub use route::Route;
 
 fn main() {
     dioxus::logger::init(tracing::Level::INFO).expect("failed to init logger");
@@ -40,23 +43,4 @@ fn serve(app: fn() -> Element) {
                 .block_on(app_future);
         }
     }
-}
-
-#[component]
-fn App() -> Element {
-    rsx! {
-        Router::<Route> {}
-    }
-}
-
-#[derive(Debug, Clone, Routable, PartialEq)]
-pub enum Route {
-    #[route("/")]
-    Home {},
-    #[route("/signin")]
-    SignIn {},
-    #[route("/wallet")]
-    Wallet {},
-    #[route("/dao")]
-    Dao {},
 }

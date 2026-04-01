@@ -1,6 +1,7 @@
 import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
+import { EcsClusterStack } from "../lib/ecs-cluster-stack";
 import { AppClusterStack } from "../lib/app-cluster-stack";
 import { LandingLambdaStack } from "../lib/landing-lambda-stack";
 
@@ -14,12 +15,24 @@ const env = process.env.ENV || "dev";
 const host = process.env.DOMAIN || "dev.biyard.co";
 const webDomain = host;
 const consoleDomain = `console.${host}`;
-const landingApiDomain = `landing-api.${host}`;
 const baseDomain = "biyard.co";
 const consoleRepoName = "biyard/console";
 const commit = process.env.COMMIT!;
 
-// Console (Dioxus) Fargate cluster
+// ECS Cluster (VPC, Cluster, Cloud Map namespace)
+const ecsCluster = new EcsClusterStack(
+  app,
+  `${stackName}-ecs-cluster`,
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: "ap-northeast-2",
+    },
+    stage: env,
+  },
+);
+
+// Console (Dioxus) Fargate + API Gateway
 new AppClusterStack(app, `${stackName}-app-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -31,12 +44,14 @@ new AppClusterStack(app, `${stackName}-app-cluster`, {
   repoName: consoleRepoName,
   containerPort: 8080,
   maxCapacity: 20,
-  healthPath: "/version",
   commit,
+  vpc: ecsCluster.vpc,
+  cluster: ecsCluster.cluster,
+  namespace: ecsCluster.namespace,
 });
 
-// Landing: Lambda (Dioxus SSR)
-new LandingLambdaStack(app, `${stackName}-landing-lambda`, {
+// Landing: Lambda (Dioxus SSR) with Function URL
+const landingStack = new LandingLambdaStack(app, `${stackName}-landing-lambda`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: "ap-northeast-2",
@@ -44,11 +59,9 @@ new LandingLambdaStack(app, `${stackName}-landing-lambda`, {
   stackName: `${stackName}-landing-lambda`,
   stage: env,
   commit,
-  baseDomain,
-  apiDomain: landingApiDomain,
 });
 
-// Landing: S3+CloudFront CDN (static assets + API Gateway proxy)
+// Landing: S3+CloudFront CDN (static assets + Lambda Function URL proxy)
 new GlobalAccelStack(app, "landing", {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -61,7 +74,7 @@ new GlobalAccelStack(app, "landing", {
   webDomain,
   baseDomain,
   apiConfig: {
-    domain: landingApiDomain,
+    domain: landingStack.functionUrlDomain,
     prefix: "",
   },
 });

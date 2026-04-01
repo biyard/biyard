@@ -4,14 +4,17 @@ import {
   StackProps,
   aws_ec2 as ec2,
   aws_ecs as ecs,
-  aws_elasticloadbalancingv2 as elbv2,
+  aws_apigatewayv2 as apigw,
   aws_route53 as route53,
   aws_certificatemanager as acm,
   aws_iam as iam,
+  aws_servicediscovery as sd,
+  aws_logs as logs,
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import * as r53Targets from "aws-cdk-lib/aws-route53-targets";
+import { HttpServiceDiscoveryIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export interface AppClusterStackProps extends StackProps {
   appDomain: string;
@@ -19,13 +22,16 @@ export interface AppClusterStackProps extends StackProps {
   repoName: string;
   commit: string;
   containerPort?: number;
-  healthPath?: string;
   maxCapacity?: number;
+
+  vpc: ec2.IVpc;
+  cluster: ecs.ICluster;
+  namespace: sd.PrivateDnsNamespace;
 }
 
 export class AppClusterStack extends Stack {
   constructor(scope: Construct, id: string, props: AppClusterStackProps) {
-    super(scope, id, { ...props });
+    super(scope, id, { ...props, crossRegionReferences: true });
 
     const {
       appDomain,
@@ -33,18 +39,40 @@ export class AppClusterStack extends Stack {
       repoName,
       commit,
       containerPort = 8080,
-      healthPath = "/version",
       maxCapacity = 20,
+      vpc,
+      cluster,
+      namespace,
     } = props;
 
     const zone = route53.HostedZone.fromLookup(this, "RootZone", {
       domainName: baseDomain,
     });
 
-    const vpc = ec2.Vpc.fromLookup(this, "Vpc", { isDefault: true });
-    const cluster = new ecs.Cluster(this, "Cluster", { vpc });
+    // --- HTTP API ---
+    const httpApi = new apigw.HttpApi(this, "HttpApi", {
+      apiName: `biyard-console-${this.stackName}`,
+      description: "Biyard Console API Gateway",
+    });
 
-    // Task execution role
+    // --- ECS Fargate ---
+    const repository = Repository.fromRepositoryName(
+      this,
+      "Repository",
+      repoName,
+    );
+
+    const sg = new ec2.SecurityGroup(this, "AppSG", {
+      vpc,
+      description: "Console ECS security group",
+      allowAllOutbound: true,
+    });
+    sg.addIngressRule(
+      ec2.Peer.ipv4(vpc.vpcCidrBlock),
+      ec2.Port.tcp(containerPort),
+      "Console HTTP",
+    );
+
     const taskExecutionRole = new iam.Role(this, "TaskExecutionRole", {
       assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
     });
@@ -54,20 +82,6 @@ export class AppClusterStack extends Stack {
       ),
     );
 
-    // ACM Certificate
-    const cert = new acm.Certificate(this, "Cert", {
-      domainName: appDomain,
-      validation: acm.CertificateValidation.fromDns(zone),
-    });
-
-    // ALB
-    const alb = new elbv2.ApplicationLoadBalancer(this, "ALB", {
-      vpc,
-      internetFacing: true,
-    });
-
-    // Task Definition
-    const desiredCount = 2;
     const taskDefinition = new ecs.TaskDefinition(this, "TaskDefinition", {
       compatibility: ecs.Compatibility.FARGATE,
       cpu: "256",
@@ -75,19 +89,16 @@ export class AppClusterStack extends Stack {
       executionRole: taskExecutionRole,
     });
 
-    const repository = Repository.fromRepositoryName(
-      this,
-      "Repository",
-      repoName,
-    );
-
     const container = taskDefinition.addContainer("AppContainer", {
       image: ecs.ContainerImage.fromEcrRepository(repository, commit),
       logging: new ecs.AwsLogDriver({
         streamPrefix: `${this.stackName}-logging`,
+        logRetention: logs.RetentionDays.TWO_WEEKS,
       }),
       environment: {
         REGION: this.region,
+        IP: "0.0.0.0",
+        PORT: String(containerPort),
       },
     });
 
@@ -96,17 +107,26 @@ export class AppClusterStack extends Stack {
       protocol: ecs.Protocol.TCP,
     });
 
-    // Fargate Service
-    const service = new ecs.FargateService(this, "Service", {
+    const desiredCount = 2;
+    const fargateService = new ecs.FargateService(this, "Service", {
       cluster,
       taskDefinition,
       desiredCount,
       maxHealthyPercent: 200,
-      minHealthyPercent: 50,
+      minHealthyPercent: 100,
       assignPublicIp: true,
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      securityGroups: [sg],
+      cloudMapOptions: {
+        name: "console",
+        cloudMapNamespace: namespace,
+        dnsRecordType: sd.DnsRecordType.SRV,
+        container,
+        containerPort,
+      },
     });
 
-    const scaling = service.autoScaleTaskCount({
+    const scaling = fargateService.autoScaleTaskCount({
       minCapacity: desiredCount,
       maxCapacity,
     });
@@ -117,52 +137,69 @@ export class AppClusterStack extends Stack {
       scaleOutCooldown: Duration.seconds(60),
     });
 
-    // Target Group
-    const targetGroup = new elbv2.ApplicationTargetGroup(this, "TargetGroup", {
-      targets: [
-        service.loadBalancerTarget({
-          containerName: "AppContainer",
-          containerPort,
-        }),
-      ],
-      protocol: elbv2.ApplicationProtocol.HTTP,
+    // --- VPC Link + API Gateway Integration ---
+    const supportedSubnets = vpc.publicSubnets.filter(
+      (s) => s.availabilityZone !== "ap-northeast-2d",
+    );
+
+    const vpcLink = new apigw.VpcLink(this, "VpcLink", {
       vpc,
-      port: containerPort,
-      deregistrationDelay: Duration.seconds(30),
-      healthCheck: {
-        path: healthPath,
-        healthyHttpCodes: "200",
-      },
+      subnets: { subnets: supportedSubnets },
+      securityGroups: [sg],
     });
 
-    // HTTPS Listener
-    const listener = alb.addListener("HttpsListener", {
-      port: 443,
-      certificates: [cert],
-      open: true,
+    const ecsIntegration = new HttpServiceDiscoveryIntegration(
+      "EcsIntegration",
+      fargateService.cloudMapService!,
+      { vpcLink },
+    );
+
+    httpApi.addRoutes({
+      path: "/{proxy+}",
+      methods: [apigw.HttpMethod.ANY],
+      integration: ecsIntegration,
+    });
+    httpApi.addRoutes({
+      path: "/",
+      methods: [apigw.HttpMethod.ANY],
+      integration: ecsIntegration,
     });
 
-    listener.addAction("RedirectToHttps", {
-      action: elbv2.ListenerAction.redirect({ protocol: "HTTPS", port: "443" }),
-    });
-    listener.addTargetGroups("TargetGroupRule", {
-      targetGroups: [targetGroup],
+    // --- Custom Domain + Route53 ---
+    const cert = new acm.Certificate(this, "Cert", {
+      domainName: appDomain,
+      validation: acm.CertificateValidation.fromDns(zone),
     });
 
-    // Route53 records: app.dev.biyard.co → ALB
+    const domainName = new apigw.DomainName(this, "CustomDomain", {
+      domainName: appDomain,
+      certificate: cert,
+    });
+
+    new apigw.ApiMapping(this, "ApiMapping", {
+      api: httpApi,
+      domainName,
+    });
+
     const recordName = appDomain.replace(`.${baseDomain}`, "");
-    new route53.ARecord(this, "AlbAliasV4", {
+    new route53.ARecord(this, "AliasV4", {
       zone,
       recordName,
       target: route53.RecordTarget.fromAlias(
-        new r53Targets.LoadBalancerTarget(alb),
+        new r53Targets.ApiGatewayv2DomainProperties(
+          domainName.regionalDomainName,
+          domainName.regionalHostedZoneId,
+        ),
       ),
     });
-    new route53.AaaaRecord(this, "AlbAliasV6", {
+    new route53.AaaaRecord(this, "AliasV6", {
       zone,
       recordName,
       target: route53.RecordTarget.fromAlias(
-        new r53Targets.LoadBalancerTarget(alb),
+        new r53Targets.ApiGatewayv2DomainProperties(
+          domainName.regionalDomainName,
+          domainName.regionalHostedZoneId,
+        ),
       ),
     });
   }

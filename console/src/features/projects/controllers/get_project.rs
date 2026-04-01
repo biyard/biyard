@@ -1,6 +1,6 @@
 use crate::common::{ProjectPartition, Result};
 use crate::features::projects::ProjectResponse;
-use dioxus::prelude::get;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::ProjectAuth;

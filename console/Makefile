@@ -13,7 +13,7 @@ AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output
 REPOSITORY ?= biyard/console
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
-RUSTFLAGS ?= "-D warnings"
+RUSTFLAGS ?= -D warnings
 
 .PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login tailwind
 
@@ -22,7 +22,7 @@ BUILD_ENV ?= DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
 	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 	AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 	AWS_REGION=$(AWS_REGION) \
-	RUSTFLAGS="$(RUSTFLAGS)"
+	RUSTFLAGS='$(RUSTFLAGS)'
 
 
 dev: 

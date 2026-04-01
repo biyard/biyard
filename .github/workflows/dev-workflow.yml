@@ -56,9 +56,10 @@ jobs:
         working-directory: landing
         env:
           ENV: dev
+          CONSOLE_URL: https://console.dev.biyard.co
           RUSTFLAGS: ""
         run: |
-          npm i -D tailwindcss
+          npm install -D tailwindcss @tailwindcss/cli
           make build-lambda
 
       - name: Build and push Docker image

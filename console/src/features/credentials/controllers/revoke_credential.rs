@@ -1,6 +1,6 @@
 use crate::common::Result;
 use crate::features::credentials::CredentialResponse;
-use dioxus::prelude::delete;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, EntityType};

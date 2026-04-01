@@ -1,5 +1,5 @@
 use crate::common::{ProjectPartition, Result, Serialize};
-use dioxus::prelude::delete;
+use dioxus::prelude::*;
 use serde::Deserialize;
 
 #[cfg(feature = "server")]
