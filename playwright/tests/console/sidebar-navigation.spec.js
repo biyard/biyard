@@ -4,7 +4,7 @@ import { goto } from "../utils.js";
 test.describe("Sidebar Navigation", () => {
   test("navigates between all console pages via sidebar", async ({ page }) => {
     await goto(page, "/dashboard");
-    await expect(page.getByText("Biyard Console")).toBeVisible();
+    await expect(page.getByText("Biyard Console", { exact: true })).toBeVisible();
 
     // Navigate to Projects
     await page.getByRole("link", { name: "Projects" }).click();
