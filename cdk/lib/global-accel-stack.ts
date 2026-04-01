@@ -94,7 +94,6 @@ export class GlobalAccelStack extends Stack {
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior,
-      defaultRootObject: "/",
       additionalBehaviors: {
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,
