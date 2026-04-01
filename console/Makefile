@@ -25,17 +25,17 @@ dev:
 	dx serve --port $(PORT) --web
 
 build:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-testing:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-lambda:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
+	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features lambda --platform server
 
@@ -62,4 +62,6 @@ clippy:
 	cargo clippy --features web --target wasm32-unknown-unknown
 
 test:
-	cargo test --features server
+	mkdir -p ./test-build-target/debug/deps/public
+	npx @tailwindcss/cli -i tailwind.css -o ./assets/tailwind.css
+	$(BUILD_ENV) CARGO_TARGET_DIR=./test-build-target cargo test --features server --tests

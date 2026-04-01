@@ -53,7 +53,7 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
       - name: Dioxus compile check
         run: dx check --web
@@ -108,7 +108,7 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
       - name: Dioxus compile check
         run: dx check --web
@@ -175,15 +175,11 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
 
       - name: Start infrastructure
         run: |
           make infra
-
-      - name: Install tailwindcss
-        working-directory: console
-        run: npm install -D tailwindcss @tailwindcss/cli
 
       - name: Run tests
         working-directory: console
@@ -198,6 +194,7 @@ jobs:
           ENV: local
           NO_OUTPUT: "true"
         run: |
+          npm install -D tailwindcss @tailwindcss/cli
           make test
 
   playwright-tests:
