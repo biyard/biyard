@@ -25,6 +25,6 @@ contracts/coverage/
 # Davia
 .davia/
 
-# Generated CSS
+# Generated assets
 console/assets/
 landing/assets/
