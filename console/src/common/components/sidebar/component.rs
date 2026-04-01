@@ -131,7 +131,6 @@ pub fn use_is_mobile() -> Signal<bool> {
     let mut is_mobile = use_signal(|| false);
 
     use_effect(move || {
-        #[cfg(feature = "web")]
         spawn(async move {
             let js_code = format!(
                 r#"
@@ -155,15 +154,12 @@ pub fn use_is_mobile() -> Signal<bool> {
     });
 
     use_drop(|| {
-        #[cfg(feature = "web")]
-        {
-            _ = document::eval(
-                r#"
+        _ = document::eval(
+            r#"
                 window.removeEventListener('resize', window.__sidebarResizeHandler);
                 delete window.__sidebarResizeHandler;
                 "#,
-            );
-        }
+        );
     });
 
     is_mobile
@@ -203,7 +199,6 @@ pub fn SidebarProvider(
     use_context_provider(|| ctx);
 
     use_effect(move || {
-        #[cfg(feature = "web")]
         spawn(async move {
             let js_code = format!(
                 r#"
@@ -228,15 +223,12 @@ pub fn SidebarProvider(
     });
 
     use_drop(|| {
-        #[cfg(feature = "web")]
-        {
-            _ = document::eval(
-                r#"
+        _ = document::eval(
+            r#"
                 window.removeEventListener('keydown', window.__sidebarKeyHandler);
                 delete window.__sidebarKeyHandler;
                 "#,
-            );
-        }
+        );
     });
 
     let sidebar_style = format!(

@@ -18,7 +18,7 @@ where
     accumulated: Signal<Vec<I>>,
     has_more: Memo<bool>,
     rsc: Resource<Result<T>>,
-    effect: Effect,
+    _effect: Effect,
     loading: Signal<bool>,
     key: u64,
 }
@@ -103,7 +103,6 @@ where
                         id: "{sentinel_id}",
                         class: "h-px",
                         onmounted: move |_| {
-                            #[cfg(feature = "web")]
                             {
                                 use std::cell::RefCell;
                                 use std::rc::Rc;
@@ -264,7 +263,7 @@ where
         accumulated,
         has_more,
         rsc,
-        effect,
+        _effect: effect,
         loading,
         key,
     })
