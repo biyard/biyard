@@ -1,6 +1,7 @@
 import { App } from "aws-cdk-lib";
 import { GlobalAccelStack } from "../lib/global-accel-stack";
 import { GlobalTableStack } from "../lib/dynamodb-stack";
+import { EcsClusterStack } from "../lib/ecs-cluster-stack";
 import { AppClusterStack } from "../lib/app-cluster-stack";
 import { LandingLambdaStack } from "../lib/landing-lambda-stack";
 
@@ -18,7 +19,20 @@ const baseDomain = "biyard.co";
 const consoleRepoName = "biyard/console";
 const commit = process.env.COMMIT!;
 
-// Console (Dioxus) Fargate cluster
+// ECS Cluster (VPC, Cluster, Cloud Map namespace)
+const ecsCluster = new EcsClusterStack(
+  app,
+  `${stackName}-ecs-cluster`,
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: "ap-northeast-2",
+    },
+    stage: env,
+  },
+);
+
+// Console (Dioxus) Fargate + API Gateway
 new AppClusterStack(app, `${stackName}-app-cluster`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
@@ -30,8 +44,10 @@ new AppClusterStack(app, `${stackName}-app-cluster`, {
   repoName: consoleRepoName,
   containerPort: 8080,
   maxCapacity: 20,
-  healthPath: "/version",
   commit,
+  vpc: ecsCluster.vpc,
+  cluster: ecsCluster.cluster,
+  namespace: ecsCluster.namespace,
 });
 
 // Landing: Lambda (Dioxus SSR) with Function URL
