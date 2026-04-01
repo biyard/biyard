@@ -11,8 +11,6 @@ export const SettingsPage = {
     withdrawalWarning:
       "This action cannot be undone. All your data will be permanently deleted.",
     confirmWithdrawal: "Confirm Account Deletion",
-    editProfile: "Edit Profile",
-    profileUpdated: "Profile updated",
   },
   ko: {
     accountSettings: "계정 설정",
@@ -22,8 +20,6 @@ export const SettingsPage = {
     withdrawalWarning:
       "이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.",
     confirmWithdrawal: "계정 삭제 확인",
-    editProfile: "프로필 편집",
-    profileUpdated: "프로필이 업데이트되었습니다",
   },
 };
 
@@ -33,7 +29,6 @@ export interface SettingsPageI18n {
   email: string;
 
   // From common
-  save: string;
   cancel: string;
   confirm: string;
   loading: string;
@@ -45,8 +40,6 @@ export interface SettingsPageI18n {
   withdrawal: string;
   withdrawalWarning: string;
   confirmWithdrawal: string;
-  editProfile: string;
-  profileUpdated: string;
 }
 
 export function useSettingsPageI18n(): SettingsPageI18n {
@@ -60,7 +53,6 @@ export function useSettingsPageI18n(): SettingsPageI18n {
     email: auth.email,
 
     // From common
-    save: common.save,
     cancel: common.cancel,
     confirm: common.confirm,
     loading: common.loading,
@@ -72,7 +64,5 @@ export function useSettingsPageI18n(): SettingsPageI18n {
     withdrawal: t("SettingsPage:withdrawal"),
     withdrawalWarning: t("SettingsPage:withdrawalWarning"),
     confirmWithdrawal: t("SettingsPage:confirmWithdrawal"),
-    editProfile: t("SettingsPage:editProfile"),
-    profileUpdated: t("SettingsPage:profileUpdated"),
   };
 }

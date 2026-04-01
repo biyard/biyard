@@ -74,9 +74,9 @@ export function useSignUpPageI18n(): SignUpPageI18n {
     hasAccount: auth.hasAccount,
 
     // SignUpPage specific
-    signUpWithEmail: t("SignUpPage.signUpWithEmail"),
-    nameRequired: t("SignUpPage.nameRequired"),
-    passwordMismatch: t("SignUpPage.passwordMismatch"),
-    signUpError: t("SignUpPage.signUpError"),
+    signUpWithEmail: t("SignUpPage:signUpWithEmail"),
+    nameRequired: t("SignUpPage:nameRequired"),
+    passwordMismatch: t("SignUpPage:passwordMismatch"),
+    signUpError: t("SignUpPage:signUpError"),
   };
 }

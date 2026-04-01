@@ -16,36 +16,17 @@ export function SettingsPage() {
       {/* Profile Section */}
       <div className="mb-6">
           <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {ctrl.t.profile}
-              </h2>
-              {!ctrl.isEditingProfile.get() && (
-                <button
-                  onClick={ctrl.startEditingProfile}
-                  className="px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40"
-                >
-                  {ctrl.t.editProfile}
-                </button>
-              )}
-            </div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              {ctrl.t.profile}
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {ctrl.t.name}
                 </label>
-                {ctrl.isEditingProfile.get() ? (
-                  <input
-                    type="text"
-                    value={ctrl.editedName.get()}
-                    onChange={(e) => ctrl.editedName.set(e.target.value)}
-                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                    {ctrl.account?.name}
-                  </p>
-                )}
+                <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {ctrl.account?.name}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -63,22 +44,6 @@ export function SettingsPage() {
                   {ctrl.account?.pk}
                 </p>
               </div>
-              {ctrl.isEditingProfile.get() && (
-                <div className="flex space-x-3 pt-2">
-                  <button
-                    onClick={ctrl.saveProfile}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  >
-                    {ctrl.t.save}
-                  </button>
-                  <button
-                    onClick={ctrl.cancelEditingProfile}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
-                  >
-                    {ctrl.t.cancel}
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>

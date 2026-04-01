@@ -5,7 +5,7 @@ import { useGetToken } from "../../../tokens/hooks/use-get-token";
 import { useListPointTransactions } from "../../../points/hooks/use-list-point-transactions";
 import { useProjectDetailI18n } from "./i18n";
 
-export type TabType = "overview" | "treasury" | "tokens" | "points" | "users" | "audit" | "settings";
+export type TabType = "overview" | "tokens" | "points" | "settings";
 
 export function useController() {
   const { projectId } = useParams<{ projectId: string }>();
