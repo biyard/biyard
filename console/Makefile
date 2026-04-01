@@ -15,10 +15,8 @@ ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --
 
 .PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login tailwind
 
-tailwind:
-	npx @tailwindcss/cli -i tailwind.css -o ./assets/tailwind.css
 
-dev: tailwind
+dev: 
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
 	DYNAMODB_ENDPOINT=$(DYNAMODB_ENDPOINT) \
 	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
@@ -26,17 +24,17 @@ dev: tailwind
 	AWS_REGION=$(AWS_REGION) \
 	dx serve --port $(PORT) --web
 
-build: tailwind
+build:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features server --platform server
 
-build-testing: tailwind
+build-testing:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features server --platform server
 
-build-lambda: tailwind
+build-lambda:
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features lambda --platform server
@@ -63,5 +61,5 @@ clippy:
 	cargo clippy --features server
 	cargo clippy --features web --target wasm32-unknown-unknown
 
-test: tailwind
+test:
 	cargo test --features server

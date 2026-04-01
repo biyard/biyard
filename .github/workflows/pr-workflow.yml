@@ -63,7 +63,7 @@ jobs:
           ENV: local
           RUSTFLAGS: "-D warnings"
         run: |
-          npm i -D tailwindcss
+          npm install -D tailwindcss @tailwindcss/cli
           make build
 
   console-build:
@@ -127,7 +127,7 @@ jobs:
           COMMIT: pr-${{ github.sha }}
           ECR: biyard/console
         run: |
-          npm i -D tailwindcss
+          npm install -D tailwindcss @tailwindcss/cli
           make build-testing
           make docker
 
@@ -180,6 +180,10 @@ jobs:
         run: |
           make infra
 
+      - name: Install tailwindcss
+        working-directory: console
+        run: npm install -D tailwindcss @tailwindcss/cli
+
       - name: Run tests
         working-directory: console
         env:
@@ -191,6 +195,7 @@ jobs:
           AWS_ACCOUNT_ID: test
           RUST_LOG: info
           ENV: local
+          NO_OUTPUT: "true"
         run: |
           make test
 

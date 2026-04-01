@@ -14,6 +14,7 @@ ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --
 
 .PHONY: dev build build-lambda clean fmt clippy docker docker.push docker.login
 
+
 dev:
 	dx serve --port $(PORT) --web
 
