@@ -13,9 +13,12 @@ AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output
 REPOSITORY ?= biyard/console
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
-.PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login
+.PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login tailwind
 
-dev:
+tailwind:
+	npx @tailwindcss/cli -i tailwind.css -o ./assets/tailwind.css
+
+dev: tailwind
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
 	DYNAMODB_ENDPOINT=$(DYNAMODB_ENDPOINT) \
 	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
@@ -23,17 +26,17 @@ dev:
 	AWS_REGION=$(AWS_REGION) \
 	dx serve --port $(PORT) --web
 
-build:
+build: tailwind
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features server --platform server
 
-build-testing:
+build-testing: tailwind
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features server --platform server
 
-build-lambda:
+build-lambda: tailwind
 	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release \
 		@client --features web --platform web \
 		@server --features lambda --platform server
@@ -60,5 +63,5 @@ clippy:
 	cargo clippy --features server
 	cargo clippy --features web --target wasm32-unknown-unknown
 
-test:
+test: tailwind
 	cargo test --features server

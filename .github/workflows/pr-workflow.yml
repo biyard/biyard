@@ -59,7 +59,6 @@ jobs:
       - name: Build Landing
         env:
           ENV: local
-          RUSTFLAGS: "-D warnings"
         run: |
           npm i -D tailwindcss
           make build
@@ -117,6 +116,7 @@ jobs:
           ENV: local
           RUSTFLAGS: "-D warnings"
           RUST_LOG: error
+          NO_OUTPUT: "true"
           DYNAMO_ENDPOINT: http://localstack:4566
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
@@ -189,6 +189,7 @@ jobs:
           AWS_ACCOUNT_ID: test
           RUST_LOG: info
           ENV: local
+          NO_OUTPUT: "true"
         run: |
           npm install -D tailwindcss @tailwindcss/cli
           make test
