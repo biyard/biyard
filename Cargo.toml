@@ -49,7 +49,7 @@ features = ["env-filter"]
 
 [workspace.dependencies.dioxus]
 version = "=0.7.3"
-features = ["router", "fullstack"]
+features = ["router", "web"]
 
 [workspace.dependencies.dioxus-server]
 version = "=0.7.3"

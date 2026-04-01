@@ -7,5 +7,5 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-dioxus = { workspace = true, features = ["web"] }
+dioxus = { workspace = true }
 tracing = { workspace = true }

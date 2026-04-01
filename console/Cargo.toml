@@ -7,7 +7,7 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-dioxus = { workspace = true }
+dioxus = { workspace = true, features = ["fullstack"] }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_with = { workspace = true }
