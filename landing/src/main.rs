@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 mod components;
 mod pages;
 
-use pages::{Home, SignIn, Wallet, Dao};
+use pages::{Home, SignIn, Wallet, Dao, Team, Pricing};
 
 fn main() {
     dioxus::logger::init(tracing::Level::INFO).expect("failed to init logger");
@@ -27,4 +27,8 @@ pub enum Route {
     Wallet {},
     #[route("/dao")]
     Dao {},
+    #[route("/team")]
+    Team {},
+    #[route("/pricing")]
+    Pricing {},
 }

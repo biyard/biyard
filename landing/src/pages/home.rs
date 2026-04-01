@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use crate::Route;
 
 // ── Data structures ──
 
@@ -17,7 +18,7 @@ const FEATURES: &[Feature] = &[
     Feature {
         icon: "\u{1F9B6}",
         name: "활동 기반 리워드",
-        description: "걷기, 러닝, 매장 방문, 구매 등 고객의 실제 활동이 인증되면 추가 리워드가 지급됩니다.",
+        description: "걷기, 매장 방문, 구매 등 고객의 실제 활동이 인증되면 추가 리워드가 지급됩니다.",
     },
     Feature {
         icon: "\u{1F4C8}",
@@ -81,12 +82,12 @@ struct BrandShowcase {
 
 const BRAND_SHOWCASES: &[BrandShowcase] = &[
     BrandShowcase {
-        brand: "Le Mouton",
+        brand: "Shoe Brand",
         segment: "Fashion",
         tagline: "건강과 토큰을 같이 챙기세요!",
         hero_message: "신발을 사고, 신고, 걸을수록 돈을 버는 경험",
         scenario: BrandScenario {
-            purchase_item: "Le Mouton 컴포트 워커",
+            purchase_item: "Shoe Brand 컴포트 워커",
             purchase_price: 129000,
             reward_rate: 2.0,
             reward_amount: 2580,
@@ -97,7 +98,7 @@ const BRAND_SHOWCASES: &[BrandShowcase] = &[
             monthly_reward: 1600,
             six_month_total: 12180,
         },
-        customer_quote: "편한 신발 사서 매일 출퇴근길에 신고 다니는데, 걸을수록 포인트가 쌓이고 그게 진짜 돈이 돼요. 르무통 안 신을 이유가 없죠.",
+        customer_quote: "편한 신발 사서 매일 출퇴근길에 신고 다니는데, 걸을수록 포인트가 쌓이고 그게 진짜 돈이 돼요. 안 신을 이유가 없죠.",
         customer_name: "김서연, 직장인",
         stats: BrandStats { treasury: 24500, users: 1250, floor_price: 0.0245, retention: "40%" },
         steps: [
@@ -108,7 +109,7 @@ const BRAND_SHOWCASES: &[BrandShowcase] = &[
         ],
     },
     BrandShowcase {
-        brand: "Cafe Blossom",
+        brand: "Coffee Brand",
         segment: "F&B",
         tagline: "커피 한 잔이 자산이 되는 경험!",
         hero_message: "매일 마시는 커피가 나의 투자가 됩니다",
@@ -135,29 +136,29 @@ const BRAND_SHOWCASES: &[BrandShowcase] = &[
         ],
     },
     BrandShowcase {
-        brand: "RunPulse",
-        segment: "Sports Tech",
-        tagline: "달릴수록 벌리는 스마트한 운동!",
-        hero_message: "운동하면서 건강도 챙기고 수익도 챙기세요",
+        brand: "Fashion Brand",
+        segment: "Fashion",
+        tagline: "입을수록 가치가 쌓이는 패션!",
+        hero_message: "좋아하는 옷을 사고 입을수록 토큰이 쌓입니다",
         scenario: BrandScenario {
-            purchase_item: "RunPulse 스마트밴드",
-            purchase_price: 89000,
+            purchase_item: "시그니처 자켓",
+            purchase_price: 189000,
             reward_rate: 2.5,
-            reward_amount: 2225,
-            activity_type: "러닝",
-            activity_detail: "주 3회 5km 러닝 인증 시",
-            activity_reward: 150,
-            monthly_activity: "월 12회 러닝 기준",
-            monthly_reward: 1800,
-            six_month_total: 13025,
+            reward_amount: 4725,
+            activity_type: "매장 방문",
+            activity_detail: "월 2회 이상 매장 방문 시",
+            activity_reward: 100,
+            monthly_activity: "월 3회 방문 기준",
+            monthly_reward: 300,
+            six_month_total: 6150,
         },
-        customer_quote: "밴드 차고 뛰기만 하면 자동으로 기록되고 토큰이 쌓여요. 운동 동기부여가 확실히 달라졌어요.",
-        customer_name: "이현우, 마라토너",
+        customer_quote: "좋아하는 브랜드 옷을 사면서 토큰도 쌓이니까, 다른 브랜드 살 이유가 없어졌어요.",
+        customer_name: "이현우, 패션 마니아",
         stats: BrandStats { treasury: 35800, users: 2100, floor_price: 0.0179, retention: "60%" },
         steps: [
-            BrandStep { icon: "\u{1F6CD}\u{FE0F}", title: "디바이스 구매", desc: "89,000원 스마트밴드 구매 시 2,225원(2.5%) 적립" },
+            BrandStep { icon: "\u{1F6CD}\u{FE0F}", title: "의류 구매", desc: "189,000원 자켓 구매 시 4,725원(2.5%) 적립" },
             BrandStep { icon: "\u{1F3E6}", title: "트레저리 적립", desc: "적립금이 트레저리에 누적 → 토큰 가치 상승" },
-            BrandStep { icon: "\u{1F9B6}", title: "러닝 인증", desc: "GPS 연동 러닝 기록 달성 시 추가 리워드" },
+            BrandStep { icon: "\u{1F6CD}\u{FE0F}", title: "매장 방문", desc: "매장 방문 인증 시 추가 리워드 지급" },
             BrandStep { icon: "\u{1F4C8}", title: "가치 성장", desc: "러너가 많을수록 트레저리↑ 토큰 가치↑" },
         ],
     },
@@ -173,9 +174,9 @@ struct Holding {
 }
 
 const HOLDINGS: &[Holding] = &[
-    Holding { token: "LMT", brand: "Le Mouton", price: 0.0245, change24h: 3.2, amount: 8.5, value: 0.2083 },
-    Holding { token: "CBT", brand: "Cafe Blossom", price: 0.0246, change24h: 1.8, amount: 3.24, value: 0.0797 },
-    Holding { token: "RPT", brand: "RunPulse", price: 0.0179, change24h: 5.4, amount: 1.5, value: 0.0269 },
+    Holding { token: "SBT", brand: "Shoe Brand", price: 0.0245, change24h: 3.2, amount: 8.5, value: 0.2083 },
+    Holding { token: "CFT", brand: "Coffee Brand", price: 0.0246, change24h: 1.8, amount: 3.24, value: 0.0797 },
+    Holding { token: "FBT", brand: "Fashion Brand", price: 0.0179, change24h: 5.4, amount: 1.5, value: 0.0269 },
 ];
 
 struct Activity {
@@ -185,10 +186,10 @@ struct Activity {
 }
 
 const RECENT_ACTIVITY: &[Activity] = &[
-    Activity { emoji: "\u{1F6CD}\u{FE0F}", text: "Le Mouton 컴포트 워커 구매 - +2,580 LMT", time: "2시간 전" },
+    Activity { emoji: "\u{1F6CD}\u{FE0F}", text: "Shoe Brand 컴포트 워커 구매 - +2,580 LMT", time: "2시간 전" },
     Activity { emoji: "\u{1F6B6}", text: "걷기 8,000걸음 달성 - +80 LMT", time: "5시간 전" },
-    Activity { emoji: "\u{2615}", text: "Cafe Blossom 시그니처 라떼 - +195 CBT", time: "1일 전" },
-    Activity { emoji: "\u{1F3C3}", text: "RunPulse 5km 러닝 완료 - +150 RPT", time: "2일 전" },
+    Activity { emoji: "\u{2615}", text: "Coffee Brand 시그니처 라떼 - +195 CBT", time: "1일 전" },
+    Activity { emoji: "\u{1F6CD}\u{FE0F}", text: "Fashion Brand 매장 방문 - +100 FBT", time: "2일 전" },
     Activity { emoji: "\u{1F381}", text: "주간 방문 보너스 - +50 CBT", time: "3일 전" },
 ];
 
@@ -218,9 +219,9 @@ struct TokenInfo {
 }
 
 const TOKEN_LIST: &[TokenInfo] = &[
-    TokenInfo { rank: 1, token: "LMT", brand: "Le Mouton", price: 0.0245, change24h: 3.2, market_cap: 24500, circulating: 45000, total_supply: 1000000, floor_price: 0.0245 },
-    TokenInfo { rank: 2, token: "CBT", brand: "Cafe Blossom", price: 0.0246, change24h: 1.8, market_cap: 12300, circulating: 22000, total_supply: 500000, floor_price: 0.0246 },
-    TokenInfo { rank: 3, token: "RPT", brand: "RunPulse", price: 0.0179, change24h: 5.4, market_cap: 35800, circulating: 68000, total_supply: 2000000, floor_price: 0.0179 },
+    TokenInfo { rank: 1, token: "SBT", brand: "Shoe Brand", price: 0.0245, change24h: 3.2, market_cap: 24500, circulating: 45000, total_supply: 1000000, floor_price: 0.0245 },
+    TokenInfo { rank: 2, token: "CFT", brand: "Coffee Brand", price: 0.0246, change24h: 1.8, market_cap: 12300, circulating: 22000, total_supply: 500000, floor_price: 0.0246 },
+    TokenInfo { rank: 3, token: "FBT", brand: "Fashion Brand", price: 0.0179, change24h: 5.4, market_cap: 35800, circulating: 68000, total_supply: 2000000, floor_price: 0.0179 },
 ];
 
 struct SwapRecord {
@@ -233,9 +234,9 @@ struct SwapRecord {
 }
 
 const RECENT_SWAPS: &[SwapRecord] = &[
-    SwapRecord { date: "2026-03-28", from: "LMT", to: "CBT", amount: "2.0", rate: "0.85", status: "Completed" },
-    SwapRecord { date: "2026-03-25", from: "CBT", to: "RPT", amount: "1.5", rate: "1.41", status: "Completed" },
-    SwapRecord { date: "2026-03-20", from: "RPT", to: "LMT", amount: "1.0", rate: "0.83", status: "Completed" },
+    SwapRecord { date: "2026-03-28", from: "SBT", to: "CFT", amount: "2.0", rate: "0.85", status: "Completed" },
+    SwapRecord { date: "2026-03-25", from: "CFT", to: "FBT", amount: "1.5", rate: "1.41", status: "Completed" },
+    SwapRecord { date: "2026-03-20", from: "FBT", to: "SBT", amount: "1.0", rate: "0.83", status: "Completed" },
 ];
 
 struct DaoProposal {
@@ -249,9 +250,9 @@ struct DaoProposal {
 }
 
 const DAO_PROPOSALS: &[DaoProposal] = &[
-    DaoProposal { id: 0, brand: "Le Mouton", title: "리워드 배수 2배 증가", description: "걷기 리워드 배수를 현재 1배에서 2배로 증가시켜 고객 활동을 더욱 장려합니다.", yes_votes: 1250, no_votes: 340, deadline: "2026-04-15" },
-    DaoProposal { id: 1, brand: "Cafe Blossom", title: "신메뉴 출시 기념 보너스", description: "신메뉴 출시를 기념하여 첫 주문 고객에게 3배 보너스 토큰을 지급합니다.", yes_votes: 890, no_votes: 120, deadline: "2026-04-20" },
-    DaoProposal { id: 2, brand: "RunPulse", title: "마라톤 이벤트 토큰 배분", description: "마라톤 이벤트 참가자에게 특별 토큰 보상을 배분합니다.", yes_votes: 2100, no_votes: 180, deadline: "2026-04-10" },
+    DaoProposal { id: 0, brand: "Shoe Brand", title: "리워드 배수 2배 증가", description: "걷기 리워드 배수를 현재 1배에서 2배로 증가시켜 고객 활동을 더욱 장려합니다.", yes_votes: 1250, no_votes: 340, deadline: "2026-04-15" },
+    DaoProposal { id: 1, brand: "Coffee Brand", title: "신메뉴 출시 기념 보너스", description: "신메뉴 출시를 기념하여 첫 주문 고객에게 3배 보너스 토큰을 지급합니다.", yes_votes: 890, no_votes: 120, deadline: "2026-04-20" },
+    DaoProposal { id: 2, brand: "Fashion Brand", title: "시즌 컬렉션 보너스", description: "신규 시즌 컬렉션 구매 고객에게 특별 토큰 보상을 배분합니다.", yes_votes: 2100, no_votes: 180, deadline: "2026-04-10" },
 ];
 
 // ── Helpers ──
@@ -288,30 +289,30 @@ fn format_usd(n: i64) -> String {
 
 fn get_swap_rate(from: &str, to: &str) -> f64 {
     match (from, to) {
-        ("LMT", "CBT") => 0.85,
-        ("LMT", "RPT") => 1.2,
-        ("CBT", "LMT") => 1.18,
-        ("CBT", "RPT") => 1.41,
-        ("RPT", "LMT") => 0.83,
-        ("RPT", "CBT") => 0.71,
+        ("SBT", "CFT") => 0.85,
+        ("SBT", "FBT") => 1.2,
+        ("CFT", "SBT") => 1.18,
+        ("CFT", "FBT") => 1.41,
+        ("FBT", "SBT") => 0.83,
+        ("FBT", "CFT") => 0.71,
         _ => 1.0,
     }
 }
 
 fn get_balance(token: &str) -> f64 {
     match token {
-        "LMT" => 8.5,
-        "CBT" => 3.24,
-        "RPT" => 1.5,
+        "SBT" => 8.5,
+        "CFT" => 3.24,
+        "FBT" => 1.5,
         _ => 0.0,
     }
 }
 
 fn get_brand_name(token: &str) -> &'static str {
     match token {
-        "LMT" => "Le Mouton",
-        "CBT" => "Cafe Blossom",
-        "RPT" => "RunPulse",
+        "SBT" => "Shoe Brand",
+        "CFT" => "Coffee Brand",
+        "FBT" => "Fashion Brand",
         _ => "",
     }
 }
@@ -420,6 +421,17 @@ const CSS_ANIMATIONS: &str = r#"
   border-right: 2px solid #00d4aa;
   animation: typeIn 1.5s ease-out forwards, blink 0.7s step-end 1.5s infinite alternate;
 }
+@keyframes orbitLogos {
+  0% { transform: translateX(-300px) translateY(-20px); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translateX(0px) translateY(30px); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(300px) translateY(-20px); opacity: 0; }
+}
+@keyframes flowLogos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 "#;
 
 const SCROLL_REVEAL_JS: &str = r#"
@@ -477,58 +489,70 @@ pub fn Home() -> Element {
 
     rsx! {
         div {
-            style: "min-height: 100vh; background: #0c1018; color: #e8eefc;",
+            style: "min-height: 100vh; background: #0c1018; color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
             style { dangerous_inner_html: CSS_ANIMATIONS }
             script { dangerous_inner_html: SCROLL_REVEAL_JS }
 
-            // Navigation Bar
+            // Sticky Navigation Bar
             nav {
-                style: "background: #0c1018; border-bottom: 1px solid rgba(0,212,170,0.12); padding: 12px 16px;",
+                style: "position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(12,16,24,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,212,170,0.08); padding: 14px 24px;",
                 div {
                     class: "max-w-6xl mx-auto flex items-center justify-between",
-                    span {
-                        class: "text-xl font-extrabold",
-                        style: "color: #00d4aa;",
-                        "Biyard"
-                    }
-                    div {
-                        class: "flex items-center gap-1",
-                        for (key, label, icon) in [("home", "Home", "\u{1F3E0}"), ("wallet", "Wallet", "\u{1F4B3}"), ("tokens", "Tokens", "\u{1F4CA}"), ("dao", "DAO", "\u{1F5F3}")] {
-                            {
-                                let is_active = *active_tab.read() == key;
-                                let bg = if is_active { "#141c2b" } else { "transparent" };
-                                let color = if is_active { "#00d4aa" } else { "#7a8ba6" };
-                                let style_str = format!("background: {}; color: {};", bg, color);
-                                rsx! {
-                                    button {
-                                        class: "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium",
-                                        style: "{style_str}",
-                                        onclick: move |_| active_tab.set(key),
-                                        span { "{icon}" }
-                                        span { class: "hidden sm:inline", "{label}" }
-                                    }
-                                }
-                            }
+                    // Left: Logo
+                    a {
+                        href: "#",
+                        class: "flex items-center gap-2",
+                        img {
+                            src: asset!("/assets/biyard-logo.png"),
+                            alt: "Biyard",
+                            style: "width: 28px; height: 28px; flex-shrink: 0;",
+                        }
+                        span {
+                            class: "text-xl font-extrabold",
+                            style: "color: #00d4aa;",
+                            "Biyard"
                         }
                     }
-                    button {
-                        class: "px-4 py-2 rounded-lg text-sm font-medium",
-                        style: "border: 1px solid #00d4aa; color: #00d4aa; background: transparent;",
-                        "Sign In"
+                    // Center: Nav links
+                    div {
+                        class: "hidden md:flex items-center gap-8",
+                        a {
+                            href: "#about",
+                            class: "text-sm font-medium transition-colors",
+                            style: "color: #7a8ba6;",
+                            "About"
+                        }
+                        a {
+                            href: "#solution",
+                            class: "text-sm font-medium transition-colors",
+                            style: "color: #7a8ba6;",
+                            "Solution"
+                        }
+                        a {
+                            href: "#showcase",
+                            class: "text-sm font-medium transition-colors",
+                            style: "color: #7a8ba6;",
+                            "Showcase"
+                        }
+                        a {
+                            href: "#faq",
+                            class: "text-sm font-medium transition-colors",
+                            style: "color: #7a8ba6;",
+                            "FAQ"
+                        }
+                    }
+                    // Right: CTA button
+                    a {
+                        href: "#",
+                        class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold",
+                        style: "background: #00d4aa; color: #0c1018;",
+                        "Console"
                     }
                 }
             }
 
-            // Tab Content
-            if *active_tab.read() == "wallet" {
-                WalletSection {}
-            } else if *active_tab.read() == "tokens" {
-                TokensSection {}
-            } else if *active_tab.read() == "dao" {
-                DaoSection {}
-            } else {
-                HomeSection {}
-            }
+            // Content
+            HomeSection {}
         }
     }
 }
@@ -541,7 +565,7 @@ fn HomeSection() -> Element {
         // Hero
         section {
             class: "relative overflow-hidden flex flex-col items-center justify-center px-4",
-            style: "background: linear-gradient(135deg, #0c1018 0%, #0d1a24 50%, #0c1018 100%); min-height: 100vh;",
+            style: "background: linear-gradient(135deg, #0c1018 0%, #0d1a24 50%, #0c1018 100%); min-height: 100vh; padding-top: 64px;",
             // Background glows (large, dramatic)
             div {
                 class: "absolute inset-0 pointer-events-none",
@@ -565,8 +589,8 @@ fn HomeSection() -> Element {
 
                 // Multi-cube container
                 div {
-                    class: "relative mb-20",
-                    style: "width: 750px; height: 500px;",
+                    class: "relative mb-20 w-full lg:w-[750px] h-[320px] lg:h-[500px] mx-auto",
+                    style: "max-width: 100%;",
 
                     // Left cube (Fashion/Retail - overlapping, tilted)
                     div {
@@ -583,7 +607,7 @@ fn HomeSection() -> Element {
                                     style: "color: #60a5fa; width: 80px; height: 50px;",
                                     dangerous_inner_html: r#"<svg viewBox="0 0 120 60"><path d="M15,45 Q15,30 25,25 Q35,20 50,18 L75,16 Q85,15 95,18 Q105,22 110,30 L112,38 L112,42 Q112,48 105,48 L20,48 Q15,48 15,45 Z" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.7"/><path d="M12,48 L115,48 Q115,55 108,55 L18,55 Q12,55 12,48 Z" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="1.5" opacity="0.5"/><path d="M50,20 L58,17 M60,22 L68,19 M70,23 L78,20" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4"/></svg>"#,
                                 }
-                                span { style: "font-size: 9px; font-weight: 700; color: #60a5fa; margin-top: 4px;", "Le Mouton" }
+                                span { style: "font-size: 9px; font-weight: 700; color: #60a5fa; margin-top: 4px;", "Shoe Brand" }
                             }
                             // Back: Coffee SVG
                             div {
@@ -592,7 +616,7 @@ fn HomeSection() -> Element {
                                     style: "color: #f472b6; width: 70px; height: 50px;",
                                     dangerous_inner_html: r#"<svg viewBox="0 0 120 60"><path d="M35,15 Q35,10 45,10 L75,10 Q85,10 85,15 L82,45 Q82,50 72,50 L48,50 Q38,50 38,45 Z" fill="none" stroke="currentColor" stroke-width="1.8" opacity="0.7"/><path d="M85,20 Q100,20 100,32 Q100,42 85,42" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/><path d="M50,5 Q48,0 52,-5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/><path d="M60,3 Q58,-3 62,-8" fill="none" stroke="currentColor" stroke-width="1" opacity="0.25"/><path d="M70,5 Q68,0 72,-5" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"/></svg>"#,
                                 }
-                                span { style: "font-size: 9px; font-weight: 700; color: #f472b6; margin-top: 4px;", "Cafe Blossom" }
+                                span { style: "font-size: 9px; font-weight: 700; color: #f472b6; margin-top: 4px;", "Coffee Brand" }
                             }
                             // Left side
                             div {
@@ -601,7 +625,7 @@ fn HomeSection() -> Element {
                                     style: "color: #34d399; width: 60px; height: 50px;",
                                     dangerous_inner_html: r#"<svg viewBox="0 0 120 80"><circle cx="58" cy="12" r="7" fill="currentColor" opacity="0.6"/><path d="M52,20 L52,28 Q52,32 48,36 L40,44 L40,48 Q46,46 50,42 L56,36 L56,48 L50,62 L46,68 L50,70 L56,56 L60,48 L64,56 L70,70 L74,68 L70,62 L64,48 L64,36 L68,40 Q72,44 76,42 L80,38 L78,34 Q74,36 70,34 L64,28 L64,20 Z" fill="currentColor" opacity="0.5"/></svg>"#,
                                 }
-                                span { style: "font-size: 9px; font-weight: 700; color: #34d399; margin-top: 2px;", "RunPulse" }
+                                span { style: "font-size: 9px; font-weight: 700; color: #34d399; margin-top: 2px;", "Fashion Brand" }
                             }
                             // Right side
                             div {
@@ -661,22 +685,22 @@ fn HomeSection() -> Element {
 
                     // Main centered cube (original)
                     div {
-                        class: "absolute",
-                        style: "left: 50%; top: 40%; transform: translate(-50%, -50%); width: 380px; height: 380px;",
+                        class: "absolute w-[260px] h-[260px] lg:w-[380px] lg:h-[380px]",
+                        style: "left: 50%; top: 40%; transform: translate(-50%, -50%);",
                     // Outer glow ring
                     div {
-                        class: "absolute rounded-full",
-                        style: "top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; border: 1px solid #00d4aa; opacity: 0.2; box-shadow: 0 0 60px rgba(0,212,170,0.3), inset 0 0 60px rgba(0,212,170,0.1);",
+                        class: "absolute rounded-full w-[200px] h-[200px] lg:w-[300px] lg:h-[300px]",
+                        style: "top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid #00d4aa; opacity: 0.2; box-shadow: 0 0 60px rgba(0,212,170,0.3), inset 0 0 60px rgba(0,212,170,0.1);",
                     }
                     // Dashed ring
                     div {
-                        class: "absolute rounded-full",
+                        class: "absolute rounded-full hidden lg:block",
                         style: "top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; height: 420px; border: 1px dashed rgba(96,165,250,0.3); opacity: 0.15; animation: spinCube 30s linear infinite;",
                     }
                     // Center glow
                     div {
-                        class: "absolute rounded-full",
-                        style: "top: 50%; left: 50%; transform: translate(-50%, -50%); width: 240px; height: 240px; background: #6366f1; filter: blur(90px); opacity: 0.3;",
+                        class: "absolute rounded-full w-[160px] h-[160px] lg:w-[240px] lg:h-[240px]",
+                        style: "top: 50%; left: 50%; transform: translate(-50%, -50%); background: #6366f1; filter: blur(90px); opacity: 0.3;",
                     }
                     // Rotating cube (big: 200x200, translateZ 100px)
                     div {
@@ -739,7 +763,7 @@ fn HomeSection() -> Element {
                             }
                         }
                     }
-                    // Orbiting labels around the cube
+                    // Orbiting labels around the cube (hidden on mobile)
                     for (text, top, left, delay) in [
                         ("Treasury \u{2191}", "2%", "60%", "0s"),
                         ("Burn \u{1F525}", "82%", "70%", "1.2s"),
@@ -752,11 +776,11 @@ fn HomeSection() -> Element {
                                 top, left, delay
                             );
                             rsx! {
-                                div { style: "{label_style}", "{text}" }
+                                div { class: "hidden lg:block", style: "{label_style}", "{text}" }
                             }
                         }
                     }
-                    // Sparkle dots
+                    // Sparkle dots (hidden on mobile)
                     for (top, left, dur) in [("3%", "42%", "2.5s"), ("50%", "2%", "3.2s"), ("92%", "48%", "4s"), ("30%", "95%", "2.8s"), ("65%", "95%", "3.5s"), ("15%", "85%", "2.2s")] {
                         {
                             let dot_style = format!(
@@ -764,7 +788,7 @@ fn HomeSection() -> Element {
                                 top, left, dur
                             );
                             rsx! {
-                                div { style: "{dot_style}" }
+                                div { class: "hidden lg:block", style: "{dot_style}" }
                             }
                         }
                     }
@@ -780,21 +804,19 @@ fn HomeSection() -> Element {
                         "Revenue-Backed Token Platform"
                     }
                     h1 {
-                        class: "text-5xl md:text-6xl font-extrabold leading-tight",
-                        style: "color: #e8eefc;",
-                        "사고, 쓰고, 즐길수록"
+                        class: "text-3xl md:text-5xl leading-tight",
+                        style: "color: #e8eefc; font-weight: 300; font-family: 'Outfit', 'Noto Sans KR', sans-serif; letter-spacing: -0.02em;",
+                        "매출이 곧 브랜드의"
                         br {}
                         span {
-                            style: "background-image: linear-gradient(to right, #00d4aa, #00d4aa); -webkit-background-clip: text; background-clip: text; color: transparent;",
-                            "가치가 커지는 토큰"
+                            style: "background-image: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 600; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
+                            "가치가 됩니다"
                         }
                     }
                     p {
-                        class: "mt-6 text-xl max-w-2xl mx-auto leading-relaxed",
+                        class: "mt-6 text-base md:text-xl max-w-2xl mx-auto leading-relaxed",
                         style: "color: #7a8ba6;",
-                        "고객의 구매와 활동이 트레저리에 쌓이고, 그 가치가 모든 토큰 보유자에게 돌아갑니다."
-                        br {}
-                        "브랜드와 고객이 함께 성장하는 새로운 로열티 플랫폼."
+                        "실제 매출에 연동된 토큰 이코노미로, 고객은 주주가 되고 브랜드는 함께 성장합니다."
                     }
                     div {
                         class: "mt-10 flex items-center justify-center gap-4 flex-wrap",
@@ -802,13 +824,40 @@ fn HomeSection() -> Element {
                             class: "inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg",
                             style: "background: #00d4aa; color: #0c1018; box-shadow: 0 10px 25px rgba(0,212,170,0.3);",
                             href: "#",
-                            "도입 문의하기 →"
+                            "Console로 이동하기 →"
                         }
-                        a {
-                            class: "inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg",
-                            style: "border: 2px solid rgba(232,238,252,0.3); color: #e8eefc;",
-                            href: "#",
-                            "ROI 시뮬레이터"
+                    }
+                    // Company logos flowing between cubes
+                    div {
+                        class: "mt-12 relative hidden lg:block",
+                        style: "height: 40px; width: 100%; max-width: 800px; overflow: hidden;",
+                        // Flowing logo track
+                        div {
+                            class: "flex items-center gap-10 absolute",
+                            style: "animation: flowLogos 25s linear infinite; white-space: nowrap;",
+                            for (name, color) in [
+                                ("StyleKorea", "#60a5fa"), ("FreshMart", "#34d399"), ("FitLife", "#f472b6"),
+                                ("BrewHaus", "#fbbf24"), ("TechGym", "#a78bfa"), ("MediCare", "#38bdf8"),
+                                ("GreenWalk", "#34d399"), ("LuxBrand", "#f472b6"), ("RunClub", "#60a5fa"),
+                                ("CafeNova", "#fbbf24"),
+                                ("StyleKorea", "#60a5fa"), ("FreshMart", "#34d399"), ("FitLife", "#f472b6"),
+                                ("BrewHaus", "#fbbf24"), ("TechGym", "#a78bfa"), ("MediCare", "#38bdf8"),
+                                ("GreenWalk", "#34d399"), ("LuxBrand", "#f472b6"), ("RunClub", "#60a5fa"),
+                                ("CafeNova", "#fbbf24"),
+                            ] {
+                                div {
+                                    class: "flex items-center gap-2 px-4 py-1.5 rounded-full flex-shrink-0",
+                                    style: "background: rgba(20,28,43,0.6); border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(4px);",
+                                    // Glow dot
+                                    div {
+                                        style: "width: 6px; height: 6px; border-radius: 50%; background: {color}; box-shadow: 0 0 6px {color};",
+                                    }
+                                    span {
+                                        style: "font-size: 12px; font-weight: 600; color: {color}; letter-spacing: 0.5px; font-family: 'Outfit', sans-serif;",
+                                        "{name}"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -941,13 +990,14 @@ fn HomeSection() -> Element {
 </svg>"##;
 
             let transform_svg = r##"<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px;">
-  <circle cx="40" cy="40" r="38" fill="rgba(0,212,170,0.12)" stroke="#00d4aa" stroke-width="2.5" style="animation: transformArrow 2s ease-in-out infinite;"/>
+  <circle cx="40" cy="40" r="38" fill="rgba(0,212,170,0.12)" stroke="#00d4aa" stroke-width="2.5" style="animation: glowPulse 2s ease-in-out infinite;"/>
   <circle cx="40" cy="40" r="32" fill="none" stroke="#00d4aa" stroke-width="0.8" opacity="0.25" stroke-dasharray="4,3"/>
   <path d="M22 40 H54 M46 30 L56 40 L46 50" stroke="#00d4aa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>"##;
 
             rsx! {
                 section {
+                    id: "about",
                     class: "py-20 px-4 relative overflow-hidden",
                     style: "background: #0c1018;",
                     // Amber/orange glow from top-right
@@ -969,7 +1019,7 @@ fn HomeSection() -> Element {
                             }
                         }
                         div {
-                            class: "grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-stretch",
+                            class: "grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-center",
 
                             // LEFT PANEL: 기존 거래소
                             div {
@@ -1029,10 +1079,11 @@ fn HomeSection() -> Element {
 
                             // CENTER: Transform arrow
                             div {
-                                class: "hidden lg:flex items-center justify-center",
+                                class: "hidden lg:flex items-center justify-center self-center",
                                 div {
-                                    class: "flex flex-col items-center gap-3",
+                                    class: "flex flex-col items-center gap-2",
                                     div {
+                                        style: "display: flex; align-items: center; justify-content: center;",
                                         dangerous_inner_html: "{transform_svg}",
                                     }
                                     p {
@@ -1041,7 +1092,7 @@ fn HomeSection() -> Element {
                                         "TRANSFORM"
                                     }
                                     p {
-                                        class: "text-sm font-bold mt-1 text-center",
+                                        class: "text-xs font-bold text-center",
                                         style: "color: #00d4aa;",
                                         "Biyard가 해결합니다"
                                     }
@@ -1107,7 +1158,7 @@ fn HomeSection() -> Element {
 
                         // Bottom summary stats (compact)
                         div {
-                            class: "grid grid-cols-3 gap-4 mt-10",
+                            class: "grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10",
                             for (value, label) in [
                                 ("100%", "매출 기반 가치 보장"),
                                 ("0%", "스캠 토큰 상장 가능성"),
@@ -1134,18 +1185,18 @@ fn HomeSection() -> Element {
             }
         }
 
-        // How It Works
+        // How It Works - Timeline style
         section {
+            id: "solution",
             class: "py-20 px-4 relative overflow-hidden",
             style: "background: #141c2b;",
-            // Purple glow from left
             div { class: "absolute", style: "top: 50%; left: -150px; transform: translateY(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(167,139,250,0.1) 0%, transparent 70%); pointer-events: none;" }
             div { class: "absolute", style: "bottom: -100px; right: -50px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(96,165,250,0.06) 0%, transparent 70%); pointer-events: none;" }
             div {
                 class: "max-w-5xl mx-auto text-center mb-16 reveal-fade",
                 h2 {
                     class: "text-3xl md:text-4xl font-bold mb-4 reveal-type",
-                    style: "color: #e8eefc;",
+                    style: "color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
                     "어떻게 작동하나요?"
                 }
                 p {
@@ -1154,25 +1205,42 @@ fn HomeSection() -> Element {
                     "고객이 제품을 구매하면 매출의 일부가 트레저리에 적립되고, 제품을 사용하며 활동할수록 추가 리워드를 받습니다."
                 }
             }
+            // Timeline
             div {
-                class: "max-w-5xl mx-auto",
+                class: "max-w-5xl mx-auto relative",
+                // Horizontal connecting line (desktop only)
                 div {
-                    class: "grid grid-cols-1 md:grid-cols-4 gap-6",
-                    for (si, (step, title, desc, accent, rgb)) in [
-                        ("01", "고객이 구매", "제품/서비스 구매 금액의 2~4%가 자동 적립", "#60a5fa", "96,165,250"),
-                        ("02", "트레저리 적립", "적립금이 트레저리에 누적되어 토큰 가치를 뒷받침", "#a78bfa", "167,139,250"),
-                        ("03", "활동 인증", "걷기, 러닝, 방문 등 활동이 인증되면 추가 리워드", "#fbbf24", "251,191,36"),
-                        ("04", "함께 성장", "고객이 늘수록 트레저리↑ 토큰 가치↑ 모두가 이득", "#34d399", "52,211,153"),
+                    class: "hidden md:block absolute",
+                    style: "top: 60px; left: 10%; right: 10%; height: 2px; background: linear-gradient(to right, #60a5fa, #a78bfa, #fbbf24, #34d399); opacity: 0.3;",
+                }
+                // Animated particles on the line
+                div {
+                    class: "hidden md:block absolute",
+                    style: "top: 57px; left: 10%; width: 8px; height: 8px; border-radius: 50%; background: #60a5fa; box-shadow: 0 0 12px #60a5fa; animation: flowLogos 6s linear infinite;",
+                }
+                div {
+                    class: "grid grid-cols-1 md:grid-cols-4 gap-0",
+                    for (si, (step, title, desc, accent, svg_content, node_size)) in [
+                        ("01", "고객이 구매", "구매 금액의 2~4%가 자동 적립", "#60a5fa",
+                         // Small: single coin
+                         r#"<svg viewBox='0 0 80 80' style='width:100%;height:100%;'><circle cx='40' cy='40' r='18' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='40' cy='40' r='10' fill='currentColor' opacity='0.1'/><text x='40' y='45' text-anchor='middle' fill='currentColor' font-size='14' font-weight='bold' opacity='0.6'>$</text></svg>"#,
+                         "70px"),
+                        ("02", "트레저리 적립", "온체인 트레저리에 누적", "#a78bfa",
+                         // Medium: vault with stacking coins
+                         r#"<svg viewBox='0 0 100 100' style='width:100%;height:100%;'><rect x='20' y='25' width='60' height='50' rx='8' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='50' cy='48' r='12' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.4'/><circle cx='50' cy='48' r='5' fill='currentColor' opacity='0.15'/><ellipse cx='50' cy='82' rx='16' ry='4' fill='currentColor' opacity='0.08' stroke='currentColor' stroke-width='0.8' opacity='0.2'/><ellipse cx='50' cy='78' rx='16' ry='4' fill='currentColor' opacity='0.1' stroke='currentColor' stroke-width='0.8' opacity='0.25'/><ellipse cx='50' cy='74' rx='16' ry='4' fill='currentColor' opacity='0.12' stroke='currentColor' stroke-width='0.8' opacity='0.3'/></svg>"#,
+                         "90px"),
+                        ("03", "활동 인증", "고객 활동 인증 시 추가 리워드", "#fbbf24",
+                         // Larger: network of verified nodes
+                         r#"<svg viewBox='0 0 120 120' style='width:100%;height:100%;'><circle cx='60' cy='35' r='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><path d='M57,35 L59,37 L64,32' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6'/><circle cx='30' cy='70' r='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><path d='M27,70 L29,72 L34,67' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6'/><circle cx='90' cy='70' r='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><path d='M87,70 L89,72 L94,67' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6'/><circle cx='45' cy='100' r='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3'/><path d='M42,100 L44,102 L49,97' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='75' cy='100' r='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3'/><path d='M72,100 L74,102 L79,97' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><line x1='60' y1='45' x2='35' y2='62' stroke='currentColor' stroke-width='0.8' opacity='0.2' stroke-dasharray='3,3'/><line x1='60' y1='45' x2='85' y2='62' stroke='currentColor' stroke-width='0.8' opacity='0.2' stroke-dasharray='3,3'/><line x1='35' y1='80' x2='45' y2='92' stroke='currentColor' stroke-width='0.8' opacity='0.15' stroke-dasharray='3,3'/><line x1='85' y1='80' x2='75' y2='92' stroke='currentColor' stroke-width='0.8' opacity='0.15' stroke-dasharray='3,3'/></svg>"#,
+                         "110px"),
+                        ("04", "함께 성장", "모든 토큰 홀더의 가치 상승", "#34d399",
+                         // Biggest: massive ascending chart with ecosystem
+                         r#"<svg viewBox='0 0 150 140' style='width:100%;height:100%;'><line x1='15' y1='120' x2='15' y2='10' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><line x1='15' y1='120' x2='140' y2='120' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><path d='M20,110 Q40,105 55,90 Q70,75 85,55 Q100,35 115,22 L135,12' fill='none' stroke='currentColor' stroke-width='2.5' opacity='0.7' stroke-linecap='round'/><path d='M20,110 Q40,105 55,90 Q70,75 85,55 Q100,35 115,22 L135,12 L140,12 L140,120 L20,120 Z' fill='currentColor' opacity='0.06'/><circle cx='55' cy='90' r='3' fill='currentColor' opacity='0.3'/><circle cx='85' cy='55' r='4' fill='currentColor' opacity='0.4'/><circle cx='115' cy='22' r='4' fill='currentColor' opacity='0.5'/><circle cx='135' cy='12' r='6' fill='currentColor' opacity='0.6' style='animation: pulseGreen 2s ease-in-out infinite;'/><polygon points='132,8 140,14 134,14' fill='currentColor' opacity='0.6'/><circle cx='45' cy='130' r='4' fill='currentColor' opacity='0.08'/><path d='M40,138 Q40,134 45,133 Q50,134 50,138' fill='currentColor' opacity='0.06'/><circle cx='75' cy='130' r='5' fill='currentColor' opacity='0.12'/><path d='M69,138 Q69,133 75,132 Q81,133 81,138' fill='currentColor' opacity='0.08'/><circle cx='105' cy='128' r='6' fill='currentColor' opacity='0.16'/><path d='M98,138 Q98,132 105,131 Q112,132 112,138' fill='currentColor' opacity='0.1'/></svg>"#,
+                         "140px"),
                     ].iter().enumerate() {
                         {
-                            let card_style = format!(
-                                "background: rgba(10,16,26,0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba({},0.15); box-shadow: 0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);",
-                                rgb
-                            );
-                            let line_style = format!("background: linear-gradient(90deg, transparent, rgba({},0.4), transparent);", rgb);
                             let step_color = format!("color: {};", accent);
-                            let glow_style = format!("background: {}; filter: blur(50px); opacity: 0.12;", accent);
-                            let svgs: [&str; 4] = [
+                            let _dummy: [&str; 4] = [
                                 // Card 1: Credit card connected by dotted lines to cart, data particles flowing
                                 r#"<rect x="30" y="50" width="100" height="65" rx="8" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
 <line x1="42" y1="68" x2="82" y2="68" stroke="currentColor" stroke-width="1" opacity="0.3"/>
@@ -1254,465 +1322,524 @@ fn HomeSection() -> Element {
 <line x1="140" y1="148" x2="140" y2="140" stroke="currentColor" stroke-width="0.8" opacity="0.15" stroke-dasharray="2,2"/>
 <line x1="200" y1="148" x2="200" y2="140" stroke="currentColor" stroke-width="0.8" opacity="0.15" stroke-dasharray="2,2"/>"#,
                             ];
-                            let svg_html = svgs[si].to_string();
-                            let svg_full = format!("<svg viewBox='0 0 280 170' style='width:100%;height:100%;'>{}</svg>", svg_html);
+                            let svg_str = svg_content.to_string();
+                            let size_style = format!("width: {}; height: {};", node_size, node_size);
+                            let glow_bg = format!("background: {}; filter: blur(30px); opacity: {};", accent, 0.08 + si as f64 * 0.04);
                             rsx! {
                                 div {
-                                    class: "text-center rounded-2xl relative overflow-hidden reveal-bounce",
-                                    style: "{card_style}",
-                                    // Top accent line
+                                    class: "text-center px-3 py-6 flex flex-col items-center reveal-bounce",
+                                    // SVG diagram (grows with each step)
                                     div {
-                                        class: "absolute top-0 left-[10%] right-[10%] h-[1px]",
-                                        style: "{line_style}",
-                                    }
-                                    // SVG illustration (large, Galxe-style)
-                                    div {
-                                        class: "w-full h-48 flex items-center justify-center relative px-3 pt-4",
-                                        // Glow behind
+                                        class: "relative mx-auto mb-5",
+                                        style: "{size_style}",
+                                        // Glow behind (bigger each step)
                                         div {
-                                            class: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full",
-                                            style: "{glow_style}",
+                                            class: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full",
+                                            style: "{glow_bg} width: 100%; height: 100%;",
                                         }
                                         div {
                                             style: "color: {accent}; width: 100%; height: 100%;",
-                                            dangerous_inner_html: "{svg_full}",
+                                            dangerous_inner_html: "{svg_str}",
                                         }
                                     }
-                                    // Text
-                                    div {
-                                        class: "px-5 pb-5",
-                                        p {
-                                            class: "text-xs font-bold mb-1",
-                                            style: "{step_color}",
-                                            "STEP {step}"
-                                        }
-                                        h3 {
-                                            class: "text-lg font-bold mb-2",
-                                            style: "color: #e8eefc;",
-                                            "{title}"
-                                        }
-                                        p {
-                                            class: "text-sm",
-                                            style: "color: #7a8ba6;",
-                                            "{desc}"
-                                        }
+                                    p {
+                                        class: "text-xs font-bold mb-1 tracking-widest",
+                                        style: "{step_color}",
+                                        "STEP {step}"
                                     }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Brand Showcase - Individual full-width sections
-        {
-            let brand_accents: [&str; 3] = ["#60a5fa", "#f472b6", "#34d399"];
-            let brand_rgbs: [&str; 3] = ["96,165,250", "244,114,182", "52,211,153"];
-            let section_bgs: [&str; 3] = ["#0c1018", "#141c2b", "#0c1018"];
-
-            // Step SVG icons (Galxe-style thin-line)
-            let step_svgs: [[&str; 4]; 3] = [
-                [
-                    // Le Mouton step 1: Shoe purchase
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><path d='M15,75 Q15,60 25,55 Q35,50 50,48 L75,46 Q85,45 95,48 Q105,52 110,60 L112,68 L112,72 Q112,78 105,78 L20,78 Q15,78 15,75 Z' fill='none' stroke='currentColor' stroke-width='1.8' opacity='0.7'/><path d='M12,78 L115,78 Q115,85 108,85 L18,85 Q12,85 12,78 Z' fill='currentColor' opacity='0.12' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><path d='M50,50 L58,47 M60,52 L68,49 M70,53 L78,50' fill='none' stroke='currentColor' stroke-width='1' opacity='0.4'/><path d='M22,82 L26,82 M32,82 L36,82 M42,82 L46,82 M52,82 L56,82 M62,82 L66,82 M72,82 L76,82 M82,82 L86,82 M92,82 L96,82' fill='none' stroke='currentColor' stroke-width='0.6' opacity='0.25'/></svg>"#,
-                    // Le Mouton step 2: Treasury vault
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><rect x='40' y='25' width='80' height='65' rx='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><rect x='50' y='18' width='60' height='12' rx='5' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/><circle cx='80' cy='55' r='14' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='80' cy='55' r='5' fill='currentColor' opacity='0.15'/><rect x='78' y='55' width='4' height='12' rx='1.5' fill='currentColor' opacity='0.25'/><path d='M15,40 Q25,38 38,42' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3' stroke-dasharray='4,4'/><polygon points='36,40 40,43 36,45' fill='currentColor' opacity='0.3'/><path d='M15,60 Q25,58 38,55' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25' stroke-dasharray='4,4'/><polygon points='36,53 40,56 36,58' fill='currentColor' opacity='0.25'/><ellipse cx='135' cy='70' rx='15' ry='4' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25'/><ellipse cx='135' cy='66' rx='15' ry='4' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/><ellipse cx='135' cy='62' rx='15' ry='4' fill='none' stroke='currentColor' stroke-width='1' opacity='0.35'/></svg>"#,
-                    // Le Mouton step 3: Walking verification (pictogram person)
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><circle cx='45' cy='18' r='7' fill='currentColor' opacity='0.5'/><path d='M39,26 L39,38 Q39,42 35,46 L28,54 L28,58 Q34,56 38,52 L44,44 L44,60 L38,76 L34,82 L38,84 L44,68 L48,58 L52,68 L58,84 L62,82 L58,76 L52,60 L52,44 L56,48 Q60,52 64,50 L68,46 L66,42 Q62,44 58,42 L52,38 L52,26 Z' fill='currentColor' opacity='0.45'/><circle cx='95' cy='50' r='18' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25'/><path d='M89,50 L93,54 L102,45' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6'/><path d='M115,30 L125,30 L130,20 L135,40 L140,25 L145,35 L150,30' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/></svg>"#,
-                    // Le Mouton step 4: Growth chart
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><line x1='20' y1='95' x2='20' y2='15' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><line x1='20' y1='95' x2='145' y2='95' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><line x1='20' y1='75' x2='145' y2='75' stroke='currentColor' stroke-width='0.5' opacity='0.06'/><line x1='20' y1='55' x2='145' y2='55' stroke='currentColor' stroke-width='0.5' opacity='0.06'/><line x1='20' y1='35' x2='145' y2='35' stroke='currentColor' stroke-width='0.5' opacity='0.06'/><path d='M25,85 L50,75 L75,60 L100,42 L125,28 L140,20' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6' stroke-linecap='round'/><circle cx='50' cy='75' r='3' fill='currentColor' opacity='0.2' stroke='currentColor' stroke-width='1'/><circle cx='75' cy='60' r='3' fill='currentColor' opacity='0.25' stroke='currentColor' stroke-width='1'/><circle cx='100' cy='42' r='4' fill='currentColor' opacity='0.3' stroke='currentColor' stroke-width='1'/><circle cx='125' cy='28' r='4' fill='currentColor' opacity='0.35' stroke='currentColor' stroke-width='1'/><circle cx='140' cy='20' r='5' fill='currentColor' opacity='0.4' stroke='currentColor' stroke-width='1.2'/><polygon points='140,16 146,22 142,22' fill='currentColor' opacity='0.5'/></svg>"#,
-                ],
-                [
-                    // Cafe Blossom step 1: Coffee cup
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><path d='M45,30 Q45,25 55,25 L85,25 Q95,25 95,30 L92,60 Q92,65 82,65 L58,65 Q48,65 48,60 Z' fill='none' stroke='currentColor' stroke-width='1.8' opacity='0.7'/><ellipse cx='70' cy='27' rx='22' ry='4' fill='currentColor' opacity='0.08' stroke='currentColor' stroke-width='1' opacity='0.4'/><path d='M95,35 Q110,35 110,47 Q110,57 95,57' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><path d='M60,20 Q58,15 62,10' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25'/><path d='M70,18 Q68,12 72,7' fill='none' stroke='currentColor' stroke-width='1' opacity='0.2'/><path d='M80,20 Q78,15 82,10' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25'/></svg>"#,
-                    // Cafe Blossom step 2: Treasury
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><rect x='40' y='25' width='80' height='65' rx='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><rect x='50' y='18' width='60' height='12' rx='5' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/><circle cx='80' cy='55' r='14' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='80' cy='55' r='5' fill='currentColor' opacity='0.15'/><rect x='78' y='55' width='4' height='12' rx='1.5' fill='currentColor' opacity='0.25'/></svg>"#,
-                    // Cafe Blossom step 3: Stamp card
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><rect x='30' y='25' width='100' height='65' rx='8' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><circle cx='50' cy='48' r='8' fill='currentColor' opacity='0.15' stroke='currentColor' stroke-width='1'/><path d='M47,48 L49,50 L54,45' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.6'/><circle cx='75' cy='48' r='8' fill='currentColor' opacity='0.15' stroke='currentColor' stroke-width='1'/><path d='M72,48 L74,50 L79,45' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.6'/><circle cx='100' cy='48' r='8' fill='currentColor' opacity='0.15' stroke='currentColor' stroke-width='1'/><path d='M97,48 L99,50 L104,45' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.6'/><circle cx='50' cy='72' r='8' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25' stroke-dasharray='3,3'/><circle cx='75' cy='72' r='8' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25' stroke-dasharray='3,3'/><circle cx='100' cy='72' r='8' fill='none' stroke='currentColor' stroke-width='1' opacity='0.2' stroke-dasharray='3,3'/></svg>"#,
-                    // Cafe Blossom step 4: Growth
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><line x1='20' y1='95' x2='20' y2='15' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><line x1='20' y1='95' x2='145' y2='95' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><path d='M25,85 L50,75 L75,60 L100,42 L125,28 L140,20' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6' stroke-linecap='round'/><circle cx='50' cy='75' r='3' fill='currentColor' opacity='0.2' stroke='currentColor' stroke-width='1'/><circle cx='75' cy='60' r='3' fill='currentColor' opacity='0.25' stroke='currentColor' stroke-width='1'/><circle cx='100' cy='42' r='4' fill='currentColor' opacity='0.3' stroke='currentColor' stroke-width='1'/><circle cx='140' cy='20' r='5' fill='currentColor' opacity='0.4' stroke='currentColor' stroke-width='1.2'/><polygon points='140,16 146,22 142,22' fill='currentColor' opacity='0.5'/></svg>"#,
-                ],
-                [
-                    // RunPulse step 1: Smartband purchase
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><rect x='55' y='15' width='50' height='85' rx='22' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><rect x='62' y='35' width='36' height='30' rx='4' fill='none' stroke='currentColor' stroke-width='1' opacity='0.4'/><circle cx='80' cy='50' r='8' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/><path d='M76,50 L79,53 L85,47' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.5'/><line x1='65' y1='72' x2='95' y2='72' stroke='currentColor' stroke-width='0.8' opacity='0.2'/><circle cx='80' cy='80' r='2' fill='currentColor' opacity='0.2'/></svg>"#,
-                    // RunPulse step 2: Treasury
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><rect x='40' y='25' width='80' height='65' rx='10' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.4'/><rect x='50' y='18' width='60' height='12' rx='5' fill='none' stroke='currentColor' stroke-width='1' opacity='0.3'/><circle cx='80' cy='55' r='14' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5'/><circle cx='80' cy='55' r='5' fill='currentColor' opacity='0.15'/><rect x='78' y='55' width='4' height='12' rx='1.5' fill='currentColor' opacity='0.25'/></svg>"#,
-                    // RunPulse step 3: Running person (pictogram silhouette)
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><circle cx='58' cy='15' r='8' fill='currentColor' opacity='0.5'/><path d='M50,24 L48,36 Q47,40 42,44 L32,52 L34,56 Q40,52 46,46 L52,38 L50,56 L42,76 L38,84 L44,86 L52,66 L58,52 L64,66 L72,86 L78,84 L70,76 L62,56 L64,38 L70,44 Q76,50 82,46 L88,40 L84,36 Q78,40 72,36 L64,28 L66,24 Z' fill='currentColor' opacity='0.45'/><circle cx='115' cy='50' r='18' fill='none' stroke='currentColor' stroke-width='1' opacity='0.25'/><path d='M109,50 L113,54 L122,45' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6'/></svg>"#,
-                    // RunPulse step 4: Growth
-                    r#"<svg viewBox='0 0 160 120' fill='none' style='width:100%;height:100%;'><line x1='20' y1='95' x2='20' y2='15' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><line x1='20' y1='95' x2='145' y2='95' stroke='currentColor' stroke-width='0.8' opacity='0.15'/><path d='M25,85 L50,75 L75,60 L100,42 L125,28 L140,20' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.6' stroke-linecap='round'/><circle cx='50' cy='75' r='3' fill='currentColor' opacity='0.2' stroke='currentColor' stroke-width='1'/><circle cx='75' cy='60' r='3' fill='currentColor' opacity='0.25' stroke='currentColor' stroke-width='1'/><circle cx='100' cy='42' r='4' fill='currentColor' opacity='0.3' stroke='currentColor' stroke-width='1'/><circle cx='140' cy='20' r='5' fill='currentColor' opacity='0.4' stroke='currentColor' stroke-width='1.2'/><polygon points='140,16 146,22 142,22' fill='currentColor' opacity='0.5'/></svg>"#,
-                ],
-            ];
-
-            rsx! {
-                // Section header
-                section {
-                    class: "py-12 px-4",
-                    style: "background: #0c1018;",
-                    div {
-                        class: "max-w-6xl mx-auto text-center reveal-fade",
-                        p {
-                            class: "text-sm font-semibold tracking-widest uppercase mb-3",
-                            style: "color: #00d4aa;",
-                            "USE CASES"
-                        }
-                        h2 {
-                            class: "text-3xl md:text-4xl font-bold mb-2 reveal-type",
-                            style: "color: #e8eefc;",
-                            "다양한 브랜드, 하나의 플랫폼"
-                        }
-                        p {
-                            class: "text-base",
-                            style: "color: #7a8ba6;",
-                            "어떤 산업이든 매출 기반 토큰 이코노미를 구축할 수 있습니다"
-                        }
-                    }
-                }
-                // Individual brand sections
-                for (bi, brand) in BRAND_SHOWCASES.iter().enumerate() {
-                    {
-                        let accent = brand_accents[bi];
-                        let rgb = brand_rgbs[bi];
-                        let bg = section_bgs[bi];
-                        let section_style = format!("background: {};", bg);
-                        let badge_style = format!("background: rgba({},0.15); color: {};", rgb, accent);
-                        let tagline_color = format!("color: {};", accent);
-
-                        // Pre-compute scenario strings
-                        let purchase_price_str = format_won(brand.scenario.purchase_price);
-                        let reward_amount_str = format_won(brand.scenario.reward_amount);
-                        let reward_rate_str = format!("{}%", brand.scenario.reward_rate);
-                        let activity_reward_str = format_won(brand.scenario.activity_reward);
-                        let monthly_reward_str = format_won(brand.scenario.monthly_reward);
-                        let six_month_str = format_won(brand.scenario.six_month_total);
-
-                        let treasury_str = format_usd(brand.stats.treasury);
-                        let users_str = format_number(brand.stats.users);
-                        let floor_str = format!("{:.4}", brand.stats.floor_price);
-
-                        // Step card styles
-                        let step_card_style = format!(
-                            "background: rgba(10,16,26,0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba({},0.15); box-shadow: 0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);",
-                            rgb
-                        );
-                        let line_style = format!("background: linear-gradient(90deg, transparent, rgba({},0.4), transparent);", rgb);
-                        let glow_style = format!("background: {}; filter: blur(50px); opacity: 0.12;", accent);
-                        let step_color = format!("color: {};", accent);
-                        let quote_border = format!("border-left: 3px solid {};", accent);
-                        let stats_border = format!("border: 1px solid rgba({},0.18);", rgb);
-                        let detail_card_style = format!(
-                            "background: rgba(10,16,26,0.5); border: 1px solid rgba({},0.12); box-shadow: 0 4px 16px rgba(0,0,0,0.2);",
-                            rgb
-                        );
-                        let detail_label_color = format!("color: {};", accent);
-
-                        // Pre-compute step SVGs
-                        let svg0 = step_svgs[bi][0].to_string();
-                        let svg1 = step_svgs[bi][1].to_string();
-                        let svg2 = step_svgs[bi][2].to_string();
-                        let svg3 = step_svgs[bi][3].to_string();
-                        let step_svg_list = [svg0, svg1, svg2, svg3];
-
-                        rsx! {
-                            section {
-                                class: "py-16 px-4 relative overflow-hidden",
-                                style: "{section_style}",
-                                div {
-                                    class: "max-w-6xl mx-auto relative z-10",
-                                    // Header: brand name + badge + tagline
-                                    div {
-                                        class: "text-center mb-10 reveal-fade",
-                                        div {
-                                            class: "flex items-center justify-center gap-3 mb-2",
-                                            h3 {
-                                                class: "text-2xl md:text-3xl font-bold",
-                                                style: "color: #e8eefc;",
-                                                "{brand.brand}"
-                                            }
-                                            span {
-                                                class: "text-xs font-medium px-3 py-1 rounded-full",
-                                                style: "{badge_style}",
-                                                "{brand.segment}"
-                                            }
-                                        }
-                                        p {
-                                            class: "text-lg font-semibold",
-                                            style: "{tagline_color}",
-                                            "{brand.tagline}"
-                                        }
-                                        p {
-                                            class: "text-sm mt-1",
-                                            style: "color: #7a8ba6;",
-                                            "{brand.hero_message}"
-                                        }
-                                    }
-
-                                    // 4-step reward flow cards
-                                    div {
-                                        class: "grid grid-cols-1 md:grid-cols-4 gap-5 mb-10",
-                                        for (si, step) in brand.steps.iter().enumerate() {
-                                            {
-                                                let step_num = format!("0{}", si + 1);
-                                                let svg_html = step_svg_list[si].clone();
-                                                let step_colors: [(&str, &str); 4] = [
-                                                    ("#60a5fa", "96,165,250"),
-                                                    ("#a78bfa", "167,139,250"),
-                                                    ("#fbbf24", "251,191,36"),
-                                                    ("#34d399", "52,211,153"),
-                                                ];
-                                                let (s_accent, s_rgb) = step_colors[si];
-                                                let s_card_style = format!(
-                                                    "background: rgba(10,16,26,0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba({},0.2); box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 20px rgba({},0.08), inset 0 1px 0 rgba(255,255,255,0.06);",
-                                                    s_rgb, s_rgb
-                                                );
-                                                let s_line_style = format!(
-                                                    "background: linear-gradient(90deg, transparent, rgba({},0.5), transparent);",
-                                                    s_rgb
-                                                );
-                                                let s_step_color = format!("color: {};", s_accent);
-                                                rsx! {
-                                                    div {
-                                                        class: "text-center rounded-2xl relative overflow-hidden reveal-bounce",
-                                                        style: "{s_card_style}",
-                                                        div {
-                                                            class: "absolute top-0 left-[10%] right-[10%] h-[2px]",
-                                                            style: "{s_line_style}",
-                                                        }
-                                                        // SVG illustration
-                                                        div {
-                                                            class: "w-full h-32 flex items-center justify-center relative px-3 pt-3",
-                                                            div {
-                                                                class: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full",
-                                                                style: "background: {s_accent}; filter: blur(40px); opacity: 0.1;",
-                                                            }
-                                                            div {
-                                                                style: "color: {s_accent}; width: 100%; height: 100%;",
-                                                                dangerous_inner_html: "{svg_html}",
-                                                            }
-                                                        }
-                                                        // Text
-                                                        div {
-                                                            class: "px-4 pb-4",
-                                                            p {
-                                                                class: "text-xs font-bold mb-1",
-                                                                style: "{s_step_color}",
-                                                                "STEP {step_num}"
-                                                            }
-                                                            h4 {
-                                                                class: "text-base font-bold mb-1",
-                                                                style: "color: #e8eefc;",
-                                                                "{step.title}"
-                                                            }
-                                                            p {
-                                                                class: "text-xs",
-                                                                style: "color: #7a8ba6;",
-                                                                "{step.desc}"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // 2-column layout: scenario details + quote/stats
-                                    div {
-                                        class: "grid grid-cols-1 lg:grid-cols-2 gap-6",
-
-                                        // Left: Scenario details
-                                        div {
-                                            class: "rounded-2xl p-6",
-                                            style: "{detail_card_style}",
-                                            h4 {
-                                                class: "text-lg font-bold mb-5",
-                                                style: "color: #e8eefc;",
-                                                "리워드 시나리오"
-                                            }
-                                            div {
-                                                class: "space-y-4",
-                                                // Purchase item
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "구매 상품" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{brand.scenario.purchase_item}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "구매 가격" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{purchase_price_str}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "리워드율" }
-                                                    span { class: "text-sm font-bold", style: "{detail_label_color}", "{reward_rate_str}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "구매 리워드" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{reward_amount_str}" }
-                                                }
-                                                div { class: "h-px", style: "background: rgba(255,255,255,0.06);" }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "활동 유형" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{brand.scenario.activity_type}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "활동 조건" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{brand.scenario.activity_detail}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "활동 리워드" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{activity_reward_str}" }
-                                                }
-                                                div { class: "h-px", style: "background: rgba(255,255,255,0.06);" }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "월간 활동" }
-                                                    span { class: "text-sm font-semibold", style: "color: #e8eefc;", "{brand.scenario.monthly_activity}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center",
-                                                    span { class: "text-sm", style: "color: #7a8ba6;", "월간 리워드" }
-                                                    span { class: "text-sm font-bold", style: "{detail_label_color}", "{monthly_reward_str}" }
-                                                }
-                                                div {
-                                                    class: "flex justify-between items-center pt-2",
-                                                    style: "border-top: 1px solid rgba(255,255,255,0.08);",
-                                                    span { class: "text-sm font-bold", style: "color: #e8eefc;", "6개월 총 리워드" }
-                                                    span { class: "text-lg font-extrabold", style: "{detail_label_color}", "{six_month_str}" }
-                                                }
-                                            }
-                                        }
-
-                                        // Right: Customer quote + Stats grid
-                                        div {
-                                            class: "flex flex-col gap-5",
-
-                                            // Customer quote
-                                            div {
-                                                class: "rounded-2xl p-6",
-                                                style: "{detail_card_style}",
-                                                div {
-                                                    class: "pl-4 mb-3",
-                                                    style: "{quote_border}",
-                                                    p {
-                                                        class: "text-sm leading-relaxed italic",
-                                                        style: "color: #c8d4e8;",
-                                                        "\"{brand.customer_quote}\""
-                                                    }
-                                                }
-                                                p {
-                                                    class: "text-xs font-medium text-right",
-                                                    style: "color: #7a8ba6;",
-                                                    "- {brand.customer_name}"
-                                                }
-                                            }
-
-                                            // Stats grid 2x2
-                                            div {
-                                                class: "grid grid-cols-2 gap-4 flex-1",
-                                                div {
-                                                    class: "rounded-xl p-5 reveal-bounce",
-                                                    style: "{stats_border} background: rgba(10,16,26,0.5);",
-                                                    p { class: "text-xs mb-3", style: "color: #7a8ba6;", "Treasury" }
-                                                    p { class: "text-2xl font-extrabold mb-3", style: "color: #e8eefc;", "{treasury_str}" }
-                                                    div { style: "color: #60a5fa; width: 100%; height: 40px;",
-                                                        dangerous_inner_html: r#"<svg viewBox='0 0 120 40' fill='none' style='width:100%;height:100%;'><rect x='4' y='30' width='12' height='10' rx='2' fill='currentColor' opacity='0.12'/><rect x='20' y='24' width='12' height='16' rx='2' fill='currentColor' opacity='0.16'/><rect x='36' y='18' width='12' height='22' rx='2' fill='currentColor' opacity='0.22'/><rect x='52' y='13' width='12' height='27' rx='2' fill='currentColor' opacity='0.28'/><rect x='68' y='8' width='12' height='32' rx='2' fill='currentColor' opacity='0.36'/><rect x='84' y='4' width='12' height='36' rx='2' fill='currentColor' opacity='0.44'/><rect x='100' y='1' width='12' height='39' rx='2' fill='currentColor' opacity='0.55'/></svg>"#,
-                                                    }
-                                                    p { class: "text-xs mt-2", style: "color: #34d399;", "\u{25B2} +12.5% this month" }
-                                                }
-                                                div {
-                                                    class: "rounded-xl p-5 reveal-bounce",
-                                                    style: "{stats_border} background: rgba(10,16,26,0.5);",
-                                                    p { class: "text-xs mb-3", style: "color: #7a8ba6;", "Active Users" }
-                                                    p { class: "text-2xl font-extrabold mb-3", style: "color: #e8eefc;", "{users_str}" }
-                                                    div { style: "color: #a78bfa; width: 100%; height: 40px;",
-                                                        dangerous_inner_html: r#"<svg viewBox='0 0 120 40' fill='none' style='width:100%;height:100%;'><circle cx='15' cy='14' r='6' fill='currentColor' opacity='0.15'/><path d='M6,30 Q6,24 15,22 Q24,24 24,30' fill='currentColor' opacity='0.1'/><circle cx='42' cy='12' r='7' fill='currentColor' opacity='0.22'/><path d='M32,30 Q32,22 42,20 Q52,22 52,30' fill='currentColor' opacity='0.15'/><circle cx='72' cy='10' r='8' fill='currentColor' opacity='0.32'/><path d='M61,30 Q61,20 72,18 Q83,20 83,30' fill='currentColor' opacity='0.22'/><circle cx='105' cy='8' r='9' fill='currentColor' opacity='0.42'/><path d='M93,32 Q93,18 105,16 Q117,18 117,32' fill='currentColor' opacity='0.3'/><path d='M10,34 L40,32 L70,29 L105,25' stroke='currentColor' stroke-width='1' opacity='0.25' stroke-dasharray='3,3'/></svg>"#,
-                                                    }
-                                                    p { class: "text-xs mt-2", style: "color: #34d399;", "\u{25B2} +180 this week" }
-                                                }
-                                                div {
-                                                    class: "rounded-xl p-5 reveal-bounce",
-                                                    style: "{stats_border} background: rgba(10,16,26,0.5);",
-                                                    p { class: "text-xs mb-3", style: "color: #7a8ba6;", "Floor Price" }
-                                                    p { class: "text-2xl font-extrabold mb-3", style: "{detail_label_color}", "{floor_str}" }
-                                                    div { style: "color: #34d399; width: 100%; height: 40px;",
-                                                        dangerous_inner_html: r#"<svg viewBox='0 0 120 40' fill='none' style='width:100%;height:100%;'><path d='M4,36 L18,32 L32,33 L46,26 L60,28 L74,20 L88,16 L102,10 L116,4' stroke='currentColor' stroke-width='2' opacity='0.6' stroke-linecap='round'/><path d='M4,36 L18,32 L32,33 L46,26 L60,28 L74,20 L88,16 L102,10 L116,4 L116,40 L4,40 Z' fill='currentColor' opacity='0.08'/><circle cx='60' cy='28' r='2.5' fill='currentColor' opacity='0.4'/><circle cx='88' cy='16' r='2.5' fill='currentColor' opacity='0.5'/><circle cx='116' cy='4' r='3' fill='currentColor' opacity='0.7'/></svg>"#,
-                                                    }
-                                                    p { class: "text-xs mt-2", style: "color: #34d399;", "\u{25B2} All-time high" }
-                                                }
-                                                div {
-                                                    class: "rounded-xl p-5 reveal-bounce",
-                                                    style: "{stats_border} background: rgba(10,16,26,0.5);",
-                                                    p { class: "text-xs mb-3", style: "color: #7a8ba6;", "Retention" }
-                                                    p { class: "text-2xl font-extrabold mb-3", style: "color: #00d4aa;", "{brand.stats.retention}" }
-                                                    div { class: "flex items-center justify-center", style: "width: 100%; height: 40px; color: #00d4aa;",
-                                                        dangerous_inner_html: r#"<svg viewBox='0 0 60 40' fill='none' style='width:60px;height:40px;'><circle cx='30' cy='20' r='16' fill='none' stroke='currentColor' stroke-width='3' opacity='0.1'/><circle cx='30' cy='20' r='16' fill='none' stroke='currentColor' stroke-width='3.5' opacity='0.6' stroke-dasharray='75,100' stroke-dashoffset='-25' stroke-linecap='round'/><text x='30' y='24' text-anchor='middle' fill='currentColor' font-size='10' font-weight='bold' opacity='0.7'>UP</text></svg>"#,
-                                                    }
-                                                    p { class: "text-xs mt-2", style: "color: #34d399;", "vs industry avg 15%" }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Why Biyard - compact 2x2 grid
-        section {
-            class: "py-12 px-4 relative overflow-hidden",
-            style: "background: #141c2b;",
-            div {
-                class: "max-w-4xl mx-auto relative z-10",
-                h2 {
-                    class: "text-2xl md:text-3xl font-bold mb-8 text-center reveal-type",
-                    style: "color: #e8eefc;",
-                    "왜 Biyard를 선택해야 하나요?"
-                }
-                div {
-                    class: "grid grid-cols-1 md:grid-cols-2 gap-4",
-                    for (wi, (title, desc)) in [
-                        ("고객이 떠나지 않습니다", "구매할수록, 사용할수록 토큰이 쌓이고 가치가 올라갑니다. 리텐션 35~60% 향상."),
-                        ("매출이 곧 마케팅입니다", "매출의 2~4%만 트레저리에 넣으면 고객이 알아서 홍보합니다."),
-                        ("개발 없이 시작합니다", "API 키 하나면 기존 앱이나 POS에 연동됩니다. 블록체인 지식 불필요."),
-                        ("투명하게 신뢰를 쌓습니다", "모든 토큰 발행과 트레저리 변동은 블록체인에 기록됩니다."),
-                    ].iter().enumerate() {
-                        {
-                            let colors: [(&str, &str); 4] = [
-                                ("#f472b6", "244,114,182"),
-                                ("#60a5fa", "96,165,250"),
-                                ("#a78bfa", "167,139,250"),
-                                ("#34d399", "52,211,153"),
-                            ];
-                            let (accent, rgb) = colors[wi % 4];
-                            let card_style = format!(
-                                "background: rgba(10,16,26,0.5); border: 1px solid rgba({},0.18); box-shadow: 0 4px 16px rgba(0,0,0,0.2);",
-                                rgb
-                            );
-                            let title_color = format!("color: {};", accent);
-                            rsx! {
-                                div {
-                                    class: "rounded-xl p-5 relative overflow-hidden reveal-bounce",
-                                    style: "{card_style}",
                                     h3 {
                                         class: "text-base font-bold mb-2",
-                                        style: "{title_color}",
+                                        style: "color: #e8eefc;",
                                         "{title}"
                                     }
                                     p {
-                                        class: "text-sm leading-relaxed",
+                                        class: "text-xs leading-relaxed",
                                         style: "color: #7a8ba6;",
                                         "{desc}"
                                     }
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Brand Showcase - Compact 3-column cards
+        {
+            let brand_accents: [&str; 3] = ["#60a5fa", "#f472b6", "#34d399"];
+            let brand_rgbs: [&str; 3] = ["96,165,250", "244,114,182", "52,211,153"];
+
+            rsx! {
+                section {
+                    id: "showcase",
+                    class: "py-20 px-4 relative overflow-hidden",
+                    style: "background: #0c1018;",
+                    div {
+                        class: "max-w-6xl mx-auto relative z-10",
+                        // Section header
+                        div {
+                            class: "text-center mb-12 reveal-fade",
+                            p {
+                                class: "text-sm font-semibold tracking-widest uppercase mb-3",
+                                style: "color: #00d4aa;",
+                                "USE CASES"
+                            }
+                            h2 {
+                                class: "text-3xl md:text-4xl font-bold mb-2 reveal-type",
+                                style: "color: #e8eefc;",
+                                "\u{B2E4}\u{C591}\u{D55C} \u{BE0C}\u{B79C}\u{B4DC}, \u{D558}\u{B098}\u{C758} \u{D50C}\u{B7AB}\u{D3FC}"
+                            }
+                            p {
+                                class: "text-base",
+                                style: "color: #7a8ba6;",
+                                "\u{C5B4}\u{B5A4} \u{C0B0}\u{C5C5}\u{C774}\u{B4E0} \u{B9E4}\u{CD9C} \u{AE30}\u{BC18} \u{D1A0}\u{D070} \u{C774}\u{CF54}\u{B178}\u{BBF8}\u{B97C} \u{AD6C}\u{CD95}\u{D560} \u{C218} \u{C788}\u{C2B5}\u{B2C8}\u{B2E4}"
+                            }
+                        }
+                        // 3-column card grid
+                        div {
+                            class: "grid grid-cols-1 md:grid-cols-3 gap-6",
+                            for (bi, brand) in BRAND_SHOWCASES.iter().enumerate() {
+                                {
+                                    let accent = brand_accents[bi];
+                                    let rgb = brand_rgbs[bi];
+                                    let card_style = format!(
+                                        "background: rgba(10,16,26,0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba({},0.2); box-shadow: 0 12px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);",
+                                        rgb
+                                    );
+                                    let badge_style = format!("background: rgba({},0.15); color: {};", rgb, accent);
+                                    let tagline_color = format!("color: {};", accent);
+                                    let line_style = format!("background: linear-gradient(90deg, transparent, rgba({},0.5), transparent);", rgb);
+                                    let quote_border = format!("border-left: 2px solid {};", accent);
+                                    let stats_border = format!("border: 1px solid rgba({},0.15);", rgb);
+                                    let detail_label_color = format!("color: {};", accent);
+
+                                    // Pre-compute strings
+                                    let purchase_price_str = format_won(brand.scenario.purchase_price);
+                                    let reward_amount_str = format_won(brand.scenario.reward_amount);
+                                    let reward_rate_str = format!("{}%", brand.scenario.reward_rate);
+                                    let activity_reward_str = format_won(brand.scenario.activity_reward);
+                                    let monthly_reward_str = format_won(brand.scenario.monthly_reward);
+                                    let six_month_str = format_won(brand.scenario.six_month_total);
+                                    let treasury_str = format_usd(brand.stats.treasury);
+                                    let users_str = format_number(brand.stats.users);
+                                    let floor_str = format!("{:.4}", brand.stats.floor_price);
+                                    let scenario_summary = format!("{} {} -> {} reward", brand.scenario.purchase_item, purchase_price_str, reward_amount_str);
+
+                                    rsx! {
+                                        div {
+                                            class: "rounded-2xl relative overflow-hidden reveal-bounce flex flex-col",
+                                            style: "{card_style}",
+                                            // Top accent line
+                                            div {
+                                                class: "absolute top-0 left-[10%] right-[10%] h-[2px]",
+                                                style: "{line_style}",
+                                            }
+                                            // Card content
+                                            div {
+                                                class: "p-6 flex flex-col flex-1",
+                                                // Brand name + segment badge
+                                                div {
+                                                    class: "flex items-center gap-2 mb-3",
+                                                    h3 {
+                                                        class: "text-lg font-bold",
+                                                        style: "color: #e8eefc;",
+                                                        "{brand.brand}"
+                                                    }
+                                                    span {
+                                                        class: "text-xs font-medium px-2 py-0.5 rounded-full",
+                                                        style: "{badge_style}",
+                                                        "{brand.segment}"
+                                                    }
+                                                }
+                                                // Tagline
+                                                p {
+                                                    class: "text-sm font-semibold mb-2",
+                                                    style: "{tagline_color}",
+                                                    "{brand.tagline}"
+                                                }
+                                                // Scenario summary
+                                                p {
+                                                    class: "text-xs mb-4",
+                                                    style: "color: #7a8ba6;",
+                                                    "{scenario_summary}"
+                                                }
+                                                // Customer quote
+                                                div {
+                                                    class: "pl-3 mb-4",
+                                                    style: "{quote_border}",
+                                                    p {
+                                                        class: "text-xs leading-relaxed italic",
+                                                        style: "color: #c8d4e8;",
+                                                        "\"{brand.customer_quote}\""
+                                                    }
+                                                    p {
+                                                        class: "text-xs mt-1 text-right",
+                                                        style: "color: #7a8ba6;",
+                                                        "- {brand.customer_name}"
+                                                    }
+                                                }
+                                                // Stats row
+                                                div {
+                                                    class: "grid grid-cols-3 gap-2 mb-4",
+                                                    div {
+                                                        class: "text-center rounded-lg py-2",
+                                                        style: "{stats_border} background: rgba(10,16,26,0.5);",
+                                                        p { class: "text-xs", style: "color: #7a8ba6;", "Treasury" }
+                                                        p { class: "text-sm font-bold", style: "color: #e8eefc;", "{treasury_str}" }
+                                                    }
+                                                    div {
+                                                        class: "text-center rounded-lg py-2",
+                                                        style: "{stats_border} background: rgba(10,16,26,0.5);",
+                                                        p { class: "text-xs", style: "color: #7a8ba6;", "Users" }
+                                                        p { class: "text-sm font-bold", style: "color: #e8eefc;", "{users_str}" }
+                                                    }
+                                                    div {
+                                                        class: "text-center rounded-lg py-2",
+                                                        style: "{stats_border} background: rgba(10,16,26,0.5);",
+                                                        p { class: "text-xs", style: "color: #7a8ba6;", "Floor" }
+                                                        p { class: "text-sm font-bold", style: "{detail_label_color}", "{floor_str}" }
+                                                    }
+                                                }
+                                                // Expandable details
+                                                details {
+                                                    class: "rounded-lg mt-auto",
+                                                    style: "background: rgba(10,16,26,0.4); border: 1px solid rgba(255,255,255,0.06);",
+                                                    summary {
+                                                        class: "cursor-pointer px-4 py-2 text-xs font-semibold list-none text-center",
+                                                        style: "{detail_label_color}",
+                                                        "\u{C0C1}\u{C138} \u{BCF4}\u{AE30} \u{25BE}"
+                                                    }
+                                                    div {
+                                                        class: "px-4 pb-4",
+                                                        // 4-step flow
+                                                        p {
+                                                            class: "text-xs font-bold mb-2 mt-2",
+                                                            style: "color: #e8eefc;",
+                                                            "\u{B9AC}\u{C6CC}\u{B4DC} \u{D50C}\u{B85C}\u{C6B0}"
+                                                        }
+                                                        div {
+                                                            class: "space-y-1 mb-4",
+                                                            for (si, step) in brand.steps.iter().enumerate() {
+                                                                {
+                                                                    let step_num = si + 1;
+                                                                    let step_label = format!("{}. {} - {}", step_num, step.title, step.desc);
+                                                                    rsx! {
+                                                                        p {
+                                                                            class: "text-xs",
+                                                                            style: "color: #7a8ba6;",
+                                                                            "{step.icon} {step_label}"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        // Scenario details
+                                                        p {
+                                                            class: "text-xs font-bold mb-2",
+                                                            style: "color: #e8eefc;",
+                                                            "\u{C2DC}\u{B098}\u{B9AC}\u{C624} \u{C0C1}\u{C138}"
+                                                        }
+                                                        div {
+                                                            class: "space-y-1",
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{AD6C}\u{B9E4} \u{C0C1}\u{D488}" }
+                                                                span { class: "text-xs font-semibold", style: "color: #e8eefc;", "{brand.scenario.purchase_item}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{AD6C}\u{B9E4} \u{AC00}\u{ACA9}" }
+                                                                span { class: "text-xs font-semibold", style: "color: #e8eefc;", "{purchase_price_str}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{B9AC}\u{C6CC}\u{B4DC}\u{C728}" }
+                                                                span { class: "text-xs font-bold", style: "{detail_label_color}", "{reward_rate_str}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{AD6C}\u{B9E4} \u{B9AC}\u{C6CC}\u{B4DC}" }
+                                                                span { class: "text-xs font-semibold", style: "color: #e8eefc;", "{reward_amount_str}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{D65C}\u{B3D9} ({brand.scenario.activity_type})" }
+                                                                span { class: "text-xs font-semibold", style: "color: #e8eefc;", "{brand.scenario.activity_detail}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{D65C}\u{B3D9} \u{B9AC}\u{C6CC}\u{B4DC}" }
+                                                                span { class: "text-xs font-semibold", style: "color: #e8eefc;", "{activity_reward_str}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between",
+                                                                span { class: "text-xs", style: "color: #7a8ba6;", "\u{C6D4}\u{AC04} \u{B9AC}\u{C6CC}\u{B4DC}" }
+                                                                span { class: "text-xs font-bold", style: "{detail_label_color}", "{monthly_reward_str}" }
+                                                            }
+                                                            div {
+                                                                class: "flex justify-between pt-1",
+                                                                style: "border-top: 1px solid rgba(255,255,255,0.06);",
+                                                                span { class: "text-xs font-bold", style: "color: #e8eefc;", "6\u{AC1C}\u{C6D4} \u{CD1D} \u{B9AC}\u{C6CC}\u{B4DC}" }
+                                                                span { class: "text-sm font-extrabold", style: "{detail_label_color}", "{six_month_str}" }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Why Biyard - Cycle comparison
+        section {
+            class: "py-20 px-4 relative overflow-hidden",
+            style: "background: #0c1018;",
+            div { class: "absolute", style: "top: -80px; left: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(239,68,68,0.04) 0%, transparent 65%); pointer-events: none;" }
+            div { class: "absolute", style: "bottom: -80px; right: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(52,211,153,0.05) 0%, transparent 65%); pointer-events: none;" }
+            div {
+                class: "max-w-5xl mx-auto relative z-10",
+                h2 {
+                    class: "text-2xl md:text-3xl font-bold mb-16 text-center reveal-type",
+                    style: "color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
+                    "왜 Biyard를 선택해야 하나요?"
+                }
+                // Two cycle diagrams side by side
+                div {
+                    class: "grid grid-cols-1 lg:grid-cols-2 gap-10",
+
+                    // LEFT: 기존 마케팅 악순환 (red tones)
+                    div {
+                        class: "reveal-bounce",
+                        div {
+                            class: "text-center mb-6",
+                            span {
+                                class: "text-xs font-bold tracking-widest px-3 py-1 rounded-full",
+                                style: "background: rgba(239,68,68,0.1); color: #ef4444;",
+                                "BEFORE"
+                            }
+                        }
+                        // Cycle SVG
+                        div {
+                            class: "flex justify-center mb-6",
+                            div {
+                                style: "width: 280px; height: 280px; color: #ef4444;",
+                                dangerous_inner_html: r#"<svg viewBox='0 0 280 280' fill='none' style='width:100%;height:100%;'>
+                                    <!-- Circular arrow path -->
+                                    <circle cx='140' cy='140' r='100' fill='none' stroke='currentColor' stroke-width='1' opacity='0.15' stroke-dasharray='6,6'/>
+                                    <!-- Step 1: top -->
+                                    <circle cx='140' cy='40' r='28' fill='rgba(239,68,68,0.08)' stroke='currentColor' stroke-width='1.5' opacity='0.5'/>
+                                    <text x='140' y='37' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.7'>광고비</text>
+                                    <text x='140' y='49' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.5'>1억 지출</text>
+                                    <!-- Arrow 1→2 -->
+                                    <path d='M165,55 Q200,70 215,105' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3' stroke-dasharray='4,3' style='animation: dashFlow 2s linear infinite;'/>
+                                    <polygon points='213,100 218,108 210,106' fill='currentColor' opacity='0.3'/>
+                                    <!-- Step 2: right -->
+                                    <circle cx='230' cy='140' r='28' fill='rgba(239,68,68,0.08)' stroke='currentColor' stroke-width='1.5' opacity='0.5'/>
+                                    <text x='230' y='137' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.7'>고객 유치</text>
+                                    <text x='230' y='149' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.5'>일시적</text>
+                                    <!-- Arrow 2→3 -->
+                                    <path d='M215,168 Q200,205 165,225' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3' stroke-dasharray='4,3' style='animation: dashFlow 2.5s linear infinite;'/>
+                                    <polygon points='168,222 163,228 160,220' fill='currentColor' opacity='0.3'/>
+                                    <!-- Step 3: bottom -->
+                                    <circle cx='140' cy='240' r='28' fill='rgba(239,68,68,0.08)' stroke='currentColor' stroke-width='1.5' opacity='0.5'/>
+                                    <text x='140' y='237' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.7'>고객 이탈</text>
+                                    <text x='140' y='249' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.5'>재방문 X</text>
+                                    <!-- Arrow 3→4 -->
+                                    <path d='M115,225 Q80,205 65,168' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3' stroke-dasharray='4,3' style='animation: dashFlow 3s linear infinite;'/>
+                                    <polygon points='67,172 62,165 70,167' fill='currentColor' opacity='0.3'/>
+                                    <!-- Step 4: left -->
+                                    <circle cx='50' cy='140' r='28' fill='rgba(239,68,68,0.08)' stroke='currentColor' stroke-width='1.5' opacity='0.5'/>
+                                    <text x='50' y='137' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.7'>또 광고</text>
+                                    <text x='50' y='149' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.5'>반복 지출</text>
+                                    <!-- Arrow 4→1 -->
+                                    <path d='M65,112 Q80,75 115,55' fill='none' stroke='currentColor' stroke-width='1.2' opacity='0.3' stroke-dasharray='4,3' style='animation: dashFlow 2s linear infinite;'/>
+                                    <polygon points='112,58 117,52 118,60' fill='currentColor' opacity='0.3'/>
+                                    <!-- Center: ring -->
+                                    <circle cx='140' cy='140' r='35' fill='none' stroke='rgba(239,68,68,0.2)' stroke-width='1.5'/>
+                                    <circle cx='140' cy='140' r='30' fill='none' stroke='rgba(239,68,68,0.08)' stroke-width='0.5' stroke-dasharray='4,3'/>
+                                    <text x='140' y='136' text-anchor='middle' fill='currentColor' font-size='10' font-weight='bold' opacity='0.5'>돈이</text>
+                                    <text x='140' y='150' text-anchor='middle' fill='currentColor' font-size='10' font-weight='bold' opacity='0.5'>빠져나감</text>
+                                </svg>"#,
+                            }
+                        }
+                        p {
+                            class: "text-center text-sm",
+                            style: "color: #ef4444; opacity: 0.7;",
+                            "광고비 → 일시적 유치 → 이탈 → 또 광고... 끝없는 악순환"
+                        }
+                    }
+
+                    // RIGHT: Biyard 선순환 (green tones)
+                    div {
+                        class: "reveal-bounce",
+                        div {
+                            class: "text-center mb-6",
+                            span {
+                                class: "text-xs font-bold tracking-widest px-3 py-1 rounded-full",
+                                style: "background: rgba(0,212,170,0.1); color: #00d4aa;",
+                                "WITH BIYARD"
+                            }
+                        }
+                        // Cycle SVG
+                        div {
+                            class: "flex justify-center mb-6",
+                            div {
+                                style: "width: 280px; height: 280px; color: #00d4aa;",
+                                dangerous_inner_html: r#"<svg viewBox='0 0 280 280' fill='none' style='width:100%;height:100%;'>
+                                    <!-- Circular arrow path -->
+                                    <circle cx='140' cy='140' r='100' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.2'/>
+                                    <!-- Step 1: top -->
+                                    <circle cx='140' cy='40' r='28' fill='rgba(0,212,170,0.1)' stroke='currentColor' stroke-width='1.5' opacity='0.6'/>
+                                    <text x='140' y='37' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.8'>매출 발생</text>
+                                    <text x='140' y='49' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.6'>2~4% 적립</text>
+                                    <!-- Arrow 1→2 (glowing) -->
+                                    <path d='M165,55 Q200,70 215,105' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5' style='animation: dashFlow 2s linear infinite;'/>
+                                    <polygon points='213,100 218,108 210,106' fill='currentColor' opacity='0.5'/>
+                                    <!-- Step 2: right -->
+                                    <circle cx='230' cy='140' r='28' fill='rgba(0,212,170,0.1)' stroke='currentColor' stroke-width='1.5' opacity='0.6'/>
+                                    <text x='230' y='137' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.8'>토큰 가치</text>
+                                    <text x='230' y='149' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.6'>자동 상승</text>
+                                    <!-- Arrow 2→3 -->
+                                    <path d='M215,168 Q200,205 165,225' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5' style='animation: dashFlow 2.5s linear infinite;'/>
+                                    <polygon points='168,222 163,228 160,220' fill='currentColor' opacity='0.5'/>
+                                    <!-- Step 3: bottom -->
+                                    <circle cx='140' cy='240' r='28' fill='rgba(0,212,170,0.1)' stroke='currentColor' stroke-width='1.5' opacity='0.6'/>
+                                    <text x='140' y='237' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.8'>고객 홍보</text>
+                                    <text x='140' y='249' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.6'>입소문 확산</text>
+                                    <!-- Arrow 3→4 -->
+                                    <path d='M115,225 Q80,205 65,168' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5' style='animation: dashFlow 3s linear infinite;'/>
+                                    <polygon points='67,172 62,165 70,167' fill='currentColor' opacity='0.5'/>
+                                    <!-- Step 4: left -->
+                                    <circle cx='50' cy='140' r='28' fill='rgba(0,212,170,0.1)' stroke='currentColor' stroke-width='1.5' opacity='0.6'/>
+                                    <text x='50' y='137' text-anchor='middle' fill='currentColor' font-size='8' font-weight='bold' opacity='0.8'>신규 고객</text>
+                                    <text x='50' y='149' text-anchor='middle' fill='currentColor' font-size='8' opacity='0.6'>자연 유입</text>
+                                    <!-- Arrow 4→1 -->
+                                    <path d='M65,112 Q80,75 115,55' fill='none' stroke='currentColor' stroke-width='1.5' opacity='0.5' style='animation: dashFlow 2s linear infinite;'/>
+                                    <polygon points='112,58 117,52 118,60' fill='currentColor' opacity='0.5'/>
+                                    <!-- Center: ring -->
+                                    <circle cx='140' cy='140' r='35' fill='none' stroke='rgba(0,212,170,0.2)' stroke-width='1.5'/>
+                                    <circle cx='140' cy='140' r='30' fill='none' stroke='rgba(0,212,170,0.08)' stroke-width='0.5' stroke-dasharray='4,3'/>
+                                    <text x='140' y='132' text-anchor='middle' fill='currentColor' font-size='11' font-weight='bold' opacity='0.7'>가치가</text>
+                                    <text x='140' y='148' text-anchor='middle' fill='currentColor' font-size='11' font-weight='bold' opacity='0.7'>순환한다</text>
+                                </svg>"#,
+                            }
+                        }
+                        p {
+                            class: "text-center text-sm",
+                            style: "color: #00d4aa; opacity: 0.8;",
+                            "매출 → 가치 상승 → 고객 홍보 → 신규 유입 → 매출... 선순환"
+                        }
+                    }
+                }
+
+                // Strong closing statement
+                div {
+                    class: "mt-16 text-center max-w-3xl mx-auto reveal-fade",
+                    div {
+                        class: "rounded-2xl py-10 px-8 relative overflow-hidden",
+                        style: "background: rgba(0,212,170,0.04); border: 1px solid rgba(0,212,170,0.12);",
+                        // Top glow line
+                        div {
+                            class: "absolute top-0 left-[15%] right-[15%] h-[2px]",
+                            style: "background: linear-gradient(90deg, transparent, rgba(0,212,170,0.4), transparent);",
+                        }
+                        p {
+                            class: "text-2xl md:text-3xl leading-snug",
+                            style: "font-family: 'Outfit', 'Noto Sans KR', sans-serif; font-weight: 600;",
+                            span {
+                                style: "background-image: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent;",
+                                "투자자가 피해를 보는 시장은"
+                            }
+                            br {}
+                            span {
+                                style: "background-image: linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip: text; background-clip: text; color: transparent;",
+                                "이제 끝나야 합니다."
+                            }
+                        }
+                        p {
+                            class: "mt-5 text-lg",
+                            style: "color: #7a8ba6; font-weight: 400;",
+                            "매출이 가치를 만들고, 투명성이 신뢰를 만드는 시장."
+                        }
+                        p {
+                            class: "mt-3 text-xl font-bold",
+                            style: "background-image: linear-gradient(to right, #60a5fa, #00d4aa); -webkit-background-clip: text; background-clip: text; color: transparent;",
+                            "Biyard Launchpad가 그 시작입니다."
+                        }
+                    }
+                }
+            }
+        }
+
+        // FAQ
+        section {
+            id: "faq",
+            class: "py-20 px-4 relative overflow-hidden",
+            style: "background: #141c2b;",
+            div { class: "absolute", style: "bottom: -80px; left: 10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(96,165,250,0.05) 0%, transparent 65%); pointer-events: none;" }
+            div {
+                class: "max-w-3xl mx-auto relative z-10",
+                div {
+                    class: "text-center mb-12 reveal-fade",
+                    p {
+                        class: "text-sm font-semibold tracking-widest uppercase mb-3",
+                        style: "color: #00d4aa;",
+                        "FAQ"
+                    }
+                    h2 {
+                        class: "text-3xl md:text-4xl font-bold reveal-type",
+                        style: "color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
+                        "자주 묻는 질문"
+                    }
+                }
+                div {
+                    class: "space-y-4",
+                    for (q, a) in [
+                        (
+                            "토큰 가치는 어떻게 보장되나요?",
+                            "모든 토큰은 실제 기업의 매출에 연동됩니다. 기업의 매출 일부가 트레저리에 적립되고, 이 트레저리가 토큰 가치의 하한선을 형성합니다. 매출이 없는 프로젝트는 토큰을 발행할 수 없으며, 매출이 지속되는 한 토큰 가치의 바닥이 보장됩니다."
+                        ),
+                        (
+                            "하한가(Floor Price)는 어떻게 유지되나요?",
+                            "스마트 컨트랙트가 자동으로 하한가를 방어합니다. 누군가 토큰을 하한가 이하로 매도하면, 트레저리가 자동으로 해당 토큰을 하한가에 매수(Buyback)하고 소각(Burn)합니다. 수학적으로 Floor Price = Treasury / Circulating Supply이므로, 매수 후 소각하면 공급량이 줄어 하한가는 절대 하락하지 않습니다."
+                        ),
+                        (
+                            "대량 매도(덤핑)가 발생하면 어떻게 되나요?",
+                            "전체 물량의 90%가 한번에 매도되어도 하한가는 유지됩니다. 트레저리가 모든 매도 물량을 하한가에 매수하고 소각하기 때문입니다. 오히려 소각으로 유통량이 줄어, 이후 매출이 계속 유입되면 남은 토큰의 하한가는 더 올라갑니다."
+                        ),
+                        (
+                            "기존 토큰 거래소와 무엇이 다른가요?",
+                            "기존 거래소는 실적 없는 토큰도 상장이 가능하고, 가치 근거 없는 가격 변동이 발생합니다. Biyard는 실제 매출이 있는 기업만 토큰을 발행할 수 있고, 모든 자금 흐름이 온체인에 공개되며, 스마트 컨트랙트가 하한가를 자동 방어합니다."
+                        ),
+                        (
+                            "어떤 기업이 입점할 수 있나요?",
+                            "매출이 발생하는 모든 기업이 대상입니다. 신발, 커피, 의류, 식품, 헬스케어 등 업종에 제한이 없습니다. API 연동만으로 기존 POS나 앱에 토큰 이코노미를 붙일 수 있어, 블록체인 전문 인력 없이도 시작할 수 있습니다."
+                        ),
+                        (
+                            "토큰 보유자는 어떤 혜택이 있나요?",
+                            "토큰 보유자는 사실상 해당 브랜드의 주주와 같습니다. 매출이 늘면 트레저리가 쌓이고 토큰 가치가 올라갑니다. 또한 DAO를 통해 브랜드의 리워드 정책, 이벤트 등 의사결정에 직접 참여할 수 있습니다."
+                        ),
+                    ] {
+                        details {
+                            class: "rounded-xl reveal-bounce",
+                            style: "background: rgba(10,16,26,0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06);",
+                            summary {
+                                class: "cursor-pointer px-6 py-4 text-sm font-semibold flex items-center justify-between list-none",
+                                style: "color: #e8eefc;",
+                                span { "{q}" }
+                                span { style: "color: #00d4aa; font-size: 18px;", "+" }
+                            }
+                            p {
+                                class: "px-6 pb-5 text-sm leading-relaxed",
+                                style: "color: #7a8ba6;",
+                                "{a}"
                             }
                         }
                     }
@@ -1734,7 +1861,7 @@ fn HomeSection() -> Element {
                 p {
                     class: "mb-6 max-w-xl mx-auto text-base",
                     style: "color: #7a8ba6;",
-                    "고객이 사고, 쓰고, 즐길수록 함께 성장하는 토큰 이코노미. 당신의 브랜드도 가능합니다."
+                    "매출 기반 토큰 이코노미로 브랜드와 고객이 함께 성장합니다."
                 }
                 div {
                     class: "flex items-center justify-center gap-4 flex-wrap",
@@ -1742,12 +1869,12 @@ fn HomeSection() -> Element {
                         class: "inline-flex items-center px-7 py-3 rounded-xl font-bold text-base shadow-lg",
                         style: "background: #00d4aa; color: #0c1018;",
                         href: "#",
-                        "도입 문의하기 →"
+                        "Console로 이동하기 →"
                     }
-                    a {
+                    Link {
+                        to: Route::Pricing {},
                         class: "inline-flex items-center px-7 py-3 rounded-xl font-bold text-base",
                         style: "border: 1px solid rgba(0,212,170,0.3); color: #00d4aa;",
-                        href: "#",
                         "요금제 보기"
                     }
                 }
@@ -1756,12 +1883,108 @@ fn HomeSection() -> Element {
 
         // Footer
         footer {
-            class: "py-8 px-4 text-center",
-            style: "background: #0c1018; border-top: 1px solid rgba(0,212,170,0.12);",
-            p {
-                class: "text-sm",
-                style: "color: #4a5568;",
-                "\u{00A9} 2026 Biyard. All rights reserved."
+            style: "background: #0c1018; border-top: 1px solid rgba(0,212,170,0.08);",
+            div {
+                class: "max-w-6xl mx-auto px-4 py-12",
+                div {
+                    class: "grid grid-cols-1 md:grid-cols-3 gap-8 mb-8",
+                    // Company info
+                    div {
+                        div {
+                            class: "flex items-center gap-2 mb-4",
+                            img {
+                                src: asset!("/assets/biyard-logo.png"),
+                                alt: "Biyard",
+                                style: "width: 24px; height: 24px;",
+                            }
+                            span {
+                                class: "text-lg font-bold",
+                                style: "color: #00d4aa;",
+                                "Biyard"
+                            }
+                        }
+                        p {
+                            class: "text-sm leading-relaxed",
+                            style: "color: #7a8ba6;",
+                            "Revenue-backed token infrastructure for brands. Building trust through transparency."
+                        }
+                    }
+                    // Links
+                    div {
+                        p {
+                            class: "text-sm font-semibold mb-3",
+                            style: "color: #e8eefc;",
+                            "Links"
+                        }
+                        div {
+                            class: "space-y-2",
+                            Link {
+                                to: Route::Team {},
+                                class: "block text-sm hover:text-white transition-colors",
+                                style: "color: #7a8ba6;",
+                                "Team"
+                            }
+                            a {
+                                href: "https://github.com/biyard",
+                                target: "_blank",
+                                class: "block text-sm",
+                                style: "color: #7a8ba6;",
+                                "GitHub"
+                            }
+                            a {
+                                href: "https://www.linkedin.com/company/75498162",
+                                target: "_blank",
+                                class: "block text-sm",
+                                style: "color: #7a8ba6;",
+                                "LinkedIn"
+                            }
+                        }
+                    }
+                    // Contact
+                    div {
+                        p {
+                            class: "text-sm font-semibold mb-3",
+                            style: "color: #e8eefc;",
+                            "Contact"
+                        }
+                        div {
+                            class: "space-y-2",
+                            a {
+                                href: "mailto:finance@biyard.co",
+                                class: "block text-sm",
+                                style: "color: #7a8ba6;",
+                                "finance@biyard.co"
+                            }
+                        }
+                    }
+                }
+                // Bottom bar
+                div {
+                    class: "pt-6 flex items-center justify-between",
+                    style: "border-top: 1px solid rgba(255,255,255,0.06);",
+                    p {
+                        class: "text-xs",
+                        style: "color: #4a5568;",
+                        "\u{00A9} 2026 Biyard Corp. All rights reserved."
+                    }
+                    div {
+                        class: "flex gap-4",
+                        a {
+                            href: "https://github.com/biyard",
+                            target: "_blank",
+                            class: "text-xs",
+                            style: "color: #4a5568;",
+                            "GitHub"
+                        }
+                        a {
+                            href: "https://www.linkedin.com/company/75498162",
+                            target: "_blank",
+                            class: "text-xs",
+                            style: "color: #4a5568;",
+                            "LinkedIn"
+                        }
+                    }
+                }
             }
         }
     }
@@ -1930,7 +2153,7 @@ fn WalletSection() -> Element {
 
 #[component]
 fn SwapSection() -> Element {
-    let tokens = ["LMT", "CBT", "RPT"];
+    let tokens = ["SBT", "CFT", "FBT"];
     let mut from_idx = use_signal(|| 0usize);
     let mut to_idx = use_signal(|| 1usize);
     let mut from_amount = use_signal(|| String::new());
