@@ -1,10 +1,19 @@
 use dioxus::prelude::*;
 
 use crate::Route;
+use crate::features::accounts::context::use_account_context;
 use crate::features::console::components::ConsoleSidebar;
 
 #[component]
 pub fn Layout() -> Element {
+    let account_ctx = use_account_context();
+    let nav = use_navigator();
+
+    if !account_ctx().is_logged_in() {
+        nav.push(Route::SignIn {});
+        return rsx! {};
+    }
+
     rsx! {
         div { class: "min-h-screen bg-gray-50 dark:bg-gray-900",
             ConsoleSidebar {}

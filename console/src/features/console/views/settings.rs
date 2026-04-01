@@ -13,12 +13,8 @@ pub fn Settings() -> Element {
     let nav = use_navigator();
     let mut show_delete_dialog = use_signal(|| false);
 
-    let account = if let Some(account) = account_ctx().account {
-        account
-    } else {
-        return rsx! {
-            div { class: "text-gray-900 dark:text-white", {t.loading} }
-        };
+    let Some(account) = account_ctx().account else {
+        return rsx! {};
     };
 
     rsx! {
