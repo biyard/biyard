@@ -58,7 +58,7 @@ jobs:
           ENV: prod
           RUSTFLAGS: ""
         run: |
-          npm i -D tailwindcss
+          npm install -D tailwindcss @tailwindcss/cli
           make build-lambda
 
       - name: Build and push Docker image
