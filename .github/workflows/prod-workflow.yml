@@ -96,6 +96,10 @@ jobs:
       - name: Install Dioxus CLI
         run: cargo binstall dioxus-cli --force
 
+      - name: Login to Amazon ECR
+        id: console-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Build Dioxus console app
         working-directory: console
         env:
@@ -107,8 +111,8 @@ jobs:
         working-directory: console
         env:
           ENV: prod
+          ECR: ${{ steps.console-ecr.outputs.registry }}/biyard/console
         run: |
-          make docker.login
           make docker
           make docker.push
 
