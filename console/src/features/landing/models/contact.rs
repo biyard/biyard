@@ -1,5 +1,5 @@
 use crate::common::*;
-use crate::features::contacts::Need;
+use crate::features::landing::Need;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, DynamoEntity)]
 pub struct Contact {

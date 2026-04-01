@@ -1,6 +1,6 @@
 use crate::common::Result;
 use crate::features::accounts::AccountResponse;
-use dioxus::prelude::post;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, Extension};

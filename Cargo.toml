@@ -23,14 +23,10 @@ serde = { version = "1.0", features = ["derive"] }
 serde_with = "3.15"
 tokio = { version = "1.40.0", features = ["full"] }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-dioxus = { version = "=0.7.3", features = ["router", "web"] }
-dioxus-server = "=0.7.3"
-dioxus-fullstack = "=0.7.3"
-dioxus-core = "=0.7.3"
-dioxus-cli-config = "0.7.4"
-dioxus-primitives = { version = "0.0.1", git = "https://github.com/DioxusLabs/components", default-features = false, features = [
-    "router",
-] }
+dioxus = { version = "=0.7.3" }
+dioxus-cli-config = { version = "=0.7.3" }
+
+
 dioxus-translate = { version = "0.1", git = "https://github.com/biyard/ratel.git", rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f", features = [
     "ko",
 ] }

@@ -2,21 +2,20 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
-use crate::features::accounts::AccountResponse;
+use crate::features::accounts::context::use_account_context;
 use crate::features::console::i18n::ConsoleTranslate;
 
 #[component]
 pub fn Dashboard() -> Element {
     let t: ConsoleTranslate = use_translate();
-    let auth = use_context::<Signal<Option<AccountResponse>>>();
+    let account_ctx = use_account_context();
 
-    let account = match &*auth.read() {
-        Some(a) => a.clone(),
-        None => {
-            return rsx! {
-                div { class: "text-gray-900 dark:text-white", {t.loading} }
-            }
-        }
+    let account = if let Some(account) = account_ctx().account {
+        account
+    } else {
+        return rsx! {
+            div { class: "text-gray-900 dark:text-white", {t.loading} }
+        };
     };
 
     rsx! {

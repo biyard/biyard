@@ -1,6 +1,6 @@
 use crate::common::{ProjectPartition, Result};
 use crate::features::tokens::TokenBalanceResponse;
-use dioxus::prelude::put;
+use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, ProjectAuth};

@@ -1,13 +1,13 @@
 use crate::common::Result;
 use crate::features::accounts::AccountResponse;
-use dioxus::prelude::post;
+use dioxus::prelude::*;
 
+#[cfg(feature = "server")]
+use super::SESSION_KEY_ACCOUNT_ID;
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, Extension};
 #[cfg(feature = "server")]
 use crate::features::accounts::{Account, AccountError, AccountQueryOption};
-#[cfg(feature = "server")]
-use super::SESSION_KEY_ACCOUNT_ID;
 
 #[post("/v1/accounts/signin", session: Extension<tower_sessions::Session>)]
 pub async fn signin_handler(email: String, password: String) -> Result<AccountResponse> {

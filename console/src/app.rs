@@ -4,9 +4,7 @@ use crate::features::accounts::AccountResponse;
 
 #[component]
 pub fn App() -> Element {
-    let auth: Signal<Option<AccountResponse>> = use_signal(|| None);
-    use_context_provider(|| auth);
-
+    let _ = crate::features::accounts::context::Context::init()?;
     rsx! {
         document::Link { rel: "icon", href: asset!("/assets/favicon.ico") }
         document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }

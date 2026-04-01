@@ -1,6 +1,6 @@
 use crate::common::{CommonConfig, Deserialize, Result, Serialize};
-use crate::features::contacts::Update;
-use dioxus::prelude::post;
+use crate::features::landing::Update;
+use dioxus::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FollowUpdatesResponse {

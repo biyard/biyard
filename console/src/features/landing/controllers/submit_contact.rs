@@ -1,6 +1,6 @@
 use crate::common::{CommonConfig, Result, Serialize};
-use crate::features::contacts::{Contact, Need};
-use dioxus::prelude::post;
+use crate::features::landing::{Contact, Need};
+use dioxus::prelude::*;
 use serde::Deserialize;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
