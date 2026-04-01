@@ -42,9 +42,11 @@ fn serve(app: fn() -> Element) {
     }
 }
 
+//FIXME: Refactor Page
 #[component]
 fn App() -> Element {
     rsx! {
+        document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }
         Router::<Route> {}
     }
 }
