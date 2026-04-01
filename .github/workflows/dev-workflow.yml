@@ -40,18 +40,6 @@ jobs:
           submodules: recursive
           ssh-key: ${{ secrets.PULL_KEY_REPO }}
 
-      - name: Cache builder
-        id: app-build-cache
-        uses: actions/cache@v4
-        with:
-          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
-            app-build-${{ runner.os }}-
-            app-build-
-          path: |
-            target
-
       - uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -63,9 +51,16 @@ jobs:
           components: clippy, rustfmt
           toolchain: stable
           targets: wasm32-unknown-unknown
+          cache: false
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "app-build"
+
+      - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Dioxus CLI
-        run: cargo install dioxus-cli
+        run: cargo binstall dioxus-cli --force
 
       - name: Build Dioxus app
         working-directory: app

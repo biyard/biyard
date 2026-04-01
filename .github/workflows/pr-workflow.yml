@@ -13,46 +13,6 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  dx-check:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: app
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          components: clippy, rustfmt
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          cache: false
-
-      - uses: cargo-bins/cargo-binstall@main
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            lld
-
-      - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
-
-      - name: Dioxus compile check
-        run: |
-          dx check --web
-
   app-build:
     runs-on: ubuntu-latest
 
@@ -66,17 +26,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore build cache
-        uses: actions/cache/restore@v4
-        with:
-          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}-${{ github.run_id }}
-          restore-keys: |
-            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
-            app-build-${{ runner.os }}-
-            app-build-
-          path: |
-            target
-
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy, rustfmt
@@ -84,11 +33,16 @@ jobs:
           target: wasm32-unknown-unknown
           cache: false
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "app-build"
+
       - uses: cargo-bins/cargo-binstall@main
+
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
             wget \
@@ -100,13 +54,15 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli --force
 
       - name: Setup pnpm
         run: |
           corepack enable
           corepack prepare pnpm@10.15.0 --activate
+
+      - name: Dioxus compile check
+        run: dx check --web
 
       - name: Build and create Docker image
         id: build
@@ -149,11 +105,16 @@ jobs:
           toolchain: stable
           cache: false
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "app-test"
+
       - uses: cargo-bins/cargo-binstall@main
+
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y libwebkit2gtk-4.1-dev \
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
             build-essential \
             curl \
             wget \
@@ -165,8 +126,7 @@ jobs:
             lld
 
       - name: Install Dioxus-cli
-        run: |
-          cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli --force
 
       - name: Setup pnpm
         run: |
