@@ -13,22 +13,25 @@ Biyard is a Launchpad-like SaaS and PaaS platform that enables users to create p
 - **PaaS APIs:** Services consume Biyard APIs to manage points and tokens on blockchain
 - **Target Users:** Project creators who need blockchain token/point management infrastructure
 
+## Important Constraints
+
+- **DO NOT modify or add code in the `api/` package.** The `api/` package is legacy and no longer under active development. All new backend work should go through Dioxus fullstack server functions in `console/`.
+
 ## Monorepo Structure
 
 Rust workspace managed by Cargo. Frontend migrating to Dioxus fullstack.
 
 ```
 biyard/
-├── api/              # Rust backend (Axum REST APIs + Askama SSR)
-├── app/              # Dioxus fullstack frontend (SSR + WASM hydration)
+├── api/              # Rust backend (LEGACY — do not develop)
+├── console/          # Dioxus fullstack frontend (SSR + WASM hydration)
+├── landing/          # Dioxus landing page (SSR + WASM)
 ├── packages/         # Shared Rust libraries
 │   ├── btracing/     # Tracing wrapper (v0.1.*)
 │   ├── by-axum/      # Axum framework wrapper (v0.2.*)
 │   ├── by-macros/    # Procedural macros — DynamoEntity, DynamoEnum (v0.6.*)
 │   └── by-types/     # Shared types (v0.3.*)
 ├── contracts/        # Solidity smart contracts (Hardhat)
-├── console/          # React admin dashboard (legacy, migrating to Dioxus)
-├── landing/          # React landing page (legacy, migrating to Dioxus)
 └── cdk/              # AWS CDK infrastructure
 ```
 
@@ -51,16 +54,13 @@ cargo clippy         # Lint
 
 ### Frontend (Dioxus)
 ```bash
-cd app
-DYNAMO_TABLE_PREFIX=biyard-dev dx serve --port 8000 --web   # Dev server
+cd console
+DYNAMO_TABLE_PREFIX=biyard-dev dx serve --port 8000 --web   # Console dev server
 dx build --release @client --features web --platform web \
   @server --features server --platform server               # Production build
-```
 
-### Legacy Frontend (console/landing)
-```bash
-cd console && pnpm install && pnpm dev    # Console dev server
-cd landing && pnpm install && pnpm dev    # Landing dev server
+cd landing
+dx serve --port 8001 --web                                  # Landing dev server
 ```
 
 ## Technology Stack
@@ -70,14 +70,13 @@ cd landing && pnpm install && pnpm dev    # Landing dev server
 - **Database:** DynamoDB single-table design, DynamoEntity derive macro (by-macros)
 - **Blockchain:** Solidity (Hardhat), ethers-rs
 - **Infrastructure:** AWS CDK, Lambda, S3, Docker
-- **Legacy Frontend:** React 19, Vite, TypeScript, Shadcn UI, React Query
 
 ## Build Verification
 
 1. `cargo build` — backend compiles
 2. `cargo test` — backend tests pass
-3. `dx build` — Dioxus frontend compiles (when app/ is set up)
-4. `cd console && pnpm build` — legacy console builds
+3. `cd console && dx build` — console frontend compiles
+4. `cd landing && dx build` — landing frontend compiles
 
 ## Platform Considerations
 

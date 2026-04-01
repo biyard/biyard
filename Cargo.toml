@@ -1,9 +1,5 @@
 [workspace]
-members = [
-    "api",
-    "app",
-    "tmpl_renderer",
-]
+members = ["console", "landing"]
 resolver = "2"
 
 [workspace.package]
@@ -30,11 +26,7 @@ rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
 
 [workspace.dependencies.reqwest]
 version = "0.12.12"
-features = [
-    "blocking",
-    "json",
-    "multipart",
-]
+features = ["blocking", "json", "multipart"]
 
 [workspace.dependencies.schemars]
 version = "1.0.4"
@@ -54,6 +46,28 @@ features = ["full"]
 [workspace.dependencies.tracing-subscriber]
 version = "0.3.19"
 features = ["env-filter"]
+
+[workspace.dependencies.dioxus]
+version = "=0.7.3"
+features = ["router", "web"]
+
+[workspace.dependencies.dioxus-server]
+version = "=0.7.3"
+
+[workspace.dependencies.dioxus-fullstack]
+version = "=0.7.3"
+
+[workspace.dependencies.dioxus-core]
+version = "=0.7.3"
+
+[workspace.dependencies.dioxus-cli-config]
+version = "0.7.4"
+
+[workspace.dependencies.dioxus-primitives]
+version = "0.0.1"
+git = "https://github.com/DioxusLabs/components"
+default-features = false
+features = ["router"]
 
 [workspace.dependencies.dioxus-translate]
 version = "0.1"

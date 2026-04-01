@@ -1,16 +1,19 @@
-PORT ?= 4000
-API_URL ?= http://localhost:3000
-CONSOLE_URL ?= http://localhost:4000
+PORT ?= 8001
 
-.PHONY: run node_modules
-node_modules:
-	pnpm i -p
+.PHONY: dev build clean fmt clippy
 
-run: node_modules
-	PORT=$(PORT) VITE_API_BASE_URL=$(API_URL) VITE_CONSOLE_BASE_URL=$(CONSOLE_URL) pnpm dev
+dev:
+	dx serve --port $(PORT) --web
 
-test: node_modules
-	$(PLAYWRIGHT_ENV) npx playwright test $(PLAYWRIGHT_ARGS)
+build:
+	dx build --release --platform web
 
-build: node_modules
-	VITE_API_BASE_URL=$(API_URL) pnpm run build
+clean:
+	dx clean
+	cargo clean
+
+fmt:
+	cargo fmt
+
+clippy:
+	cargo clippy --target wasm32-unknown-unknown
