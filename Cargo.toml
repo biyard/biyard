@@ -1,23 +1,61 @@
 [workspace]
-members = ["api", "tmpl_renderer", "app/landing"]
+members = ["app"]
 resolver = "2"
 
 [workspace.package]
 authors = ["Biyard"]
 description = "Biyard"
-edition = "2024"
 repository = "https://github.com/biyard/biyard"
+edition = "2024"
 
 [workspace.dependencies]
-by-macros = { version = "0.6" }
-# by-macros = { version = "0.6", path = "../ratel/packages/by-macros" }
-# btracing = { version = "0.1", path = "../ratel/packages/btracing" }
-btracing = { version = "0.1.6" }
-
-serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.40.0", features = ["full"] }
 tracing = "0.1"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-reqwest = { version = "0.12.12", features = ["blocking", "json", "multipart"] }
-schemars = { version = "1.0.4", features = ["uuid1"] }
+thiserror = "2"
+chrono = "0.4"
+base64 = "0.22"
+async-trait = "0.1"
+
+[workspace.dependencies.btracing]
+version = "0.1.6"
+
+[workspace.dependencies.by-macros]
+version = "0.6"
+git = "https://github.com/biyard/ratel.git"
+rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
+
+[workspace.dependencies.reqwest]
+version = "0.12.12"
+features = ["blocking", "json", "multipart"]
+
+[workspace.dependencies.schemars]
+version = "1.0.4"
+features = ["uuid1"]
+
+[workspace.dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[workspace.dependencies.serde_with]
+version = "3.15"
+
+[workspace.dependencies.tokio]
+version = "1.40.0"
+features = ["full"]
+
+[workspace.dependencies.tracing-subscriber]
+version = "0.3.19"
+features = ["env-filter"]
+
+[workspace.dependencies.dioxus-translate]
+version = "0.1"
+git = "https://github.com/biyard/ratel.git"
+rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
+features = ["ko"]
+
+[workspace.dependencies.aws-sdk-dynamodb]
+version = "1"
+
+[workspace.dependencies.serde_dynamo]
+version = "4.3"
+features = ["aws-sdk-dynamodb+1"]

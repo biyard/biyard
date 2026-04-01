@@ -69,7 +69,7 @@ export class GlobalAccelStack extends Stack {
         originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
         readTimeout: cdk.Duration.seconds(60),
         keepaliveTimeout: cdk.Duration.seconds(5),
-        originPath: props.apiConfig.prefix,
+        ...(props.apiConfig.prefix ? { originPath: props.apiConfig.prefix } : {}),
       });
 
       defaultBehavior = {

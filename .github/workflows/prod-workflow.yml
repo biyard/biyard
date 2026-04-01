@@ -28,77 +28,29 @@ jobs:
         env:
           ENV: prod
           API_URL: https://api.biyard.co
+          CONSOLE_URL: https://console.biyard.co
         run: |
           make sync-landing
 
-      - name: Prepare artifacts
-        run: |
-          tar czvf landing-dist.tar.gz landing/dist
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: landing-web-${{ github.sha }}
-          path: ${{ github.workspace }}/landing-dist.tar.gz
-          if-no-files-found: error
-          retention-days: 7
-
-  console:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@10.15.0 --activate
-
-      - name: Deploy to S3
-        env:
-          ENV: prod
-          API_URL: https://api.biyard.co
-        run: |
-          make sync-console
-
-      - name: Prepare artifacts
-        run: |
-          tar czvf console-dist.tar.gz console/dist
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: console-web-${{ github.sha }}
-          path: ${{ github.workspace }}/console-dist.tar.gz
-          if-no-files-found: error
-          retention-days: 7
-
-  api:
+  app:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: api
-
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
           ssh-key: ${{ secrets.PULL_KEY_REPO }}
+
       - name: Cache builder
-        id: api-build-cache
+        id: app-build-cache
         uses: actions/cache@v4
         with:
-          key: api-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
+          key: app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            api-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
-            api-build-${{ runner.os }}-
-            api-build-
+            app-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+            app-build-${{ runner.os }}-
+            app-build-
           path: |
-            api/target
+            target
 
       - uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -110,42 +62,30 @@ jobs:
         with:
           components: clippy, rustfmt
           toolchain: stable
+          targets: wasm32-unknown-unknown
 
-      - name: Download Landing Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: landing-web-${{ github.sha }}
-          path: ./api
-      - name: Download Console Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: console-web-${{ github.sha }}
-          path: ./api
-      - name: Extract Web Artifacts
-        run: |
-          mkdir -p dist/console dist/landing
-          tar xzf console-dist.tar.gz -C dist/console --strip-components=2
-          tar xzf landing-dist.tar.gz -C dist/landing --strip-components=2
-      - name: Building APIs
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli
+
+      - name: Build Dioxus app
+        working-directory: app
         env:
-          REGION: ap-northeast-2
-          ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-          DISABLE_ANSI: false
-          WEB_BUILD: false
-
           ENV: prod
-          RUST_LOG: info
-          DYNAMO_ENDPOINT: none
+          DYNAMO_TABLE_PREFIX: biyard-prod
+        run: make build
+
+      - name: Build and push Docker image
+        working-directory: app
+        env:
+          ENV: prod
         run: |
-          make docker.build
           make docker.login
+          make docker
           make docker.push
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [web, console, api]
+    needs: [web, app]
     steps:
       - uses: actions/checkout@v3
         with:
