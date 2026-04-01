@@ -34,14 +34,22 @@ jobs:
           targets: wasm32-unknown-unknown
           cache: false
 
-      - uses: Swatinem/rust-cache@v2
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
         with:
-          shared-key: "landing-build"
+          key: landing-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            landing-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+          path: |
+            target
 
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Dioxus CLI
-        run: cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
+
+      - name: Clean Dioxus build output
+        run: rm -rf target/dx
 
       - name: Build Landing (Lambda)
         working-directory: landing
@@ -87,14 +95,22 @@ jobs:
           targets: wasm32-unknown-unknown
           cache: false
 
-      - uses: Swatinem/rust-cache@v2
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
         with:
-          shared-key: "console-build"
+          key: console-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            console-build-${{ runner.os }}-rust-${{ env.RUSTC_HASH }}-
+          path: |
+            target
 
       - uses: cargo-bins/cargo-binstall@main
 
       - name: Install Dioxus CLI
-        run: cargo binstall dioxus-cli --force
+        run: cargo binstall dioxus-cli@0.7.3 --force
+
+      - name: Clean Dioxus build output
+        run: rm -rf target/dx
 
       - name: Login to Amazon ECR
         id: console-ecr
