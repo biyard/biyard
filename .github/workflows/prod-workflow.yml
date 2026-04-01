@@ -33,6 +33,7 @@ jobs:
           toolchain: stable
           targets: wasm32-unknown-unknown
           cache: false
+          RUSTFLAGS: ""
 
       - name: Restore build cache
         uses: actions/cache/restore@v4
@@ -55,6 +56,7 @@ jobs:
         working-directory: landing
         env:
           ENV: prod
+          RUSTFLAGS: ""
         run: |
           npm i -D tailwindcss
           make build-lambda
