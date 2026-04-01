@@ -1,9 +1,5 @@
 [workspace]
-members = [
-    "api",
-    "app",
-    "tmpl_renderer",
-]
+members = ["app"]
 resolver = "2"
 
 [workspace.package]
@@ -30,11 +26,7 @@ rev = "867cb9be7b173c92acdeefe237dd87b4adcaca1f"
 
 [workspace.dependencies.reqwest]
 version = "0.12.12"
-features = [
-    "blocking",
-    "json",
-    "multipart",
-]
+features = ["blocking", "json", "multipart"]
 
 [workspace.dependencies.schemars]
 version = "1.0.4"
