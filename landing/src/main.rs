@@ -1,9 +1,12 @@
 use dioxus::prelude::*;
 
+mod app;
 mod components;
 mod pages;
+mod route;
 
-use pages::{Dao, Home, Pricing, SignIn, Team, Wallet};
+pub use app::App;
+pub use route::Route;
 
 fn main() {
     dioxus::logger::init(tracing::Level::INFO).expect("failed to init logger");
@@ -40,29 +43,4 @@ fn serve(app: fn() -> Element) {
                 .block_on(app_future);
         }
     }
-}
-
-//FIXME: Refactor Page
-#[component]
-fn App() -> Element {
-    rsx! {
-        document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }
-        Router::<Route> {}
-    }
-}
-
-#[derive(Debug, Clone, Routable, PartialEq)]
-pub enum Route {
-    #[route("/")]
-    Home {},
-    #[route("/signin")]
-    SignIn {},
-    #[route("/wallet")]
-    Wallet {},
-    #[route("/dao")]
-    Dao {},
-    #[route("/team")]
-    Team {},
-    #[route("/pricing")]
-    Pricing {},
 }

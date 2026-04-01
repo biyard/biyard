@@ -2,6 +2,14 @@ ENV ?= dev
 DYNAMO_TABLE_PREFIX ?= biyard-$(ENV)
 PORT ?= 8001
 
+ifeq ($(ENV),prod)
+CONSOLE_URL ?= https://dev.biyard.co
+else
+CONSOLE_URL ?= https://console.dev.biyard.co
+endif
+
+export CONSOLE_URL
+
 COMMIT ?= $(shell git rev-parse --short HEAD)
 
 AWS_ACCESS_KEY_ID ?= $(shell aws configure get aws_access_key_id $(AWS_FLAG))

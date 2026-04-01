@@ -69,6 +69,7 @@ jobs:
       - name: Build Landing
         env:
           ENV: local
+          CONSOLE_URL: https://console.dev.biyard.co
           # FIXME: After update landing page, remove this line
           RUSTFLAGS: ""
         run: |

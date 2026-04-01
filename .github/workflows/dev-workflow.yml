@@ -56,6 +56,7 @@ jobs:
         working-directory: landing
         env:
           ENV: dev
+          CONSOLE_URL: https://console.dev.biyard.co
           RUSTFLAGS: ""
         run: |
           npm install -D tailwindcss @tailwindcss/cli
