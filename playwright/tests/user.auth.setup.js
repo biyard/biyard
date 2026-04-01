@@ -14,7 +14,7 @@ test("create storage state", async ({ page }) => {
 
   // Wait for navigation to dashboard after successful sign-in
   await page.waitForURL("**/dashboard", { waitUntil: "load" });
-  await expect(page.getByText("Biyard Console")).toBeVisible();
+  await expect(page.getByText("Biyard Console", { exact: true })).toBeVisible();
 
   // Save storage state for authenticated tests
   await page.context().storageState({ path: "user.json" });

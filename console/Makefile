@@ -1,6 +1,6 @@
 ENV ?= dev
 DYNAMO_TABLE_PREFIX ?= biyard-$(ENV)
-DYNAMODB_ENDPOINT ?= none
+DYNAMO_ENDPOINT ?= none
 PORT ?= 8080
 
 COMMIT ?= $(shell git rev-parse --short HEAD)
@@ -15,27 +15,27 @@ ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --
 
 .PHONY: dev build build-testing build-lambda clean fmt clippy test docker docker.push docker.login tailwind
 
-
-dev: 
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
-	DYNAMODB_ENDPOINT=$(DYNAMODB_ENDPOINT) \
+BUILD_ENV ?= DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
+	DYNAMO_ENDPOINT=$(DYNAMO_ENDPOINT) \
 	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 	AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
-	AWS_REGION=$(AWS_REGION) \
-	dx serve --port $(PORT) --web
+	AWS_REGION=$(AWS_REGION) 
+
+dev: 
+	$(BUILD_ENV) dx serve --addr 0.0.0.0 --port $(PORT) --web
 
 build:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
+	$(BUILD_ENV) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-testing:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
+	$(BUILD_ENV) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-lambda:
-	DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) dx build --release --debug-symbols false \
+	$(BUILD_ENV) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features lambda --platform server
 

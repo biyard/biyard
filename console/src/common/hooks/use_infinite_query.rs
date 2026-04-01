@@ -1,11 +1,11 @@
-use std::sync::atomic::{AtomicU64, Ordering};
+use crate::*;
+use dioxus::fullstack::{Loading, Transportable};
+use serde::de::DeserializeOwned;
 
-use dioxus::prelude::*;
-use serde::{Serialize, de::DeserializeOwned};
-
-use crate::common::traits::{Bookmarker, ItemIter};
-
-static COUNTER: AtomicU64 = AtomicU64::new(0);
+use crate::common::{
+    traits::{Bookmarker, ItemIter},
+    *,
+};
 
 pub struct InfiniteQuery<Bookmark, I, T>
 where
@@ -17,13 +17,14 @@ where
     next_bookmark: Signal<Option<Bookmark>>,
     accumulated: Signal<Vec<I>>,
     has_more: Memo<bool>,
-    rsc: Resource<std::result::Result<T, ServerFnError>>,
-    #[allow(dead_code)]
+    rsc: Resource<Result<T>>,
     effect: Effect,
     loading: Signal<bool>,
     key: u64,
 }
 
+// Manual Clone/Copy impls: all fields (Signal, Memo, Resource, Effect, u64) are
+// Clone+Copy regardless of type parameters. Derive would add overly restrictive bounds.
 impl<Bookmark, I, T> Clone for InfiniteQuery<Bookmark, I, T>
 where
     Bookmark: 'static,
@@ -51,6 +52,7 @@ where
 {
     pub fn next(&mut self) {
         let nb = self.next_bookmark.read().clone();
+        debug!("Next called on InfiniteQuery with bookmark: {:?}", nb);
 
         if self.is_loading() || nb.is_none() || self.bookmark.read().clone() == nb {
             return;
@@ -88,13 +90,12 @@ where
     pub fn more_element(&mut self) -> Element {
         if self.has_more() {
             if self.is_loading() {
+                // FIXME: refactoring loading indicator
                 return rsx! {
-                    div { class: "flex justify-center py-4",
-                        div { class: "animate-spin h-6 w-6 border-2 border-gray-300 border-t-blue-600 rounded-full" }
-                    }
+                    div { class: "", "Loading more..." }
                 };
             } else {
-                let ctrl = *self;
+                let ctrl = self.clone();
                 let sentinel_id = format!("infinite-scroll-sentinel-{}", ctrl.key);
 
                 rsx! {
@@ -108,36 +109,35 @@ where
                                 use std::rc::Rc;
                                 use wasm_bindgen::prelude::*;
 
-                                let mut ctrl = ctrl;
+                                let mut ctrl = ctrl.clone();
                                 let window = web_sys::window().unwrap();
                                 let document = window.document().unwrap();
 
                                 if let Some(el) = document.get_element_by_id(&sentinel_id) {
-                                    let observer_rc: Rc<RefCell<Option<web_sys::IntersectionObserver>>> =
-                                        Rc::new(RefCell::new(None));
+
+                                    let observer_rc: Rc<RefCell<Option<web_sys::IntersectionObserver>>> = Rc::new(
+                                        RefCell::new(None),
+                                    );
                                     let observer_ref = observer_rc.clone();
-                                    let callback =
-                                        Closure::<dyn FnMut(js_sys::Array)>::new(
-                                            move |entries: js_sys::Array| {
-                                                let entry: web_sys::IntersectionObserverEntry =
-                                                    entries.get(0).unchecked_into();
-                                                if entry.is_intersecting() {
-                                                    if let Some(obs) = observer_ref.borrow().as_ref()
-                                                    {
-                                                        obs.disconnect();
-                                                    }
-                                                    ctrl.next();
-                                                }
-                                            },
-                                        );
+                                    let callback = Closure::<
+                                        dyn FnMut(js_sys::Array),
+                                    >::new(move |entries: js_sys::Array| {
+                                        let entry: web_sys::IntersectionObserverEntry = entries
+                                            .get(0)
+                                            .unchecked_into();
+                                        if entry.is_intersecting() {
+                                            if let Some(obs) = observer_ref.borrow().as_ref() {
+                                                obs.disconnect();
+                                            }
+                                            ctrl.next();
+                                        }
+                                    });
                                     let options = web_sys::IntersectionObserverInit::new();
                                     options.set_threshold(&wasm_bindgen::JsValue::from_f64(0.1));
-                                    if let Ok(observer) =
-                                        web_sys::IntersectionObserver::new_with_options(
-                                            callback.as_ref().unchecked_ref(),
-                                            &options,
-                                        )
-                                    {
+                                    if let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
+                                        callback.as_ref().unchecked_ref(),
+                                        &options,
+                                    ) {
                                         observer.observe(&el);
                                         *observer_rc.borrow_mut() = Some(observer);
                                     }
@@ -154,13 +154,34 @@ where
     }
 }
 
+/// Usage:
+/// ``rust,no_run
+/// #[component]
+/// fn Follows() -> Element {
+///     let mut followers_query = use_infinite_query(move |bookmark| list_followers(bookmark))?;
+///     let followers_loading = followers_query.is_loading();
+///     let followers = followers_query.items();
+///     let followers_more = followers_query.more_element();
+///
+///     rsx! {
+///         FollowList {
+///             users: followers,
+///             selected: FollowTab::Followers,
+///             loading: followers_loading,
+///             on_follow,
+///             on_unfollow,
+///             more_element: followers_more,
+///         }
+///     }
+/// }
+/// ```
 pub fn use_infinite_query<Bookmark, I, T, F>(
     mut future: impl FnMut(Option<Bookmark>) -> F + 'static + Clone + Copy,
-) -> std::result::Result<InfiniteQuery<Bookmark, I, T>, RenderError>
+) -> dioxus::prelude::Result<InfiniteQuery<Bookmark, I, T>, RenderError>
 where
     Bookmark: 'static + Clone + PartialEq + std::fmt::Debug,
     I: 'static + Clone + PartialEq,
-    F: std::future::Future<Output = std::result::Result<T, ServerFnError>> + 'static,
+    F: std::future::Future<Output = Result<T>> + 'static,
     T: 'static
         + Clone
         + PartialEq
@@ -179,11 +200,14 @@ where
     let mut accumulated: Signal<Vec<I>> = use_signal(move || res.items().clone());
     let has_more = use_memo(move || next_bookmark().is_some());
     let mut loading = use_signal(|| false);
-    let key = use_hook(|| COUNTER.fetch_add(1, Ordering::Relaxed));
+    let key = use_server_cached(|| {
+        use rand::RngExt;
+        rand::rng().random::<u64>()
+    });
 
-    let rsc_sync = rsc;
-    let mut accumulated_sync = accumulated;
-    let mut next_bookmark_sync = next_bookmark;
+    let rsc_sync = rsc.clone();
+    let mut accumulated_sync = accumulated.clone();
+    let mut next_bookmark_sync = next_bookmark.clone();
     let _sync_effect = use_effect(move || {
         if let Some(Ok(res)) = rsc_sync.read().as_ref() {
             accumulated_sync.set(res.items().clone());
@@ -199,7 +223,7 @@ where
         }
 
         spawn(async move {
-            match future(nb.clone()).await {
+            let res = match future(nb.clone()).await {
                 Ok(ret) => {
                     let next = ret.bookmark();
                     let items = ret.items().clone();
@@ -223,14 +247,14 @@ where
                     }
                 }
                 Err(e) => {
-                    tracing::debug!(
+                    debug!(
                         "Effect fetch failed for bookmark: {:?} with error: {:?}",
-                        nb,
-                        e
+                        nb, e
                     );
                 }
             };
             loading.set(false);
+            res
         });
     });
 

@@ -5,7 +5,7 @@ test.describe("Dashboard", () => {
   test("displays page header and welcome section", async ({ page }) => {
     await goto(page, "/dashboard");
 
-    await expect(page.getByText("Biyard Console")).toBeVisible();
+    await expect(page.getByText("Biyard Console", { exact: true })).toBeVisible();
     await expect(
       page.getByText("Welcome to Biyard Console"),
     ).toBeVisible();
