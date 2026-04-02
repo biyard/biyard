@@ -6,8 +6,12 @@ pub fn Card(
     children: Element,
 ) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
-        div { class: "card", "data-slot": "card", ..attributes, {children} }
+        div {
+            class: "flex flex-col py-6 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-900 shadow-[0_2px_10px_rgb(0_0_0/10%)] text-gray-700 dark:text-gray-300 gap-6",
+            "data-slot": "card",
+            ..attributes,
+            {children}
+        }
     }
 }
 
@@ -17,7 +21,12 @@ pub fn CardHeader(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "card-header", "data-slot": "card-header", ..attributes, {children} }
+        div {
+            class: "grid items-start px-6 gap-2 auto-rows-min grid-rows-[auto_auto] has-[[data-slot=card-action]]:grid-cols-[1fr_auto]",
+            "data-slot": "card-header",
+            ..attributes,
+            {children}
+        }
     }
 }
 
@@ -27,7 +36,12 @@ pub fn CardTitle(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "card-title", "data-slot": "card-title", ..attributes, {children} }
+        div {
+            class: "text-base font-semibold leading-none",
+            "data-slot": "card-title",
+            ..attributes,
+            {children}
+        }
     }
 }
 
@@ -38,7 +52,7 @@ pub fn CardDescription(
 ) -> Element {
     rsx! {
         div {
-            class: "card-description",
+            class: "text-gray-500 dark:text-gray-400 text-sm leading-5",
             "data-slot": "card-description",
             ..attributes,
             {children}
@@ -52,7 +66,12 @@ pub fn CardAction(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "card-action", "data-slot": "card-action", ..attributes, {children} }
+        div {
+            class: "col-start-2 row-span-2 place-self-start self-end",
+            "data-slot": "card-action",
+            ..attributes,
+            {children}
+        }
     }
 }
 
@@ -62,7 +81,12 @@ pub fn CardContent(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "card-content", "data-slot": "card-content", ..attributes, {children} }
+        div {
+            class: "px-6",
+            "data-slot": "card-content",
+            ..attributes,
+            {children}
+        }
     }
 }
 
@@ -72,6 +96,11 @@ pub fn CardFooter(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "card-footer", "data-slot": "card-footer", ..attributes, {children} }
+        div {
+            class: "flex items-center px-6",
+            "data-slot": "card-footer",
+            ..attributes,
+            {children}
+        }
     }
 }

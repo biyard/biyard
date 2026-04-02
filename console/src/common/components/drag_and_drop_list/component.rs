@@ -34,7 +34,7 @@ pub fn DragAndDropList(props: DragAndDropListProps) -> Element {
         .map(|item| {
             rsx! {
                 DragIcon {}
-                div { class: "item-body-div", {item} }
+                div { class: "grow text-base font-normal", {item} }
                 if is_removable {
                     RemoveButton {}
                 }
@@ -44,11 +44,13 @@ pub fn DragAndDropList(props: DragAndDropListProps) -> Element {
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
-        drag_and_drop_list::DragAndDropList {
-            items,
-            aria_label: props.aria_label,
-            attributes: props.attributes,
-            {props.children}
+        div { class: "w-full [&_.dnd-list-ul]:pl-0 [&_.dnd-list-item]:flex [&_.dnd-list-item]:box-border [&_.dnd-list-item]:items-center [&_.dnd-list-item]:justify-between [&_.dnd-list-item]:p-4 [&_.dnd-list-item]:text-gray-700 [&_.dnd-list-item]:cursor-grab [&_.dnd-list-item]:list-none [&_.dnd-list-item]:outline-none [&_.dnd-list-item]:select-none dark:[&_.dnd-list-item]:text-gray-300 [&_.dnd-list-item[data-focus-visible=true]]:shadow-[0_0_0_2px_theme(colors.blue.500)] [&_.dnd-list-item:focus-visible]:shadow-[0_0_0_2px_theme(colors.blue.500)] [&_.dnd-list-item[data-is-grabbing=true]]:cursor-grabbing [&_.dnd-list-item[data-is-grabbing=true]]:opacity-60 [&_.dnd-list-item[data-is-grabbing=true]]:outline-2 [&_.dnd-list-item[data-is-grabbing=true]]:outline-dashed [&_.dnd-list-item[data-is-grabbing=true]]:outline-blue-500",
+            drag_and_drop_list::DragAndDropList {
+                items,
+                aria_label: props.aria_label,
+                attributes: props.attributes,
+                {props.children}
+            }
         }
     }
 }
@@ -63,7 +65,7 @@ pub fn DragAndDropListItem(props: DragAndDropListItemProps) -> Element {
 #[component]
 fn DragIcon() -> Element {
     rsx! {
-        div { class: "item-icon-div", aria_hidden: "true",
+        div { class: "flex w-6 items-center mr-4 text-gray-700 dark:text-gray-300", aria_hidden: "true",
             Icon {
                 // equal icon from lucide https://lucide.dev/icons/equal
                 stroke: "var(--secondary-color-4)",
@@ -95,7 +97,7 @@ pub fn RemoveButton(
     let label = format!("Remove item {}", index + 1);
     rsx! {
         button {
-            class: "remove-button",
+            class: "remove-button flex overflow-visible w-6 items-center p-0 border-none ml-4 bg-transparent cursor-pointer focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-blue-500 focus-visible:outline-offset-2",
             aria_label: "{label}",
             onclick: move |_| ctx.remove(index),
             ..attributes,

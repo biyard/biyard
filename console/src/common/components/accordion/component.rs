@@ -9,7 +9,7 @@ pub fn Accordion(props: AccordionProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
         accordion::Accordion {
-            class: "accordion",
+            class: "[contain:inline-size]",
             width: "15rem",
             id: props.id,
             allow_multiple_open: props.allow_multiple_open,
@@ -26,7 +26,7 @@ pub fn Accordion(props: AccordionProps) -> Element {
 pub fn AccordionItem(props: AccordionItemProps) -> Element {
     rsx! {
         accordion::AccordionItem {
-            class: "accordion-item",
+            class: "accordion-item overflow-hidden box-border border-b border-gray-200 dark:border-gray-700 mt-px first:mt-0 last:border-b-0",
             disabled: props.disabled,
             default_open: props.default_open,
             on_change: props.on_change,
@@ -42,12 +42,12 @@ pub fn AccordionItem(props: AccordionItemProps) -> Element {
 pub fn AccordionTrigger(props: AccordionTriggerProps) -> Element {
     rsx! {
         accordion::AccordionTrigger {
-            class: "accordion-trigger",
+            class: "accordion-trigger flex w-full box-border flex-row items-center justify-between p-0 py-4 border-none bg-transparent text-gray-700 dark:text-gray-300 outline-none text-left hover:cursor-pointer hover:underline focus-visible:border-none focus-visible:shadow-[inset_0_0_0_2px_#3b82f6]",
             id: props.id,
             attributes: props.attributes,
             {props.children}
             icon::Icon {
-                class: "accordion-expand-icon",
+                class: "accordion-expand-icon transition-[rotate] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
                 width: "20px",
                 height: "20px",
                 stroke: "var(--secondary-color-4)",
@@ -61,7 +61,7 @@ pub fn AccordionTrigger(props: AccordionTriggerProps) -> Element {
 pub fn AccordionContent(props: AccordionContentProps) -> Element {
     rsx! {
         accordion::AccordionContent {
-            class: "accordion-content",
+            class: "accordion-content grid",
             id: props.id,
             attributes: props.attributes,
             {props.children}

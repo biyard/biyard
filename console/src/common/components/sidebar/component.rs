@@ -240,7 +240,7 @@ pub fn SidebarProvider(
     );
 
     let base = attributes!(div {
-        class: "sidebar-wrapper",
+        class: "sidebar-wrapper flex overflow-hidden w-full h-svh min-h-svh",
         "data-slot": "sidebar-wrapper",
         style: sidebar_style,
     });
@@ -272,7 +272,7 @@ pub fn Sidebar(
 
     if collapsible == SidebarCollapsible::None {
         let base = attributes!(div {
-            class: "sidebar sidebar-static",
+            class: "sidebar sidebar-static flex h-full flex-col",
             "data-slot": "sidebar",
         });
         let merged = merge_attributes(vec![base, attributes]);
@@ -302,7 +302,7 @@ pub fn Sidebar(
                         SheetTitle { "Sidebar" }
                         SheetDescription { "Displays the mobile sidebar." }
                     }
-                    div { class: "sidebar-mobile-inner", {children} }
+                    div { class: "sidebar-mobile-inner flex w-full h-full flex-col", {children} }
                 }
             }
         };
@@ -351,7 +351,7 @@ pub fn SidebarTrigger(
     let ctx = use_sidebar();
 
     let base = attributes!(button {
-        class: "sidebar-trigger",
+        class: "sidebar-trigger inline-flex w-7 h-7 items-center justify-center !p-0 leading-none",
         "data-sidebar": "trigger",
         "data-slot": "sidebar-trigger",
     });
@@ -410,7 +410,7 @@ pub fn SidebarInset(
     children: Element,
 ) -> Element {
     let base = attributes!(main {
-        class: "sidebar-inset",
+        class: "sidebar-inset relative flex w-full flex-1 flex-col bg-white",
         "data-slot": "sidebar-inset",
     });
     let merged = merge_attributes(vec![base, attributes]);
@@ -426,7 +426,7 @@ pub fn SidebarHeader(
     children: Element,
 ) -> Element {
     let base = attributes!(div {
-        class: "sidebar-header",
+        class: "sidebar-header flex flex-col p-2 gap-2",
         "data-slot": "sidebar-header",
         "data-sidebar": "header",
     });
@@ -443,7 +443,7 @@ pub fn SidebarContent(
     children: Element,
 ) -> Element {
     let base = attributes!(div {
-        class: "sidebar-content",
+        class: "sidebar-content flex overflow-hidden overflow-y-auto min-h-0 flex-1 flex-col gap-2",
         "data-slot": "sidebar-content",
         "data-sidebar": "content",
     });
@@ -460,7 +460,7 @@ pub fn SidebarFooter(
     children: Element,
 ) -> Element {
     let base = attributes!(div {
-        class: "sidebar-footer",
+        class: "sidebar-footer flex flex-col p-2 gap-2",
         "data-slot": "sidebar-footer",
         "data-sidebar": "footer",
     });
@@ -495,7 +495,7 @@ pub fn SidebarGroup(
     children: Element,
 ) -> Element {
     let base = attributes!(div {
-        class: "sidebar-group",
+        class: "sidebar-group relative flex min-w-0 flex-col p-2",
         "data-slot": "sidebar-group",
         "data-sidebar": "group",
     });
@@ -556,7 +556,7 @@ pub fn SidebarGroupContent(
     children: Element,
 ) -> Element {
     let base = attributes!(div {
-        class: "sidebar-group-content",
+        class: "sidebar-group-content w-full text-sm",
         "data-slot": "sidebar-group-content",
         "data-sidebar": "group-content",
     });
@@ -573,7 +573,7 @@ pub fn SidebarMenu(
     children: Element,
 ) -> Element {
     let base = attributes!(ul {
-        class: "sidebar-menu",
+        class: "sidebar-menu flex w-full min-w-0 flex-col p-0 m-0 gap-1 list-none",
         "data-slot": "sidebar-menu",
         "data-sidebar": "menu",
     });
@@ -590,7 +590,7 @@ pub fn SidebarMenuItem(
     children: Element,
 ) -> Element {
     let base = attributes!(li {
-        class: "sidebar-menu-item",
+        class: "sidebar-menu-item relative",
         "data-slot": "sidebar-menu-item",
         "data-sidebar": "menu-item",
     });
@@ -786,7 +786,7 @@ pub fn SidebarMenuSubItem(
     children: Element,
 ) -> Element {
     let base = attributes!(li {
-        class: "sidebar-menu-sub-item",
+        class: "sidebar-menu-sub-item relative",
         "data-slot": "sidebar-menu-sub-item",
         "data-sidebar": "menu-sub-item",
     });

@@ -9,7 +9,6 @@ use dioxus_primitives::merge_attributes;
 #[component]
 pub fn Collapsible(props: CollapsibleProps) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
         collapsible::Collapsible {
             keep_mounted: props.keep_mounted,
             default_open: props.default_open,
@@ -27,7 +26,7 @@ pub fn Collapsible(props: CollapsibleProps) -> Element {
 #[component]
 pub fn CollapsibleTrigger(props: CollapsibleTriggerProps) -> Element {
     let base = attributes!(button {
-        class: "collapsible-trigger"
+        class: "flex overflow-hidden w-full box-border flex-row items-center justify-between p-0 py-4 border-none bg-transparent text-gray-700 dark:text-gray-300 outline-none text-left hover:cursor-pointer hover:underline focus-visible:shadow-[inset_0_0_0_2px_#3b82f6]"
     });
     let merged = merge_attributes(vec![base, props.attributes]);
 
@@ -55,7 +54,7 @@ pub fn CollapsibleTrigger(props: CollapsibleTriggerProps) -> Element {
 pub fn CollapsibleContent(props: CollapsibleContentProps) -> Element {
     rsx! {
         collapsible::CollapsibleContent {
-            class: "collapsible-content",
+            class: "contents",
             id: props.id,
             attributes: props.attributes,
             {props.children}
