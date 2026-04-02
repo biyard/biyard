@@ -1,4 +1,5 @@
 use crate::common::types::Partition;
+use crate::features::accounts::AccountType;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
@@ -6,6 +7,8 @@ pub struct AccountResponse {
     pub pk: Partition,
     pub name: String,
     pub email: String,
+    #[serde(default)]
+    pub user_type: AccountType,
     pub created_at: i64,
 }
 

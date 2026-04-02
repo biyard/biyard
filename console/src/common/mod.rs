@@ -11,14 +11,17 @@ pub mod types;
 pub mod utils;
 
 pub mod components;
+pub mod ui;
 
+#[cfg(feature = "server")]
+pub mod blockchain;
 #[cfg(feature = "server")]
 pub mod middlewares;
 #[cfg(feature = "server")]
 pub mod models;
 
 #[cfg(feature = "server")]
-pub use auth::ProjectAuth;
+pub use auth::{ProjectAdminAuth, ProjectAuth, ProjectViewerAuth, SystemAdminAuth};
 pub use config::CommonConfig;
 #[cfg(feature = "server")]
 pub use macros::DynamoEntity;

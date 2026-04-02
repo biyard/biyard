@@ -24,9 +24,12 @@ fn serve(app: fn() -> Element) {
     let cli = cfg.dynamodb();
     let session_layer =
         crate::common::middlewares::session_layer::get_session_layer(cli, cfg.env.to_string());
+    let account_auth_layer = dioxus::fullstack::axum::middleware::from_fn(
+        crate::common::middlewares::account_auth_layer::inject_account,
+    );
 
     let dioxus_router = dioxus::server::router(app);
-    let app = dioxus_router.layer(session_layer);
+    let app = dioxus_router.layer(account_auth_layer).layer(session_layer);
 
     #[cfg(not(feature = "lambda"))]
     dioxus::serve(move || {
