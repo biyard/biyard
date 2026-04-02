@@ -99,6 +99,67 @@ pub(super) fn AboutSection() -> Element {
                         }
                     }
                 }
+
+                // Platform mechanism — HOW Biyard solves it
+                div {
+                    class: "mt-24 reveal",
+                    div {
+                        class: "text-center mb-16",
+                        span { style: "color: #00dfc0; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase;", "How It Works" }
+                        h3 { class: "text-3xl md:text-5xl font-black mt-4", "Biyard는 어떻게 " span { class: "glow-text", "다를까요?" } }
+                    }
+
+                    div {
+                        class: "glass-panel p-10 md:p-14 rounded-3xl",
+                        style: "border-color: rgba(0,223,192,0.1);",
+
+                        // 4-step flow
+                        div {
+                            class: "grid md:grid-cols-4 gap-8 mb-12",
+                            for (i, (icon, title, desc)) in [
+                                ("\u{1F6D2}", "고객이 구매", "기업의 상품/서비스를 구매하면 결제 금액의 2~4%가 자동으로 적립됩니다."),
+                                ("\u{1F3E6}", "트레저리 적립", "적립된 금액이 온체인 트레저리에 누적됩니다. 이것이 토큰 가치의 근간이 됩니다."),
+                                ("\u{2705}", "활동 리워드", "걷기, 매장 방문, SNS 공유 등 활동 인증 시 추가 토큰 리워드가 지급됩니다."),
+                                ("\u{1F4C8}", "가치 상승", "매출이 늘수록 트레저리가 쌓이고, 하한가가 올라갑니다. 모든 홀더의 자산이 함께 성장합니다."),
+                            ].iter().enumerate() {
+                                {
+                                    let delay = format!("transition-delay: {}s;", i as f64 * 0.1);
+                                    rsx! {
+                                        div {
+                                            class: "text-center reveal",
+                                            style: "{delay}",
+                                            div {
+                                                class: "w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center text-2xl",
+                                                style: "background: rgba(0,223,192,0.08); border: 1px solid rgba(0,223,192,0.15);",
+                                                "{icon}"
+                                            }
+                                            div {
+                                                class: "text-xs font-black uppercase tracking-widest mb-2",
+                                                style: "color: #00dfc0;",
+                                                "Step {i}"
+                                            }
+                                            h4 { class: "text-lg font-bold mb-3", "{title}" }
+                                            p { class: "text-sm leading-relaxed", style: "color: #94a3b8;", "{desc}" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Key formula
+                        div {
+                            class: "text-center pt-10 reveal",
+                            style: "border-top: 1px solid rgba(255,255,255,0.05);",
+                            p { class: "text-sm font-bold mb-3", style: "color: #94a3b8;", "핵심 공식" }
+                            p {
+                                class: "text-2xl md:text-3xl font-mono font-black",
+                                style: "color: #00dfc0; text-shadow: 0 0 20px rgba(0,223,192,0.3);",
+                                "Floor Price = Treasury \u{00F7} Supply"
+                            }
+                            p { class: "text-sm mt-4 max-w-xl mx-auto", style: "color: #64748b;", "매출이 지속되는 한 토큰 가치의 바닥이 수학적으로 보장됩니다. 누군가 하한가 이하로 매도하면 트레저리가 자동 매수 후 소각하여 하한가는 절대 하락하지 않습니다." }
+                        }
+                    }
+                }
             }
         }
     }
