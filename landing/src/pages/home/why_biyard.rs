@@ -63,6 +63,26 @@ pub(super) fn WhyBiyardSection() -> Element {
                         }
                     }
                 }
+
+                // Bridge text — connects cycle comparison to Core Innovation
+                div {
+                    class: "mt-24 max-w-3xl mx-auto text-center reveal",
+                    p {
+                        class: "text-lg md:text-xl leading-relaxed mb-6",
+                        style: "color: #94a3b8;",
+                        "Biyard Launchpad는 이 선순환을 가능하게 하는 인프라입니다. 기업은 기존 광고비를 토큰 리워드로 전환하고, 고객은 구매와 활동을 통해 실제 가치가 있는 디지털 자산을 적립합니다."
+                    }
+                    p {
+                        class: "text-lg md:text-xl leading-relaxed mb-6",
+                        style: "color: #cbd5e1;",
+                        "트레저리에 쌓인 매출은 온체인에서 누구나 검증할 수 있고, 스마트 컨트랙트가 하한가를 자동으로 방어합니다. 토큰의 가치가 실제 매출에 연동되기 때문에, 매출이 지속되는 한 가치의 바닥이 보장됩니다."
+                    }
+                    p {
+                        class: "text-base",
+                        style: "color: #64748b;",
+                        "블록체인 지식이 없어도 API 하나로 연동 가능하며, 어떤 업종이든 매출이 있다면 토큰 이코노미를 구축할 수 있습니다."
+                    }
+                }
             }
         }
     }
