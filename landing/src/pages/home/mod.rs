@@ -4,6 +4,7 @@ mod data;
 mod faq;
 mod footer;
 mod hero;
+mod hero_cube;
 mod showcase;
 mod solution;
 mod svgs;
@@ -18,74 +19,65 @@ pub fn Home() -> Element {
     let console_href = console_url();
     rsx! {
         div {
-            style: "min-height: 100vh; background: #0c1018; color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
-            document::Link { rel: "stylesheet", href: asset!("/assets/animations.css") }
-            document::Script { src: asset!("/assets/scroll-reveal.js") }
+            style: "min-height: 100vh; background: transparent; color: white; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden;",
+            document::Link { rel: "stylesheet", href: asset!("/assets/scroll-animations.css") }
+            document::Script { src: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" }
+            document::Script { src: asset!("/assets/three-cube.js") }
+            document::Script { src: asset!("/assets/scroll-animations.js") }
 
-            // Sticky Navigation Bar
+            // Vignette overlay
+            div { class: "vignette-overlay" }
+
+            // Navigation
             nav {
-                style: "position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(12,16,24,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,212,170,0.08); padding: 14px 24px;",
+                style: "position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(2,4,8,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 16px 24px;",
                 div {
-                    class: "max-w-6xl mx-auto flex items-center justify-between",
+                    class: "max-w-7xl mx-auto flex items-center justify-between",
                     a {
                         href: "#",
-                        class: "flex items-center gap-2",
+                        class: "flex items-center gap-2.5",
                         img {
                             src: asset!("/assets/biyard-logo.png"),
                             alt: "Biyard",
-                            style: "width: 28px; height: 28px; flex-shrink: 0;",
+                            style: "width: 28px; height: 28px;",
                         }
                         span {
-                            class: "text-xl font-extrabold",
-                            style: "color: #00d4aa;",
-                            "Biyard"
+                            class: "text-xl font-extrabold italic tracking-tighter",
+                            style: "color: #00dfc0;",
+                            "BIYARD"
                         }
                     }
                     div {
                         class: "hidden md:flex items-center gap-8",
-                        a {
-                            href: "#about",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "About"
-                        }
-                        a {
-                            href: "#solution",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "Solution"
-                        }
-                        a {
-                            href: "#showcase",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "Showcase"
-                        }
-                        a {
-                            href: "#faq",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "FAQ"
+                        for (label, href) in [("About", "#about"), ("Solution", "#solution"), ("Showcase", "#showcase"), ("FAQ", "#faq")] {
+                            a {
+                                href: "{href}",
+                                class: "text-xs font-bold uppercase tracking-widest",
+                                style: "color: #475569; transition: color 0.2s;",
+                                "{label}"
+                            }
                         }
                     }
                     a {
                         href: "{console_href}",
-                        class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold",
-                        style: "background: #00d4aa; color: #0c1018;",
+                        class: "btn-hyper px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest interactive",
                         "Console"
                     }
                 }
             }
 
-            // Content
-            hero::HeroSection {}
-            about::AboutSection {}
-            solution::SolutionSection {}
-            showcase::ShowcaseSection {}
-            why_biyard::WhyBiyardSection {}
-            faq::FaqSection {}
-            cta::CtaSection {}
-            footer::Footer {}
+            // Content wrapper (above Three.js canvas)
+            div {
+                class: "content-wrapper",
+                hero::HeroSection {}
+                about::AboutSection {}
+                why_biyard::WhyBiyardSection {}
+                solution::SolutionSection {}
+                showcase::ShowcaseSection {}
+                faq::FaqSection {}
+                cta::CtaSection {}
+                footer::Footer {}
+            }
         }
     }
 }
