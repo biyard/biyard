@@ -6,6 +6,14 @@ pub(super) fn ShowcaseSection() -> Element {
     let accents: [&str; 3] = ["#00dfc0", "#a78bfa", "#60a5fa"];
     let icons: [&str; 3] = ["\u{1F45F}", "\u{2615}", "\u{1F454}"];
     let labels: [&str; 3] = ["Fashion & Walking", "F&B & Lifestyle", "Fashion & Retail"];
+    // Colorful backgrounds for the visual card area (like Consensys product cards)
+    let card_bgs: [&str; 3] = [
+        "linear-gradient(135deg, #0d3b2e 0%, #00dfc0 50%, #064e3b 100%)",
+        "linear-gradient(135deg, #2e1065 0%, #a78bfa 50%, #4c1d95 100%)",
+        "linear-gradient(135deg, #172554 0%, #60a5fa 50%, #1e3a5f 100%)",
+    ];
+    // Stagger: 1st card left-aligned, 2nd center, 3rd right-aligned
+    let offsets: [&str; 3] = ["md:mr-auto", "md:mx-auto", "md:ml-auto"];
 
     rsx! {
         section {
@@ -18,81 +26,108 @@ pub(super) fn ShowcaseSection() -> Element {
                     span { style: "color: #00dfc0; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase;", "Use Cases" }
                     h2 { class: "text-4xl md:text-6xl font-black leading-tight mt-4", "다양한 브랜드," br {} "하나의 플랫폼." }
                 }
+
+                // Staggered card grid
                 div {
-                    class: "space-y-12 interactive",
+                    class: "space-y-16 interactive",
                     for (bi, brand) in BRAND_SHOWCASES.iter().enumerate() {
                         {
                             let accent = accents[bi];
                             let icon = icons[bi];
                             let label = labels[bi];
+                            let bg = card_bgs[bi];
+                            let offset = offsets[bi];
                             let six_month = format_won(brand.scenario.six_month_total);
                             let treasury = format_usd(brand.stats.treasury);
                             let users = format_number(brand.stats.users);
                             let floor = format!("${:.4}", brand.stats.floor_price);
-                            let delay = format!("transition-delay: {}s;", bi as f64 * 0.1);
+                            let delay = format!("transition-delay: {}s;", bi as f64 * 0.15);
 
                             rsx! {
                                 div {
-                                    class: "glass-panel p-8 md:p-14 rounded-3xl grid lg:grid-cols-2 gap-16 items-center reveal",
-                                    style: "border-color: {accent}15; {delay}",
+                                    class: "max-w-4xl {offset} reveal",
+                                    style: "{delay}",
 
-                                    // Left: brand story
+                                    // Visual card (colorful image area)
                                     div {
-                                        class: "order-2 lg:order-1",
+                                        class: "rounded-t-3xl overflow-hidden relative",
+                                        style: "background: {bg}; height: 280px;",
+
+                                        // Large centered icon
                                         div {
-                                            class: "flex items-center gap-4 mb-8",
-                                            div { class: "w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-xl", style: "background: rgba(255,255,255,0.05);", "{icon}" }
+                                            class: "absolute inset-0 flex items-center justify-center",
+                                            span { style: "font-size: 120px; opacity: 0.4; filter: drop-shadow(0 0 30px rgba(0,0,0,0.5));", "{icon}" }
+                                        }
+
+                                        // Link button (top-right)
+                                        div {
+                                            class: "absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center interactive",
+                                            style: "background: rgba(255,255,255,0.9);",
+                                            span { style: "color: #020408; font-size: 14px; font-weight: 900;", "\u{2197}" }
+                                        }
+
+                                        // Reward badge (bottom-right)
+                                        div {
+                                            class: "absolute bottom-4 right-4 px-5 py-3 rounded-2xl",
+                                            style: "background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);",
+                                            div { style: "font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px;", "6개월 리워드" }
+                                            div { class: "text-2xl font-mono font-black", style: "color: {accent};", "{six_month}" }
+                                        }
+                                    }
+
+                                    // Info card (below image)
+                                    div {
+                                        class: "glass-panel rounded-b-3xl p-8",
+                                        style: "border-color: {accent}15; border-top: none;",
+
+                                        // Brand header
+                                        div {
+                                            class: "flex items-center justify-between mb-4",
                                             div {
-                                                h4 { class: "font-bold text-xl uppercase tracking-tighter", "{brand.brand}" }
-                                                p { style: "color: {accent}; font-size: 10px; font-weight: 900; letter-spacing: 0.3em; text-transform: uppercase;", "{label}" }
+                                                span {
+                                                    class: "font-black text-xs uppercase tracking-widest",
+                                                    style: "color: {accent};",
+                                                    "{brand.brand}"
+                                                }
+                                                span {
+                                                    class: "ml-3 text-xs",
+                                                    style: "color: #475569;",
+                                                    "{label}"
+                                                }
+                                            }
+                                            // Stats row
+                                            div {
+                                                class: "hidden md:flex gap-6",
+                                                for (stat_label, stat_val) in [("Treasury", treasury.as_str()), ("Users", users.as_str()), ("Floor", floor.as_str())] {
+                                                    div {
+                                                        class: "text-right",
+                                                        div { style: "font-size: 8px; color: #475569; text-transform: uppercase;", "{stat_label}" }
+                                                        div { class: "text-xs font-mono font-bold", "{stat_val}" }
+                                                    }
+                                                }
                                             }
                                         }
+
+                                        // Tagline + quote
                                         h3 {
-                                            class: "text-3xl md:text-5xl font-bold mb-8 italic",
-                                            style: "color: {accent};",
-                                            "\"{brand.tagline}\""
+                                            class: "text-xl md:text-2xl font-bold mb-4",
+                                            "{brand.tagline}"
                                         }
-                                        blockquote {
-                                            class: "pl-6 mb-10",
-                                            style: "border-left: 4px solid {accent};",
-                                            p { class: "italic text-sm leading-relaxed", style: "color: #cbd5e1;", "\"{brand.customer_quote}\"" }
-                                            cite { class: "text-xs mt-2 block", style: "color: #64748b;", "\u{2014} {brand.customer_name}" }
+                                        p {
+                                            class: "text-sm leading-relaxed mb-6",
+                                            style: "color: #94a3b8;",
+                                            "\u{201C}{brand.customer_quote}\u{201D} \u{2014} "
+                                            span { style: "color: #64748b;", "{brand.customer_name}" }
                                         }
+
+                                        // Step pills
                                         div {
                                             class: "flex flex-wrap gap-2",
                                             for step in brand.steps.iter() {
                                                 span {
-                                                    class: "px-4 py-2 rounded-full border font-bold uppercase",
-                                                    style: "border-color: {accent}30; color: {accent}; font-size: 10px;",
+                                                    class: "px-3 py-1.5 rounded-full font-bold uppercase",
+                                                    style: "background: {accent}10; border: 1px solid {accent}20; color: {accent}; font-size: 9px;",
                                                     "{step.icon} {step.title}"
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // Right: metrics + large icon
-                                    div {
-                                        class: "order-1 lg:order-2 glass-panel p-10 rounded-3xl relative overflow-hidden",
-                                        style: "background: linear-gradient(to bottom right, {accent}08, transparent);",
-                                        // Large decorative icon
-                                        div {
-                                            style: "position: absolute; top: -20px; right: -20px; font-size: 120px; opacity: 0.08; pointer-events: none;",
-                                            "{icon}"
-                                        }
-                                        div { style: "font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 900; margin-bottom: 16px;", "6개월 누적 리워드" }
-                                        div { class: "text-5xl font-mono font-black mb-10", style: "color: {accent}; text-shadow: 0 0 20px {accent}40;", "{six_month}" }
-                                        div {
-                                            class: "grid grid-cols-3 gap-4 pt-10",
-                                            style: "border-top: 1px solid rgba(255,255,255,0.05);",
-                                            for (stat_label, stat_val, is_accent) in [("Treasury", treasury.as_str(), false), ("Users", users.as_str(), false), ("Floor", floor.as_str(), true)] {
-                                                div {
-                                                    class: "text-center",
-                                                    div { style: "font-size: 9px; color: #64748b; text-transform: uppercase; margin-bottom: 8px;", "{stat_label}" }
-                                                    div {
-                                                        class: "text-sm font-bold font-mono",
-                                                        style: if is_accent { format!("color: {};", accent) } else { "color: white;".to_string() },
-                                                        "{stat_val}"
-                                                    }
                                                 }
                                             }
                                         }
