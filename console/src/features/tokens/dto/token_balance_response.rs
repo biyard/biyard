@@ -6,6 +6,7 @@ pub struct TokenBalanceResponse {
     pub project_id: Partition,
     pub meta_user_id: String,
     pub balance: i64,
+    pub tx_hash: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
 }

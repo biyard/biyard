@@ -5,7 +5,7 @@ use dioxus::prelude::*;
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, ProjectAuth};
 #[cfg(feature = "server")]
-use crate::features::tokens::{ProjectToken, TokenBalance, TokenError};
+use crate::features::tokens::{ProjectToken, TokenError};
 
 #[put("/v1/projects/:project_id/tokens/:meta_user_id", auth: ProjectAuth)]
 pub async fn mint_token_handler(
@@ -19,35 +19,41 @@ pub async fn mint_token_handler(
     let project = auth.project;
 
     let (token_pk, token_sk) = ProjectToken::keys(project.pk.clone());
-    let mut token = ProjectToken::get(cli, &token_pk, Some(token_sk))
+    let token = ProjectToken::get(cli, &token_pk, Some(token_sk))
         .await?
         .ok_or(TokenError::TokenNotFound)?;
 
-    token.mint(amount);
+    let (contract_address, chain_id) = match (&token.contract_address, token.chain_id) {
+        (Some(addr), Some(chain)) => (addr.clone(), chain),
+        _ => return Err(TokenError::NotDeployed.into()),
+    };
 
-    ProjectToken::updater(token.pk.clone(), token.sk.clone())
-        .with_total_supply(token.total_supply)
-        .with_circulating_supply(token.circulating_supply)
-        .with_updated_at(token.updated_at)
-        .execute(cli)
-        .await?;
-
-    let (balance_pk, balance_sk) = TokenBalance::keys(project.pk.clone(), meta_user_id.clone());
-    let mut balance = TokenBalance::get(cli, &balance_pk, Some(balance_sk))
-        .await?
-        .unwrap_or_else(|| TokenBalance::new(project.pk.clone(), meta_user_id));
-
-    balance.add_tokens(amount);
-
-    if balance.created_at == balance.updated_at {
-        balance.create(cli).await?;
+    let to_address = if meta_user_id.starts_with("0x") && meta_user_id.len() == 42 {
+        meta_user_id.clone()
     } else {
-        TokenBalance::updater(balance.pk.clone(), balance.sk.clone())
-            .with_balance(balance.balance)
-            .with_updated_at(balance.updated_at)
-            .execute(cli)
-            .await?;
-    }
+        let wallet: ethers::signers::LocalWallet = std::env::var("DEPLOYER_PRIVATE_KEY")
+            .unwrap_or_default()
+            .parse()
+            .map_err(|_| TokenError::MintFailed("Invalid deployer key".to_string()))?;
+        format!("{:?}", ethers::utils::secret_key_to_address(&wallet.signer()))
+    };
 
-    Ok(balance.into())
+    let hash = crate::common::blockchain::mint_on_chain(
+        chain_id,
+        &contract_address,
+        &to_address,
+        amount.max(0) as u64,
+    )
+    .await
+    .map_err(|e| TokenError::MintFailed(e))?;
+
+    let now = chrono::Utc::now().timestamp();
+    Ok(TokenBalanceResponse {
+        project_id: project.pk.clone(),
+        meta_user_id,
+        balance: amount,
+        tx_hash: Some(format!("{hash:?}")),
+        created_at: now,
+        updated_at: now,
+    })
 }

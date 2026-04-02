@@ -30,6 +30,9 @@ pub enum EntityType {
     MonthlyPointAggregation,
     User(String),
 
+    // Token claim (deduplication)
+    TxClaim(String),
+
     // Update
     Update,
 

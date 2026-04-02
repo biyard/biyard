@@ -42,6 +42,7 @@ lambda_http = { version = "1", optional = true }
 bcrypt = { version = "0.16", optional = true }
 sha3 = { version = "0.10.8", optional = true }
 hex = { version = "0.4.3", optional = true }
+ethers = { workspace = true, optional = true }
 
 # Web-only dependencies
 gloo-timers = { version = "0.3", features = ["futures"], optional = true }
@@ -70,6 +71,7 @@ server = [
     "aws-sdk-dynamodb",
     "bcrypt",
     "dioxus/server",
+    "ethers",
     "hex",
     "reqwest",
     "schemars",
