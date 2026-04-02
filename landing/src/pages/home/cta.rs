@@ -20,10 +20,9 @@ pub(super) fn CtaSection() -> Element {
                     h2 {
                         class: "text-4xl md:text-7xl font-black mb-12 mt-10",
                         style: "line-height: 1.1;",
-                        "매출이 가치를 만드는"
+                        "매출 기반 토큰 경제,"
                         br {}
-                        span { class: "glow-text tracking-tighter", "새로운 시장" }
-                        "을 시작하세요."
+                        span { class: "glow-text tracking-tighter", "지금 시작하세요." }
                     }
                     p { class: "text-lg md:text-xl mb-16 max-w-2xl mx-auto leading-relaxed", style: "color: #94a3b8;", "매출 기반 토큰 이코노미로 브랜드와 고객이 함께 성장합니다. 블록체인 지식 없이도 5분 만에 연동." }
                     div {

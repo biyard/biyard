@@ -11,10 +11,9 @@ pub(super) fn WhyBiyardSection() -> Element {
                     class: "text-center mb-20 reveal",
                     h2 {
                         class: "text-4xl md:text-6xl font-black mb-6",
-                        "우리는 이 문제를"
+                        "Biyard는 이 구조를"
                         br {}
-                        span { class: "glow-text tracking-tighter", "근본적으로 해결" }
-                        "합니다."
+                        span { class: "glow-text tracking-tighter", "완전히 뒤집습니다." }
                     }
                 }
                 div {
