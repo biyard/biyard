@@ -2,10 +2,10 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, thiserror::Error, Serialize, Deserialize)]
 pub enum ProjectError {
-    #[error("Project not found")]
+    #[error("Brand not found")]
     ProjectNotFound,
 
-    #[error("Project access denied")]
+    #[error("Brand access denied")]
     ProjectAccessDenied,
 
     #[error("Invalid exchange rate")]

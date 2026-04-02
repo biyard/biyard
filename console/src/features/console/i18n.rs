@@ -8,8 +8,8 @@ translate! {
         ko: "대시보드",
     },
     projects: {
-        en: "Projects",
-        ko: "프로젝트",
+        en: "Brands",
+        ko: "브랜드",
     },
     credentials: {
         en: "Credentials",
@@ -36,8 +36,8 @@ translate! {
         ko: "Biyard 콘솔에 오신 것을 환영합니다",
     },
     welcome_description: {
-        en: "Manage your projects, credentials, and account settings.",
-        ko: "프로젝트, 인증정보, 계정 설정을 관리하세요.",
+        en: "Manage your brands, credentials, and account settings.",
+        ko: "브랜드, 인증정보, 계정 설정을 관리하세요.",
     },
     my_account: {
         en: "My Account",
@@ -48,12 +48,12 @@ translate! {
         ko: "빠른 작업",
     },
     my_projects: {
-        en: "My Projects",
-        ko: "내 프로젝트",
+        en: "My Brands",
+        ko: "내 브랜드",
     },
     my_projects_desc: {
-        en: "Create and manage your blockchain projects",
-        ko: "블록체인 프로젝트 생성 및 관리",
+        en: "Create and manage your blockchain brands",
+        ko: "블록체인 브랜드 생성 및 관리",
     },
     api_credentials: {
         en: "API Credentials",

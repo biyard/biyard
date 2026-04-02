@@ -12,7 +12,9 @@ pub async fn update_project_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     name: Option<String>,
     description: Option<String>,
+    brand_logo_url: Option<String>,
     monthly_token_supply: Option<i64>,
+    treasury_reserve_rate: Option<f64>,
     status: Option<ProjectStatus>,
 ) -> Result<ProjectResponse> {
     let config = CommonConfig::default();
@@ -27,8 +29,14 @@ pub async fn update_project_handler(
     if let Some(description) = description {
         updater = updater.with_description(description);
     }
+    if let Some(brand_logo_url) = brand_logo_url {
+        updater = updater.with_brand_logo_url(brand_logo_url);
+    }
     if let Some(monthly_token_supply) = monthly_token_supply {
         updater = updater.with_monthly_token_supply(monthly_token_supply);
+    }
+    if let Some(treasury_reserve_rate) = treasury_reserve_rate {
+        updater = updater.with_treasury_reserve_rate(treasury_reserve_rate.clamp(0.0, 1.0));
     }
     if let Some(status) = status {
         updater = updater.with_status(status);

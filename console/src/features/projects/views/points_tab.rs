@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
+use crate::common::ui::*;
 use crate::common::ProjectPartition;
 use crate::features::projects::i18n::ProjectsTranslate;
 
@@ -16,16 +17,18 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
 
     if list.items.is_empty() {
         rsx! {
-            div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-12 text-center",
-                svg {
-                    class: "mx-auto h-12 w-12 text-gray-400",
-                    xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24",
-                    view_box: "0 0 24 24", fill: "none", stroke: "currentColor",
-                    stroke_width: "2", stroke_linecap: "round", stroke_linejoin: "round",
-                    polygon { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" }
-                }
-                h3 { class: "mt-2 text-sm font-medium text-gray-900 dark:text-white", {t.no_transactions} }
-                p { class: "mt-1 text-sm text-gray-500 dark:text-gray-400", {t.no_transactions_desc} }
+            EmptyState {
+                icon: rsx! {
+                    svg {
+                        class: "mx-auto h-12 w-12 text-gray-400",
+                        xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24",
+                        view_box: "0 0 24 24", fill: "none", stroke: "currentColor",
+                        stroke_width: "2", stroke_linecap: "round", stroke_linejoin: "round",
+                        polygon { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" }
+                    }
+                },
+                title: t.no_transactions.to_string(),
+                description: t.no_transactions_desc.to_string(),
             }
         }
     } else {
@@ -36,17 +39,15 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                 }
                 div { class: "overflow-x-auto",
                     table { class: "min-w-full divide-y divide-gray-200 dark:divide-gray-700",
-                        thead { class: "bg-gray-50 dark:bg-gray-700",
-                            tr {
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.transaction_type} }
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.user_id} }
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.amount} }
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.month} }
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.description} }
-                                th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase", {t.created_at} }
-                            }
+                        TableHead {
+                            TableHeadCell { {t.transaction_type} }
+                            TableHeadCell { {t.user_id} }
+                            TableHeadCell { {t.amount} }
+                            TableHeadCell { {t.month} }
+                            TableHeadCell { {t.description} }
+                            TableHeadCell { {t.created_at} }
                         }
-                        tbody { class: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700",
+                        TableBody {
                             for tx in list.items.iter() {
                                 {
                                     let tx_type = tx.transaction_type.to_string();
@@ -62,7 +63,7 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     let created = format_timestamp(tx.created_at);
                                     rsx! {
                                         tr {
-                                            td { class: "px-6 py-4 whitespace-nowrap",
+                                            TableCell {
                                                 div { class: "flex items-center",
                                                     svg {
                                                         class: format!("h-4 w-4 {tx_type_icon_color}"),
@@ -77,21 +78,21 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                     }
                                                 }
                                             }
-                                            td { class: "px-6 py-4 whitespace-nowrap",
+                                            TableCell {
                                                 span { class: "text-sm text-gray-900 dark:text-white", "{user_id}" }
                                                 if let Some(ref target_id) = target {
                                                     span { class: "text-sm text-gray-500 dark:text-gray-400", " → {target_id}" }
                                                 }
                                             }
-                                            td { class: "px-6 py-4 whitespace-nowrap",
+                                            TableCell {
                                                 span {
                                                     class: format!("text-sm font-medium {amount_color}"),
                                                     "{format_amount(&tx_type, amount)}"
                                                 }
                                             }
-                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", "{month}" }
-                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", "{desc}" }
-                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", "{created}" }
+                                            TableCell { class: "text-sm text-gray-500 dark:text-gray-400", "{month}" }
+                                            TableCell { class: "text-sm text-gray-500 dark:text-gray-400", "{desc}" }
+                                            TableCell { class: "text-sm text-gray-500 dark:text-gray-400", "{created}" }
                                         }
                                     }
                                 }
@@ -148,26 +149,4 @@ fn format_amount(tx_type: &str, amount: i64) -> String {
         "Deduct" => format!("-{}", format_number(amount)),
         _ => format_number(amount),
     }
-}
-
-fn format_timestamp(ts: i64) -> String {
-    let secs = ts / 1000;
-    match chrono::DateTime::from_timestamp(secs, 0) {
-        Some(dt) => dt.format("%Y-%m-%d %H:%M").to_string(),
-        None => ts.to_string(),
-    }
-}
-
-fn format_number(n: i64) -> String {
-    let s = n.to_string();
-    let bytes = s.as_bytes();
-    let mut result = String::new();
-    let len = bytes.len();
-    for (i, &b) in bytes.iter().enumerate() {
-        if i > 0 && (len - i) % 3 == 0 {
-            result.push(',');
-        }
-        result.push(b as char);
-    }
-    result
 }
