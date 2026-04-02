@@ -75,10 +75,11 @@ pub fn Home() -> Element {
                 why_biyard::WhyBiyardSection {}
                 solution::SolutionSection {}
                 showcase::ShowcaseSection {}
-                faq::FaqSection {}
                 cta::CtaSection {}
+                faq::FaqSection {}
                 partners::PartnersSection {}
                 footer::Footer {}
+
             }
         }
     }
