@@ -88,6 +88,16 @@ html, body {
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-icon { transition: transform 0.3s ease; }
 
+/* Logo flow animations */
+@keyframes flowLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes flowRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .ui-section { min-height: auto; padding: 60px 0; }

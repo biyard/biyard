@@ -5,6 +5,7 @@ mod faq;
 mod footer;
 mod hero;
 mod hero_cube;
+mod partners;
 mod showcase;
 mod solution;
 mod svgs;
@@ -76,6 +77,7 @@ pub fn Home() -> Element {
                 showcase::ShowcaseSection {}
                 faq::FaqSection {}
                 cta::CtaSection {}
+                partners::PartnersSection {}
                 footer::Footer {}
             }
         }
