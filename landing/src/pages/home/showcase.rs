@@ -137,6 +137,47 @@ pub(super) fn ShowcaseSection() -> Element {
                         }
                     }
                 }
+
+                // Why these examples + any business can join
+                div {
+                    class: "mt-24 max-w-4xl mx-auto reveal",
+                    div {
+                        class: "glass-panel p-10 md:p-14 rounded-3xl text-center",
+                        style: "border-color: rgba(0,223,192,0.1);",
+                        h3 {
+                            class: "text-2xl md:text-3xl font-black mb-6",
+                            "왜 이 브랜드들을 "
+                            span { class: "glow-text", "예시" }
+                            "로 들었을까요?"
+                        }
+                        p {
+                            class: "text-base leading-relaxed mb-6",
+                            style: "color: #94a3b8;",
+                            "신발, 커피, 패션 — 이 세 브랜드는 고객이 매일 반복적으로 구매하고 활동하는 대표적인 업종입니다. Biyard의 토큰 이코노미는 이런 일상적 소비 행위를 자산 축적으로 전환합니다."
+                        }
+                        p {
+                            class: "text-base leading-relaxed mb-8",
+                            style: "color: #cbd5e1;",
+                            "하지만 이 세 가지는 시작일 뿐입니다. "
+                            span { class: "font-bold", style: "color: #00dfc0;", "매출이 발생하는 모든 비즈니스" }
+                            "가 대상입니다. 헬스케어, 교육, 물류, 식품, 구독 서비스 등 업종에 제한이 없으며, RESTful API 하나로 기존 POS나 앱에 연동할 수 있습니다."
+                        }
+                        div {
+                            class: "flex flex-wrap justify-center gap-3",
+                            for (name, icon) in [
+                                ("헬스케어", "\u{1FA7A}"), ("교육", "\u{1F4DA}"), ("물류", "\u{1F69A}"),
+                                ("식품", "\u{1F35C}"), ("구독서비스", "\u{1F4E6}"), ("엔터테인먼트", "\u{1F3AC}"),
+                                ("뷰티", "\u{1F484}"), ("여행", "\u{2708}\u{FE0F}"),
+                            ] {
+                                span {
+                                    class: "px-4 py-2 rounded-full text-xs font-bold",
+                                    style: "background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: #94a3b8;",
+                                    "{icon} {name}"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
