@@ -1,10 +1,15 @@
 use dioxus::prelude::*;
+use dioxus_translate::use_translate;
+
 use super::data::console_url;
+use super::i18n::CtaTranslate;
 use crate::Route;
 
 #[component]
 pub(super) fn CtaSection() -> Element {
     let console_href = console_url();
+    let t: CtaTranslate = use_translate();
+
     rsx! {
         section {
             class: "ui-section px-6 md:px-24",
@@ -20,23 +25,23 @@ pub(super) fn CtaSection() -> Element {
                     h2 {
                         class: "text-4xl md:text-7xl font-black mb-12 mt-10",
                         style: "line-height: 1.1;",
-                        "매출 기반 토큰 경제,"
+                        "{t.heading_1}"
                         br {}
-                        span { class: "glow-text tracking-tighter", "지금 시작하세요." }
+                        span { class: "glow-text tracking-tighter", "{t.heading_accent}" }
                     }
-                    p { class: "text-lg md:text-xl mb-16 max-w-2xl mx-auto leading-relaxed", style: "color: #94a3b8;", "매출 기반 토큰 이코노미로 브랜드와 고객이 함께 성장합니다. 블록체인 지식 없이도 5분 만에 연동." }
+                    p { class: "text-lg md:text-xl mb-16 max-w-2xl mx-auto leading-relaxed", style: "color: #94a3b8;", "{t.subtitle}" }
                     div {
                         class: "flex flex-col sm:flex-row gap-6 justify-center interactive",
                         a {
                             href: "{console_href}",
                             class: "btn-hyper px-16 py-6 rounded-full font-black text-base uppercase tracking-widest text-center",
                             style: "box-shadow: 0 0 40px rgba(0,223,192,0.3);",
-                            "Console로 이동하기 \u{2192}"
+                            "{t.cta_console}"
                         }
                         Link {
                             to: Route::Pricing {},
                             class: "glass-panel px-16 py-6 rounded-full font-bold text-base text-center interactive",
-                            "요금제 보기"
+                            "{t.cta_pricing}"
                         }
                     }
                 }

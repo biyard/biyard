@@ -1,11 +1,14 @@
 use dioxus::prelude::*;
+use dioxus_translate::use_translate;
 
 use super::data::console_url;
 use super::hero_cube::HeroCubeGroup;
+use super::i18n::HeroTranslate;
 
 #[component]
 pub(super) fn HeroSection() -> Element {
     let console_href = console_url();
+    let t: HeroTranslate = use_translate();
     rsx! {
         // Three.js canvas — fixed behind everything
         div {
@@ -29,7 +32,7 @@ pub(super) fn HeroSection() -> Element {
                     }
                     span {
                         style: "color: #00dfc0; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase;",
-                        "Biyard Launchpad"
+                        "{t.badge}"
                     }
                 }
 
@@ -37,17 +40,17 @@ pub(super) fn HeroSection() -> Element {
                 h1 {
                     class: "text-5xl md:text-8xl font-black mb-10 reveal active",
                     style: "line-height: 1.1;",
-                    "매출이 "
-                    span { class: "glow-text italic", "토큰의 가치가 되는" }
+                    "{t.headline_1}"
+                    span { class: "glow-text italic", "{t.headline_accent}" }
                     br {}
-                    "시대를 만듭니다."
+                    "{t.headline_2}"
                 }
 
                 // Description
                 p {
                     class: "text-lg md:text-2xl mb-12 leading-relaxed max-w-3xl reveal active",
                     style: "color: #94a3b8; transition-delay: 0.2s;",
-                    "실제 매출에 연동된 토큰 이코노미로, 고객은 주주가 되고 브랜드는 함께 성장합니다. Biyard는 기업과 소비자를 연결하는 가장 투명한 분산형 인프라를 제공합니다."
+                    "{t.subtitle}"
                 }
 
                 // Buttons
@@ -57,12 +60,12 @@ pub(super) fn HeroSection() -> Element {
                     a {
                         href: "{console_href}",
                         class: "btn-hyper px-12 py-5 rounded-sm font-black text-sm uppercase tracking-widest text-center",
-                        "Console 시작하기"
+                        "{t.cta_console}"
                     }
                     a {
                         href: "#about",
                         class: "glass-panel px-12 py-5 rounded-sm font-bold text-sm text-center",
-                        "자세히 알아보기"
+                        "{t.cta_learn}"
                     }
                 }
             }
