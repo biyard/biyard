@@ -6,10 +6,10 @@ test.describe("Sidebar Navigation", () => {
     await goto(page, "/dashboard");
     await expect(page.getByText("Biyard Console", { exact: true }).first()).toBeVisible();
 
-    // Navigate to Projects via sidebar
-    await page.getByRole("link", { name: "Projects", exact: true }).click();
+    // Navigate to Brands via sidebar
+    await page.getByRole("link", { name: "Brands", exact: true }).click();
     await page.waitForURL("**/projects");
-    await expect(page.getByText("Projects").first()).toBeVisible();
+    await expect(page.getByText("Brands").first()).toBeVisible();
 
     // Navigate to Credentials via sidebar
     await page.getByRole("link", { name: "Credentials", exact: true }).click();
