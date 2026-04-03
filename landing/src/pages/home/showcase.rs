@@ -1,5 +1,8 @@
 use dioxus::prelude::*;
+use dioxus_translate::use_translate;
+
 use super::data::{format_number, format_usd, format_won, BRAND_SHOWCASES};
+use super::i18n::ShowcaseTranslate;
 
 #[component]
 pub(super) fn ShowcaseSection() -> Element {
@@ -14,6 +17,7 @@ pub(super) fn ShowcaseSection() -> Element {
     ];
     // Stagger: 1st card left-aligned, 2nd center, 3rd right-aligned
     let offsets: [&str; 3] = ["md:mr-auto", "md:mx-auto", "md:ml-auto"];
+    let t: ShowcaseTranslate = use_translate();
 
     rsx! {
         section {
@@ -23,8 +27,8 @@ pub(super) fn ShowcaseSection() -> Element {
                 class: "max-w-6xl w-full mx-auto",
                 div {
                     class: "text-center mb-24 reveal",
-                    span { style: "color: #00dfc0; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase;", "Use Cases" }
-                    h2 { class: "text-4xl md:text-6xl font-black leading-tight mt-4", "다양한 브랜드," br {} "하나의 플랫폼." }
+                    span { style: "color: #00dfc0; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase;", "{t.section_label}" }
+                    h2 { class: "text-4xl md:text-6xl font-black leading-tight mt-4", "{t.section_title_1}" br {} "{t.section_title_2}" }
                 }
 
                 // Staggered card grid
@@ -70,7 +74,7 @@ pub(super) fn ShowcaseSection() -> Element {
                                         div {
                                             class: "absolute bottom-4 right-4 px-5 py-3 rounded-2xl",
                                             style: "background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);",
-                                            div { style: "font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px;", "6개월 리워드" }
+                                            div { style: "font-size: 9px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 4px;", "{t.six_month_reward}" }
                                             div { class: "text-2xl font-mono font-black", style: "color: {accent};", "{six_month}" }
                                         }
                                     }
@@ -146,28 +150,28 @@ pub(super) fn ShowcaseSection() -> Element {
                         style: "border-color: rgba(0,223,192,0.1);",
                         h3 {
                             class: "text-2xl md:text-3xl font-black mb-6",
-                            "왜 이 브랜드들을 "
-                            span { class: "glow-text", "예시" }
-                            "로 들었을까요?"
+                            "{t.why_examples_1}"
+                            span { class: "glow-text", "{t.why_examples_accent}" }
+                            "{t.why_examples_2}"
                         }
                         p {
                             class: "text-base leading-relaxed mb-6",
                             style: "color: #94a3b8;",
-                            "신발, 커피, 패션 — 이 세 브랜드는 고객이 매일 반복적으로 구매하고 활동하는 대표적인 업종입니다. Biyard의 토큰 이코노미는 이런 일상적 소비 행위를 자산 축적으로 전환합니다."
+                            "{t.why_examples_desc_1}"
                         }
                         p {
                             class: "text-base leading-relaxed mb-8",
                             style: "color: #cbd5e1;",
-                            "하지만 이 세 가지는 시작일 뿐입니다. "
-                            span { class: "font-bold", style: "color: #00dfc0;", "매출이 발생하는 모든 비즈니스" }
-                            "가 대상입니다. 헬스케어, 교육, 물류, 식품, 구독 서비스 등 업종에 제한이 없으며, RESTful API 하나로 기존 POS나 앱에 연동할 수 있습니다."
+                            "{t.why_examples_desc_2_prefix}"
+                            span { class: "font-bold", style: "color: #00dfc0;", "{t.why_examples_desc_2_highlight}" }
+                            "{t.why_examples_desc_2_suffix}"
                         }
                         div {
                             class: "flex flex-wrap justify-center gap-3",
                             for (name, icon) in [
-                                ("헬스케어", "\u{1FA7A}"), ("교육", "\u{1F4DA}"), ("물류", "\u{1F69A}"),
-                                ("식품", "\u{1F35C}"), ("구독서비스", "\u{1F4E6}"), ("엔터테인먼트", "\u{1F3AC}"),
-                                ("뷰티", "\u{1F484}"), ("여행", "\u{2708}\u{FE0F}"),
+                                (t.industry_healthcare, "\u{1FA7A}"), (t.industry_education, "\u{1F4DA}"), (t.industry_logistics, "\u{1F69A}"),
+                                (t.industry_food, "\u{1F35C}"), (t.industry_subscription, "\u{1F4E6}"), (t.industry_entertainment, "\u{1F3AC}"),
+                                (t.industry_beauty, "\u{1F484}"), (t.industry_travel, "\u{2708}\u{FE0F}"),
                             ] {
                                 span {
                                     class: "px-4 py-2 rounded-full text-xs font-bold",

@@ -5,6 +5,7 @@ mod faq;
 mod footer;
 mod hero;
 mod hero_cube;
+pub(super) mod i18n;
 mod partners;
 mod showcase;
 mod solution;
@@ -12,12 +13,17 @@ mod svgs;
 mod why_biyard;
 
 use dioxus::prelude::*;
+use dioxus_translate::use_translate;
 
 use data::console_url;
+use i18n::NavTranslate;
 
 #[component]
 pub fn Home() -> Element {
     let console_href = console_url();
+    let t: NavTranslate = use_translate();
+    let mut lang = dioxus_translate::use_language();
+
     rsx! {
         div {
             style: "min-height: 100vh; background: transparent; color: white; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden;",
@@ -50,7 +56,7 @@ pub fn Home() -> Element {
                     }
                     div {
                         class: "hidden md:flex items-center gap-8",
-                        for (label, href) in [("About", "#about"), ("Solution", "#solution"), ("Showcase", "#showcase"), ("FAQ", "#faq")] {
+                        for (label, href) in [(t.about, "#about"), (t.solution, "#solution"), (t.showcase, "#showcase"), (t.faq, "#faq")] {
                             a {
                                 href: "{href}",
                                 class: "text-xs font-bold uppercase tracking-widest",
@@ -59,10 +65,21 @@ pub fn Home() -> Element {
                             }
                         }
                     }
-                    a {
-                        href: "{console_href}",
-                        class: "btn-hyper px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest interactive",
-                        "Console"
+                    div {
+                        class: "flex items-center gap-3",
+                        button {
+                            class: "text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded cursor-pointer",
+                            style: "color: #475569; border: 1px solid rgba(0,223,192,0.2);",
+                            onclick: move |_| {
+                                lang.set(lang().switch());
+                            },
+                            if matches!(lang(), dioxus_translate::Language::En) { "KO" } else { "EN" }
+                        }
+                        a {
+                            href: "{console_href}",
+                            class: "btn-hyper px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest interactive",
+                            "{t.console}"
+                        }
                     }
                 }
             }
