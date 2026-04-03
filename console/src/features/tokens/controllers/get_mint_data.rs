@@ -3,13 +3,13 @@ use crate::features::tokens::MintDataResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
 /// Returns encoded calldata for the user to sign a mint tx in their wallet.
 /// No gas cost — just returns data.
-#[get("/v1/projects/:project_id/tokens/mint-data?to&amount", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/tokens/mint-data?to&amount", auth: ProjectAdminAuth)]
 pub async fn get_mint_data_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     to: String,

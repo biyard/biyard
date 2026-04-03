@@ -3,11 +3,11 @@ use crate::features::tokens::TokenBalanceResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
-#[put("/v1/projects/:project_id/tokens/:meta_user_id", auth: ProjectAuth)]
+#[put("/v1/projects/:project_id/tokens/:meta_user_id", auth: ProjectAdminAuth)]
 pub async fn mint_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     meta_user_id: String,

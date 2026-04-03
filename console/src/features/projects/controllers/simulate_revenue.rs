@@ -3,11 +3,11 @@ use crate::features::projects::ProjectResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType, ProjectAuth};
+use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::projects::Project;
 
-#[post("/v1/projects/:project_id/treasury/simulate-revenue", auth: ProjectAuth)]
+#[post("/v1/projects/:project_id/treasury/simulate-revenue", auth: ProjectAdminAuth)]
 pub async fn simulate_revenue_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     revenue_amount: i64,

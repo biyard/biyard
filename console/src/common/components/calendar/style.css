@@ -1,3 +1,39 @@
+/* Component classes (extracted from Tailwind utility strings) */
+
+.calendar {
+    @apply flex flex-row rounded-lg bg-white border border-gray-200
+        shadow-[0_2px_10px_rgba(0,0,0,0.1)] font-sans
+        dark:bg-gray-800 dark:border-gray-700
+        data-[disabled=true]:opacity-60 data-[disabled=true]:pointer-events-none;
+}
+
+.calendar-nav {
+    @apply relative flex items-center justify-center gap-2 pt-3 px-12 pb-1;
+}
+
+.calendar-nav-btn {
+    @apply absolute flex w-7 h-7 items-center justify-center rounded-lg
+        text-gray-500 cursor-pointer text-base leading-6 border border-gray-200 bg-transparent
+        dark:text-gray-400 dark:bg-gray-900 dark:border-gray-700
+        hover:bg-gray-200 hover:text-gray-700 hover:border-gray-300
+        dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:hover:border-gray-600
+        focus-visible:ring-2 focus-visible:ring-blue-500
+        disabled:bg-white disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-100
+        dark:disabled:bg-gray-800 dark:disabled:border-gray-800;
+}
+
+.calendar-month-title {
+    @apply flex w-full h-7 items-center justify-center;
+}
+
+.calendar-view {
+    @apply flex flex-col;
+}
+
+.calendar-select {
+    @apply absolute w-full h-full p-1 m-0 inset-0 opacity-0;
+}
+
 /* Internal elements styled via CSS (not reachable by class prop) */
 
 /* Select container/value */

@@ -3,13 +3,13 @@ use crate::features::tokens::AddMinterResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
 /// Register a wallet address as a minter on the deployed contract.
 /// Server pays gas. Called by the project admin from the console.
-#[post("/v1/projects/:project_id/tokens/minters", auth: ProjectAuth)]
+#[post("/v1/projects/:project_id/tokens/minters", auth: ProjectAdminAuth)]
 pub async fn add_minter_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     wallet_address: String,

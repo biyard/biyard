@@ -3,11 +3,11 @@ use crate::features::tokens::TokenResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
-#[post("/v1/projects/:project_id/tokens/deploy", auth: ProjectAuth)]
+#[post("/v1/projects/:project_id/tokens/deploy", auth: ProjectAdminAuth)]
 pub async fn deploy_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     chain_id: u64,

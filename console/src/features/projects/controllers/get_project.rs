@@ -3,9 +3,9 @@ use crate::features::projects::ProjectResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::ProjectAuth;
+use crate::common::ProjectViewerAuth;
 
-#[get("/v1/projects/:project_id", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id", auth: ProjectViewerAuth)]
 pub async fn get_project_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
 ) -> Result<ProjectResponse> {

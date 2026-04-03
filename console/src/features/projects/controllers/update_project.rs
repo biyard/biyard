@@ -3,11 +3,11 @@ use crate::features::projects::{ProjectResponse, ProjectStatus};
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType, ProjectAuth};
+use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::projects::Project;
 
-#[put("/v1/projects/:project_id", auth: ProjectAuth)]
+#[put("/v1/projects/:project_id", auth: ProjectAdminAuth)]
 pub async fn update_project_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     name: Option<String>,
