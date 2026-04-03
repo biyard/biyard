@@ -1,114 +1,86 @@
 use dioxus::prelude::*;
 
-use super::svgs::{AFTER_CYCLE_SVG, BEFORE_CYCLE_SVG};
-
 #[component]
 pub(super) fn WhyBiyardSection() -> Element {
     rsx! {
-        // Why Biyard - Cycle comparison
         section {
-            class: "py-20 px-4 relative overflow-hidden",
-            style: "background: #0c1018;",
-            div { class: "absolute", style: "top: -80px; left: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(239,68,68,0.04) 0%, transparent 65%); pointer-events: none;" }
-            div { class: "absolute", style: "bottom: -80px; right: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(52,211,153,0.05) 0%, transparent 65%); pointer-events: none;" }
+            class: "ui-section px-6 md:px-24",
             div {
-                class: "max-w-5xl mx-auto relative z-10",
-                h2 {
-                    class: "text-2xl md:text-3xl font-bold mb-16 text-center reveal-type",
-                    style: "color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
-                    "왜 Biyard를 선택해야 하나요?"
-                }
-                // Two cycle diagrams side by side
+                class: "max-w-6xl w-full mx-auto",
                 div {
-                    class: "grid grid-cols-1 lg:grid-cols-2 gap-10",
-
-                    // LEFT: 기존 마케팅 악순환 (red tones)
+                    class: "text-center mb-20 reveal",
+                    h2 {
+                        class: "text-4xl md:text-6xl font-black mb-6",
+                        "소모가 아닌 "
+                        span { class: "glow-text tracking-tighter", "순환" }
+                        "으로,"
+                        br {}
+                        "마케팅의 구조를 바꿉니다."
+                    }
+                }
+                div {
+                    class: "grid lg:grid-cols-2 gap-12 items-center",
+                    // Before
                     div {
-                        class: "reveal-bounce",
+                        class: "glass-panel p-10 rounded-3xl reveal",
+                        style: "border-color: rgba(255,77,77,0.15);",
+                        div { class: "text-center mb-10", span { class: "font-bold uppercase tracking-widest text-xs", style: "color: #ff4d4d;", "기존 마케팅 악순환" } }
                         div {
-                            class: "text-center mb-6",
-                            span {
-                                class: "text-xs font-bold tracking-widest px-3 py-1 rounded-full",
-                                style: "background: rgba(239,68,68,0.1); color: #ef4444;",
-                                "BEFORE"
+                            class: "flex flex-col items-center gap-4",
+                            div { class: "grid grid-cols-2 gap-4",
+                                div { class: "p-4 border border-white/5 rounded-xl text-center text-sm font-semibold", style: "color: #94a3b8;", "광고비" br {} "1억 지출" }
+                                div { class: "p-4 border border-white/5 rounded-xl text-center text-sm font-semibold", style: "color: #94a3b8;", "고객 유치" br {} "일시적" }
                             }
-                        }
-                        // Cycle SVG
-                        div {
-                            class: "flex justify-center mb-6",
-                            div {
-                                style: "width: 280px; height: 280px; color: #ef4444;",
-                                dangerous_inner_html: BEFORE_CYCLE_SVG,
+                            div { class: "w-16 h-16 flex items-center justify-center text-3xl font-black", style: "color: #ff4d4d;", "\u{2193}" }
+                            div { class: "p-8 glass-panel rounded-full font-black text-lg text-center", style: "border-color: rgba(255,77,77,0.2); color: #ff4d4d;", "돈이 빠져나감" }
+                            div { class: "w-16 h-16 flex items-center justify-center text-3xl font-black", style: "color: #ff4d4d;", "\u{2193}" }
+                            div { class: "grid grid-cols-2 gap-4",
+                                div { class: "p-4 border border-white/5 rounded-xl text-center text-sm font-semibold", style: "color: #94a3b8;", "고객 이탈" br {} "재방문 X" }
+                                div { class: "p-4 border border-white/5 rounded-xl text-center text-sm font-semibold", style: "color: #94a3b8;", "또 광고" br {} "반복 지출" }
                             }
-                        }
-                        p {
-                            class: "text-center text-sm",
-                            style: "color: #ef4444; opacity: 0.7;",
-                            "광고비 → 일시적 유치 → 이탈 → 또 광고... 끝없는 악순환"
+                            p { class: "mt-8 text-xs text-center uppercase tracking-widest", style: "color: rgba(255,77,77,0.6);", "끝없는 악순환" }
                         }
                     }
-
-                    // RIGHT: Biyard 선순환 (green tones)
+                    // After
                     div {
-                        class: "reveal-bounce",
+                        class: "glass-panel p-10 rounded-3xl reveal",
+                        style: "border-color: rgba(0,223,192,0.2); transition-delay: 0.1s;",
+                        div { class: "text-center mb-10", span { class: "font-bold uppercase tracking-widest text-xs", style: "color: #00dfc0;", "Biyard 선순환" } }
                         div {
-                            class: "text-center mb-6",
-                            span {
-                                class: "text-xs font-bold tracking-widest px-3 py-1 rounded-full",
-                                style: "background: rgba(0,212,170,0.1); color: #00d4aa;",
-                                "WITH BIYARD"
+                            class: "flex flex-col items-center gap-4",
+                            div { class: "grid grid-cols-2 gap-4",
+                                div { class: "p-4 rounded-xl text-center text-sm font-semibold", style: "border: 1px solid rgba(0,223,192,0.1); color: #e2e8f0;", "매출 발생" br {} "2-4% 적립" }
+                                div { class: "p-4 rounded-xl text-center text-sm font-semibold", style: "border: 1px solid rgba(0,223,192,0.1); color: #e2e8f0;", "토큰 가치" br {} "자동 상승" }
                             }
-                        }
-                        // Cycle SVG
-                        div {
-                            class: "flex justify-center mb-6",
-                            div {
-                                style: "width: 280px; height: 280px; color: #00d4aa;",
-                                dangerous_inner_html: AFTER_CYCLE_SVG,
+                            div { class: "w-16 h-16 flex items-center justify-center text-3xl font-black", style: "color: #00dfc0;", "\u{2193}" }
+                            div { class: "p-8 glass-panel rounded-full font-black text-lg text-center", style: "border-color: rgba(0,223,192,0.5); color: #00dfc0; box-shadow: 0 0 25px rgba(0,223,192,0.3);", "가치가 순환한다" }
+                            div { class: "w-16 h-16 flex items-center justify-center text-3xl font-black", style: "color: #00dfc0;", "\u{2193}" }
+                            div { class: "grid grid-cols-2 gap-4",
+                                div { class: "p-4 rounded-xl text-center text-sm font-semibold", style: "border: 1px solid rgba(0,223,192,0.1); color: #e2e8f0;", "고객 홍보" br {} "입소문 확산" }
+                                div { class: "p-4 rounded-xl text-center text-sm font-semibold", style: "border: 1px solid rgba(0,223,192,0.1); color: #e2e8f0;", "신규 고객" br {} "자연 유입" }
                             }
-                        }
-                        p {
-                            class: "text-center text-sm",
-                            style: "color: #00d4aa; opacity: 0.8;",
-                            "매출 → 가치 상승 → 고객 홍보 → 신규 유입 → 매출... 선순환"
+                            p { class: "mt-8 text-xs text-center uppercase tracking-widest", style: "color: #00dfc0;", "선순환" }
                         }
                     }
                 }
 
-                // Strong closing statement
+                // Bridge text — connects cycle comparison to Core Innovation
                 div {
-                    class: "mt-16 text-center max-w-3xl mx-auto reveal-fade",
-                    div {
-                        class: "rounded-2xl py-10 px-8 relative overflow-hidden",
-                        style: "background: rgba(0,212,170,0.04); border: 1px solid rgba(0,212,170,0.12);",
-                        // Top glow line
-                        div {
-                            class: "absolute top-0 left-[15%] right-[15%] h-[2px]",
-                            style: "background: linear-gradient(90deg, transparent, rgba(0,212,170,0.4), transparent);",
-                        }
-                        p {
-                            class: "text-2xl md:text-3xl leading-snug",
-                            style: "font-family: 'Outfit', 'Noto Sans KR', sans-serif; font-weight: 600;",
-                            span {
-                                style: "background-image: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent;",
-                                "투자자가 피해를 보는 시장은"
-                            }
-                            br {}
-                            span {
-                                style: "background-image: linear-gradient(to right, #a78bfa, #f472b6); -webkit-background-clip: text; background-clip: text; color: transparent;",
-                                "이제 끝나야 합니다."
-                            }
-                        }
-                        p {
-                            class: "mt-5 text-lg",
-                            style: "color: #7a8ba6; font-weight: 400;",
-                            "매출이 가치를 만들고, 투명성이 신뢰를 만드는 시장."
-                        }
-                        p {
-                            class: "mt-3 text-xl font-bold",
-                            style: "background-image: linear-gradient(to right, #60a5fa, #00d4aa); -webkit-background-clip: text; background-clip: text; color: transparent;",
-                            "Biyard Launchpad가 그 시작입니다."
-                        }
+                    class: "mt-24 max-w-3xl mx-auto text-center reveal",
+                    p {
+                        class: "text-lg md:text-xl leading-relaxed mb-6",
+                        style: "color: #94a3b8;",
+                        "Biyard Launchpad는 이 선순환을 가능하게 하는 인프라입니다. 기업은 기존 광고비를 토큰 리워드로 전환하고, 고객은 구매와 활동을 통해 실제 가치가 있는 디지털 자산을 적립합니다."
+                    }
+                    p {
+                        class: "text-lg md:text-xl leading-relaxed mb-6",
+                        style: "color: #cbd5e1;",
+                        "트레저리에 쌓인 매출은 온체인에서 누구나 검증할 수 있고, 스마트 컨트랙트가 하한가를 자동으로 방어합니다. 토큰의 가치가 실제 매출에 연동되기 때문에, 매출이 지속되는 한 가치의 바닥이 보장됩니다."
+                    }
+                    p {
+                        class: "text-base",
+                        style: "color: #64748b;",
+                        "블록체인 지식이 없어도 API 하나로 연동 가능하며, 어떤 업종이든 매출이 있다면 토큰 이코노미를 구축할 수 있습니다."
                     }
                 }
             }
