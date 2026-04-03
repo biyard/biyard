@@ -11,7 +11,8 @@
     @apply relative flex items-center justify-center gap-2 pt-3 px-12 pb-1;
 }
 
-.calendar-nav-btn {
+.calendar-nav-prev,
+.calendar-nav-next {
     @apply absolute flex w-7 h-7 items-center justify-center rounded-lg
         text-gray-500 cursor-pointer text-base leading-6 border border-gray-200 bg-transparent
         dark:text-gray-400 dark:bg-gray-900 dark:border-gray-700
@@ -20,6 +21,14 @@
         focus-visible:ring-2 focus-visible:ring-blue-500
         disabled:bg-white disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-100
         dark:disabled:bg-gray-800 dark:disabled:border-gray-800;
+}
+
+.calendar-nav-prev {
+    @apply left-3;
+}
+
+.calendar-nav-next {
+    @apply right-3;
 }
 
 .calendar-month-title {

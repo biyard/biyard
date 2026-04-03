@@ -64,7 +64,7 @@ pub fn CalendarView(
 ) -> Element {
     setup_class_attribute(&mut attributes, "calendar-view");
     rsx! {
-        div { ..attributes, {children} }
+        div { ..attributes,{children} }
     }
 }
 
@@ -84,11 +84,10 @@ pub fn CalendarNavigation(props: CalendarNavigationProps) -> Element {
 
 #[component]
 pub fn CalendarPreviousMonthButton(
-    #[props(extends = GlobalAttributes)] mut attributes: Vec<Attribute>,
+    #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
 ) -> Element {
-    setup_class_attribute(&mut attributes, "calendar-nav-btn left-3");
     rsx! {
-        calendar::CalendarPreviousMonthButton { ..attributes,
+        calendar::CalendarPreviousMonthButton { class: "calendar-nav-prev", attributes,
             Icon { width: "20px", height: "20px",
                 path { d: "m15 18-6-6 6-6" }
             }
@@ -98,11 +97,10 @@ pub fn CalendarPreviousMonthButton(
 
 #[component]
 pub fn CalendarNextMonthButton(
-    #[props(extends = GlobalAttributes)] mut attributes: Vec<Attribute>,
+    #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
 ) -> Element {
-    setup_class_attribute(&mut attributes, "calendar-nav-btn right-3");
     rsx! {
-        calendar::CalendarNextMonthButton { ..attributes,
+        calendar::CalendarNextMonthButton { class: "calendar-nav-next", attributes,
             Icon { width: "20px", height: "20px",
                 path { d: "m9 18 6-6-6-6" }
             }
