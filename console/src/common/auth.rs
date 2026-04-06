@@ -131,7 +131,7 @@ where
     authenticate_by_session(&session, cli).await
 }
 
-async fn authenticate_by_session(
+pub(crate) async fn authenticate_by_session(
     session: &Session,
     cli: &aws_sdk_dynamodb::Client,
 ) -> crate::common::Result<Account> {
@@ -162,7 +162,7 @@ async fn authenticate_by_session(
     }
 }
 
-async fn authenticate_by_credential(
+pub(crate) async fn authenticate_by_credential(
     api_key: &str,
     cli: &aws_sdk_dynamodb::Client,
 ) -> crate::common::Result<Account> {

@@ -18,6 +18,7 @@ import { HttpServiceDiscoveryIntegration } from "aws-cdk-lib/aws-apigatewayv2-in
 
 export interface AppClusterStackProps extends StackProps {
   appDomain: string;
+  apiDomain?: string;
   baseDomain: string;
   repoName: string;
   commit: string;
@@ -35,6 +36,7 @@ export class AppClusterStack extends Stack {
 
     const {
       appDomain,
+      apiDomain,
       baseDomain,
       repoName,
       commit,
@@ -202,5 +204,45 @@ export class AppClusterStack extends Stack {
         ),
       ),
     });
+
+    // --- API Domain (optional) ---
+    if (apiDomain) {
+      const apiCert = new acm.Certificate(this, "ApiCert", {
+        domainName: apiDomain,
+        validation: acm.CertificateValidation.fromDns(zone),
+      });
+
+      const apiDomainName = new apigw.DomainName(this, "ApiCustomDomain", {
+        domainName: apiDomain,
+        certificate: apiCert,
+      });
+
+      new apigw.ApiMapping(this, "ApiDomainMapping", {
+        api: httpApi,
+        domainName: apiDomainName,
+      });
+
+      const apiRecordName = apiDomain.replace(`.${baseDomain}`, "");
+      new route53.ARecord(this, "ApiAliasV4", {
+        zone,
+        recordName: apiRecordName,
+        target: route53.RecordTarget.fromAlias(
+          new r53Targets.ApiGatewayv2DomainProperties(
+            apiDomainName.regionalDomainName,
+            apiDomainName.regionalHostedZoneId,
+          ),
+        ),
+      });
+      new route53.AaaaRecord(this, "ApiAliasV6", {
+        zone,
+        recordName: apiRecordName,
+        target: route53.RecordTarget.fromAlias(
+          new r53Targets.ApiGatewayv2DomainProperties(
+            apiDomainName.regionalDomainName,
+            apiDomainName.regionalHostedZoneId,
+          ),
+        ),
+      });
+    }
   }
 }

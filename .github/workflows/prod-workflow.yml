@@ -124,6 +124,7 @@ jobs:
         env:
           ENV: prod
           DYNAMO_TABLE_PREFIX: biyard-prod
+          API_DOMAIN: api.biyard.co
         run: make build
 
       - name: Build and push Docker image

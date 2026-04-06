@@ -15,6 +15,7 @@ const env = process.env.ENV || "dev";
 const host = process.env.DOMAIN || "dev.biyard.co";
 const webDomain = host;
 const consoleDomain = `console.${host}`;
+const apiDomain = `api.${host}`;
 const baseDomain = "biyard.co";
 const consoleRepoName = "biyard/console";
 const commit = process.env.COMMIT!;
@@ -41,6 +42,7 @@ new AppClusterStack(app, `${stackName}-app-cluster`, {
   stackName: `${stackName}-app-cluster`,
   baseDomain,
   appDomain: consoleDomain,
+  apiDomain,
   repoName: consoleRepoName,
   containerPort: 8080,
   maxCapacity: 20,
