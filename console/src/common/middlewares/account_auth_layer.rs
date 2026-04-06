@@ -1,8 +1,5 @@
 use dioxus::fullstack::axum::{
-    extract::Request,
-    http::header::AUTHORIZATION,
-    middleware::Next,
-    response::Response,
+    extract::Request, http::header::AUTHORIZATION, middleware::Next, response::Response,
 };
 
 use crate::features::accounts::Account;

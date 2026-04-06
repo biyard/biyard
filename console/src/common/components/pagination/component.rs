@@ -40,9 +40,8 @@ pub fn Pagination(
     children: Element,
 ) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
         nav {
-            class: "pagination",
+            class: "pagination flex w-full justify-center mx-auto",
             "data-slot": "pagination",
             role: "navigation",
             aria_label: "pagination",
@@ -59,7 +58,7 @@ pub fn PaginationContent(
 ) -> Element {
     rsx! {
         ul {
-            class: "pagination-content",
+            class: "pagination-content flex items-center p-0 m-0 gap-1 list-none",
             "data-slot": "pagination-content",
             ..attributes,
             {children}
@@ -79,6 +78,7 @@ pub fn PaginationItem(
             ..attributes,
             {children}
         }
+
     }
 }
 
@@ -105,7 +105,7 @@ pub fn PaginationLink(props: PaginationLinkProps) -> Element {
     let data_kind = props.data_kind.map(|kind| kind.attr());
     rsx! {
         a {
-            class: "pagination-link",
+            class: "pagination-link inline-flex box-border items-center justify-center rounded-[0.625rem] text-gray-700 text-sm font-medium gap-2 leading-none no-underline transition-colors dark:text-gray-300 focus-visible:shadow-[0_0_0_2px_theme(colors.blue.500)] data-[size=icon]:w-8 data-[size=icon]:h-8 data-[size=icon]:p-0 data-[size=default]:h-8 data-[size=default]:py-2 data-[size=default]:px-4 data-[active=true]:border data-[active=true]:border-gray-200 data-[active=true]:bg-white dark:data-[active=true]:border-gray-700 dark:data-[active=true]:bg-gray-900 data-[active=true]:hover:bg-gray-200 dark:data-[active=true]:hover:bg-gray-700 data-[active=false]:hover:bg-gray-100 data-[active=false]:hover:text-gray-900 dark:data-[active=false]:hover:bg-gray-800 dark:data-[active=false]:hover:text-white data-[kind=previous]:pl-2.5 data-[kind=previous]:pr-2.5 data-[kind=previous]:gap-1 data-[kind=next]:pl-2.5 data-[kind=next]:pr-2.5 data-[kind=next]:gap-1",
             "data-slot": "pagination-link",
             "data-active": props.is_active,
             "data-size": props.size.class(),
@@ -154,7 +154,7 @@ pub fn PaginationPrevious(
             icon::Icon { width: "1rem", height: "1rem",
                 polyline { points: "15 6 9 12 15 18" }
             }
-            span { class: "pagination-label", "Previous" }
+            span { class: "hidden sm:inline", "Previous" }
         }
     }
 }
@@ -177,7 +177,7 @@ pub fn PaginationNext(
             onmousedown,
             onmouseup,
             attributes,
-            span { class: "pagination-label", "Next" }
+            span { class: "hidden sm:inline", "Next" }
             // ChevronRight icon from lucide https://lucide.dev/icons/chevron-right
             icon::Icon { width: "1rem", height: "1rem",
                 polyline { points: "9 6 15 12 9 18" }
@@ -192,7 +192,7 @@ pub fn PaginationEllipsis(
 ) -> Element {
     rsx! {
         span {
-            class: "pagination-ellipsis",
+            class: "pagination-ellipsis flex items-center justify-center text-gray-700 w-8 h-8 dark:text-gray-300",
             "data-slot": "pagination-ellipsis",
             aria_hidden: "true",
             ..attributes,

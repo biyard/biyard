@@ -1,6 +1,6 @@
 use crate::{
     Error,
-    features::accounts::{AccountResponse, controllers::get_me_handler},
+    features::accounts::{AccountResponse, AccountType, controllers::get_me_handler},
 };
 use dioxus::fullstack::Loading;
 use dioxus::prelude::*;
@@ -47,5 +47,12 @@ impl AccountContext {
 
     pub fn user_id(&self) -> Option<String> {
         self.account.as_ref().map(|u| u.id())
+    }
+
+    pub fn is_system_admin(&self) -> bool {
+        self.account
+            .as_ref()
+            .map(|u| u.user_type == AccountType::SystemAdmin)
+            .unwrap_or(false)
     }
 }

@@ -1,26 +1,14 @@
-.popover {
-  position: relative;
-  display: inline-block;
-}
+/* Popover - selector-dependent styles only (base styles inlined in component.rs) */
 
 .popover-content {
-  position: fixed;
-  z-index: 1000;
-  display: flex;
-  min-width: 200px;
-  max-width: calc(100% - 2rem);
-  box-sizing: border-box;
-  flex-direction: column;
-  padding: .25rem;
-  border-radius: .5rem;
-  margin-top: .5rem;
-  background: var(--light, var(--primary-color)) 
-      var(--dark, var(--primary-color-5));
-  box-shadow: inset 0 0 0 1px var(--light, var(--primary-color-6)) var(--dark, var(--primary-color-7));
-  text-align: center;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
   transform: translate(-50%, -50%);
-  transform-origin: top;
-  will-change: transform, opacity;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content {
+    box-shadow: inset 0 0 0 1px #4b5563;
+  }
 }
 
 .popover-content[data-state="closed"] {
@@ -29,7 +17,7 @@
 
 .popover-content[data-state="open"] {
   display: flex;
-  animation: popover-fade-in .2s ease-in-out;
+  animation: popover-fade-in 0.2s ease-in-out;
 }
 
 @keyframes popover-fade-in {
@@ -47,60 +35,84 @@
   position: absolute;
   bottom: 100%;
   left: 50%;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   transform: translateX(-50%);
 }
 
 .popover-content[data-side="top"]::after {
   top: calc(100% - 0.25rem);
   left: 50%;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content[data-side="top"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .popover-content[data-side="right"] {
   position: absolute;
   top: 50%;
   left: 100%;
-  margin-left: 8px;
+  margin-left: 0.5rem;
   transform: translateY(-50%);
 }
 
 .popover-content[data-side="right"]::after {
   top: calc(50% - 0.25rem);
   left: 0;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content[data-side="right"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .popover-content[data-side="bottom"] {
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-top: 8px;
+  margin-top: 0.5rem;
   transform: translateX(-50%);
 }
 
 .popover-content[data-side="bottom"]::after {
   bottom: calc(100% - 0.25rem);
   left: 50%;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content[data-side="bottom"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .popover-content[data-side="left"] {
   position: absolute;
   top: 50%;
   right: 100%;
-  margin-right: 8px;
+  margin-right: 0.5rem;
   transform: translateY(-50%);
 }
 
 .popover-content[data-side="left"]::after {
   top: calc(50% - 0.25rem);
   right: -0.25rem;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content[data-side="left"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 /* Alignment styles for top and bottom */
@@ -139,21 +151,35 @@
 
 .popover-content-title {
   margin: 0;
-  color: var(--secondary-color-4);
+  color: #374151;
   font-size: 1.25rem;
+  line-height: 1.75rem;
   font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content-title {
+    color: #d1d5db;
+  }
 }
 
 .popover-content-description {
   margin: 0;
-  color: var(--secondary-color-5);
+  color: #6b7280;
   font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content-description {
+    color: #9ca3af;
+  }
 }
 
 .popover-content-actions {
   display: flex;
   flex-direction: column-reverse;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 @media (width >= 40rem) {
@@ -169,60 +195,71 @@
 }
 
 .popover-content-cancel {
-  padding: 8px 18px;
-  border: 1px solid var(--primary-color-6);
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e5e7eb;
   border-radius: 0.5rem;
-  background-color: var(--light, var(--primary-color))
-    var(--dark, var(--primary-color-3));
-  color: var(--secondary-color-4);
+  background-color: #fff;
+  color: #374151;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s ease;
+  line-height: 1.5rem;
+  transition-property: color, background-color, border-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content-cancel {
+    border-color: #374151;
+    background-color: #111827;
+    color: #d1d5db;
+  }
 }
 
 .popover-content-cancel:hover {
-  background-color: var(--primary-color-4);
+  background-color: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .popover-content-cancel:hover {
+    background-color: #374151;
+  }
 }
 
 .popover-content-cancel:focus-visible {
-  box-shadow: 0 0 0 2px var(--focused-border-color);
+  box-shadow: 0 0 0 2px #3b82f6;
 }
 
 .popover-content-action {
-  padding: 8px 18px;
-  border: 1px solid var(--primary-error-color);
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #dc2626;
   border-radius: 0.5rem;
-  background-color: var(--primary-error-color);
-  color: var(--contrast-error-color);
+  background-color: #dc2626;
+  color: #fff;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s ease;
+  line-height: 1.5rem;
+  transition-property: color, background-color, border-color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
 }
 
 .popover-content-action:hover {
-  background-color: var(--secondary-error-color);
+  background-color: #b91c1c;
 }
 
 .popover-content-action:focus-visible {
-  box-shadow: 0 0 0 2px var(--focused-border-color);
+  box-shadow: 0 0 0 2px #3b82f6;
 }
 
-.popover-trigger {
-  padding: 8px 18px;
-  border: 1px solid var(--primary-color-6);
-  border-radius: 0.5rem;
-  background-color: var(--light, var(--primary-color))
-    var(--dark, var(--primary-color-3));
-  color: var(--secondary-color-4);
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
-}
-
-.popover-trigger:hover {
-  background-color: var(--primary-color-4);
-}
-
-.popover-trigger:focus-visible {
-  box-shadow: 0 0 0 2px var(--focused-border-color);
-}
+/* Trigger hover/focus styles moved to Tailwind in component.rs */

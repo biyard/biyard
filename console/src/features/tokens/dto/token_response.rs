@@ -10,6 +10,9 @@ pub struct TokenResponse {
     pub total_supply: i64,
     pub circulating_supply: i64,
     pub description: Option<String>,
+    pub contract_address: Option<String>,
+    pub chain_id: Option<u64>,
+    pub deployment_tx_hash: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
 }

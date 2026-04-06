@@ -3,11 +3,11 @@ use crate::features::tokens::{TokenBalanceResponse, TokenResponse};
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType, ProjectAuth};
+use crate::common::{CommonConfig, EntityType, ProjectViewerAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenBalance, TokenError};
 
-#[get("/v1/projects/:project_id/tokens", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/tokens", auth: ProjectViewerAuth)]
 pub async fn get_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
 ) -> Result<TokenResponse> {
@@ -21,7 +21,7 @@ pub async fn get_token_handler(
     Ok(token.into())
 }
 
-#[get("/v1/projects/:project_id/tokens/balance/:meta_user_id", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/tokens/balance/:meta_user_id", auth: ProjectViewerAuth)]
 pub async fn get_token_balance_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     meta_user_id: String,

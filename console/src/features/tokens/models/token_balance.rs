@@ -50,6 +50,7 @@ impl From<TokenBalance> for crate::features::tokens::TokenBalanceResponse {
             project_id: balance.pk,
             meta_user_id: balance.meta_user_id,
             balance: balance.balance,
+            tx_hash: None,
             created_at: balance.created_at,
             updated_at: balance.updated_at,
         }

@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
 
+const BASE_CLASS: &str = "w-full min-h-16 box-border py-2 px-3 border-none rounded-lg m-0 appearance-none bg-none text-gray-700 dark:text-gray-300 font-[inherit] leading-relaxed outline-none resize-y transition-all duration-100 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed placeholder:text-gray-500 dark:placeholder:text-gray-400";
+
 #[derive(Copy, Clone, PartialEq, Default)]
 #[non_exhaustive]
 pub enum TextareaVariant {
@@ -13,10 +15,10 @@ pub enum TextareaVariant {
 impl TextareaVariant {
     pub fn class(&self) -> &'static str {
         match self {
-            TextareaVariant::Default => "default",
-            TextareaVariant::Fade => "fade",
-            TextareaVariant::Outline => "outline",
-            TextareaVariant::Ghost => "ghost",
+            TextareaVariant::Default => "bg-white dark:bg-gray-900 shadow-[inset_0_0_0_1px] shadow-gray-200 dark:shadow-gray-700 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white",
+            TextareaVariant::Fade => "bg-white dark:bg-gray-900 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white",
+            TextareaVariant::Outline => "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:enabled:border-gray-300 dark:hover:enabled:border-gray-600 focus:border-blue-500 invalid:border-red-600 aria-[invalid=true]:border-red-600",
+            TextareaVariant::Ghost => "bg-transparent hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:border-blue-500",
         }
     }
 }
@@ -48,11 +50,9 @@ pub fn Textarea(
     children: Element,
 ) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
         textarea {
-            class: "textarea",
+            class: "{BASE_CLASS} {variant.class()}",
             "data-slot": "textarea",
-            "data-style": variant.class(),
             oninput: move |e| _ = oninput.map(|callback| callback(e)),
             onchange: move |e| _ = onchange.map(|callback| callback(e)),
             oninvalid: move |e| _ = oninvalid.map(|callback| callback(e)),

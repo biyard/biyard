@@ -6,7 +6,7 @@ pub fn Tooltip(props: TooltipProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
         tooltip::Tooltip {
-            class: "tooltip",
+            class: "tooltip relative inline-block [&[data-disabled=true]_.tooltip-trigger]:cursor-default",
             disabled: props.disabled,
             open: props.open,
             default_open: props.default_open,
@@ -21,7 +21,7 @@ pub fn Tooltip(props: TooltipProps) -> Element {
 pub fn TooltipTrigger(props: TooltipTriggerProps) -> Element {
     rsx! {
         tooltip::TooltipTrigger {
-            class: "tooltip-trigger",
+            class: "tooltip-trigger inline-block",
             id: props.id,
             r#as: props.r#as,
             attributes: props.attributes,
@@ -34,7 +34,7 @@ pub fn TooltipTrigger(props: TooltipTriggerProps) -> Element {
 pub fn TooltipContent(props: TooltipContentProps) -> Element {
     rsx! {
         tooltip::TooltipContent {
-            class: "tooltip-content",
+            class: "tooltip-content absolute z-[1000] max-w-[250px] px-3 py-2 rounded-lg bg-gray-700 dark:bg-gray-300 text-white dark:text-gray-900 text-sm leading-relaxed",
             id: props.id,
             side: props.side,
             align: props.align,

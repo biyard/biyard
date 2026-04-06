@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
+use crate::common::ui::*;
 use crate::features::accounts::context::{AccountContext, use_account_context};
 use crate::features::accounts::i18n::SignInTranslate;
 
@@ -56,110 +57,21 @@ pub fn SignIn() -> Element {
 
                 form { class: "mt-8 space-y-6", method: "post", onsubmit: handle_submit,
                     if let Some(err) = error() {
-                        div { class: "p-4 bg-red-50 rounded-md dark:bg-red-900/20",
-                            p { class: "text-sm text-red-800 dark:text-red-400",
-                                "{err}"
-                            }
-                        }
+                        AlertMessage { variant: AlertVariant::Error, "{err}" }
                     }
 
                     div { class: "space-y-4",
-                        div {
-                            label {
-                                r#for: "email",
-                                class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
-                                {t.email}
-                            }
-                            div { class: "relative mt-1",
-                                div { class: "flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none",
-                                    svg {
-                                        class: "w-5 h-5 text-gray-400",
-                                        xmlns: "http://www.w3.org/2000/svg",
-                                        width: "24",
-                                        height: "24",
-                                        view_box: "0 0 24 24",
-                                        fill: "none",
-                                        stroke: "currentColor",
-                                        stroke_width: "2",
-                                        stroke_linecap: "round",
-                                        stroke_linejoin: "round",
-                                        rect {
-                                            width: "20",
-                                            height: "16",
-                                            x: "2",
-                                            y: "4",
-                                            rx: "2",
-                                        }
-                                        path { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" }
-                                    }
-                                }
-                                input {
-                                    id: "email",
-                                    name: "email",
-                                    r#type: "email",
-                                    autocomplete: "email",
-                                    required: true,
-                                    value: "{email}",
-                                    oninput: move |e: FormEvent| email.set(e.value()),
-                                    class: "block py-2 pr-3 pl-10 w-full placeholder-gray-400 rounded-md border border-gray-300 shadow-sm appearance-none dark:text-white dark:bg-gray-800 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 focus:outline-none",
-                                    placeholder: "{t.email_placeholder}",
-                                }
-                            }
-                        }
-
-                        div {
-                            label {
-                                r#for: "password",
-                                class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
-                                {t.password}
-                            }
-                            div { class: "relative mt-1",
-                                div { class: "flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none",
-                                    svg {
-                                        class: "w-5 h-5 text-gray-400",
-                                        xmlns: "http://www.w3.org/2000/svg",
-                                        width: "24",
-                                        height: "24",
-                                        view_box: "0 0 24 24",
-                                        fill: "none",
-                                        stroke: "currentColor",
-                                        stroke_width: "2",
-                                        stroke_linecap: "round",
-                                        stroke_linejoin: "round",
-                                        rect {
-                                            width: "18",
-                                            height: "11",
-                                            x: "3",
-                                            y: "11",
-                                            rx: "2",
-                                            ry: "2",
-                                        }
-                                        path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
-                                    }
-                                }
-                                input {
-                                    id: "password",
-                                    name: "password",
-                                    r#type: "password",
-                                    autocomplete: "current-password",
-                                    required: true,
-                                    value: "{password}",
-                                    oninput: move |e: FormEvent| password.set(e.value()),
-                                    class: "block py-2 pr-3 pl-10 w-full placeholder-gray-400 rounded-md border border-gray-300 shadow-sm appearance-none dark:text-white dark:bg-gray-800 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 focus:outline-none",
-                                    placeholder: "{t.password_placeholder}",
-                                }
-                            }
-                        }
-                    }
-
-                    div {
-                        button {
-                            r#type: "submit",
-                            disabled: loading(),
-                            class: "flex justify-center py-2 px-4 w-full text-sm font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
-                            if loading() {
+                        FormFieldWithIcon {
+                            label: t.email,
+                            id: "email",
+                            r#type: "email",
+                            value: email(),
+                            oninput: move |e: FormEvent| email.set(e.value()),
+                            placeholder: t.email_placeholder.to_string(),
+                            autocomplete: "email",
+                            icon: rsx! {
                                 svg {
-                                    class: "mr-2 -ml-1 w-5 h-5 animate-spin",
+                                    class: "w-5 h-5 text-gray-400",
                                     xmlns: "http://www.w3.org/2000/svg",
                                     width: "24",
                                     height: "24",
@@ -169,8 +81,56 @@ pub fn SignIn() -> Element {
                                     stroke_width: "2",
                                     stroke_linecap: "round",
                                     stroke_linejoin: "round",
-                                    path { d: "M21 12a9 9 0 1 1-6.219-8.56" }
+                                    rect {
+                                        width: "20",
+                                        height: "16",
+                                        x: "2",
+                                        y: "4",
+                                        rx: "2",
+                                    }
+                                    path { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" }
                                 }
+                            },
+                        }
+
+                        FormFieldWithIcon {
+                            label: t.password,
+                            id: "password",
+                            r#type: "password",
+                            value: password(),
+                            oninput: move |e: FormEvent| password.set(e.value()),
+                            placeholder: t.password_placeholder.to_string(),
+                            autocomplete: "current-password",
+                            icon: rsx! {
+                                svg {
+                                    class: "w-5 h-5 text-gray-400",
+                                    xmlns: "http://www.w3.org/2000/svg",
+                                    width: "24",
+                                    height: "24",
+                                    view_box: "0 0 24 24",
+                                    fill: "none",
+                                    stroke: "currentColor",
+                                    stroke_width: "2",
+                                    stroke_linecap: "round",
+                                    stroke_linejoin: "round",
+                                    rect {
+                                        width: "18",
+                                        height: "11",
+                                        x: "3",
+                                        y: "11",
+                                        rx: "2",
+                                        ry: "2",
+                                    }
+                                    path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
+                                }
+                            },
+                        }
+                    }
+
+                    div {
+                        SubmitBtn { disabled: loading(),
+                            if loading() {
+                                Spinner {}
                                 {t.signing_in}
                             } else {
                                 {t.sign_in}

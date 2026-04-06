@@ -13,6 +13,57 @@ Biyard is a Launchpad-like SaaS and PaaS platform that enables users to create p
 - **PaaS APIs:** Services consume Biyard APIs to manage points and tokens on blockchain
 - **Target Users:** Project creators who need blockchain token/point management infrastructure
 
+## Domain Decisions (Session Memory)
+
+These decisions are agreed and should be treated as default unless explicitly changed by the user.
+
+### Terminology
+- **UI label:** Use **Brand(브랜드)** in user-facing screens.
+- **Backend/domain canonical name:** Keep **Project** in code, routes, and data model for now.
+- **Rule:** Do not rename `Project` structs/modules/routes (`/v1/projects/*`) unless user explicitly requests a full migration.
+- **Meaning:** In current product scope, **Brand == Project (presentation alias)**.
+
+### Multi-Tenancy Direction (B2B)
+- Service is B2B, so tenancy should center on **Organization**.
+- Membership is attached to **Organization** (not directly to project) as the primary access boundary.
+- Project/Brand belongs to one Organization.
+- Users join Organizations via membership and then access Organization-owned projects.
+
+### Relationship Model (Target)
+- `Organization 1:N Membership`
+- `User 1:N Membership`
+- `Organization 1:N Project`
+- `Project 1:N Token`
+- `Project 1:N PointTransaction / PointBalance / AuditLog`
+
+### RBAC Baseline (Organization Scope)
+- `Owner`: organization billing, membership, all projects, destructive ops
+- `Admin`: manage projects/tokens/points and member invitations, no owner transfer
+- `Viewer`: read-only access to dashboard/usage/audit
+
+### Token Immutability Rule
+- Token name/symbol are treated as immutable after issuance (blockchain-aligned expectation).
+- UI/API should avoid post-issuance rename flows.
+
+### Current Implementation Guardrails
+- Current code still uses `account_id`-based ownership in several places. This is acceptable short-term.
+- Near-term product work should prioritize UI wording and feature completion over risky schema migration.
+- If Organization migration is started later, do staged migration with dual-read/dual-write plan.
+
+### DynamoDB Modeling Notes (Planned)
+- Keep single-table design and query-first access patterns.
+- Recommended entities:
+  - `PK=ORG#{org_id}, SK=META`
+  - `PK=ORG#{org_id}, SK=MEMBER#{user_id}`
+  - `PK=ORG#{org_id}, SK=PROJECT#{project_id}`
+  - `PK=PROJECT#{project_id}, SK=META`
+  - `PK=PROJECT#{project_id}, SK=TOKEN#{token_id}`
+  - `PK=PROJECT#{project_id}, SK=AUDIT#{timestamp}#{event_id}`
+- Use GSIs for:
+  - user -> organizations lookup
+  - cross-project admin/audit listing
+  - time-ordered event retrieval when needed
+
 ## Important Constraints
 
 - **DO NOT modify or add code in the `api/` package.** The `api/` package is legacy and no longer under active development. All new backend work should go through Dioxus fullstack server functions in `console/`.

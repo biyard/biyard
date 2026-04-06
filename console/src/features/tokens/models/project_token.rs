@@ -11,6 +11,11 @@ pub struct ProjectToken {
     pub total_supply: i64,
     pub circulating_supply: i64,
     pub description: Option<String>,
+
+    pub contract_address: Option<String>,
+    pub chain_id: Option<u64>,
+    pub deployment_tx_hash: Option<String>,
+
     pub created_at: i64,
     pub updated_at: i64,
 }
@@ -22,8 +27,10 @@ impl ProjectToken {
         symbol: String,
         decimals: u8,
         description: Option<String>,
+        initial_supply: i64,
     ) -> Self {
         let now = crate::common::utils::time_utils::get_now();
+        let initial_supply = initial_supply.max(0);
 
         Self {
             pk: project_id,
@@ -31,9 +38,12 @@ impl ProjectToken {
             name,
             symbol,
             decimals,
-            total_supply: 0,
-            circulating_supply: 0,
+            total_supply: initial_supply,
+            circulating_supply: initial_supply,
             description,
+            contract_address: None,
+            chain_id: None,
+            deployment_tx_hash: None,
             created_at: now,
             updated_at: now,
         }
@@ -70,6 +80,9 @@ impl From<ProjectToken> for crate::features::tokens::TokenResponse {
             total_supply: token.total_supply,
             circulating_supply: token.circulating_supply,
             description: token.description,
+            contract_address: token.contract_address,
+            chain_id: token.chain_id,
+            deployment_tx_hash: token.deployment_tx_hash,
             created_at: token.created_at,
             updated_at: token.updated_at,
         }

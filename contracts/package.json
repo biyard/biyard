@@ -6,6 +6,8 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:kairos": "hardhat run scripts/deploy.ts --network kairos",
+    "deploy:kaia": "hardhat run scripts/deploy.ts --network kaia",
     "deploy:exchange": "hardhat run scripts/deployWithExchange.ts --network localhost",
     "node": "hardhat node"
   },

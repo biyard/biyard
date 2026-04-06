@@ -16,4 +16,16 @@ pub enum TokenError {
 
     #[error("Token balance not found")]
     TokenBalanceNotFound,
+
+    #[error("Token already deployed on-chain")]
+    AlreadyDeployed,
+
+    #[error("On-chain deployment failed: {0}")]
+    DeployFailed(String),
+
+    #[error("On-chain mint failed: {0}")]
+    MintFailed(String),
+
+    #[error("Token not deployed on-chain")]
+    NotDeployed,
 }

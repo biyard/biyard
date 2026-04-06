@@ -26,9 +26,8 @@ pub fn Input(
     children: Element,
 ) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
         input {
-            class: "input",
+            class: "relative flex box-border flex-row items-center justify-between py-2 px-3 border-none rounded-lg bg-white shadow-[inset_0_0_0_1px_#e5e7eb] text-gray-700 cursor-pointer gap-1 transition-colors duration-100 dark:bg-white/15 dark:shadow-[inset_0_0_0_1px_#374151] dark:text-gray-300 placeholder:text-gray-500 dark:placeholder:text-gray-400 disabled:text-gray-500 disabled:cursor-not-allowed dark:disabled:text-gray-400 hover:not-disabled:bg-gray-200 hover:not-disabled:text-gray-900 hover:not-disabled:outline-none focus-visible:bg-gray-200 focus-visible:text-gray-900 focus-visible:outline-none dark:hover:not-disabled:bg-white/25 dark:hover:not-disabled:text-white dark:focus-visible:bg-white/25 dark:focus-visible:text-white",
             oninput: move |e| _ = oninput.map(|callback| callback(e)),
             onchange: move |e| _ = onchange.map(|callback| callback(e)),
             oninvalid: move |e| _ = oninvalid.map(|callback| callback(e)),

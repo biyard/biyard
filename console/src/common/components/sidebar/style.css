@@ -1,4 +1,4 @@
-/* TODO: abstract as Utilitiy class */
+/* Screen-reader only text */
 .sr-only {
   position: absolute;
   overflow: hidden;
@@ -7,26 +7,31 @@
   padding: 0;
   border: 0;
   margin: -1px;
-  clip-path: inset(50%);
   white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 :root {
-  --sidebar-background: var(--primary-color-2);
-  --sidebar-foreground: var(--secondary-color-4);
-  --sidebar-border: var(--primary-color-6);
-  --sidebar-accent: var(--primary-color-4);
-  --sidebar-accent-foreground: var(--secondary-color-4);
-  --sidebar-ring: var(--primary-color-7);
+  --sidebar-background: theme(colors.white);
+  --sidebar-foreground: theme(colors.gray.700);
+  --sidebar-border: theme(colors.gray.200);
+  --sidebar-accent: theme(colors.gray.200);
+  --sidebar-accent-foreground: theme(colors.gray.700);
+  --sidebar-ring: theme(colors.gray.300);
 }
 
-.sidebar-wrapper {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-  height: 100svh;
-  min-height: 100svh;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sidebar-background: theme(colors.gray.800);
+    --sidebar-foreground: theme(colors.gray.300);
+    --sidebar-border: theme(colors.gray.700);
+    --sidebar-accent: theme(colors.gray.700);
+    --sidebar-accent-foreground: theme(colors.gray.300);
+    --sidebar-ring: theme(colors.gray.600);
+  }
 }
+
+/* .sidebar-wrapper base styles inlined in component.rs */
 
 @media (width >=768px) {
   .sidebar-wrapper:has(.sidebar-desktop[data-side="right"]) {
@@ -51,8 +56,8 @@
 
 .sidebar-gap {
   position: relative;
+  background-color: transparent;
   width: var(--sidebar-width);
-  background: transparent;
   transition: width 200ms ease-out;
 }
 
@@ -80,9 +85,9 @@
   top: 0;
   bottom: 0;
   display: none;
-  width: var(--sidebar-width);
   height: 100svh;
   box-sizing: border-box;
+  width: var(--sidebar-width);
   transition: left 200ms ease-out, right 200ms ease-out, width 200ms ease-out;
 }
 
@@ -151,10 +156,7 @@
 }
 
 .sidebar-static {
-  display: flex;
   width: var(--sidebar-width);
-  height: 100%;
-  flex-direction: column;
   background: var(--sidebar-background);
   color: var(--sidebar-foreground);
 }
@@ -169,22 +171,7 @@
   display: none;
 }
 
-.sidebar-mobile-inner {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-}
-
-.sidebar-trigger {
-  display: inline-flex;
-  width: 1.75rem;
-  height: 1.75rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0 !important;
-  line-height: 0;
-}
+/* .sidebar-mobile-inner and .sidebar-trigger base styles inlined in component.rs */
 
 .sidebar-rail {
   position: absolute;
@@ -195,7 +182,7 @@
   width: 1rem;
   padding: 0;
   border: none;
-  background: transparent;
+  background-color: transparent;
   cursor: ew-resize;
   transform: translateX(-50%);
   transition: all 200ms ease-out;
@@ -212,7 +199,7 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 2px;
+  width: 0.125rem;
   content: "";
 }
 
@@ -258,14 +245,7 @@
   left: -0.5rem;
 }
 
-.sidebar-inset {
-  position: relative;
-  display: flex;
-  width: 100%;
-  flex: 1 1 0%;
-  flex-direction: column;
-  background: var(--primary-color-1);
-}
+/* .sidebar-inset base styles inlined in component.rs */
 
 [data-variant="inset"]~.sidebar-inset {
   border-radius: 0.75rem;
@@ -287,58 +267,36 @@
   margin-right: 0.5rem;
 }
 
-.sidebar-header {
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  gap: 0.5rem;
-}
-
-.sidebar-content {
-  display: flex;
-  overflow: hidden auto;
-  min-height: 0;
-  flex: 1 1 0%;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+/* .sidebar-header and .sidebar-content base styles inlined in component.rs */
 
 [data-collapsible="icon"] .sidebar-content {
   overflow: visible;
 }
 
-.sidebar-footer {
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  gap: 0.5rem;
-}
+/* .sidebar-footer base styles inlined in component.rs */
 
 .sidebar-separator {
   width: auto;
-  margin: 0 0.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   background: var(--sidebar-border);
 }
 
-.sidebar-group {
-  position: relative;
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  padding: 0.5rem;
-}
+/* .sidebar-group base styles inlined in component.rs */
 
 .sidebar-group-label {
   display: flex;
   height: 2rem;
   align-items: center;
-  padding: 0 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   border-radius: 0.375rem;
-  color: var(--sidebar-foreground);
   font-size: 0.75rem;
+  line-height: 1rem;
   font-weight: 500;
   opacity: 0.7;
   outline: none;
+  color: var(--sidebar-foreground);
   transition: margin 200ms ease-out, opacity 200ms ease-out;
 }
 
@@ -364,11 +322,11 @@
   padding: 0;
   border: none;
   border-radius: 0.375rem;
-  aspect-ratio: 1;
-  background: transparent;
-  color: var(--sidebar-foreground);
+  background-color: transparent;
   cursor: pointer;
   outline: none;
+  aspect-ratio: 1;
+  color: var(--sidebar-foreground);
   transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 0ms;
 }
 
@@ -399,29 +357,11 @@
 [data-collapsible="icon"] .sidebar-group-action {
   opacity: 0;
   pointer-events: none;
-  transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 200ms;
   visibility: hidden;
+  transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 200ms;
 }
 
-.sidebar-group-content {
-  width: 100%;
-  font-size: 0.875rem;
-}
-
-.sidebar-menu {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  flex-direction: column;
-  padding: 0;
-  margin: 0;
-  gap: 0.25rem;
-  list-style: none;
-}
-
-.sidebar-menu-item {
-  position: relative;
-}
+/* .sidebar-group-content, .sidebar-menu, .sidebar-menu-item base styles inlined in component.rs */
 
 .sidebar-menu-button[data-sidebar="menu-button"] {
   display: flex;
@@ -432,14 +372,15 @@
   padding: 0.5rem;
   border: none;
   border-radius: 0.375rem;
-  background: transparent;
-  color: var(--sidebar-foreground);
+  background-color: transparent;
   cursor: pointer;
   font-size: 0.875rem;
+  line-height: 1.25rem;
   gap: 0.5rem;
   outline: none;
   text-align: left;
   text-decoration: none;
+  color: var(--sidebar-foreground);
   transition: width 200ms ease-out, height 200ms ease-out, padding 200ms ease-out;
 }
 
@@ -464,9 +405,9 @@
 }
 
 .sidebar-menu-button[data-sidebar="menu-button"][data-active="true"] {
+  font-weight: 500;
   background: var(--sidebar-accent);
   color: var(--sidebar-accent-foreground);
-  font-weight: 500;
 }
 
 .sidebar-menu-button[data-sidebar="menu-button"] svg {
@@ -478,8 +419,8 @@
 .sidebar-menu-button[data-sidebar="menu-button"]>span:last-child {
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: opacity 200ms ease-out;
   white-space: nowrap;
+  transition: opacity 200ms ease-out;
 }
 
 .sidebar-desktop[data-collapsible="icon"] .sidebar-menu-button[data-sidebar="menu-button"]>span:last-child {
@@ -490,20 +431,23 @@
 .sidebar-menu-button[data-sidebar="menu-button"][data-size="default"] {
   height: 2rem;
   font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .sidebar-menu-button[data-sidebar="menu-button"][data-size="sm"] {
   height: 1.75rem;
   font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .sidebar-menu-button[data-sidebar="menu-button"][data-size="lg"] {
   height: 3rem;
   font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .sidebar-menu-button[data-sidebar="menu-button"][data-variant="outline"] {
-  background: var(--primary-color-1);
+  background-color: #fff;
   box-shadow: 0 0 0 1px var(--sidebar-border);
 }
 
@@ -537,8 +481,8 @@
   padding: 0;
   border: 0;
   margin: -1px;
-  clip-path: inset(50%);
   white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .sidebar-desktop[data-collapsible="icon"] .sidebar-menu-button[data-sidebar="menu-button"] svg {
@@ -560,11 +504,11 @@
   padding: 0;
   border: none;
   border-radius: 0.375rem;
-  aspect-ratio: 1;
-  background: transparent;
-  color: var(--sidebar-foreground);
+  background-color: transparent;
   cursor: pointer;
   outline: none;
+  aspect-ratio: 1;
+  color: var(--sidebar-foreground);
   transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 0ms;
 }
 
@@ -606,8 +550,8 @@
 [data-collapsible="icon"] .sidebar-menu-action[data-sidebar="menu-action"] {
   opacity: 0;
   pointer-events: none;
-  transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 200ms;
   visibility: hidden;
+  transition: transform 150ms ease-out, opacity 200ms ease-out, visibility 0ms 200ms;
 }
 
 .sidebar-menu-action[data-sidebar="menu-action"][data-show-on-hover="true"] {
@@ -634,15 +578,17 @@
   height: 1.25rem;
   align-items: center;
   justify-content: center;
-  padding: 0 0.25rem;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
   border-radius: 0.375rem;
-  color: var(--sidebar-foreground);
   font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
+  line-height: 1rem;
   font-weight: 500;
   pointer-events: none;
-  transition: opacity 200ms ease-out;
   user-select: none;
+  color: var(--sidebar-foreground);
+  font-variant-numeric: tabular-nums;
+  transition: opacity 200ms ease-out;
 }
 
 .sidebar-menu-button:hover~.sidebar-menu-badge {
@@ -674,7 +620,8 @@
   display: flex;
   height: 2rem;
   align-items: center;
-  padding: 0 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   border-radius: 0.375rem;
   gap: 0.5rem;
 }
@@ -694,10 +641,11 @@
   display: flex;
   flex-direction: column;
   padding: 0.125rem 0.625rem;
-  border-left: 1px solid var(--sidebar-border);
-  margin: 0 0.875rem;
   gap: 0.25rem;
   list-style: none;
+  border-left: 1px solid var(--sidebar-border);
+  margin-left: 0.875rem;
+  margin-right: 0.875rem;
   transform: translateX(1px);
   transition: opacity 200ms ease-out, max-height 200ms ease-out, padding 200ms ease-out, margin 200ms ease-out, visibility 0ms 0ms;
 }
@@ -709,13 +657,11 @@
   margin: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 200ms ease-out, max-height 200ms ease-out, padding 200ms ease-out, margin 200ms ease-out, visibility 0ms 200ms;
   visibility: hidden;
+  transition: opacity 200ms ease-out, max-height 200ms ease-out, padding 200ms ease-out, margin 200ms ease-out, visibility 0ms 200ms;
 }
 
-.sidebar-menu-sub-item {
-  position: relative;
-}
+/* .sidebar-menu-sub-item base styles inlined in component.rs */
 
 .sidebar-menu-sub-button {
   display: flex;
@@ -725,16 +671,18 @@
   height: 1.75rem;
   box-sizing: border-box;
   align-items: center;
-  padding: 0 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
   border: none;
   border-radius: 0.375rem;
-  background: transparent;
-  color: var(--sidebar-foreground);
+  background-color: transparent;
   cursor: pointer;
   font-size: 0.875rem;
+  line-height: 1.25rem;
   gap: 0.5rem;
   outline: none;
   text-decoration: none;
+  color: var(--sidebar-foreground);
   transform: translateX(-1px);
   transition: opacity 200ms ease-out;
 }
@@ -779,10 +727,12 @@
 
 .sidebar-menu-sub-button[data-size="sm"] {
   font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .sidebar-menu-sub-button[data-size="md"] {
   font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 [data-collapsible="icon"] .sidebar-menu-sub-button {
