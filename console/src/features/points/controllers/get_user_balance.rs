@@ -7,15 +7,16 @@ use crate::common::{CommonConfig, ProjectAuth};
 #[cfg(feature = "server")]
 use crate::features::points::{MonthlyPointAggregation, PointBalance};
 
-#[get("/v1/projects/:project_id/points/:meta_user_id", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/points/:meta_user_id?date", auth: ProjectAuth)]
 pub async fn get_user_balance_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     meta_user_id: String,
-    date: String,
+    date: Option<String>,
 ) -> Result<PointBalanceResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
     let project = auth.project;
+    let date = date.unwrap_or_else(crate::common::utils::time_utils::timestamp_to_yyyy_mm);
 
     let (pb_pk, pb_sk) = PointBalance::keys(project.pk.clone(), meta_user_id.clone(), date.clone());
     let balance = PointBalance::get(cli, &pb_pk, Some(pb_sk))

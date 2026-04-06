@@ -27,9 +27,15 @@ fn serve(app: fn() -> Element) {
     let account_auth_layer = dioxus::fullstack::axum::middleware::from_fn(
         crate::common::middlewares::account_auth_layer::inject_account,
     );
+    let api_domain_filter = dioxus::fullstack::axum::middleware::from_fn(
+        crate::common::middlewares::api_domain_filter::filter_api_domain,
+    );
 
     let dioxus_router = dioxus::server::router(app);
-    let app = dioxus_router.layer(account_auth_layer).layer(session_layer);
+    let app = dioxus_router
+        .layer(api_domain_filter)
+        .layer(account_auth_layer)
+        .layer(session_layer);
 
     #[cfg(not(feature = "lambda"))]
     dioxus::serve(move || {

@@ -135,6 +135,7 @@ jobs:
         env:
           DYNAMO_TABLE_PREFIX: biyard-local
           ENV: local
+          API_DOMAIN: api.dev.biyard.co
           RUSTFLAGS: "-D warnings"
           RUST_LOG: error
           DYNAMO_ENDPOINT: http://localstack:4566
