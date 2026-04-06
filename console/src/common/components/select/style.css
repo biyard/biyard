@@ -1,0 +1,35 @@
+/* Select - animation-only styles (static styles moved to Tailwind in component.rs) */
+
+.select-list[data-state="closed"] {
+  animation: select-list-animate-out 150ms ease-in forwards;
+  pointer-events: none;
+}
+
+.select-list[data-state="open"] {
+  animation: select-list-animate-in 150ms ease-out forwards;
+  pointer-events: auto;
+}
+
+@keyframes select-list-animate-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+}
+
+@keyframes select-list-animate-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

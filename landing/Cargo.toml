@@ -1,0 +1,23 @@
+[package]
+name = "landing"
+version = "0.1.0"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["fullstack", "router"] }
+dioxus-translate = { workspace = true }
+tracing = { workspace = true }
+
+# Server-only
+tokio = { workspace = true, optional = true }
+lambda_http = { version = "1", optional = true }
+
+[features]
+default = ["full"]
+full = []
+web = ["dioxus/web"]
+server = ["dioxus/server", "tokio"]
+lambda = ["lambda_http", "server"]

@@ -1,0 +1,21 @@
+/* Drop indicator with ::before pseudo-element (cannot be done in Tailwind) */
+.drop-indicator {
+  position: relative;
+  z-index: 1;
+  height: 0.125rem;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  background-color: theme(colors.blue.500);
+}
+
+.drop-indicator::before {
+  position: absolute;
+  top: -0.25rem;
+  left: -0.375rem;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid theme(colors.blue.500);
+  content: "";
+}

@@ -26,7 +26,7 @@ export interface GlobalAccelStackProps extends StackProps {
 
 export class GlobalAccelStack extends Stack {
   constructor(scope: Construct, id: string, props: GlobalAccelStackProps) {
-    super(scope, id, { ...props });
+    super(scope, id, { ...props, crossRegionReferences: true });
 
     const { webDomain, baseDomain } = props;
     const zone = route53.HostedZone.fromLookup(this, "RootZone", {
@@ -69,23 +69,31 @@ export class GlobalAccelStack extends Stack {
         originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
         readTimeout: cdk.Duration.seconds(60),
         keepaliveTimeout: cdk.Duration.seconds(5),
-        originPath: props.apiConfig.prefix,
+        ...(props.apiConfig.prefix ? { originPath: props.apiConfig.prefix } : {}),
+      });
+
+      const ssrCachePolicy = new cloudfront.CachePolicy(this, "SsrCachePolicy", {
+        cachePolicyName: `${props.stage}-landing-ssr-cache`,
+        defaultTtl: cdk.Duration.minutes(5),
+        maxTtl: cdk.Duration.hours(1),
+        minTtl: cdk.Duration.seconds(0),
+        enableAcceptEncodingGzip: true,
+        enableAcceptEncodingBrotli: true,
       });
 
       defaultBehavior = {
         origin: apiOrigin,
-        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        cachePolicy: ssrCachePolicy,
         originRequestPolicy:
           cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
         compress: true,
       };
     }
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior,
-      defaultRootObject: "/",
       additionalBehaviors: {
         "/metadata/*": cachedS3Prop,
         "/assets/*": cachedS3Prop,

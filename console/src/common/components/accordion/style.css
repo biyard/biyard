@@ -1,0 +1,38 @@
+/* Base styles inlined in component.rs as Tailwind classes */
+
+.accordion-content > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.accordion-content[data-open="false"] {
+  animation: accordion-close 300ms cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+
+.accordion-content[data-open="true"] {
+  animation: accordion-open 300ms cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+
+@keyframes accordion-close {
+  from {
+    grid-template-rows: 1fr;
+  }
+
+  to {
+    grid-template-rows: 0fr;
+  }
+}
+
+@keyframes accordion-open {
+  from {
+    grid-template-rows: 0fr;
+  }
+
+  to {
+    grid-template-rows: 1fr;
+  }
+}
+
+.accordion-item[data-open="true"] .accordion-expand-icon {
+  rotate: 180deg;
+}

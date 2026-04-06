@@ -1,0 +1,33 @@
+.menubar-content[data-state="closed"] {
+  animation: menubar-content-animate-out 150ms ease-in forwards;
+  pointer-events: none;
+}
+
+.menubar-content[data-state="open"] {
+  animation: menubar-content-animate-in 150ms ease-out forwards;
+  pointer-events: auto;
+}
+
+@keyframes menubar-content-animate-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+}
+
+@keyframes menubar-content-animate-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

@@ -1,0 +1,12 @@
+use crate::features::projects::ProjectStatus;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateProjectRequest {
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub brand_logo_url: Option<String>,
+    pub monthly_token_supply: Option<i64>,
+    pub treasury_reserve_rate: Option<f64>,
+    pub status: Option<ProjectStatus>,
+}

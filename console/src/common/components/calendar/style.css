@@ -1,0 +1,301 @@
+/* Component classes (extracted from Tailwind utility strings) */
+
+.calendar {
+    @apply flex flex-row rounded-lg bg-white border border-gray-200
+        shadow-[0_2px_10px_rgba(0,0,0,0.1)] font-sans
+        dark:bg-gray-800 dark:border-gray-700
+        data-[disabled=true]:opacity-60 data-[disabled=true]:pointer-events-none;
+}
+
+.calendar-nav {
+    @apply relative flex items-center justify-center gap-2 pt-3 px-12 pb-1;
+}
+
+.calendar-nav-prev,
+.calendar-nav-next {
+    @apply absolute flex w-7 h-7 items-center justify-center rounded-lg
+        text-gray-500 cursor-pointer text-base leading-6 border border-gray-200 bg-transparent
+        dark:text-gray-400 dark:bg-gray-900 dark:border-gray-700
+        hover:bg-gray-200 hover:text-gray-700 hover:border-gray-300
+        dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:hover:border-gray-600
+        focus-visible:ring-2 focus-visible:ring-blue-500
+        disabled:bg-white disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-100
+        dark:disabled:bg-gray-800 dark:disabled:border-gray-800;
+}
+
+.calendar-nav-prev {
+    @apply left-3;
+}
+
+.calendar-nav-next {
+    @apply right-3;
+}
+
+.calendar-month-title {
+    @apply flex w-full h-7 items-center justify-center;
+}
+
+.calendar-view {
+    @apply flex flex-col;
+}
+
+.calendar-select {
+    @apply absolute w-full h-full p-1 m-0 inset-0 opacity-0;
+}
+
+/* Internal elements styled via CSS (not reachable by class prop) */
+
+/* Select container/value */
+.calendar-month-select-container,
+.calendar-year-select-container {
+    position: relative;
+}
+
+.calendar-month-select-container:has(:focus-visible),
+.calendar-year-select-container:has(:focus-visible) {
+    border-radius: 0.5rem;
+    outline: 2px solid theme(colors.blue.500);
+}
+
+.calendar-month-select-value,
+.calendar-year-select-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border: none;
+    background-color: transparent;
+    color: #374151;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-month-select-value,
+    .calendar-year-select-value {
+        color: #d1d5db;
+    }
+}
+
+/* Grid structure */
+.calendar-grid {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.calendar-grid-header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-grid-day-header {
+    flex: 1;
+    color: #6b7280;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 300;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-day-header {
+        color: #9ca3af;
+    }
+}
+
+.calendar-grid-body {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.calendar-grid-week {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.calendar-grid-week td {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.calendar-grid-week td:first-child .calendar-grid-cell {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.calendar-grid-week td:last-child .calendar-grid-cell {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.calendar-grid-weeknum {
+    border-radius: 0.5rem;
+    background-color: #fff;
+    color: #6b7280;
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-weeknum {
+        color: #9ca3af;
+    }
+}
+
+/* Cell base */
+.calendar-grid-cell {
+    width: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: none;
+    color: #374151;
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    aspect-ratio: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell {
+        color: #d1d5db;
+    }
+}
+
+/* Cell states */
+.calendar-grid-cell[data-month="current"]:not([data-disabled="true"]):hover {
+    background-color: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="current"]:not([data-disabled="true"]):hover {
+        background-color: #374151;
+    }
+}
+
+.calendar-grid-cell[data-month="current"]:focus-visible {
+    outline: 2px solid theme(colors.blue.500);
+    outline-offset: 2px;
+}
+
+.calendar-grid-cell[data-month="last"],
+.calendar-grid-cell[data-month="next"],
+.calendar-grid-cell[data-disabled="true"] {
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="last"],
+    .calendar-grid-cell[data-month="next"],
+    .calendar-grid-cell[data-disabled="true"] {
+        color: #9ca3af;
+    }
+}
+
+.calendar-grid-cell[data-month="last"][data-selected="true"],
+.calendar-grid-cell[data-month="next"][data-selected="true"] {
+    background-color: #d1d5db;
+}
+
+.calendar-grid-cell[data-month="current"][data-selected="true"] {
+    background-color: #2563eb;
+    color: #fff;
+}
+
+.calendar-grid-cell[data-month="current"][data-selected="true"]:hover {
+    background-color: #2563eb;
+    color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="current"][data-selected="true"]:hover {
+        background-color: #1f2937;
+        color: #fff;
+    }
+}
+
+.calendar-grid-cell[data-month="current"][data-unavailable="true"] {
+    cursor: not-allowed;
+    text-decoration: line-through;
+    color: theme(colors.gray.300);
+}
+
+.calendar-grid-cell[data-month="current"][data-today="true"]:not(
+        [data-selected="true"]
+    ) {
+    background-color: #f3f4f6;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="current"][data-today="true"]:not(
+            [data-selected="true"]
+        ) {
+        background-color: #1f2937;
+    }
+}
+
+/* Range selection */
+.calendar-grid-cell[data-month="last"][data-selection-between="true"],
+.calendar-grid-cell[data-month="next"][data-selection-between="true"] {
+    border-radius: 0;
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="last"][data-selection-between="true"],
+    .calendar-grid-cell[data-month="next"][data-selection-between="true"] {
+        background-color: #1f2937;
+        color: #9ca3af;
+    }
+}
+
+.calendar-grid-cell[data-month="current"][data-selection-between="true"] {
+    border-radius: 0;
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+@media (prefers-color-scheme: dark) {
+    .calendar-grid-cell[data-month="current"][data-selection-between="true"] {
+        background-color: #1f2937;
+        color: #d1d5db;
+    }
+}
+
+td:has(.calendar-grid-cell[data-selection-start="true"]) {
+    padding: 0;
+    background-color: #f3f4f6;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+@media (prefers-color-scheme: dark) {
+    td:has(.calendar-grid-cell[data-selection-start="true"]) {
+        background-color: #1f2937;
+    }
+}
+
+td:has(.calendar-grid-cell[data-selection-end="true"]) {
+    padding: 0;
+    background-color: #f3f4f6;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+@media (prefers-color-scheme: dark) {
+    td:has(.calendar-grid-cell[data-selection-end="true"]) {
+        background-color: #1f2937;
+    }
+}

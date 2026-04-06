@@ -1,0 +1,154 @@
+/* Tooltip - selector-dependent styles only (base styles inlined in component.rs) */
+
+.tooltip-content {
+  animation: tooltip-fade-in 0.2s ease-in-out;
+}
+
+.tooltip-content::after {
+  position: absolute;
+  border-width: 0.25rem;
+  border-style: solid;
+  margin-left: -0.25rem;
+  content: " ";
+  rotate: 45deg;
+}
+
+/* Positioning based on side */
+.tooltip-content[data-side="top"] {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 0.5rem;
+  transform: translateX(-50%);
+}
+
+.tooltip-content[data-side="top"]::after {
+  top: calc(100% - 0.25rem);
+  left: 50%;
+  border-color: #374151;
+  border-radius: 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="top"]::after {
+    border-color: #d1d5db;
+  }
+}
+
+.tooltip-content[data-side="right"] {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: 0.5rem;
+  transform: translateY(-50%);
+}
+
+.tooltip-content[data-side="right"]::after {
+  top: calc(50% - 0.25rem);
+  left: 0;
+  border-color: #374151;
+  border-radius: 0 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="right"]::after {
+    border-color: #d1d5db;
+  }
+}
+
+.tooltip-content[data-side="bottom"] {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: 0.5rem;
+  transform: translateX(-50%);
+}
+
+.tooltip-content[data-side="bottom"]::after {
+  bottom: calc(100% - 0.25rem);
+  left: 50%;
+  border-color: #374151;
+  border-radius: 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="bottom"]::after {
+    border-color: #d1d5db;
+  }
+}
+
+.tooltip-content[data-side="left"] {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-right: 0.5rem;
+  transform: translateY(-50%);
+}
+
+.tooltip-content[data-side="left"]::after {
+  top: calc(50% - 0.25rem);
+  right: -0.25rem;
+  border-color: #374151;
+  border-radius: 0 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="left"]::after {
+    border-color: #d1d5db;
+  }
+}
+
+/* Alignment styles for top and bottom */
+.tooltip-content[data-side="top"][data-align="start"],
+.tooltip-content[data-side="bottom"][data-align="start"] {
+  left: 0;
+  transform: none;
+}
+
+.tooltip-content[data-side="top"][data-align="end"],
+.tooltip-content[data-side="bottom"][data-align="end"] {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+/* Alignment styles for left and right */
+.tooltip-content[data-side="left"][data-align="start"],
+.tooltip-content[data-side="right"][data-align="start"] {
+  top: 0;
+  transform: none;
+}
+
+.tooltip-content[data-side="left"][data-align="center"],
+.tooltip-content[data-side="right"][data-align="center"] {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tooltip-content[data-side="left"][data-align="end"],
+.tooltip-content[data-side="right"][data-align="end"] {
+  top: auto;
+  bottom: 0;
+  transform: none;
+}
+
+/* Animation */
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Disabled trigger style moved to Tailwind in component.rs */
+
+.tooltip-content[data-state="closed"] {
+  display: none;
+}
+
+.tooltip-content[data-state="open"] {
+  display: block;
+}

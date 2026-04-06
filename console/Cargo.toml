@@ -1,0 +1,85 @@
+[package]
+name = "console"
+version = "0.1.0"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["fullstack", "router"] }
+dioxus-primitives = { version = "0.0.1", git = "https://github.com/DioxusLabs/components", default-features = false, features = [
+    "router",
+] }
+
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_with = { workspace = true }
+serde_repr = "0.1.20"
+by-macros = { workspace = true }
+dioxus-translate = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+base64 = { workspace = true }
+async-trait = { workspace = true }
+rand = { version = "0.10" }
+
+
+# Server-only dependencies
+tower-sessions = { version = "0.15.0", optional = true }
+aws-config = { version = "1", optional = true }
+aws-sdk-dynamodb = { workspace = true, optional = true }
+aws-credential-types = { version = "1.2", optional = true }
+serde_dynamo = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+reqwest = { workspace = true, optional = true }
+schemars = { workspace = true, optional = true }
+uuid = { version = "1", features = ["serde", "v4"], optional = true }
+validator = { version = "0.20", features = ["derive"], optional = true }
+lambda_http = { version = "1", optional = true }
+bcrypt = { version = "0.16", optional = true }
+sha3 = { version = "0.10.8", optional = true }
+hex = { version = "0.4.3", optional = true }
+ethers = { workspace = true, optional = true }
+
+# Web-only dependencies
+gloo-timers = { version = "0.3", features = ["futures"], optional = true }
+getrandom = { version = "0.4", features = ["wasm_js"], optional = true }
+
+# Shared
+tracing-subscriber = { workspace = true }
+tracing-wasm = "0.2.1"
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = [
+    "IntersectionObserver",
+    "IntersectionObserverEntry",
+    "IntersectionObserverInit",
+] }
+percent-encoding = "2"
+dioxus-cli-config.workspace = true
+
+[features]
+default = ["full"]
+full = []
+web = ["dioxus/web", "getrandom", "gloo-timers"]
+server = [
+    "aws-config",
+    "aws-credential-types",
+    "aws-sdk-dynamodb",
+    "bcrypt",
+    "dioxus/server",
+    "ethers",
+    "hex",
+    "reqwest",
+    "schemars",
+    "serde_dynamo",
+    "sha3",
+    "tokio",
+    "tower-sessions",
+    "uuid",
+    "validator",
+]
+lambda = ["lambda_http", "server"]

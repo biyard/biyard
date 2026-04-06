@@ -1,0 +1,31 @@
+.context-menu-content[data-state="closed"] {
+  animation: context-menu-animate-out 150ms ease-in forwards;
+}
+
+.context-menu-content[data-state="open"] {
+  animation: context-menu-animate-in 150ms ease-out forwards;
+}
+
+@keyframes context-menu-animate-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+}
+
+@keyframes context-menu-animate-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

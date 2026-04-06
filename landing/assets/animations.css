@@ -1,0 +1,124 @@
+@keyframes spinCube {
+  0% { transform: rotateX(-20deg) rotateY(0deg); }
+  100% { transform: rotateX(-20deg) rotateY(360deg); }
+}
+@keyframes floatParticle {
+  0% { transform: translateY(0px); opacity: 0.4; }
+  100% { transform: translateY(-12px); opacity: 1; }
+}
+@keyframes chartPulse {
+  0% { filter: drop-shadow(0 0 15px rgba(56,189,248,0.2)); }
+  50% { filter: drop-shadow(0 0 25px rgba(56,189,248,0.4)); }
+  100% { filter: drop-shadow(0 0 15px rgba(56,189,248,0.2)); }
+}
+@keyframes pulseRed {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+@keyframes pulseGreen {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes drawLineRed {
+  0% { stroke-dashoffset: 200; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes drawLineGreen {
+  0% { stroke-dashoffset: 200; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes flowDown {
+  0% { transform: translateY(-10px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,170,0.3); }
+  50% { box-shadow: 0 0 40px rgba(0,212,170,0.6); }
+}
+@keyframes transformArrow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(0,212,170,0.3)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(0,212,170,0.6)); }
+}
+@keyframes nodeFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes dashFlow {
+  0% { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.7; }
+}
+@keyframes lineGrow {
+  0% { stroke-dashoffset: 300; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes planetSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes surfaceScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+@keyframes spinY {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+@keyframes spinCubeLeft {
+  0% { transform: rotateX(35deg) rotateZ(-25deg) rotateY(0deg); }
+  100% { transform: rotateX(35deg) rotateZ(-25deg) rotateY(360deg); }
+}
+@keyframes spinCubeRight {
+  0% { transform: rotateX(-30deg) rotateZ(20deg) rotateY(0deg); }
+  100% { transform: rotateX(-30deg) rotateZ(20deg) rotateY(-360deg); }
+}
+@keyframes spinCubeMain {
+  0% { transform: rotateX(-20deg) rotateZ(10deg) rotateY(0deg); }
+  100% { transform: rotateX(-20deg) rotateZ(10deg) rotateY(360deg); }
+}
+
+/* Scroll reveal animations */
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes typeIn {
+  0% { max-width: 0; }
+  100% { max-width: 100%; }
+}
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+.scroll-hidden {
+  opacity: 0;
+}
+.scroll-bounce {
+  animation: slideUp 0.6s ease-out forwards;
+}
+.scroll-fade {
+  animation: slideUp 0.5s ease-out forwards;
+}
+.scroll-type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+  border-right: 2px solid #00d4aa;
+  animation: typeIn 1.5s ease-out forwards, blink 0.7s step-end 1.5s infinite alternate;
+}
+@keyframes orbitLogos {
+  0% { transform: translateX(-300px) translateY(-20px); opacity: 0; }
+  15% { opacity: 1; }
+  50% { transform: translateX(0px) translateY(30px); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(300px) translateY(-20px); opacity: 0; }
+}
+@keyframes flowLogos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

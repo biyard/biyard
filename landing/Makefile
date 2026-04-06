@@ -1,15 +1,59 @@
-PORT ?= 4000
-API_URL ?= http://localhost:3000
+ENV ?= dev
+DYNAMO_TABLE_PREFIX ?= biyard-$(ENV)
+PORT ?= 8001
 
-.PHONY: run node_modules
-node_modules:
-	pnpm i -p
+ifeq ($(ENV),prod)
+CONSOLE_URL ?= https://dev.biyard.co
+else
+CONSOLE_URL ?= https://console.dev.biyard.co
+endif
 
-run: node_modules
-	PORT=$(PORT) VITE_API_BASE_URL=$(API_URL) pnpm dev
+export CONSOLE_URL
 
-test: node_modules
-	$(PLAYWRIGHT_ENV) npx playwright test $(PLAYWRIGHT_ARGS)
+COMMIT ?= $(shell git rev-parse --short HEAD)
 
-build: node_modules
-	VITE_API_BASE_URL=$(API_URL) pnpm run build
+AWS_ACCESS_KEY_ID ?= $(shell aws configure get aws_access_key_id $(AWS_FLAG))
+AWS_SECRET_ACCESS_KEY ?= $(shell aws configure get aws_secret_access_key $(AWS_FLAG))
+AWS_REGION ?= $(shell aws configure get region)
+AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output text)
+
+REPOSITORY ?= biyard/landing
+ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
+
+.PHONY: dev build build-lambda clean fmt clippy docker docker.push docker.login
+
+
+dev:
+	dx serve --port $(PORT) --web
+
+build:
+	dx build --release --debug-symbols false \
+		@client --features web --platform web \
+		@server --features server --platform server
+
+build-lambda:
+	dx build --release --debug-symbols false \
+		@client --features web --platform web \
+		@server --features lambda --platform server
+
+docker:
+	docker build -t $(ECR):$(COMMIT) -f Dockerfile ../target/dx/landing/release/web
+
+docker.push:
+	docker tag $(ECR):$(COMMIT) $(ECR):$(ENV)
+	docker push $(ECR):$(COMMIT)
+	docker push $(ECR):$(ENV)
+
+docker.login:
+	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+
+clean:
+	dx clean
+	cargo clean
+
+fmt:
+	cargo fmt
+
+clippy:
+	cargo clippy --features server
+	cargo clippy --features web --target wasm32-unknown-unknown
