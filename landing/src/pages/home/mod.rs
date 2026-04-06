@@ -4,88 +4,100 @@ mod data;
 mod faq;
 mod footer;
 mod hero;
+mod hero_cube;
+pub(super) mod i18n;
+mod partners;
 mod showcase;
 mod solution;
 mod svgs;
 mod why_biyard;
 
 use dioxus::prelude::*;
+use dioxus_translate::use_translate;
 
 use data::console_url;
+use i18n::NavTranslate;
 
 #[component]
 pub fn Home() -> Element {
     let console_href = console_url();
+    let t: NavTranslate = use_translate();
+    let mut lang = dioxus_translate::use_language();
+
     rsx! {
         div {
-            style: "min-height: 100vh; background: #0c1018; color: #e8eefc; font-family: 'Outfit', 'Noto Sans KR', sans-serif;",
-            document::Link { rel: "stylesheet", href: asset!("/assets/animations.css") }
-            document::Script { src: asset!("/assets/scroll-reveal.js") }
+            style: "min-height: 100vh; background: transparent; color: white; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden;",
+            document::Link { rel: "stylesheet", href: asset!("/assets/scroll-animations.css") }
+            document::Script { src: "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" }
+            document::Script { src: asset!("/assets/three-cube.js") }
+            document::Script { src: asset!("/assets/scroll-animations.js") }
 
-            // Sticky Navigation Bar
+            // Vignette overlay
+            div { class: "vignette-overlay" }
+
+            // Navigation
             nav {
-                style: "position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(12,16,24,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,212,170,0.08); padding: 14px 24px;",
+                style: "position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(2,4,8,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.04); padding: 16px 24px;",
                 div {
-                    class: "max-w-6xl mx-auto flex items-center justify-between",
+                    class: "max-w-7xl mx-auto flex items-center justify-between",
                     a {
                         href: "#",
-                        class: "flex items-center gap-2",
+                        class: "flex items-center gap-2.5",
                         img {
                             src: asset!("/assets/biyard-logo.png"),
                             alt: "Biyard",
-                            style: "width: 28px; height: 28px; flex-shrink: 0;",
+                            style: "width: 28px; height: 28px;",
                         }
                         span {
-                            class: "text-xl font-extrabold",
-                            style: "color: #00d4aa;",
-                            "Biyard"
+                            class: "text-xl font-extrabold italic tracking-tighter",
+                            style: "color: #00dfc0;",
+                            "BIYARD"
                         }
                     }
                     div {
                         class: "hidden md:flex items-center gap-8",
-                        a {
-                            href: "#about",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "About"
-                        }
-                        a {
-                            href: "#solution",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "Solution"
-                        }
-                        a {
-                            href: "#showcase",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "Showcase"
-                        }
-                        a {
-                            href: "#faq",
-                            class: "text-sm font-medium transition-colors",
-                            style: "color: #7a8ba6;",
-                            "FAQ"
+                        for (label, href) in [(t.about, "#about"), (t.solution, "#solution"), (t.showcase, "#showcase"), (t.faq, "#faq")] {
+                            a {
+                                href: "{href}",
+                                class: "text-xs font-bold uppercase tracking-widest",
+                                style: "color: #475569; transition: color 0.2s;",
+                                "{label}"
+                            }
                         }
                     }
-                    a {
-                        href: "{console_href}",
-                        class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold",
-                        style: "background: #00d4aa; color: #0c1018;",
-                        "Console"
+                    div {
+                        class: "flex items-center gap-3",
+                        button {
+                            class: "text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded cursor-pointer",
+                            style: "color: #475569; border: 1px solid rgba(0,223,192,0.2);",
+                            onclick: move |_| {
+                                lang.set(lang().switch());
+                            },
+                            if matches!(lang(), dioxus_translate::Language::En) { "KO" } else { "EN" }
+                        }
+                        a {
+                            href: "{console_href}",
+                            class: "btn-hyper px-6 py-2.5 rounded-sm text-xs font-black uppercase tracking-widest interactive",
+                            "{t.console}"
+                        }
                     }
                 }
             }
 
-            // Content
-            hero::HeroSection {}
-            about::AboutSection {}
-            solution::SolutionSection {}
-            showcase::ShowcaseSection {}
-            why_biyard::WhyBiyardSection {}
-            faq::FaqSection {}
-            cta::CtaSection {}
-            footer::Footer {}
+            // Content wrapper (above Three.js canvas)
+            div {
+                class: "content-wrapper",
+                hero::HeroSection {}
+                about::AboutSection {}
+                why_biyard::WhyBiyardSection {}
+                solution::SolutionSection {}
+                showcase::ShowcaseSection {}
+                cta::CtaSection {}
+                faq::FaqSection {}
+                partners::PartnersSection {}
+                footer::Footer {}
+
+            }
         }
     }
 }

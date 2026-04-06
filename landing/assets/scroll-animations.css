@@ -1,0 +1,104 @@
+/* Biyard Landing — Final Design System */
+
+:root {
+  --primary: #00dfc0;
+  --secondary: #7000ff;
+  --danger: #ff4d4d;
+  --bg: #020408;
+}
+
+html, body {
+  background: var(--bg);
+}
+
+/* Canvas background */
+#cube-canvas-container {
+  background: radial-gradient(circle at center, #0a101a 0%, #020408 100%);
+}
+
+/* Content layer */
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+/* Sections */
+.ui-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 0;
+}
+
+/* Vignette */
+.vignette-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Text effects */
+.glow-text {
+  color: var(--primary);
+  text-shadow: 0 0 20px rgba(0, 223, 192, 0.4);
+  letter-spacing: -0.02em;
+}
+.danger-text {
+  color: var(--danger);
+  text-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+}
+
+/* Buttons */
+.btn-hyper {
+  background: linear-gradient(90deg, var(--primary), #00b39b);
+  color: var(--bg);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.btn-hyper:hover {
+  box-shadow: 0 0 40px rgba(0, 223, 192, 0.6);
+  transform: translateY(-3px);
+}
+
+/* Glass panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* FAQ */
+.faq-item[open] .faq-icon { transform: rotate(45deg); color: var(--danger); }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-icon { transition: transform 0.3s ease; }
+
+/* Logo flow animations */
+@keyframes flowLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes flowRight {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .ui-section { min-height: auto; padding: 60px 0; }
+}

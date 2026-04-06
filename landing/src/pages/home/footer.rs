@@ -1,108 +1,29 @@
 use dioxus::prelude::*;
+
 use crate::Route;
 
 #[component]
 pub(super) fn Footer() -> Element {
     rsx! {
         footer {
-            style: "background: #0c1018; border-top: 1px solid rgba(0,212,170,0.08);",
+            class: "py-16 px-6 md:px-24",
+            style: "border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 10;",
             div {
-                class: "max-w-6xl mx-auto px-4 py-12",
+                class: "max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10",
                 div {
-                    class: "grid grid-cols-1 md:grid-cols-3 gap-8 mb-8",
-                    div {
-                        div {
-                            class: "flex items-center gap-2 mb-4",
-                            img {
-                                src: asset!("/assets/biyard-logo.png"),
-                                alt: "Biyard",
-                                style: "width: 24px; height: 24px;",
-                            }
-                            span {
-                                class: "text-lg font-bold",
-                                style: "color: #00d4aa;",
-                                "Biyard"
-                            }
-                        }
-                        p {
-                            class: "text-sm leading-relaxed",
-                            style: "color: #7a8ba6;",
-                            "Revenue-backed token infrastructure for brands. Building trust through transparency."
-                        }
-                    }
-                    div {
-                        p {
-                            class: "text-sm font-semibold mb-3",
-                            style: "color: #e8eefc;",
-                            "Links"
-                        }
-                        div {
-                            class: "space-y-2",
-                            Link {
-                                to: Route::Team {},
-                                class: "block text-sm hover:text-white transition-colors",
-                                style: "color: #7a8ba6;",
-                                "Team"
-                            }
-                            a {
-                                href: "https://github.com/biyard",
-                                target: "_blank",
-                                class: "block text-sm",
-                                style: "color: #7a8ba6;",
-                                "GitHub"
-                            }
-                            a {
-                                href: "https://www.linkedin.com/company/75498162",
-                                target: "_blank",
-                                class: "block text-sm",
-                                style: "color: #7a8ba6;",
-                                "LinkedIn"
-                            }
-                        }
-                    }
-                    div {
-                        p {
-                            class: "text-sm font-semibold mb-3",
-                            style: "color: #e8eefc;",
-                            "Contact"
-                        }
-                        div {
-                            class: "space-y-2",
-                            a {
-                                href: "mailto:finance@biyard.co",
-                                class: "block text-sm",
-                                style: "color: #7a8ba6;",
-                                "finance@biyard.co"
-                            }
-                        }
-                    }
+                    class: "flex items-center gap-2.5",
+                    img { src: asset!("/assets/biyard-logo.png"), alt: "Biyard", style: "width: 24px; height: 24px;" }
+                    span { class: "text-2xl font-black italic tracking-tighter", style: "color: #00dfc0;", "BIYARD" }
                 }
                 div {
-                    class: "pt-6 flex items-center justify-between",
-                    style: "border-top: 1px solid rgba(255,255,255,0.06);",
-                    p {
-                        class: "text-xs",
-                        style: "color: #4a5568;",
-                        "\u{00A9} 2026 Biyard Corp. All rights reserved."
-                    }
-                    div {
-                        class: "flex gap-4",
-                        a {
-                            href: "https://github.com/biyard",
-                            target: "_blank",
-                            class: "text-xs",
-                            style: "color: #4a5568;",
-                            "GitHub"
-                        }
-                        a {
-                            href: "https://www.linkedin.com/company/75498162",
-                            target: "_blank",
-                            class: "text-xs",
-                            style: "color: #4a5568;",
-                            "LinkedIn"
-                        }
-                    }
+                    class: "flex gap-10 uppercase tracking-widest",
+                    style: "font-size: 10px; font-weight: 900; color: #64748b;",
+                    Link { to: Route::Team {}, class: "hover:text-white transition-colors", "Team" }
+                    a { href: "https://github.com/biyard", target: "_blank", class: "hover:text-white transition-colors", "GitHub" }
+                    a { href: "https://www.linkedin.com/company/75498162", target: "_blank", class: "hover:text-white transition-colors", "LinkedIn" }
+                    a { href: "mailto:finance@biyard.co", class: "hover:text-white transition-colors", "Contact" }
                 }
+                div { class: "font-mono", style: "font-size: 10px; color: #334155;", "\u{00A9} 2026 BIYARD CORP." }
             }
         }
     }
