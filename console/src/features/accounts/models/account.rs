@@ -18,6 +18,7 @@ pub struct Account {
     pub created_at: i64,
     pub updated_at: i64,
 
+    #[serde(default)]
     pub user_type: AccountType,
 }
 
@@ -45,6 +46,7 @@ impl From<Account> for crate::features::accounts::AccountResponse {
             pk: account.pk,
             name: account.name,
             email: account.email,
+            user_type: account.user_type,
             created_at: account.created_at,
         }
     }

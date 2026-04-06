@@ -45,7 +45,7 @@ fn SheetRoot(props: DialogRootProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
         dialog::DialogRoot {
-            class: "sheet-root",
+            class: "sheet-root fixed z-[1000] inset-0 opacity-0 will-change-[opacity] bg-black/50",
             "data-slot": "sheet-root",
             id: props.id,
             is_modal: props.is_modal,
@@ -67,8 +67,8 @@ pub fn SheetContent(
     children: Element,
 ) -> Element {
     let class = class
-        .map(|c| format!("sheet {c}"))
-        .unwrap_or("sheet".to_string());
+        .map(|c| format!("sheet fixed z-[1001] flex box-border flex-col border-none bg-white text-gray-700 gap-4 shadow-[0_4px_20px_rgb(0_0_0/20%)] dark:bg-gray-800 dark:text-gray-300 will-change-transform {c}"))
+        .unwrap_or("sheet fixed z-[1001] flex box-border flex-col border-none bg-white text-gray-700 gap-4 shadow-[0_4px_20px_rgb(0_0_0/20%)] dark:bg-gray-800 dark:text-gray-300 will-change-transform".to_string());
 
     rsx! {
         dialog::DialogContent {
@@ -78,7 +78,7 @@ pub fn SheetContent(
             "data-side": side.as_str(),
             attributes,
             {children}
-            SheetClose { class: "sheet-close",
+            SheetClose { class: "sheet-close absolute top-4 right-4 flex w-6 h-6 items-center justify-center p-0 border-none rounded bg-transparent text-gray-300 cursor-pointer transition-colors hover:text-gray-700 dark:text-gray-600 dark:hover:text-gray-300",
                 icon::Icon { width: "20px", height: "20px",
                     path { d: "M18 6 6 18" }
                     path { d: "m6 6 12 12" }
@@ -94,7 +94,7 @@ pub fn SheetHeader(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "sheet-header", "data-slot": "sheet-header", ..attributes, {children} }
+        div { class: "flex flex-col p-4 gap-1.5", "data-slot": "sheet-header", ..attributes, {children} }
     }
 }
 
@@ -104,7 +104,7 @@ pub fn SheetFooter(
     children: Element,
 ) -> Element {
     rsx! {
-        div { class: "sheet-footer", "data-slot": "sheet-footer", ..attributes, {children} }
+        div { class: "flex flex-col p-4 mt-auto gap-2", "data-slot": "sheet-footer", ..attributes, {children} }
     }
 }
 
@@ -113,7 +113,7 @@ pub fn SheetTitle(props: DialogTitleProps) -> Element {
     rsx! {
         dialog::DialogTitle {
             id: props.id,
-            class: "sheet-title",
+            class: "m-0 text-gray-700 text-lg font-semibold dark:text-gray-300",
             "data-slot": "sheet-title",
             attributes: props.attributes,
             {props.children}
@@ -126,7 +126,7 @@ pub fn SheetDescription(props: DialogDescriptionProps) -> Element {
     rsx! {
         dialog::DialogDescription {
             id: props.id,
-            class: "sheet-description",
+            class: "m-0 text-gray-500 text-sm leading-5",
             "data-slot": "sheet-description",
             attributes: props.attributes,
             {props.children}

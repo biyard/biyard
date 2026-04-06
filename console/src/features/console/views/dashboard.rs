@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
+use crate::common::ui::*;
 use crate::features::accounts::context::use_account_context;
 use crate::features::console::i18n::ConsoleTranslate;
 
@@ -20,19 +21,14 @@ pub fn Dashboard() -> Element {
 
     rsx! {
         div {
-            // Page Header
-            div { class: "mb-6",
-                h1 { class: "text-3xl font-bold text-gray-900 dark:text-white",
-                    {t.biyard_console}
-                }
-                p { class: "mt-1 text-sm text-gray-600 dark:text-gray-400",
-                    {t.tagline}
-                }
+            PageHeader {
+                title: t.biyard_console.to_string(),
+                subtitle: t.tagline.to_string(),
             }
 
             // Welcome Section
             div { class: "mb-6",
-                div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6",
+                SectionCard {
                     h2 { class: "text-2xl font-bold text-gray-900 dark:text-white mb-2",
                         {t.welcome}
                     }
@@ -51,7 +47,6 @@ pub fn Dashboard() -> Element {
                         class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow",
                         div { class: "flex items-center",
                             div { class: "flex-shrink-0",
-                                // FolderKanban icon
                                 svg {
                                     xmlns: "http://www.w3.org/2000/svg",
                                     width: "32",
@@ -85,7 +80,6 @@ pub fn Dashboard() -> Element {
                         class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow",
                         div { class: "flex items-center",
                             div { class: "flex-shrink-0",
-                                // Key icon
                                 svg {
                                     xmlns: "http://www.w3.org/2000/svg",
                                     width: "32",
@@ -119,7 +113,6 @@ pub fn Dashboard() -> Element {
                         class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6 hover:shadow-lg transition-shadow",
                         div { class: "flex items-center",
                             div { class: "flex-shrink-0",
-                                // Settings icon
                                 svg {
                                     xmlns: "http://www.w3.org/2000/svg",
                                     width: "32",
@@ -150,10 +143,8 @@ pub fn Dashboard() -> Element {
 
             // Account Info
             div {
-                div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6",
-                    h3 { class: "text-lg font-medium text-gray-900 dark:text-white mb-4",
-                        {t.profile}
-                    }
+                SectionCard {
+                    SectionTitle { {t.profile} }
                     dl { class: "grid grid-cols-1 gap-4 sm:grid-cols-2",
                         div {
                             dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
@@ -191,13 +182,5 @@ pub fn Dashboard() -> Element {
                 }
             }
         }
-    }
-}
-
-fn format_timestamp(ts: i64) -> String {
-    let secs = ts / 1000;
-    match chrono::DateTime::from_timestamp(secs, 0) {
-        Some(dt) => dt.format("%Y-%m-%d %H:%M").to_string(),
-        None => ts.to_string(),
     }
 }

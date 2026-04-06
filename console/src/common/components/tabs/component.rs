@@ -66,9 +66,8 @@ impl TabsVariant {
 #[component]
 pub fn Tabs(props: TabsProps) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
         tabs::Tabs {
-            class: props.class + " tabs",
+            class: props.class + " tabs flex w-full flex-col gap-2 [&[data-variant=default]_.tabs-list]:bg-gray-100 dark:[&[data-variant=default]_.tabs-list]:bg-gray-800 [&[data-variant=default]_.tabs-trigger[data-state=active]]:bg-white [&[data-variant=default]_.tabs-trigger[data-state=active]]:shadow-[0_1px_2px_rgba(0,0,0,0.18)] dark:[&[data-variant=default]_.tabs-trigger[data-state=active]]:bg-gray-800 dark:[&[data-variant=default]_.tabs-trigger[data-state=active]]:shadow-[inset_0_0_0_1px_#4b5563] [&[data-variant=default]_.tabs-content-themed]:border [&[data-variant=default]_.tabs-content-themed]:border-gray-200 [&[data-variant=default]_.tabs-content-themed]:rounded-lg [&[data-variant=default]_.tabs-content-themed]:bg-white [&[data-variant=default]_.tabs-content-themed]:shadow-[0_1px_2px_rgba(0,0,0,0.18)] dark:[&[data-variant=default]_.tabs-content-themed]:border-gray-600 dark:[&[data-variant=default]_.tabs-content-themed]:bg-gray-900 dark:[&[data-variant=default]_.tabs-content-themed]:shadow-none",
             "data-variant": props.variant.to_class(),
             value: props.value,
             default_value: props.default_value,
@@ -85,7 +84,7 @@ pub fn Tabs(props: TabsProps) -> Element {
 #[component]
 pub fn TabList(props: TabListProps) -> Element {
     rsx! {
-        tabs::TabList { class: "tabs-list", attributes: props.attributes, {props.children} }
+        tabs::TabList { class: "tabs-list flex w-fit box-border flex-1 flex-row p-1 border-none rounded-lg gap-1", attributes: props.attributes, {props.children} }
     }
 }
 
@@ -93,7 +92,7 @@ pub fn TabList(props: TabListProps) -> Element {
 pub fn TabTrigger(props: TabTriggerProps) -> Element {
     rsx! {
         tabs::TabTrigger {
-            class: "tabs-trigger",
+            class: "tabs-trigger py-1 px-2 border-none bg-none text-gray-500 dark:text-gray-400 cursor-pointer rounded-[calc(0.5rem-0.25rem)] data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[disabled=true]:text-gray-500 dark:data-[disabled=true]:text-gray-400 data-[disabled=true]:cursor-not-allowed hover:not-data-[disabled=true]:text-gray-400 focus-visible:text-gray-400",
             id: props.id,
             value: props.value,
             index: props.index,
@@ -108,7 +107,7 @@ pub fn TabTrigger(props: TabTriggerProps) -> Element {
 pub fn TabContent(props: TabContentProps) -> Element {
     rsx! {
         tabs::TabContent {
-            class: props.class.unwrap_or_default() + " tabs-content tabs-content-themed",
+            class: props.class.unwrap_or_default() + " tabs-content tabs-content-themed w-full box-border p-1 data-[state=inactive]:hidden",
             value: props.value,
             id: props.id,
             index: props.index,

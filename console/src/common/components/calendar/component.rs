@@ -1,3 +1,4 @@
+use crate::common::utils::setup_class_attribute;
 use dioxus::prelude::*;
 use dioxus_primitives::calendar::{
     self, CalendarDayProps, CalendarGridProps, CalendarHeaderProps, CalendarMonthTitleProps,
@@ -58,11 +59,12 @@ pub fn RangeCalendar(props: RangeCalendarProps) -> Element {
 
 #[component]
 pub fn CalendarView(
-    #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
+    #[props(extends = GlobalAttributes)] mut attributes: Vec<Attribute>,
     children: Element,
 ) -> Element {
+    setup_class_attribute(&mut attributes, "calendar-view");
     rsx! {
-        div { class: "calendar-view", ..attributes, {children} }
+        div { ..attributes,{children} }
     }
 }
 
@@ -76,7 +78,7 @@ pub fn CalendarHeader(props: CalendarHeaderProps) -> Element {
 #[component]
 pub fn CalendarNavigation(props: CalendarNavigationProps) -> Element {
     rsx! {
-        calendar::CalendarNavigation { attributes: props.attributes, {props.children} }
+        calendar::CalendarNavigation { class: "calendar-nav", attributes: props.attributes, {props.children} }
     }
 }
 
@@ -85,7 +87,7 @@ pub fn CalendarPreviousMonthButton(
     #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
 ) -> Element {
     rsx! {
-        calendar::CalendarPreviousMonthButton { attributes,
+        calendar::CalendarPreviousMonthButton { class: "calendar-nav-prev", attributes,
             Icon { width: "20px", height: "20px",
                 path { d: "m15 18-6-6 6-6" }
             }
@@ -98,7 +100,7 @@ pub fn CalendarNextMonthButton(
     #[props(extends = GlobalAttributes)] attributes: Vec<Attribute>,
 ) -> Element {
     rsx! {
-        calendar::CalendarNextMonthButton { attributes,
+        calendar::CalendarNextMonthButton { class: "calendar-nav-next", attributes,
             Icon { width: "20px", height: "20px",
                 path { d: "m9 18 6-6-6-6" }
             }
@@ -109,14 +111,14 @@ pub fn CalendarNextMonthButton(
 #[component]
 pub fn CalendarSelectMonth(props: CalendarSelectMonthProps) -> Element {
     rsx! {
-        calendar::CalendarSelectMonth { class: "calendar-month-select", attributes: props.attributes, DropDownIcon {} }
+        calendar::CalendarSelectMonth { class: "calendar-select", attributes: props.attributes, DropDownIcon {} }
     }
 }
 
 #[component]
 pub fn CalendarSelectYear(props: CalendarSelectYearProps) -> Element {
     rsx! {
-        calendar::CalendarSelectYear { class: "calendar-year-select", attributes: props.attributes, DropDownIcon {} }
+        calendar::CalendarSelectYear { class: "calendar-select", attributes: props.attributes, DropDownIcon {} }
     }
 }
 
@@ -134,7 +136,9 @@ pub fn CalendarGrid(props: CalendarGridProps) -> Element {
 
 #[component]
 pub fn CalendarMonthTitle(props: CalendarMonthTitleProps) -> Element {
-    calendar::CalendarMonthTitle(props)
+    rsx! {
+        calendar::CalendarMonthTitle { class: "calendar-month-title", attributes: props.attributes }
+    }
 }
 
 #[component]

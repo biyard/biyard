@@ -1,24 +1,7 @@
-/* Tooltip Styles */
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip-trigger {
-  display: inline-block;
-}
+/* Tooltip - selector-dependent styles only (base styles inlined in component.rs) */
 
 .tooltip-content {
-  position: absolute;
-  z-index: 1000;
-  max-width: 250px;
-  padding: 8px 12px;
-  border-radius: 0.5rem;
   animation: tooltip-fade-in 0.2s ease-in-out;
-  background-color: var(--secondary-color-4);
-  color: var(--primary-color);
-  font-size: 14px;
-  line-height: 1.4;
 }
 
 .tooltip-content::after {
@@ -35,60 +18,84 @@
   position: absolute;
   bottom: 100%;
   left: 50%;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   transform: translateX(-50%);
 }
 
 .tooltip-content[data-side="top"]::after {
   top: calc(100% - 0.25rem);
   left: 50%;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="top"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .tooltip-content[data-side="right"] {
   position: absolute;
   top: 50%;
   left: 100%;
-  margin-left: 8px;
+  margin-left: 0.5rem;
   transform: translateY(-50%);
 }
 
 .tooltip-content[data-side="right"]::after {
   top: calc(50% - 0.25rem);
   left: 0;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0 0 0.1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="right"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .tooltip-content[data-side="bottom"] {
   position: absolute;
   top: 100%;
   left: 50%;
-  margin-top: 8px;
+  margin-top: 0.5rem;
   transform: translateX(-50%);
 }
 
 .tooltip-content[data-side="bottom"]::after {
   bottom: calc(100% - 0.25rem);
   left: 50%;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="bottom"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 .tooltip-content[data-side="left"] {
   position: absolute;
   top: 50%;
   right: 100%;
-  margin-right: 8px;
+  margin-right: 0.5rem;
   transform: translateY(-50%);
 }
 
 .tooltip-content[data-side="left"]::after {
   top: calc(50% - 0.25rem);
   right: -0.25rem;
-  border-color: var(--secondary-color-4);
+  border-color: #374151;
   border-radius: 0 0.1rem 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip-content[data-side="left"]::after {
+    border-color: #d1d5db;
+  }
 }
 
 /* Alignment styles for top and bottom */
@@ -136,10 +143,7 @@
   }
 }
 
-/* State styles */
-.tooltip[data-disabled="true"] .tooltip-trigger {
-  cursor: default;
-}
+/* Disabled trigger style moved to Tailwind in component.rs */
 
 .tooltip-content[data-state="closed"] {
   display: none;

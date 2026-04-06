@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::common::ProjectPartition;
+use crate::common::ui::*;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
 
@@ -22,12 +23,43 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
         .await
     });
 
+    let floor_price = match &token {
+        Ok(tok) => {
+            let total_supply = tok.read().total_supply;
+            if total_supply > 0 {
+                (project.treasury_balance as f64) / (total_supply as f64)
+            } else {
+                0.0
+            }
+        }
+        Err(_) => 0.0,
+    };
+
     rsx! {
         div { class: "space-y-6",
             // Project Overview Card
-            div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6",
-                h3 { class: "text-lg font-medium text-gray-900 dark:text-white mb-4",
-                    {t.overview}
+            SectionCard {
+                SectionTitle { {t.overview} }
+                if project.brand_logo_url.is_some() {
+                    div { class: "mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/40",
+                        div { class: "flex items-center gap-4",
+                            if let Some(logo) = &project.brand_logo_url {
+                                img {
+                                    src: "{logo}",
+                                    alt: "brand-logo",
+                                    class: "h-14 w-14 rounded-lg object-cover border border-gray-200 dark:border-gray-600 bg-white",
+                                }
+                            } else {
+                                div { class: "h-14 w-14 rounded-lg bg-gray-200 dark:bg-gray-600" }
+                            }
+                            div {
+                                p { class: "text-xs text-gray-500 dark:text-gray-400", {t.brand} }
+                                p { class: "text-base font-semibold text-gray-900 dark:text-white",
+                                    "{project.name}"
+                                }
+                            }
+                        }
+                    }
                 }
                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
                     dl { class: "space-y-4",
@@ -88,10 +120,8 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
             }
 
             // Token Info Card
-            div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6",
-                h3 { class: "text-lg font-medium text-gray-900 dark:text-white mb-4",
-                    {t.token_info}
-                }
+            SectionCard {
+                SectionTitle { {t.token_info} }
                 match &token {
                     Ok(tok) => {
                         let tok = &*tok.read();
@@ -129,18 +159,9 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                                     p { class: "text-gray-500 dark:text-gray-400 mb-6", "{desc}" }
                                 }
                                 div { class: "grid grid-cols-1 md:grid-cols-3 gap-4",
-                                    div { class: "bg-gray-50 dark:bg-gray-700 rounded-lg p-4",
-                                        dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400", {t.total_supply} }
-                                        dd { class: "mt-1 text-2xl font-semibold text-gray-900 dark:text-white", "{format_number(tok.total_supply)}" }
-                                    }
-                                    div { class: "bg-gray-50 dark:bg-gray-700 rounded-lg p-4",
-                                        dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400", {t.circulating_supply} }
-                                        dd { class: "mt-1 text-2xl font-semibold text-gray-900 dark:text-white", "{format_number(tok.circulating_supply)}" }
-                                    }
-                                    div { class: "bg-gray-50 dark:bg-gray-700 rounded-lg p-4",
-                                        dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400", {t.decimals} }
-                                        dd { class: "mt-1 text-2xl font-semibold text-gray-900 dark:text-white", "{tok.decimals}" }
-                                    }
+                                    StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
+                                    StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
+                                    StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
                                 }
                             }
                         }
@@ -165,24 +186,16 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
             }
 
             // Point Info Card
-            div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6",
-                div { class: "flex items-center justify-between mb-4",
-                    h3 { class: "text-lg font-medium text-gray-900 dark:text-white", {t.point_info} }
-                }
+            SectionCard {
+                SectionTitle { {t.point_info} }
                 match &aggregation {
                     Ok(agg) => {
                         let agg = &*agg.read();
                         rsx! {
                             div {
                                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-6",
-                                    div { class: "bg-green-50 dark:bg-green-900/20 rounded-lg p-4",
-                                        dt { class: "text-sm font-medium text-green-600 dark:text-green-400", {t.total_awarded} }
-                                        dd { class: "mt-1 text-2xl font-semibold text-green-700 dark:text-green-300", "{format_number(agg.awarded_points)}" }
-                                    }
-                                    div { class: "bg-red-50 dark:bg-red-900/20 rounded-lg p-4",
-                                        dt { class: "text-sm font-medium text-red-600 dark:text-red-400", {t.total_deducted} }
-                                        dd { class: "mt-1 text-2xl font-semibold text-red-700 dark:text-red-300", "{format_number(agg.deducted_points)}" }
-                                    }
+                                    StatCard { color: StatColor::Green, label: t.total_awarded.to_string(), value: format_number(agg.awarded_points) }
+                                    StatCard { color: StatColor::Red, label: t.total_deducted.to_string(), value: format_number(agg.deducted_points) }
                                 }
                             }
                         }
@@ -202,28 +215,20 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                     },
                 }
             }
+
+            // Treasury Simulation Card
+            SectionCard {
+                SectionTitle { {t.treasury_simulation} }
+                div { class: "grid grid-cols-1 md:grid-cols-4 gap-4",
+                    StatCard { color: StatColor::Emerald, label: t.treasury_balance.to_string(), value: format_number(project.treasury_balance) }
+                    StatCard { color: StatColor::Indigo, label: t.simulated_sales_total.to_string(), value: format_number(project.simulated_sales_total) }
+                    StatCard { color: StatColor::Blue, label: t.treasury_reserve_rate.to_string(), value: format!("{}%", (project.treasury_reserve_rate * 100.0).round()) }
+                    StatCard { color: StatColor::Amber, label: t.estimated_floor_price.to_string(), value: format_floor_price(floor_price) }
+                }
+                p { class: "mt-3 text-xs text-gray-500 dark:text-gray-400",
+                    {t.floor_price_formula}
+                }
+            }
         }
     }
-}
-
-fn format_timestamp(ts: i64) -> String {
-    let secs = ts / 1000;
-    match chrono::DateTime::from_timestamp(secs, 0) {
-        Some(dt) => dt.format("%Y-%m-%d %H:%M").to_string(),
-        None => ts.to_string(),
-    }
-}
-
-fn format_number(n: i64) -> String {
-    let s = n.to_string();
-    let bytes = s.as_bytes();
-    let mut result = String::new();
-    let len = bytes.len();
-    for (i, &b) in bytes.iter().enumerate() {
-        if i > 0 && (len - i) % 3 == 0 {
-            result.push(',');
-        }
-        result.push(b as char);
-    }
-    result
 }

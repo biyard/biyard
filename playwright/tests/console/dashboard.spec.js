@@ -22,7 +22,7 @@ test.describe("Dashboard", () => {
   test("has quick action cards linking to features", async ({ page }) => {
     await goto(page, "/dashboard");
 
-    await expect(page.getByText("My Projects").first()).toBeVisible();
+    await expect(page.getByText("My Brands").first()).toBeVisible();
     await expect(page.getByText("API Credentials").first()).toBeVisible();
     await expect(page.getByText("Account Settings").first()).toBeVisible();
   });

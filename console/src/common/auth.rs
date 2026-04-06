@@ -4,9 +4,9 @@ use dioxus::fullstack::axum::{
 };
 use tower_sessions::Session;
 
-use crate::common::{CommonConfig, EntityType, Error, Partition};
+use crate::common::{CommonConfig, EntityType, Error, OrganizationRole, Partition};
 use crate::features::accounts::controllers::SESSION_KEY_ACCOUNT_ID;
-use crate::features::accounts::{Account, AccountError};
+use crate::features::accounts::{Account, AccountError, AccountType};
 use crate::features::credentials::{
     Credential, CredentialError, CredentialQueryOption, CredentialStatus,
 };
@@ -41,14 +41,12 @@ where
     }
 }
 
-/// Authenticated project context: Bearer + session auth with project ownership verification.
 #[derive(Debug, Clone)]
-pub struct ProjectAuth {
+pub struct SystemAdminAuth {
     pub account: Account,
-    pub project: Project,
 }
 
-impl<S> FromRequestParts<S> for ProjectAuth
+impl<S> FromRequestParts<S> for SystemAdminAuth
 where
     S: Send + Sync,
     Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
@@ -59,46 +57,179 @@ where
         let config = CommonConfig::default();
         let cli = config.dynamodb();
 
-        // 1. Authenticate: Bearer token first, then session fallback
-        let account = if let Some(cached) = parts.extensions.get::<Account>() {
-            cached.clone()
-        } else {
-            let account = if let Some(auth_header) = parts.headers.get(AUTHORIZATION) {
-                if let Ok(auth_str) = auth_header.to_str() {
-                    if auth_str.starts_with("Bearer ") {
-                        let token = auth_str.trim_start_matches("Bearer ").trim();
-                        authenticate_by_credential(token, cli).await?
-                    } else {
-                        authenticate_by_session_from_parts(parts, state, cli).await?
-                    }
-                } else {
-                    authenticate_by_session_from_parts(parts, state, cli).await?
-                }
-            } else {
-                authenticate_by_session_from_parts(parts, state, cli).await?
-            };
-            parts.extensions.insert(account.clone());
-            account
-        };
+        let account = resolve_account_from_parts(parts, state, cli).await?;
+        if account.user_type != AccountType::SystemAdmin {
+            return Err(Error::Forbidden);
+        }
 
-        // 2. Extract project_id from path
-        let path = parts.uri.path();
-        let project_id = extract_project_id(path).ok_or(ProjectError::ProjectNotFound)?;
-
-        // 3. Get project and verify ownership
-        let project_pk = Partition::Project(project_id);
-        let project = Project::get(cli, &project_pk, Some(EntityType::Project))
-            .await
-            .map_err(|e| {
-                crate::common::error!("failed to get project from db: {:?}", e);
-                Error::from(ProjectError::ProjectNotFound)
-            })?
-            .ok_or(ProjectError::ProjectNotFound)?;
-
-        project.verify_ownership(&account.pk)?;
-
-        Ok(ProjectAuth { account, project })
+        Ok(Self { account })
     }
+}
+
+/// Authenticated project context: Bearer + session auth with project ownership verification.
+#[derive(Debug, Clone)]
+pub struct ProjectAuth {
+    pub account: Account,
+    pub project: Project,
+}
+
+#[derive(Debug, Clone)]
+pub struct ProjectViewerAuth {
+    pub account: Account,
+    pub project: Project,
+    pub role: OrganizationRole,
+}
+
+#[derive(Debug, Clone)]
+pub struct ProjectAdminAuth {
+    pub account: Account,
+    pub project: Project,
+    pub role: OrganizationRole,
+}
+
+#[derive(Debug, Clone)]
+struct ProjectRoleContext {
+    account: Account,
+    project: Project,
+    role: OrganizationRole,
+}
+
+impl<S> FromRequestParts<S> for ProjectAuth
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    type Rejection = Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let ctx = extract_project_with_role(parts, state, OrganizationRole::Owner).await?;
+        Ok(Self {
+            account: ctx.account,
+            project: ctx.project,
+        })
+    }
+}
+
+impl<S> FromRequestParts<S> for ProjectViewerAuth
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    type Rejection = Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let ctx = extract_project_with_role(parts, state, OrganizationRole::Viewer).await?;
+        Ok(Self {
+            account: ctx.account,
+            project: ctx.project,
+            role: ctx.role,
+        })
+    }
+}
+
+impl<S> FromRequestParts<S> for ProjectAdminAuth
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    type Rejection = Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let ctx = extract_project_with_role(parts, state, OrganizationRole::Admin).await?;
+        Ok(Self {
+            account: ctx.account,
+            project: ctx.project,
+            role: ctx.role,
+        })
+    }
+}
+
+async fn extract_project_with_role<S>(
+    parts: &mut Parts,
+    state: &S,
+    required_role: OrganizationRole,
+) -> crate::common::Result<ProjectRoleContext>
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    let config = CommonConfig::default();
+    let cli = config.dynamodb();
+
+    let account = resolve_account_from_parts(parts, state, cli).await?;
+    let project = load_project_from_path(parts, cli).await?;
+    let role = infer_project_role(&account, &project).ok_or(ProjectError::ProjectAccessDenied)?;
+
+    if !role.allows(required_role) {
+        return Err(Error::Forbidden);
+    }
+
+    Ok(ProjectRoleContext {
+        account,
+        project,
+        role,
+    })
+}
+
+async fn resolve_account_from_parts<S>(
+    parts: &mut Parts,
+    state: &S,
+    cli: &aws_sdk_dynamodb::Client,
+) -> crate::common::Result<Account>
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    if let Some(cached) = parts.extensions.get::<Account>() {
+        return Ok(cached.clone());
+    }
+
+    let account = if let Some(token) = extract_bearer_token(parts) {
+        authenticate_by_credential(&token, cli).await?
+    } else {
+        authenticate_by_session_from_parts(parts, state, cli).await?
+    };
+
+    parts.extensions.insert(account.clone());
+    Ok(account)
+}
+
+fn extract_bearer_token(parts: &Parts) -> Option<String> {
+    parts
+        .headers
+        .get(AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|v| v.strip_prefix("Bearer "))
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
+}
+
+async fn load_project_from_path(
+    parts: &Parts,
+    cli: &aws_sdk_dynamodb::Client,
+) -> crate::common::Result<Project> {
+    let project_id = extract_project_id(parts.uri.path()).ok_or(ProjectError::ProjectNotFound)?;
+    let project_pk = Partition::Project(project_id);
+    Project::get(cli, &project_pk, Some(EntityType::Project))
+        .await
+        .map_err(|e| {
+            crate::common::error!("failed to get project from db: {:?}", e);
+            Error::from(ProjectError::ProjectNotFound)
+        })?
+        .ok_or(ProjectError::ProjectNotFound.into())
+}
+
+fn infer_project_role(account: &Account, project: &Project) -> Option<OrganizationRole> {
+    if account.user_type == AccountType::SystemAdmin {
+        return Some(OrganizationRole::Owner);
+    }
+
+    // TODO: Replace with OrganizationMember lookup when org membership model is introduced.
+    if project.account_id == account.pk {
+        return Some(OrganizationRole::Owner);
+    }
+
+    None
 }
 
 /// Extract project_id from URL path like /v1/projects/:project_id/...
@@ -112,7 +243,7 @@ fn extract_project_id(path: &str) -> Option<String> {
     None
 }
 
-async fn authenticate_by_session_from_parts<S>(
+pub(crate) async fn authenticate_by_session_from_parts<S>(
     parts: &mut Parts,
     state: &S,
     cli: &aws_sdk_dynamodb::Client,
@@ -131,7 +262,7 @@ where
     authenticate_by_session(&session, cli).await
 }
 
-async fn authenticate_by_session(
+pub(crate) async fn authenticate_by_session(
     session: &Session,
     cli: &aws_sdk_dynamodb::Client,
 ) -> crate::common::Result<Account> {
@@ -162,7 +293,7 @@ async fn authenticate_by_session(
     }
 }
 
-async fn authenticate_by_credential(
+pub(crate) async fn authenticate_by_credential(
     api_key: &str,
     cli: &aws_sdk_dynamodb::Client,
 ) -> crate::common::Result<Account> {

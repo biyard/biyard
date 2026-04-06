@@ -1,6 +1,8 @@
 use dioxus::prelude::*;
 use dioxus_primitives::icon;
 
+const BADGE_BASE: &str = "inline-flex min-w-[20px] h-[20px] items-center justify-center rounded-[10px] shadow-[0_0_0_1px] shadow-white dark:shadow-gray-800 text-xs gap-1 px-2";
+
 #[derive(Copy, Clone, PartialEq, Default)]
 #[non_exhaustive]
 pub enum BadgeVariant {
@@ -14,10 +16,10 @@ pub enum BadgeVariant {
 impl BadgeVariant {
     pub fn class(&self) -> &'static str {
         match self {
-            BadgeVariant::Primary => "primary",
-            BadgeVariant::Secondary => "secondary",
-            BadgeVariant::Destructive => "destructive",
-            BadgeVariant::Outline => "outline",
+            BadgeVariant::Primary => "bg-blue-600 text-white",
+            BadgeVariant::Secondary => "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white",
+            BadgeVariant::Destructive => "bg-red-600 text-white",
+            BadgeVariant::Outline => "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300",
         }
     }
 }
@@ -39,23 +41,8 @@ pub struct BadgeProps {
 #[component]
 pub fn Badge(props: BadgeProps) -> Element {
     rsx! {
-        document::Link { rel: "stylesheet", href: asset!("./style.css") }
-
-        BadgeElement {
-            "padding": true,
-            variant: props.variant,
-            attributes: props.attributes,
-            {props.children}
-        }
-    }
-}
-
-#[component]
-fn BadgeElement(props: BadgeProps) -> Element {
-    rsx! {
         span {
-            class: "badge",
-            "data-style": props.variant.class(),
+            class: "{BADGE_BASE} {props.variant.class()}",
             ..props.attributes,
             {props.children}
         }

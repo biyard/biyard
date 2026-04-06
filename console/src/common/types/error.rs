@@ -120,12 +120,16 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 }
             },
             Error::Token(e) => match e {
-                TokenError::TokenNotFound | TokenError::TokenBalanceNotFound => {
-                    StatusCode::NOT_FOUND
-                }
+                TokenError::TokenNotFound
+                | TokenError::TokenBalanceNotFound
+                | TokenError::NotDeployed => StatusCode::NOT_FOUND,
                 TokenError::InsufficientTokens
                 | TokenError::InvalidTokenAmount
-                | TokenError::TokenAlreadyExists => StatusCode::BAD_REQUEST,
+                | TokenError::TokenAlreadyExists
+                | TokenError::AlreadyDeployed => StatusCode::BAD_REQUEST,
+                TokenError::DeployFailed(_) | TokenError::MintFailed(_) => {
+                    StatusCode::INTERNAL_SERVER_ERROR
+                }
             },
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }

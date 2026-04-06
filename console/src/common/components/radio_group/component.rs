@@ -6,7 +6,7 @@ pub fn RadioGroup(props: RadioGroupProps) -> Element {
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("./style.css") }
         radio_group::RadioGroup {
-            class: "radio-group",
+            class: "radio-group flex flex-col gap-3",
             value: props.value,
             default_value: props.default_value,
             on_value_change: props.on_value_change,
@@ -25,7 +25,7 @@ pub fn RadioGroup(props: RadioGroupProps) -> Element {
 pub fn RadioItem(props: RadioItemProps) -> Element {
     rsx! {
         radio_group::RadioItem {
-            class: "radio-item",
+            class: "radio-item flex flex-row items-center p-0 border-none bg-transparent text-gray-900 dark:text-gray-300 text-sm leading-5 gap-3",
             value: props.value,
             index: props.index,
             disabled: props.disabled,
