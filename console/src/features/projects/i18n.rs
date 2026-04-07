@@ -107,6 +107,30 @@ translate! {
         en: "Delete Brand",
         ko: "브랜드 삭제",
     },
+    delete_brand_warning: {
+        en: "This action cannot be undone. All tokens, points, and history tied to this brand will be permanently removed.",
+        ko: "이 작업은 되돌릴 수 없습니다. 이 브랜드에 연결된 모든 토큰, 포인트, 기록이 영구적으로 삭제됩니다.",
+    },
+    delete_brand_confirm_prompt: {
+        en: "To confirm, type the brand name below.",
+        ko: "삭제를 확인하려면 아래에 브랜드 이름을 입력하세요.",
+    },
+    delete_brand_confirm_placeholder: {
+        en: "Type brand name to confirm",
+        ko: "확인을 위해 브랜드 이름 입력",
+    },
+    delete_brand_mismatch: {
+        en: "Brand name does not match.",
+        ko: "브랜드 이름이 일치하지 않습니다.",
+    },
+    delete_brand_button: {
+        en: "Permanently delete brand",
+        ko: "브랜드 영구 삭제",
+    },
+    deleting: {
+        en: "Deleting...",
+        ko: "삭제 중...",
+    },
     back: {
         en: "Back",
         ko: "뒤로",
@@ -120,12 +144,12 @@ translate! {
         ko: "개요",
     },
     tokens: {
-        en: "Token Transactions",
-        ko: "토큰 트랜잭션",
+        en: "Token",
+        ko: "토큰",
     },
     points: {
-        en: "Point History",
-        ko: "포인트 히스토리",
+        en: "Point",
+        ko: "포인트",
     },
     settings_tab: {
         en: "Settings",
@@ -194,6 +218,10 @@ translate! {
     transactions: {
         en: "Point Transactions",
         ko: "포인트 거래 내역",
+    },
+    transactions_subtitle: {
+        en: "Recent point history across awards, deductions, exchanges, and transfers.",
+        ko: "최근 포인트 지급 / 차감 / 교환 / 이체 내역입니다.",
     },
     no_transactions: {
         en: "No transactions yet",
@@ -355,17 +383,21 @@ translate! {
         en: "Brand Name",
         ko: "브랜드 이름",
     },
-    brand_display_name: {
-        en: "Display Name",
-        ko: "브랜드명",
+    brand_logo: {
+        en: "Brand Logo",
+        ko: "브랜드 로고",
     },
-    brand_display_name_desc: {
-        en: "The display name shown in the service.",
-        ko: "브랜드명은 서비스에 표시되는 이름입니다.",
+    brand_logo_upload_cta: {
+        en: "Drop an image or click to upload",
+        ko: "이미지를 끌어다 놓거나 클릭하여 업로드",
     },
-    brand_logo_url: {
-        en: "Brand Logo URL",
-        ko: "브랜드 로고 URL",
+    brand_logo_upload_hint: {
+        en: "PNG or JPG, recommended 512×512",
+        ko: "PNG 또는 JPG, 권장 크기 512×512",
+    },
+    brand_logo_change_cta: {
+        en: "Click to replace the current logo",
+        ko: "클릭하여 로고 교체",
     },
     brand_settings: {
         en: "Brand Settings",
@@ -384,8 +416,8 @@ translate! {
         ko: "트레저리 적립률",
     },
     treasury_reserve_rate_desc: {
-        en: "0.1 = 10% of revenue reserved in treasury",
-        ko: "0.1 = 매출의 10%를 트레저리에 적립",
+        en: "Share of revenue routed to treasury reserves to back token value. Higher rates improve token stability at the cost of operating cash.",
+        ko: "매출의 일부를 트레저리에 적립하여 토큰 가치를 뒷받침합니다. 값이 높을수록 토큰 안정성이 커지지만 운영 자금은 줄어듭니다.",
     },
     save_settings: {
         en: "Save Settings",
@@ -464,8 +496,8 @@ translate! {
         ko: "초기 총 발행량",
     },
     token_name_placeholder: {
-        en: "e.g. LeMouton Token",
-        ko: "예: LeMouton Token",
+        en: "e.g. My Token",
+        ko: "예: 마이 토큰",
     },
     mint_confirm_title: {
         en: "Confirm Token Minting",
@@ -496,8 +528,8 @@ translate! {
         ko: "온체인",
     },
     deploy_token_on_chain: {
-        en: "Deploy On-chain",
-        ko: "온체인 배포",
+        en: "Deploy Contract",
+        ko: "컨트랙트 배포",
     },
     deploying: {
         en: "Deploying...",
@@ -511,9 +543,25 @@ translate! {
         en: "Not Deployed",
         ko: "미배포",
     },
+    token_only: {
+        en: "Token Only",
+        ko: "토큰만 배포됨",
+    },
     contract_address: {
         en: "Contract Address",
         ko: "컨트랙트 주소",
+    },
+    treasury_contract_address: {
+        en: "Treasury Contract",
+        ko: "트레저리 컨트랙트",
+    },
+    stable_token_address: {
+        en: "Stable Token",
+        ko: "스테이블 토큰",
+    },
+    treasury_deployment_tx_hash: {
+        en: "Treasury Tx Hash",
+        ko: "트레저리 트랜잭션 해시",
     },
     chain: {
         en: "Chain",
@@ -521,14 +569,146 @@ translate! {
     },
     select_chain: {
         en: "Select Chain",
-        ko: "체인 선택",
+        ko: "블록체인 선택",
+    },
+    deploy_stack_note: {
+        en: "Deploy the token contract and floor-price treasury together, wired to a stable reserve on the selected chain.",
+        ko: "선택한 체인에 토큰 컨트랙트와 하한가 트레저리를 함께 배포하고 스테이블 준비금을 연결합니다.",
+    },
+    complete_treasury_note: {
+        en: "This brand already has a token contract. Complete the on-chain setup by deploying the missing floor-price treasury on the same chain.",
+        ko: "이 브랜드에는 이미 토큰 컨트랙트가 있습니다. 같은 체인에 누락된 하한가 트레저리를 배포해 온체인 구성을 마무리하세요.",
+    },
+    deploy_treasury_on_chain: {
+        en: "Deploy Treasury",
+        ko: "트레저리 배포",
     },
     deploy_success: {
-        en: "Token successfully deployed on-chain.",
-        ko: "온체인에 토큰이 배포되었습니다.",
+        en: "Token and floor-price treasury successfully deployed on-chain.",
+        ko: "온체인에 토큰과 하한가 트레저리가 함께 배포되었습니다.",
+    },
+    treasury_deploy_success: {
+        en: "Floor-price treasury successfully deployed and linked to the existing token.",
+        ko: "기존 토큰에 연결된 하한가 트레저리가 배포되었습니다.",
     },
     deploy_failure: {
         en: "Deployment failed: ",
         ko: "배포 실패: ",
+    },
+    edit_brand: {
+        en: "Edit Brand",
+        ko: "브랜드 편집",
+    },
+    edit_token: {
+        en: "Edit Token",
+        ko: "토큰 편집",
+    },
+    save_token: {
+        en: "Save Token",
+        ko: "토큰 저장",
+    },
+    token_saved: {
+        en: "Token saved.",
+        ko: "토큰이 저장되었습니다.",
+    },
+    create_project_subtitle: {
+        en: "Define the brand identity and treasury defaults. You can configure the token in the next step.",
+        ko: "브랜드 아이덴티티와 트레저리 기본값을 정의하세요. 토큰은 다음 단계에서 설정할 수 있습니다.",
+    },
+    edit_project_subtitle: {
+        en: "Update your brand identity and treasury defaults.",
+        ko: "브랜드 아이덴티티와 트레저리 기본값을 수정합니다.",
+    },
+    create_brand_subtitle_in: {
+        en: "Create a new brand inside {enterprise}.",
+        ko: "{enterprise} 에 새 브랜드를 생성합니다.",
+    },
+    edit_brand_subtitle_in: {
+        en: "Update brand settings inside {enterprise}.",
+        ko: "{enterprise} 의 브랜드 설정을 수정합니다.",
+    },
+    brands_page_subtitle_in: {
+        en: "Monitor brand health, treasury posture, and launch readiness across {enterprise}.",
+        ko: "{enterprise} 전반의 브랜드 상태, 트레저리, 출시 준비 현황을 확인하세요.",
+    },
+    create_token_subtitle: {
+        en: "Configure the token that will represent value for this brand. You can come back later if you skip this step.",
+        ko: "이 브랜드의 가치를 나타낼 토큰을 설정하세요. 이 단계를 건너뛰어도 나중에 다시 설정할 수 있습니다.",
+    },
+    edit_token_subtitle: {
+        en: "Token metadata can be edited until the token is deployed on-chain.",
+        ko: "토큰 메타데이터는 온체인 배포 전까지 수정할 수 있습니다.",
+    },
+    token_create_helper: {
+        en: "Token name, symbol, and supply can be changed until the token is deployed on-chain.",
+        ko: "토큰 이름, 심볼, 발행량은 온체인 배포 전까지 변경할 수 있습니다.",
+    },
+    token_edit_helper: {
+        en: "These values are locked once the token is deployed on-chain.",
+        ko: "온체인에 배포되면 이 값들은 잠깁니다.",
+    },
+    brand_create_helper: {
+        en: "Launch with the brand profile and treasury defaults already configured.",
+        ko: "브랜드 프로필과 트레저리 기본값을 한 번에 설정합니다.",
+    },
+    brand_edit_helper: {
+        en: "Update your brand identity and treasury defaults from this page.",
+        ko: "이 페이지에서 브랜드 아이덴티티와 트레저리 기본값을 수정합니다.",
+    },
+    brand_preview_description_placeholder: {
+        en: "Add a short description to define the brand story and operating context.",
+        ko: "브랜드 스토리와 운영 컨텍스트를 정의하는 짧은 설명을 추가하세요.",
+    },
+    next_create_token: {
+        en: "Create Brand & Continue",
+        ko: "브랜드 생성 후 계속",
+    },
+    skip_for_now: {
+        en: "Skip for Now",
+        ko: "나중에 설정",
+    },
+    back_to_brand: {
+        en: "Back to Brand",
+        ko: "브랜드로 돌아가기",
+    },
+    token_already_exists: {
+        en: "Token Already Exists",
+        ko: "토큰이 이미 존재합니다",
+    },
+    token_already_exists_subtitle: {
+        en: "This brand already has a token configured. You can edit it until it is deployed.",
+        ko: "이 브랜드에는 이미 토큰이 설정되어 있습니다. 배포 전까지 수정할 수 있습니다.",
+    },
+    token_locked_title: {
+        en: "Token Locked",
+        ko: "토큰 잠김",
+    },
+    token_locked_subtitle: {
+        en: "This token has been deployed on-chain and can no longer be edited.",
+        ko: "이 토큰은 온체인에 배포되어 더 이상 수정할 수 없습니다.",
+    },
+    live_preview: {
+        en: "Live preview",
+        ko: "실시간 미리보기",
+    },
+    operating_defaults: {
+        en: "Operating defaults",
+        ko: "운영 기본값",
+    },
+    sort_newest_first: {
+        en: "Newest first",
+        ko: "최신순",
+    },
+    sort_oldest_first: {
+        en: "Oldest first",
+        ko: "오래된순",
+    },
+    load_more: {
+        en: "Load more",
+        ko: "더 보기",
+    },
+    loading_more: {
+        en: "Loading more...",
+        ko: "더 불러오는 중...",
     },
 }

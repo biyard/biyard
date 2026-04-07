@@ -12,6 +12,14 @@ pub struct Project {
     #[dynamo(index = "gsi1", sk, name = "find_by_account_id")]
     pub gsi1_sk: EntityType,
 
+    #[serde(default)]
+    #[dynamo(index = "gsi2", pk, name = "find_by_organization_id")]
+    pub organization_id: Partition,
+
+    #[serde(default)]
+    #[dynamo(index = "gsi2", sk, name = "find_by_organization_id")]
+    pub gsi2_sk: EntityType,
+
     pub name: String,
     pub description: Option<String>,
 
@@ -42,6 +50,7 @@ fn default_treasury_reserve_rate() -> f64 {
 impl Project {
     pub fn new(
         account_id: Partition,
+        organization_id: Partition,
         name: String,
         description: Option<String>,
         monthly_token_supply: i64,
@@ -49,13 +58,15 @@ impl Project {
         treasury_reserve_rate: f64,
     ) -> Self {
         let now = crate::common::utils::time_utils::get_now();
-        let uuid = uuid::Uuid::new_v4().to_string();
+        let uuid = uuid::Uuid::now_v7().to_string();
 
         Self {
             pk: Partition::Project(uuid),
             sk: EntityType::Project,
             account_id,
             gsi1_sk: EntityType::Project,
+            organization_id,
+            gsi2_sk: EntityType::Project,
             name,
             description,
             brand_logo_url,
@@ -87,6 +98,7 @@ impl From<Project> for crate::features::projects::ProjectResponse {
         Self {
             id: project_id,
             account_id: project.account_id,
+            organization_id: project.organization_id,
             name: project.name,
             description: project.description,
             brand_logo_url: project.brand_logo_url,

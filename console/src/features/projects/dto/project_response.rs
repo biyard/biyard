@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 pub struct ProjectResponse {
     pub id: String,
     pub account_id: Partition,
+    #[serde(default)]
+    pub organization_id: Partition,
     pub name: String,
     pub description: Option<String>,
     pub brand_logo_url: Option<String>,

@@ -1,9 +1,21 @@
 pub mod overview_tab;
 pub mod points_tab;
 pub mod project_detail;
+pub mod project_editor;
+pub mod project_points;
+pub mod project_settings;
+pub mod project_token;
+pub mod project_treasury;
 pub mod projects_page;
 pub mod settings_tab;
+pub mod token_editor;
 pub mod tokens_tab;
 
 pub use project_detail::*;
+pub use project_editor::*;
+pub use project_points::*;
+pub use project_settings::*;
+pub use project_token::*;
+pub use project_treasury::*;
 pub use projects_page::*;
+pub use token_editor::*;
