@@ -5,7 +5,9 @@ use dioxus::prelude::*;
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, ProjectAuth};
 #[cfg(feature = "server")]
-use crate::features::points::{MonthlyPointAggregation, PointBalance, PointTransaction, Transaction, TransactionType};
+use crate::features::points::{
+    MonthlyPointAggregation, PointBalance, PointTransaction, Transaction, TransactionType,
+};
 #[cfg(feature = "server")]
 use crate::features::projects::Project;
 #[cfg(feature = "server")]
@@ -14,7 +16,7 @@ use aws_sdk_dynamodb::types::TransactWriteItem;
 #[post("/v1/projects/:project_id/points", auth: ProjectAuth)]
 pub async fn transact_points_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
-    req: Vec<TransactPointsRequest>,
+    transactions: Vec<TransactPointsRequest>,
 ) -> Result<Vec<TransactPointsResponse>> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
@@ -23,7 +25,7 @@ pub async fn transact_points_handler(
     let mut txs: Vec<TransactWriteItem> = vec![];
     let mut responses = vec![];
 
-    for tx_req in req {
+    for tx_req in transactions {
         let TransactPointsRequest {
             month,
             description,
