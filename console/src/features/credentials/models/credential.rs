@@ -12,6 +12,14 @@ pub struct Credential {
     #[dynamo(index = "gsi1", sk, name = "find_by_account_id")]
     pub gsi1_sk: EntityType,
 
+    #[serde(default)]
+    #[dynamo(index = "gsi3", prefix = "CRED", pk, name = "find_by_organization_id")]
+    pub organization_id: Partition,
+
+    #[serde(default)]
+    #[dynamo(index = "gsi3", sk, name = "find_by_organization_id")]
+    pub gsi3_sk: EntityType,
+
     pub name: String,
 
     #[dynamo(index = "gsi2", pk, prefix = "CRED", name = "find_by_api_key_hash")]
@@ -28,10 +36,15 @@ pub struct Credential {
 }
 
 impl Credential {
-    pub fn new(account_id: Partition, name: String, api_key: &str) -> Self {
+    pub fn new(
+        account_id: Partition,
+        organization_id: Partition,
+        name: String,
+        api_key: &str,
+    ) -> Self {
         let now = crate::common::utils::time_utils::get_now();
-        let uuid = uuid::Uuid::new_v4().to_string();
-        let api_key_hash = crate::common::utils::password_utils::hash_password(api_key);
+        let uuid = uuid::Uuid::now_v7().to_string();
+        let api_key_hash = crate::common::utils::password_utils::hash_secret_for_lookup(api_key);
 
         let api_key_prefix = if api_key.len() > 12 {
             api_key[..12].to_string()
@@ -44,6 +57,8 @@ impl Credential {
             sk: EntityType::Credential,
             account_id,
             gsi1_sk: EntityType::Credential,
+            organization_id,
+            gsi3_sk: EntityType::Credential,
             name,
             api_key_hash,
             gsi2_sk: EntityType::Credential,

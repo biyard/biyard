@@ -7,6 +7,7 @@ pub struct PointTransaction {
     pub sk: EntityType,
 
     #[dynamo(index = "gsi1", prefix = "PT", pk, name = "find_by_project")]
+    #[dynamo(index = "gsi3", prefix = "PT", pk, name = "find_by_project_time")]
     pub project_id: Partition,
 
     #[dynamo(index = "gsi2", pk, prefix = "PT", name = "find_by_meta_user")]
@@ -20,6 +21,11 @@ pub struct PointTransaction {
     pub amount: i64,
     pub target_user_id: Option<String>,
     pub description: Option<String>,
+
+    /// Also used as the `gsi3` sort key (prefix `TS`) so the list
+    /// handler can return transactions in chronological order without
+    /// application-side sorting. See `find_by_project_time`.
+    #[dynamo(index = "gsi3", sk, prefix = "TS")]
     pub created_at: i64,
 }
 
@@ -34,7 +40,7 @@ impl PointTransaction {
         description: Option<String>,
     ) -> Self {
         let created_at = crate::common::utils::time_utils::get_now();
-        let uuid = uuid::Uuid::new_v4().to_string();
+        let uuid = uuid::Uuid::now_v7().to_string();
         let user_pk = Partition::MetaUser(meta_user_id.clone());
 
         Self {

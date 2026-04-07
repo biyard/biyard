@@ -4,16 +4,20 @@ translate! {
     CredentialsTranslate;
 
     title: {
-        en: "API Credentials",
-        ko: "API 인증 정보",
+        en: "API Keys",
+        ko: "API 키",
     },
     description: {
-        en: "Manage your API credentials for accessing Biyard services",
-        ko: "Biyard 서비스 접근을 위한 API 인증 정보를 관리합니다",
+        en: "Manage API keys for accessing Biyard services",
+        ko: "Biyard 서비스 접근용 API 키를 관리합니다",
+    },
+    subtitle_in: {
+        en: "Manage API keys for {enterprise}.",
+        ko: "{enterprise} 의 API 키를 관리합니다.",
     },
     create_new: {
-        en: "Create New Credential",
-        ko: "새 인증 정보 생성",
+        en: "Create New API Key",
+        ko: "새 API 키 생성",
     },
     name: {
         en: "Name",
@@ -52,8 +56,8 @@ translate! {
         ko: "로딩 중...",
     },
     no_credentials: {
-        en: "No credentials yet",
-        ko: "인증 정보가 없습니다",
+        en: "No API keys yet",
+        ko: "API 키가 없습니다",
     },
     copy: {
         en: "Copy",

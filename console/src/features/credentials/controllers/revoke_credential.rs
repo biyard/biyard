@@ -3,14 +3,19 @@ use crate::features::credentials::CredentialResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType};
-#[cfg(feature = "server")]
-use crate::features::accounts::Account;
+use crate::common::{CommonConfig, EnterpriseContextAuth, EntityType, OrganizationRole};
 #[cfg(feature = "server")]
 use crate::features::credentials::{Credential, CredentialError, CredentialStatus};
 
-#[delete("/v1/credentials/:credential_id", account: Account)]
+#[delete("/v1/credentials/:credential_id", auth: EnterpriseContextAuth)]
 pub async fn revoke_credential_handler(credential_id: String) -> Result<CredentialResponse> {
+    // Revocation is the kill switch for a compromised API key and
+    // must be available to the same privilege tier that can create
+    // them. Admin or higher only.
+    if !auth.role.allows(OrganizationRole::Admin) {
+        return Err(crate::common::Error::Forbidden);
+    }
+
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
@@ -19,7 +24,8 @@ pub async fn revoke_credential_handler(credential_id: String) -> Result<Credenti
         .await?
         .ok_or(CredentialError::CredentialNotFound)?;
 
-    if credential.account_id != account.pk {
+    if credential.organization_id != auth.enterprise.pk && credential.account_id != auth.account.pk
+    {
         return Err(CredentialError::CredentialNotFound.into());
     }
 
