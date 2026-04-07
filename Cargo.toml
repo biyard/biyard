@@ -31,5 +31,6 @@ dioxus-translate = { version = "0.1", git = "https://github.com/biyard/ratel.git
     "ko",
 ] }
 aws-sdk-dynamodb = "1"
+aws-sdk-s3 = "1"
 serde_dynamo = { version = "4.3", features = ["aws-sdk-dynamodb+1"] }
 ethers = { version = "2", features = ["abigen", "ws"] }
