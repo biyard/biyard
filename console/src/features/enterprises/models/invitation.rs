@@ -21,9 +21,6 @@ pub struct Invitation {
     #[dynamo(index = "gsi1", pk, prefix = "INVITE", name = "find_by_token")]
     pub token: String,
 
-    #[dynamo(index = "gsi1", sk, name = "find_by_token")]
-    pub gsi1_sk: EntityType,
-
     /// Email the invite was created for. Stored for display only — the
     /// accept flow does not enforce that the signing-up user matches.
     pub invited_email: String,
@@ -32,7 +29,10 @@ pub struct Invitation {
     pub invited_by_account_id: Partition,
     pub expires_at: i64,
     pub status: InvitationStatus,
+
+    #[dynamo(index = "gsi1", sk)]
     pub created_at: i64,
+
     pub updated_at: i64,
 }
 
@@ -52,7 +52,6 @@ impl Invitation {
             pk: enterprise_id,
             sk: EntityType::Invitation(token.clone()),
             token,
-            gsi1_sk: EntityType::Invitation(String::new()),
             invited_email,
             role,
             invited_by_account_id,

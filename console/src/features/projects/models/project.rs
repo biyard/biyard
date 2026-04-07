@@ -9,16 +9,9 @@ pub struct Project {
     #[dynamo(index = "gsi1", pk, name = "find_by_account_id")]
     pub account_id: Partition,
 
-    #[dynamo(index = "gsi1", sk, name = "find_by_account_id")]
-    pub gsi1_sk: EntityType,
-
     #[serde(default)]
     #[dynamo(index = "gsi2", pk, name = "find_by_organization_id")]
     pub organization_id: Partition,
-
-    #[serde(default)]
-    #[dynamo(index = "gsi2", sk, name = "find_by_organization_id")]
-    pub gsi2_sk: EntityType,
 
     pub name: String,
     pub description: Option<String>,
@@ -39,7 +32,11 @@ pub struct Project {
     pub treasury_balance: i64,
 
     pub status: ProjectStatus,
+
+    #[dynamo(index = "gsi1", sk)]
+    #[dynamo(index = "gsi2", sk)]
     pub created_at: i64,
+
     pub updated_at: i64,
 }
 
@@ -64,9 +61,7 @@ impl Project {
             pk: Partition::Project(uuid),
             sk: EntityType::Project,
             account_id,
-            gsi1_sk: EntityType::Project,
             organization_id,
-            gsi2_sk: EntityType::Project,
             name,
             description,
             brand_logo_url,

@@ -8,14 +8,14 @@ pub struct Enterprise {
     #[dynamo(index = "gsi1", pk, name = "find_by_owner_account_id")]
     pub owner_account_id: Partition,
 
-    #[dynamo(index = "gsi1", sk, name = "find_by_owner_account_id")]
-    pub gsi1_sk: EntityType,
-
     pub name: String,
     pub slug: String,
     #[serde(default)]
     pub legacy_account_sync_at: Option<i64>,
+
+    #[dynamo(index = "gsi1", sk)]
     pub created_at: i64,
+
     pub updated_at: i64,
 }
 
@@ -28,7 +28,6 @@ impl Enterprise {
             pk,
             sk: EntityType::Enterprise,
             owner_account_id,
-            gsi1_sk: EntityType::Enterprise,
             name,
             slug,
             legacy_account_sync_at: None,

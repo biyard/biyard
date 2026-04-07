@@ -9,28 +9,23 @@ pub struct Credential {
     #[dynamo(index = "gsi1", prefix = "CRED", pk, name = "find_by_account_id")]
     pub account_id: Partition,
 
-    #[dynamo(index = "gsi1", sk, name = "find_by_account_id")]
-    pub gsi1_sk: EntityType,
-
     #[serde(default)]
     #[dynamo(index = "gsi3", prefix = "CRED", pk, name = "find_by_organization_id")]
     pub organization_id: Partition,
-
-    #[serde(default)]
-    #[dynamo(index = "gsi3", sk, name = "find_by_organization_id")]
-    pub gsi3_sk: EntityType,
 
     pub name: String,
 
     #[dynamo(index = "gsi2", pk, prefix = "CRED", name = "find_by_api_key_hash")]
     pub api_key_hash: String,
 
-    #[dynamo(index = "gsi2", sk, name = "find_by_api_key_hash")]
-    pub gsi2_sk: EntityType,
-
     pub api_key_prefix: String,
     pub status: CredentialStatus,
+
+    #[dynamo(index = "gsi1", sk)]
+    #[dynamo(index = "gsi2", sk)]
+    #[dynamo(index = "gsi3", sk)]
     pub created_at: i64,
+
     pub updated_at: i64,
     pub last_used_at: Option<i64>,
 }
@@ -56,12 +51,9 @@ impl Credential {
             pk: Partition::Credential(uuid),
             sk: EntityType::Credential,
             account_id,
-            gsi1_sk: EntityType::Credential,
             organization_id,
-            gsi3_sk: EntityType::Credential,
             name,
             api_key_hash,
-            gsi2_sk: EntityType::Credential,
             api_key_prefix,
             status: CredentialStatus::Active,
             created_at: now,
