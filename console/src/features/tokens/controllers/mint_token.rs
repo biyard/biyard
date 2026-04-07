@@ -23,10 +23,7 @@ pub async fn mint_token_handler(
         .await?
         .ok_or(TokenError::TokenNotFound)?;
 
-    let (contract_address, chain_id) = match (&token.contract_address, token.chain_id) {
-        (Some(addr), Some(chain)) => (addr.clone(), chain),
-        _ => return Err(TokenError::NotDeployed.into()),
-    };
+    let chain_id = token.chain_id.ok_or(TokenError::NotDeployed)?;
 
     let to_address = if meta_user_id.starts_with("0x") && meta_user_id.len() == 42 {
         meta_user_id.clone()
@@ -35,17 +32,40 @@ pub async fn mint_token_handler(
             .unwrap_or_default()
             .parse()
             .map_err(|_| TokenError::MintFailed("Invalid deployer key".to_string()))?;
-        format!("{:?}", ethers::utils::secret_key_to_address(&wallet.signer()))
+        format!(
+            "{:?}",
+            ethers::utils::secret_key_to_address(&wallet.signer())
+        )
     };
 
-    let hash = crate::common::blockchain::mint_on_chain(
-        chain_id,
-        &contract_address,
-        &to_address,
-        amount.max(0) as u64,
-    )
-    .await
-    .map_err(|e| TokenError::MintFailed(e))?;
+    let mint_amount = amount.max(0) as u64;
+    let mint_reason = description.unwrap_or_else(|| "console reward".to_string());
+
+    let hash = if let Some(treasury_contract_address) = token.treasury_contract_address.as_deref() {
+        crate::common::blockchain::mint_reward_on_chain(
+            chain_id,
+            treasury_contract_address,
+            &to_address,
+            mint_amount,
+            &mint_reason,
+        )
+        .await
+        .map_err(TokenError::MintFailed)?
+    } else {
+        let contract_address = token
+            .contract_address
+            .clone()
+            .ok_or(TokenError::NotDeployed)?;
+
+        crate::common::blockchain::mint_on_chain(
+            chain_id,
+            &contract_address,
+            &to_address,
+            mint_amount,
+        )
+        .await
+        .map_err(TokenError::MintFailed)?
+    };
 
     let now = chrono::Utc::now().timestamp();
     Ok(TokenBalanceResponse {
