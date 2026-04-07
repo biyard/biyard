@@ -1,7 +1,9 @@
 use dioxus::prelude::*;
 
 #[component]
-pub fn Spinner(#[props(default = "mr-2 -ml-1 w-5 h-5 animate-spin")] class: &'static str) -> Element {
+pub fn Spinner(
+    #[props(default = "mr-2 -ml-1 w-5 h-5 animate-spin")] class: &'static str,
+) -> Element {
     rsx! {
         svg {
             class,
@@ -14,6 +16,7 @@ pub fn Spinner(#[props(default = "mr-2 -ml-1 w-5 h-5 animate-spin")] class: &'st
             stroke_width: "2",
             stroke_linecap: "round",
             stroke_linejoin: "round",
+            style: "color: var(--color-brand);",
             path { d: "M21 12a9 9 0 1 1-6.219-8.56" }
         }
     }

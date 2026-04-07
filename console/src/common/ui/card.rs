@@ -1,21 +1,18 @@
 use dioxus::prelude::*;
 
 #[component]
-pub fn SectionCard(
-    #[props(default)] class: &'static str,
-    children: Element,
-) -> Element {
+pub fn SectionCard(#[props(default)] class: &'static str, children: Element) -> Element {
     rsx! {
-        div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6 {class}",
+        div { class: "rounded-2xl border border-border bg-panel p-5 {class}",
             {children}
         }
     }
 }
 
 #[component]
-pub fn SectionTitle(children: Element) -> Element {
+pub fn SectionTitle(#[props(default)] class: &'static str, children: Element) -> Element {
     rsx! {
-        h3 { class: "text-lg font-medium text-gray-900 dark:text-white mb-4",
+        h3 { class: "mb-3 font-display text-base font-semibold tracking-tight text-foreground {class}",
             {children}
         }
     }
@@ -24,7 +21,7 @@ pub fn SectionTitle(children: Element) -> Element {
 #[component]
 pub fn DangerCard(children: Element) -> Element {
     rsx! {
-        div { class: "bg-white dark:bg-gray-800 shadow rounded-lg p-6 border-2 border-red-200 dark:border-red-900",
+        div { class: "rounded-2xl border border-danger bg-danger-soft p-5",
             {children}
         }
     }

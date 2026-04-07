@@ -17,10 +17,16 @@ impl ButtonVariant {
     pub fn class(&self) -> &'static str {
         match self {
             ButtonVariant::Primary => "text-white bg-blue-600 hover:bg-blue-700",
-            ButtonVariant::Secondary => "text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700",
+            ButtonVariant::Secondary => {
+                "text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+            }
             ButtonVariant::Destructive => "text-white bg-red-600 hover:bg-red-700",
-            ButtonVariant::Outline => "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
-            ButtonVariant::Ghost => "bg-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white",
+            ButtonVariant::Outline => {
+                "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            }
+            ButtonVariant::Ghost => {
+                "bg-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+            }
         }
     }
 }

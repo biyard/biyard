@@ -15,10 +15,18 @@ pub enum TextareaVariant {
 impl TextareaVariant {
     pub fn class(&self) -> &'static str {
         match self {
-            TextareaVariant::Default => "bg-white dark:bg-gray-900 shadow-[inset_0_0_0_1px] shadow-gray-200 dark:shadow-gray-700 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white",
-            TextareaVariant::Fade => "bg-white dark:bg-gray-900 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white",
-            TextareaVariant::Outline => "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:enabled:border-gray-300 dark:hover:enabled:border-gray-600 focus:border-blue-500 invalid:border-red-600 aria-[invalid=true]:border-red-600",
-            TextareaVariant::Ghost => "bg-transparent hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:border-blue-500",
+            TextareaVariant::Default => {
+                "bg-white dark:bg-gray-900 shadow-[inset_0_0_0_1px] shadow-gray-200 dark:shadow-gray-700 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white"
+            }
+            TextareaVariant::Fade => {
+                "bg-white dark:bg-gray-900 hover:enabled:bg-gray-200 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:bg-gray-200 dark:focus:bg-gray-800 focus:text-gray-900 dark:focus:text-white"
+            }
+            TextareaVariant::Outline => {
+                "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:enabled:border-gray-300 dark:hover:enabled:border-gray-600 focus:border-blue-500 invalid:border-red-600 aria-[invalid=true]:border-red-600"
+            }
+            TextareaVariant::Ghost => {
+                "bg-transparent hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-800 hover:enabled:text-gray-900 dark:hover:enabled:text-white focus:border-blue-500"
+            }
         }
     }
 }

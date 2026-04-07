@@ -2,9 +2,14 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn DataTable(children: Element) -> Element {
+    // `overflow-x-auto` lets the table scroll horizontally on narrow
+    // viewports instead of truncating or squishing columns. The
+    // `min-w-[640px]` on the table itself keeps columns from collapsing
+    // even when the wrapper is narrower than 640px — the scrollbar
+    // takes over.
     rsx! {
-        div { class: "bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden",
-            table { class: "min-w-full divide-y divide-gray-200 dark:divide-gray-700",
+        div { class: "overflow-x-auto rounded-[28px] border border-border bg-panel shadow-[0_18px_40px_rgba(15,23,42,0.05)]",
+            table { class: "w-full min-w-[640px] text-left",
                 {children}
             }
         }
@@ -14,7 +19,7 @@ pub fn DataTable(children: Element) -> Element {
 #[component]
 pub fn TableHead(children: Element) -> Element {
     rsx! {
-        thead { class: "bg-gray-50 dark:bg-gray-700",
+        thead { class: "bg-panel-muted",
             tr { {children} }
         }
     }
@@ -23,7 +28,7 @@ pub fn TableHead(children: Element) -> Element {
 #[component]
 pub fn TableHeadCell(children: Element) -> Element {
     rsx! {
-        th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase",
+        th { class: "px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
             {children}
         }
     }
@@ -32,19 +37,16 @@ pub fn TableHeadCell(children: Element) -> Element {
 #[component]
 pub fn TableBody(children: Element) -> Element {
     rsx! {
-        tbody { class: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700",
+        tbody { class: "divide-y divide-border bg-panel",
             {children}
         }
     }
 }
 
 #[component]
-pub fn TableCell(
-    #[props(default)] class: &'static str,
-    children: Element,
-) -> Element {
+pub fn TableCell(#[props(default)] class: &'static str, children: Element) -> Element {
     rsx! {
-        td { class: "px-6 py-4 whitespace-nowrap {class}",
+        td { class: "px-6 py-4 align-middle {class}",
             {children}
         }
     }

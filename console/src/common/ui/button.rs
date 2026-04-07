@@ -11,9 +11,11 @@ pub enum BtnVariant {
 impl BtnVariant {
     fn classes(&self) -> &'static str {
         match self {
-            BtnVariant::Primary => "text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50",
-            BtnVariant::Secondary => "text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600",
-            BtnVariant::Danger => "text-white bg-red-600 rounded-md hover:bg-red-700",
+            BtnVariant::Primary => {
+                "border-brand bg-brand text-brand-contrast hover:border-brand-strong hover:bg-brand-strong"
+            }
+            BtnVariant::Secondary => "border-border bg-panel text-foreground hover:bg-panel-strong",
+            BtnVariant::Danger => "border-danger bg-danger text-white hover:opacity-90",
         }
     }
 }
@@ -28,7 +30,7 @@ pub fn Btn(
 ) -> Element {
     rsx! {
         button {
-            class: "px-4 py-2 text-sm font-medium {variant.classes()} {class}",
+            class: "inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-55 {variant.classes()} {class}",
             disabled,
             onclick: move |e| {
                 if let Some(f) = &onclick {
@@ -41,15 +43,12 @@ pub fn Btn(
 }
 
 #[component]
-pub fn SubmitBtn(
-    #[props(default)] disabled: bool,
-    children: Element,
-) -> Element {
+pub fn SubmitBtn(#[props(default)] disabled: bool, children: Element) -> Element {
     rsx! {
         button {
             r#type: "submit",
             disabled,
-            class: "flex justify-center py-2 px-4 w-full text-sm font-medium text-white bg-blue-600 rounded-md border border-transparent shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed",
+            class: "inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-brand bg-brand px-4 py-3 text-sm font-semibold text-brand-contrast transition-colors duration-150 hover:border-brand-strong hover:bg-brand-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-55",
             {children}
         }
     }
