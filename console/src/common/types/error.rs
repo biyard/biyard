@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::features::accounts::AccountError;
 use crate::features::credentials::CredentialError;
+use crate::features::enterprises::EnterpriseError;
 use crate::features::points::PointError;
 use crate::features::projects::ProjectError;
 use crate::features::tokens::TokenError;
@@ -46,6 +47,9 @@ pub enum Error {
 
     #[error(transparent)]
     Credential(#[from] CredentialError),
+
+    #[error(transparent)]
+    Enterprise(#[from] EnterpriseError),
 
     #[error(transparent)]
     Project(#[from] ProjectError),
@@ -97,12 +101,28 @@ impl dioxus::fullstack::AsStatusCode for Error {
             Error::Account(e) => match e {
                 AccountError::InvalidCredentials => StatusCode::UNAUTHORIZED,
                 AccountError::AccountNotFound => StatusCode::NOT_FOUND,
-                AccountError::EmailAlreadyExists => StatusCode::BAD_REQUEST,
+                AccountError::EmailAlreadyExists
+                | AccountError::WeakPassword(_)
+                | AccountError::InvalidName => StatusCode::BAD_REQUEST,
             },
             Error::Credential(e) => match e {
                 CredentialError::InvalidApiKey => StatusCode::UNAUTHORIZED,
                 CredentialError::CredentialNotFound => StatusCode::NOT_FOUND,
                 CredentialError::CredentialLimitExceeded => StatusCode::BAD_REQUEST,
+            },
+            Error::Enterprise(e) => match e {
+                EnterpriseError::EnterpriseNotFound
+                | EnterpriseError::InvitationNotFound
+                | EnterpriseError::MemberNotFound => StatusCode::NOT_FOUND,
+                EnterpriseError::EnterpriseAccessDenied => StatusCode::FORBIDDEN,
+                EnterpriseError::InvitationExpired
+                | EnterpriseError::InvitationAlreadyAccepted
+                | EnterpriseError::InvitationRevoked
+                | EnterpriseError::LastOwnerCannotLeave
+                | EnterpriseError::LastOwnerCannotDemote
+                | EnterpriseError::AccountAlreadyInEnterprise
+                | EnterpriseError::InvalidEnterpriseName
+                | EnterpriseError::InvalidEnterpriseSlug => StatusCode::BAD_REQUEST,
             },
             Error::Project(e) => match e {
                 ProjectError::ProjectNotFound => StatusCode::NOT_FOUND,

@@ -21,7 +21,9 @@ pub mod middlewares;
 pub mod models;
 
 #[cfg(feature = "server")]
-pub use auth::{ProjectAdminAuth, ProjectAuth, ProjectViewerAuth, SystemAdminAuth};
+pub use auth::{
+    EnterpriseContextAuth, ProjectAdminAuth, ProjectAuth, ProjectViewerAuth, SystemAdminAuth,
+};
 pub use config::CommonConfig;
 #[cfg(feature = "server")]
 pub use macros::DynamoEntity;

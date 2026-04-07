@@ -19,6 +19,10 @@ pub enum EntityType {
     // Credential feature
     Credential,
 
+    // Enterprise feature
+    Enterprise,
+    Invitation(String),
+
     // Project feature
     Project,
 

@@ -12,15 +12,9 @@ use crate::common::*;
     DynamoEnum,
 )]
 #[repr(u8)]
-pub enum OrganizationRole {
+pub enum InvitationStatus {
     #[default]
-    Viewer = 1,
-    Admin = 2,
-    Owner = 3,
-}
-
-impl OrganizationRole {
-    pub fn allows(self, required: Self) -> bool {
-        (self as u8) >= (required as u8)
-    }
+    Pending = 1,
+    Accepted = 2,
+    Revoked = 3,
 }
