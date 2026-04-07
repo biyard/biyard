@@ -1,12 +1,12 @@
 ---
-globs: ["app/**/*.rs", "app/**/Dioxus.toml", "app/**/*.css"]
+globs: ["console/**/*.rs", "landing/**/*.rs", "console/**/*.css", "landing/**/*.css", "**/Dioxus.toml"]
 ---
 
 # Dioxus Fullstack Frontend
 
 ## Overview
 
-Frontend uses Dioxus 0.7 with fullstack rendering (SSR + client-side hydration). Single package with feature-gated modules.
+Frontend uses Dioxus 0.7 with fullstack rendering (SSR + client-side hydration). Two apps: `console/` (authenticated product) and `landing/` (marketing site). Each is a single package with feature-gated modules.
 
 ## Dioxus.toml
 
@@ -20,14 +20,23 @@ title = "Biyard"
 
 ## Entry Point
 
+`console/` uses a shared `run()` that dispatches between web and server mode with session management:
+
 ```rust
-// main.rs
+// console/src/main.rs
 fn main() {
-    app_shell::common::run(app_shell::App);
+    console::common::run(console::App);
 }
 ```
 
-`common::run()` dispatches between `dioxus::launch()` (web) and server mode with session management based on feature flags.
+`landing/` calls `dioxus::launch` directly (no shared `run()`, no session management):
+
+```rust
+// landing/src/main.rs
+fn main() {
+    dioxus::launch(App);
+}
+```
 
 ## Routing
 
@@ -78,11 +87,11 @@ pub fn AppLayout() -> Element {
 ## Feature Module Structure
 
 ```
-app/src/features/<module>/
+console/src/features/<module>/
 ├── mod.rs            # Module exports
 ├── route.rs          # Feature-level router
 ├── layout.rs         # Feature layout wrapper
-├── controllers/      # Server functions (#[server])
+├── controllers/      # Server handlers (#[get]/#[post]/... from by-macros) — see server-functions.md
 ├── models/           # DynamoDB entities (feature: server)
 ├── components/       # UI components
 ├── views/            # Page-level views
@@ -97,7 +106,7 @@ app/src/features/<module>/
 
 3-layer pattern:
 
-1. **JS source** — plain JS functions in `app/assets/` or `app/js/src/`
+1. **JS source** — plain JS functions in `console/assets/` or `console/js/src/`
 2. **Registration** — mount on `window.biyard.<namespace>` in index.js
 3. **Rust FFI** — `#[wasm_bindgen(js_namespace = ["window", "biyard", "<ns>"])]`
 
@@ -116,7 +125,7 @@ Rules:
 
 ## TailwindCSS v4
 
-- Input file: `app/tailwind.css`
+- Input file: `console/tailwind.css` (and `landing/tailwind.css`)
 - Source scanning: `@source "./src/**/*.{rs,css}"`
 - Theme via `@theme static` blocks, dark/light via `[data-theme]` attribute
 - Dioxus compiles Tailwind automatically from `Dioxus.toml` config
@@ -158,7 +167,7 @@ pub fn App() -> Element {
 
 - Use `#[component]` attribute on all component functions
 - Props via function parameters with `#[props(default)]` for optional values
-- Server functions with `#[server]` macro for backend logic callable from client
+- Backend handlers are written with `#[get/post/...]` from `by-macros` (not Dioxus `#[server]`) — see [server-functions.md](server-functions.md)
 
 ## Clone Avoidance Rules
 
@@ -201,21 +210,9 @@ pub fn App() -> Element {
 
 - SSR forms **must** include `method: "post"` — without it, defaults to GET and exposes form data in URL
 
-## GET Handler Query Parameters
+## Backend Handler Conventions
 
-Query parameters must be declared in the `#[get]` macro URL — without curly braces:
-```rust
-// Correct: query params after ? without braces
-#[get("/v1/projects?limit&bookmark", ...)]
-
-// Wrong: missing query params (treated as body → error on GET)
-#[get("/v1/projects", ...)]
-
-// Wrong: braces around query params
-#[get("/v1/projects?{limit}&{bookmark}", ...)]
-```
-- Path params use `:param`, query params use `?param1&param2`
-
-## Reference Codebase
-
-- Follow patterns from `ratel-new/app/ratel/src/` as reference implementation
+See [server-functions.md](server-functions.md) for the full rules on
+`#[get/post/put/patch/delete]` handlers under
+`console/src/features/*/controllers/*.rs` — including path/query params, body
+parameter naming, auth extractors, and DynamoDB access.
