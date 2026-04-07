@@ -1,4 +1,5 @@
 pub mod accounts;
+pub mod assets;
 pub mod console;
 pub mod credentials;
 pub mod landing;
