@@ -4,5 +4,6 @@ use serde::{Deserialize, Serialize};
 pub struct SignupAccountRequest {
     pub name: String,
     pub email: String,
-    pub hashed_password: String,
+    #[serde(alias = "hashed_password")]
+    pub password: String,
 }

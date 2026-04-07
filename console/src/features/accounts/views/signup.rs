@@ -5,6 +5,7 @@ use crate::Route;
 use crate::common::ui::*;
 use crate::features::accounts::context::{AccountContext, use_account_context};
 use crate::features::accounts::i18n::SignUpTranslate;
+use crate::features::accounts::utils::password_policy_error_message;
 
 #[component]
 pub fn SignUp() -> Element {
@@ -20,6 +21,13 @@ pub fn SignUp() -> Element {
 
     let handle_submit = move |e: FormEvent| {
         e.prevent_default();
+
+        if let Some(message) =
+            password_policy_error_message(&password(), Some(&email()), Some(&name()))
+        {
+            error.set(Some(message));
+            return;
+        }
 
         if password() != confirm_password() {
             error.set(Some(t.password_mismatch.to_string()));
@@ -42,8 +50,13 @@ pub fn SignUp() -> Element {
             .await
             {
                 Ok(resp) => {
+                    let current_enterprise =
+                        crate::features::enterprises::controllers::get_current_enterprise_handler()
+                            .await
+                            .ok();
                     account_ctx.set(AccountContext {
                         account: Some(resp),
+                        current_enterprise,
                     });
                     nav.push(Route::Dashboard {});
                 }
@@ -84,22 +97,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| name.set(e.value()),
                             placeholder: t.name_placeholder.to_string(),
                             autocomplete: "name",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    path { d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" }
-                                    circle { cx: "12", cy: "7", r: "4" }
-                                }
-                            },
+                            icon: rsx! { IconUser { class: "w-5 h-5 text-gray-400" } },
                         }
 
                         FormFieldWithIcon {
@@ -110,28 +108,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| email.set(e.value()),
                             placeholder: t.email_placeholder.to_string(),
                             autocomplete: "email",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "20",
-                                        height: "16",
-                                        x: "2",
-                                        y: "4",
-                                        rx: "2",
-                                    }
-                                    path { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" }
-                                }
-                            },
+                            icon: rsx! { IconMail { class: "w-5 h-5 text-gray-400" } },
                         }
 
                         FormFieldWithIcon {
@@ -142,29 +119,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| password.set(e.value()),
                             placeholder: t.password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "18",
-                                        height: "11",
-                                        x: "3",
-                                        y: "11",
-                                        rx: "2",
-                                        ry: "2",
-                                    }
-                                    path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
-                                }
-                            },
+                            icon: rsx! { IconLock { class: "w-5 h-5 text-gray-400" } },
                         }
 
                         FormFieldWithIcon {
@@ -175,29 +130,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| confirm_password.set(e.value()),
                             placeholder: t.confirm_password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "18",
-                                        height: "11",
-                                        x: "3",
-                                        y: "11",
-                                        rx: "2",
-                                        ry: "2",
-                                    }
-                                    path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
-                                }
-                            },
+                            icon: rsx! { IconLock { class: "w-5 h-5 text-gray-400" } },
                         }
                     }
 

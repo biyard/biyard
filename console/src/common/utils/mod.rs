@@ -7,3 +7,5 @@ pub use class_utils::setup_class_attribute;
 pub mod password_utils;
 #[cfg(feature = "server")]
 pub mod s3_client;
+#[cfg(feature = "server")]
+pub mod user_password_utils;
