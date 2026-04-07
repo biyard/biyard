@@ -24,32 +24,37 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
 
     let items = query.items();
     let more_element = query.more_element();
+    let has_items = !items.is_empty();
 
     rsx! {
-        div { class: "space-y-4",
-            div { class: "flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between",
+        SectionCard {
+            div { class: "mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between",
                 div {
-                    SectionTitle { {t.transactions} }
-                    p { class: "text-sm text-foreground-muted",
+                    SectionTitle { class: "mb-0", {t.transactions} }
+                    p { class: "mt-1 text-sm text-foreground-muted",
                         {t.transactions_subtitle}
                     }
                 }
-                SortToggle {
-                    newest_first: newest_first(),
-                    newest_label: t.sort_newest_first,
-                    oldest_label: t.sort_oldest_first,
-                    on_change: move |next_newest_first: bool| {
-                        if newest_first() != next_newest_first {
-                            newest_first.set(next_newest_first);
-                            query.restart();
-                            #[cfg(not(feature = "server"))]
-                            {
-                                document::eval(
-                                    "window.scrollTo({ top: 0, behavior: 'instant' });",
-                                );
+                // Sort toggle is meaningless on an empty list — only render
+                // it once there is something to sort.
+                if has_items {
+                    SortToggle {
+                        newest_first: newest_first(),
+                        newest_label: t.sort_newest_first,
+                        oldest_label: t.sort_oldest_first,
+                        on_change: move |next_newest_first: bool| {
+                            if newest_first() != next_newest_first {
+                                newest_first.set(next_newest_first);
+                                query.restart();
+                                #[cfg(not(feature = "server"))]
+                                {
+                                    document::eval(
+                                        "window.scrollTo({ top: 0, behavior: 'instant' });",
+                                    );
+                                }
                             }
-                        }
-                    },
+                        },
+                    }
                 }
             }
 

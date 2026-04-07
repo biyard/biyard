@@ -7,18 +7,20 @@ use crate::common::{CommonConfig, EntityType, ProjectViewerAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenBalance, TokenError};
 
+/// Returns the token configured for this project, or `None` if the brand
+/// has not yet defined a token. Returning `Ok(None)` instead of a 404
+/// keeps "no token yet" out of the browser console error log and lets the
+/// frontend distinguish "loading", "empty", and "error" states cleanly.
 #[get("/v1/projects/:project_id/tokens", auth: ProjectViewerAuth)]
 pub async fn get_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
-) -> Result<TokenResponse> {
+) -> Result<Option<TokenResponse>> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    let token = ProjectToken::get(cli, &auth.project.pk, Some(EntityType::Token))
-        .await?
-        .ok_or(TokenError::TokenNotFound)?;
+    let token = ProjectToken::get(cli, &auth.project.pk, Some(EntityType::Token)).await?;
 
-    Ok(token.into())
+    Ok(token.map(Into::into))
 }
 
 #[get("/v1/projects/:project_id/tokens/balance/:meta_user_id", auth: ProjectViewerAuth)]

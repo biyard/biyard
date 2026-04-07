@@ -33,9 +33,35 @@ const BOOTSTRAP_SCRIPT: &str = r#"
 })();
 "#;
 
+/// Newtype wrapper for the theme context signal so it doesn't collide
+/// with any other `Signal<bool>` provider in the tree.
+#[derive(Clone, Copy)]
+pub struct ThemeIsDark(pub Signal<bool>);
+
+#[cfg(not(feature = "server"))]
+fn initial_theme_is_dark() -> bool {
+    web_sys::window()
+        .and_then(|w| w.document())
+        .and_then(|d| d.document_element())
+        .and_then(|el| el.get_attribute("data-theme"))
+        .map(|t| t == "dark")
+        .unwrap_or(true)
+}
+
+#[cfg(feature = "server")]
+fn initial_theme_is_dark() -> bool {
+    true
+}
+
 #[component]
 pub fn App() -> Element {
     let _ = crate::features::accounts::context::Context::init()?;
+
+    // Theme state lives at the root so it survives every child remount
+    // (e.g. opening and closing the account menu drop-down). Putting the
+    // signal inside `ThemeMenuAction` itself caused a "Dropped" panic the
+    // moment the menu unmounted.
+    use_context_provider(|| ThemeIsDark(Signal::new(initial_theme_is_dark())));
 
     rsx! {
         document::Link { rel: "icon", href: asset!("/assets/favicon.ico") }

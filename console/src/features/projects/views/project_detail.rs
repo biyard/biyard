@@ -35,20 +35,17 @@ pub fn ProjectDetailLayout(project_id: ReadSignal<ProjectPartition>) -> Element 
 
     rsx! {
         div { class: "space-y-8",
-            div { class: "rounded-[32px] border border-border bg-panel p-6 shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
-                div { class: "mb-6 flex items-center justify-between gap-3",
+            div { class: "rounded-3xl border border-border bg-panel p-6",
+                // Brand editing now lives inside the Settings tab, which is
+                // already in the sidebar. A separate "Edit Brand" header
+                // button would be redundant from every tab and self-referential
+                // from the Settings tab itself.
+                div { class: "mb-6 flex items-center gap-3",
                     button {
                         class: "inline-flex items-center gap-2 text-sm font-semibold text-foreground-muted transition-colors hover:text-foreground",
                         onclick: move |_| { nav.push(Route::Projects {}); },
                         IconArrowLeft { class: "h-4 w-4" }
                         {t.back_to_projects}
-                    }
-                    Btn {
-                        variant: BtnVariant::Secondary,
-                        onclick: move |_| {
-                            nav.push(Route::ProjectEdit { project_id: project_id() });
-                        },
-                        {t.edit_brand}
                     }
                 }
 
@@ -86,8 +83,12 @@ pub fn ProjectDetailLayout(project_id: ReadSignal<ProjectPartition>) -> Element 
                                     "{desc}"
                                 }
                             }
-                            code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                                "{project_data.id}"
+                            // Shortened brand id chip — full id is available in the
+                            // Settings tab so users who actually need it can copy it.
+                            code {
+                                class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                                title: "{project_data.id}",
+                                "{shorten_id(&project_data.id)}"
                             }
                         }
                     }

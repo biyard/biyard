@@ -35,7 +35,9 @@ pub fn ProjectCreate() -> Element {
                 title: t.create_project.to_string(),
                 subtitle: t.create_brand_subtitle_in.replace("{enterprise}", &enterprise_name),
                 scope: PageScope::Workspace,
-                workspace_label: console_t.enterprise_scope_label.to_string(),
+                // Page is about creating a Brand — show "BRANDS" in the
+                // breadcrumb tag, not "ENTERPRISE".
+                workspace_label: t.brands_breadcrumb.to_string(),
                 brand_label: console_t.brand_scope_label.to_string(),
                 actions: rsx! {
                     Btn {
@@ -55,53 +57,19 @@ pub fn ProjectCreate() -> Element {
     }
 }
 
+/// Legacy `/projects/:project_id/edit` URL.
+///
+/// Brand editing now lives inline in the Settings tab. Anyone who lands
+/// on `/edit` (bookmarks, old links) is redirected to the new location.
 #[component]
 pub fn ProjectEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
-    let t: ProjectsTranslate = use_translate();
-    let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
-    let account_ctx = use_account_context();
-    let enterprise_name = account_ctx()
-        .enterprise_name()
-        .unwrap_or_else(|| "Default enterprise".to_string());
-
-    let project = use_loader(move || async move {
-        crate::features::projects::controllers::get_project_handler(project_id()).await
-    })?;
-
-    let project_data = project();
-    let pid_back = project_id();
-    let brand_name_for_scope = project_data.name.clone();
-
-    rsx! {
-        div { class: "space-y-8",
-            PageHeader {
-                title: t.brand_settings.to_string(),
-                subtitle: t.edit_brand_subtitle_in.replace("{enterprise}", &enterprise_name),
-                scope: PageScope::Brand { name: brand_name_for_scope },
-                workspace_label: console_t.enterprise_scope_label.to_string(),
-                brand_label: console_t.brand_scope_label.to_string(),
-                actions: rsx! {
-                    Btn {
-                        variant: BtnVariant::Secondary,
-                        onclick: move |_| {
-                            nav.push(Route::ProjectDetail {
-                                project_id: pid_back.clone(),
-                            });
-                        },
-                        {t.back_to_brand}
-                    }
-                },
-            }
-
-            ProjectEditorCard {
-                mode: ProjectEditorMode::Edit {
-                    project_id: project_id(),
-                    project: project_data,
-                },
-            }
-        }
-    }
+    use_effect(move || {
+        nav.replace(Route::ProjectSettings {
+            project_id: project_id(),
+        });
+    });
+    rsx! {}
 }
 
 #[component]
@@ -140,10 +108,14 @@ pub fn ProjectEditorCard(
         .as_ref()
         .map(|project| project.monthly_token_supply.to_string())
         .unwrap_or_else(|| "1000000".to_string());
+    // Reserve rate is stored as a 0..1 fraction in the model but the UI
+    // takes whole percent (0..100). Multiplying once at hydration and
+    // dividing once on submit keeps the user-visible value sane and
+    // prevents the "type 10 → submit 1000%" footgun.
     let seed_reserve_rate = existing_project
         .as_ref()
-        .map(|project| format!("{:.2}", project.treasury_reserve_rate))
-        .unwrap_or_else(|| "0.10".to_string());
+        .map(|project| ((project.treasury_reserve_rate * 100.0).round() as i64).to_string())
+        .unwrap_or_else(|| "10".to_string());
 
     let mut name = use_signal(move || seed_name.clone());
     let mut description = use_signal(move || seed_description.clone());
@@ -164,21 +136,20 @@ pub fn ProjectEditorCard(
         t.brand_edit_helper
     };
 
-    let preview_name = {
-        let current = name();
-        if current.trim().is_empty() {
-            t.brand.to_string()
-        } else {
-            current
-        }
+    // `preview_*_is_placeholder` flags let the live preview render
+    // empty-state values in a muted/italic style so the user does not
+    // mistake them for actual input.
+    let preview_name_is_placeholder = name().trim().is_empty();
+    let preview_name = if preview_name_is_placeholder {
+        t.brand.to_string()
+    } else {
+        name()
     };
-    let preview_description = {
-        let current = description();
-        if current.trim().is_empty() {
-            t.brand_preview_description_placeholder.to_string()
-        } else {
-            current
-        }
+    let preview_description_is_placeholder = description().trim().is_empty();
+    let preview_description = if preview_description_is_placeholder {
+        t.brand_preview_description_placeholder.to_string()
+    } else {
+        description()
     };
     let preview_logo_url = {
         let current = brand_logo_url();
@@ -188,7 +159,8 @@ pub fn ProjectEditorCard(
             Some(current)
         }
     };
-    let reserve_percent = reserve_rate().parse::<f64>().unwrap_or(0.0) * 100.0;
+    // Input is whole percent — display as-is, clamped to a sane range.
+    let reserve_percent = reserve_rate().parse::<f64>().unwrap_or(0.0).clamp(0.0, 100.0);
 
     let settings_saved = t.settings_saved.to_string();
     let save_failure = t.save_failure.to_string();
@@ -265,13 +237,27 @@ pub fn ProjectEditorCard(
                             }
                         }
 
-                        FormField {
-                            label: t.monthly_supply,
-                            r#type: "number",
-                            value: monthly_supply(),
-                            oninput: move |e: FormEvent| monthly_supply.set(e.value()),
-                            placeholder: t.monthly_supply_placeholder.to_string(),
-                            min: "0",
+                        div {
+                            FormField {
+                                label: t.monthly_supply,
+                                r#type: "number",
+                                value: monthly_supply(),
+                                oninput: move |e: FormEvent| monthly_supply.set(e.value()),
+                                placeholder: t.monthly_supply_placeholder.to_string(),
+                                min: "0",
+                            }
+                            // Inline preview of the typed number with thousand separators.
+                            // Helps the user verify they typed `1,000,000` not `100,000` etc.
+                            if let Ok(parsed) = monthly_supply().parse::<i64>() {
+                                if parsed >= 1000 {
+                                    p { class: "mt-1 text-xs font-semibold text-foreground-soft",
+                                        "= {format_number(parsed)}"
+                                    }
+                                }
+                            }
+                            p { class: "mt-2 text-xs font-medium text-foreground-muted",
+                                {t.monthly_supply_help}
+                            }
                         }
 
                         div {
@@ -280,10 +266,11 @@ pub fn ProjectEditorCard(
                                 r#type: "number",
                                 value: reserve_rate(),
                                 oninput: move |e: FormEvent| reserve_rate.set(e.value()),
-                                placeholder: "0.10".to_string(),
+                                placeholder: "10".to_string(),
                                 min: "0",
-                                max: "1",
-                                step: "0.01",
+                                max: "100",
+                                step: "1",
+                                suffix: "%",
                             }
                             p { class: "mt-2 text-xs font-medium text-foreground-muted",
                                 {t.treasury_reserve_rate_desc}
@@ -330,12 +317,20 @@ pub fn ProjectEditorCard(
                                     loading.set(true);
                                     message.set(None);
 
+                                    // The reserve_rate input is now whole percent (0-100).
+                                    // Convert to a 0..1 fraction for the API/model.
+                                    let parse_reserve_pct = |s: &str, fallback: f64| -> f64 {
+                                        s.parse::<f64>()
+                                            .map(|p| (p / 100.0).clamp(0.0, 1.0))
+                                            .unwrap_or(fallback)
+                                    };
+
                                     match mode {
                                         ProjectEditorMode::Create => {
                                             let monthly_supply_val =
                                                 monthly_supply_input.parse::<i64>().unwrap_or(1_000_000);
                                             let reserve_rate_val =
-                                                reserve_rate_input.parse::<f64>().unwrap_or(0.1);
+                                                parse_reserve_pct(&reserve_rate_input, 0.1);
 
                                             match crate::features::projects::controllers::create_project_handler(
                                                 name_val,
@@ -347,9 +342,26 @@ pub fn ProjectEditorCard(
                                             .await
                                             {
                                                 Ok(project) => {
-                                                    nav.push(Route::TokenCreate {
-                                                        project_id: ProjectPartition::from(project.id),
-                                                    });
+                                                    // Hard navigation (full page load) so the sidebar's
+                                                    // `brands_loader` re-fetches and the brand switcher
+                                                    // reflects the brand-new project. A SPA `nav.push`
+                                                    // would leave the cached brands list stale and the
+                                                    // selector would render with an empty name.
+                                                    #[cfg(not(feature = "server"))]
+                                                    {
+                                                        let target = format!(
+                                                            "/projects/{}/overview",
+                                                            project.id,
+                                                        );
+                                                        let _ = web_sys::window()
+                                                            .and_then(|w| w.location().assign(&target).ok());
+                                                    }
+                                                    #[cfg(feature = "server")]
+                                                    {
+                                                        nav.push(Route::ProjectDetail {
+                                                            project_id: ProjectPartition::from(project.id),
+                                                        });
+                                                    }
                                                 }
                                                 Err(error) => {
                                                     message.set(Some((AlertVariant::Error, error.to_string())));
@@ -360,9 +372,8 @@ pub fn ProjectEditorCard(
                                             let monthly_supply_val = monthly_supply_input
                                                 .parse::<i64>()
                                                 .unwrap_or(project.monthly_token_supply);
-                                            let reserve_rate_val = reserve_rate_input
-                                                .parse::<f64>()
-                                                .unwrap_or(project.treasury_reserve_rate);
+                                            let reserve_rate_val =
+                                                parse_reserve_pct(&reserve_rate_input, project.treasury_reserve_rate);
 
                                             match crate::features::projects::controllers::update_project_handler(
                                                 project_id.clone(),
@@ -419,10 +430,20 @@ pub fn ProjectEditorCard(
                                 size: BrandAvatarSize::Lg,
                             }
                             div { class: "space-y-2",
-                                h4 { class: "font-display text-[1.5rem] font-bold tracking-tight text-foreground",
+                                h4 {
+                                    class: if preview_name_is_placeholder {
+                                        "font-display text-[1.5rem] font-bold tracking-tight italic text-foreground-muted"
+                                    } else {
+                                        "font-display text-[1.5rem] font-bold tracking-tight text-foreground"
+                                    },
                                     "{preview_name}"
                                 }
-                                p { class: "text-sm leading-6 text-foreground-muted",
+                                p {
+                                    class: if preview_description_is_placeholder {
+                                        "text-sm leading-6 italic text-foreground-muted"
+                                    } else {
+                                        "text-sm leading-6 text-foreground-muted"
+                                    },
                                     "{preview_description}"
                                 }
                             }

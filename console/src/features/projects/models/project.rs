@@ -25,12 +25,6 @@ pub struct Project {
     #[serde(default = "default_treasury_reserve_rate")]
     pub treasury_reserve_rate: f64,
 
-    #[serde(default)]
-    pub simulated_sales_total: i64,
-
-    #[serde(default)]
-    pub treasury_balance: i64,
-
     pub status: ProjectStatus,
 
     #[dynamo(index = "gsi1", sk)]
@@ -67,8 +61,6 @@ impl Project {
             brand_logo_url,
             monthly_token_supply,
             treasury_reserve_rate,
-            simulated_sales_total: 0,
-            treasury_balance: 0,
             status: ProjectStatus::Active,
             created_at: now,
             updated_at: now,
@@ -99,8 +91,6 @@ impl From<Project> for crate::features::projects::ProjectResponse {
             brand_logo_url: project.brand_logo_url,
             monthly_token_supply: project.monthly_token_supply,
             treasury_reserve_rate: project.treasury_reserve_rate,
-            simulated_sales_total: project.simulated_sales_total,
-            treasury_balance: project.treasury_balance,
             status: project.status,
             created_at: project.created_at,
             updated_at: project.updated_at,

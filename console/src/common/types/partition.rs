@@ -22,6 +22,7 @@ pub enum Partition {
     // Project
     Project(String),
     MonthlyPoints(String),
+    SalesLog(String),
 
     // Point Feature
     MetaUser(String),

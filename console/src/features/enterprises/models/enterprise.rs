@@ -9,7 +9,6 @@ pub struct Enterprise {
     pub owner_account_id: Partition,
 
     pub name: String,
-    pub slug: String,
     #[serde(default)]
     pub legacy_account_sync_at: Option<i64>,
 
@@ -22,41 +21,16 @@ pub struct Enterprise {
 impl Enterprise {
     pub fn new(pk: Partition, owner_account_id: Partition, name: String) -> Self {
         let now = crate::common::utils::time_utils::get_now();
-        let slug = slugify(&name);
 
         Self {
             pk,
             sk: EntityType::Enterprise,
             owner_account_id,
             name,
-            slug,
             legacy_account_sync_at: None,
             created_at: now,
             updated_at: now,
         }
-    }
-}
-
-fn slugify(input: &str) -> String {
-    let mut out = String::with_capacity(input.len());
-    let mut last_was_dash = false;
-
-    for ch in input.chars() {
-        let lowered = ch.to_ascii_lowercase();
-        if lowered.is_ascii_alphanumeric() {
-            out.push(lowered);
-            last_was_dash = false;
-        } else if !last_was_dash {
-            out.push('-');
-            last_was_dash = true;
-        }
-    }
-
-    let trimmed = out.trim_matches('-');
-    if trimmed.is_empty() {
-        "enterprise".to_string()
-    } else {
-        trimmed.to_string()
     }
 }
 
@@ -72,7 +46,6 @@ impl From<Enterprise> for crate::features::enterprises::EnterpriseResponse {
             pk: enterprise.pk,
             owner_account_id: enterprise.owner_account_id,
             name: enterprise.name,
-            slug: enterprise.slug,
             created_at: enterprise.created_at,
             updated_at: enterprise.updated_at,
         }

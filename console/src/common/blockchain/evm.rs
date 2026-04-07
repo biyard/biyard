@@ -21,6 +21,19 @@ abigen!(
     FloorPriceTreasuryContract,
     r#"[
         function mintRewardTokens(address to, uint256 amount, string reason) external
+        function stableToken() external view returns (address)
+        function getFloorPrice() external view returns (uint256)
+        function getCirculatingSupply() external view returns (uint256)
+    ]"#
+);
+
+abigen!(
+    Erc20Contract,
+    r#"[
+        function balanceOf(address account) external view returns (uint256)
+        function totalSupply() external view returns (uint256)
+        function decimals() external view returns (uint8)
+        function symbol() external view returns (string)
     ]"#
 );
 
@@ -400,4 +413,129 @@ pub async fn get_on_chain_balance(
         .map_err(|e| format!("Balance query failed: {e}"))?;
 
     Ok(balance.as_u64())
+}
+
+/// Snapshot of on-chain treasury state for a brand project.
+///
+/// Every field comes straight from live RPC reads; nothing is
+/// mirrored in DynamoDB. A missing `treasury_contract_address` on the
+/// project's token record means the treasury has not been deployed
+/// yet and callers should treat the whole status as unavailable.
+#[derive(Debug, Clone)]
+pub struct TreasuryStatus {
+    /// Raw USDT balance held by the treasury contract (stable token units).
+    pub treasury_balance_raw: u128,
+    /// Decimal places of the stable token (typically 6 for USDT).
+    pub stable_decimals: u8,
+    /// Stable token symbol (e.g. "USDT").
+    pub stable_symbol: String,
+    /// `totalSupply` of the brand token (raw units).
+    pub total_supply_raw: u128,
+    /// `getCirculatingSupply()` from the treasury contract (raw units).
+    /// This is `totalSupply - treasuryHeld` as defined on-chain.
+    pub circulating_supply_raw: u128,
+    /// Brand token decimals.
+    pub token_decimals: u8,
+    /// Raw floor price returned by `getFloorPrice()`, scaled by 1e18.
+    /// `0` when `circulating_supply_raw` is zero.
+    pub floor_price_raw_1e18: u128,
+}
+
+/// Read a full treasury snapshot directly from chain state.
+///
+/// Resolves every value at the same block-ish window so the returned
+/// floor price, treasury balance, and supplies are mutually consistent
+/// enough to display on the console.
+pub async fn get_treasury_status(
+    chain_id: u64,
+    treasury_contract_address: &str,
+    brand_token_address: &str,
+) -> Result<TreasuryStatus, String> {
+    let prov = Arc::new(provider(chain_id)?);
+
+    let treasury_addr: Address = treasury_contract_address
+        .parse()
+        .map_err(|e| format!("Invalid treasury address: {e}"))?;
+
+    let token_addr: Address = brand_token_address
+        .parse()
+        .map_err(|e| format!("Invalid brand token address: {e}"))?;
+
+    let treasury = FloorPriceTreasuryContract::new(treasury_addr, prov.clone());
+    let brand_token = Erc20Contract::new(token_addr, prov.clone());
+
+    // Resolve stable token address from the treasury contract itself
+    // so we never have to trust a cached value from DynamoDB.
+    let stable_addr = treasury
+        .stable_token()
+        .call()
+        .await
+        .map_err(|e| format!("stableToken() call failed: {e}"))?;
+
+    let stable = Erc20Contract::new(stable_addr, prov.clone());
+
+    let (treasury_balance, stable_decimals, stable_symbol) = tokio::try_join!(
+        async {
+            stable
+                .balance_of(treasury_addr)
+                .call()
+                .await
+                .map_err(|e| format!("stable balanceOf() failed: {e}"))
+        },
+        async {
+            stable
+                .decimals()
+                .call()
+                .await
+                .map_err(|e| format!("stable decimals() failed: {e}"))
+        },
+        async {
+            stable
+                .symbol()
+                .call()
+                .await
+                .map_err(|e| format!("stable symbol() failed: {e}"))
+        },
+    )?;
+
+    let (total_supply, circulating_supply, floor_price, token_decimals) = tokio::try_join!(
+        async {
+            brand_token
+                .total_supply()
+                .call()
+                .await
+                .map_err(|e| format!("token totalSupply() failed: {e}"))
+        },
+        async {
+            treasury
+                .get_circulating_supply()
+                .call()
+                .await
+                .map_err(|e| format!("getCirculatingSupply() failed: {e}"))
+        },
+        async {
+            treasury
+                .get_floor_price()
+                .call()
+                .await
+                .map_err(|e| format!("getFloorPrice() failed: {e}"))
+        },
+        async {
+            brand_token
+                .decimals()
+                .call()
+                .await
+                .map_err(|e| format!("token decimals() failed: {e}"))
+        },
+    )?;
+
+    Ok(TreasuryStatus {
+        treasury_balance_raw: treasury_balance.as_u128(),
+        stable_decimals,
+        stable_symbol,
+        total_supply_raw: total_supply.as_u128(),
+        circulating_supply_raw: circulating_supply.as_u128(),
+        token_decimals,
+        floor_price_raw_1e18: floor_price.as_u128(),
+    })
 }

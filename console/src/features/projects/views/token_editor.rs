@@ -3,7 +3,6 @@ use dioxus_translate::use_translate;
 
 use crate::Route;
 use crate::common::ProjectPartition;
-use crate::common::Result;
 use crate::common::ui::*;
 use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::projects::i18n::ProjectsTranslate;
@@ -22,12 +21,7 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
     let nav = use_navigator();
 
     let existing = use_loader(move || async move {
-        let result: Result<Option<TokenResponse>> = Ok(
-            crate::features::tokens::controllers::get_token_handler(project_id())
-                .await
-                .ok(),
-        );
-        result
+        crate::features::tokens::controllers::get_token_handler(project_id()).await
     })?;
     let project = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
@@ -136,9 +130,41 @@ pub fn TokenEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
         crate::features::projects::controllers::get_project_handler(project_id()).await
     })?;
 
-    let token_data = token();
     let pid_back = project_id();
     let brand_name = project().name.clone();
+
+    // No token configured yet — TokenEdit was navigated to directly. Send
+    // the user to the create flow rather than rendering an empty form.
+    let Some(token_data) = token() else {
+        let to_create = pid_back.clone();
+        return rsx! {
+            div { class: "space-y-8",
+                PageHeader {
+                    title: t.create_token.to_string(),
+                    subtitle: t.create_token_subtitle.to_string(),
+                    scope: PageScope::Brand { name: brand_name.clone() },
+                    workspace_label: console_t.enterprise_scope_label.to_string(),
+                    brand_label: console_t.brand_scope_label.to_string(),
+                }
+                SectionCard {
+                    EmptyState {
+                        icon: rsx! { IconToken {} },
+                        title: t.no_token.to_string(),
+                        description: t.no_token_desc.to_string(),
+                        actions: rsx! {
+                            Btn {
+                                variant: BtnVariant::Primary,
+                                onclick: move |_| {
+                                    nav.push(Route::TokenCreate { project_id: to_create.clone() });
+                                },
+                                {t.create_token}
+                            }
+                        },
+                    }
+                }
+            }
+        };
+    };
 
     if token_data.contract_address.is_some() {
         let to_detail = pid_back.clone();
@@ -243,21 +269,17 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
         t.token_edit_helper
     };
 
-    let preview_name = {
-        let current = name();
-        if current.trim().is_empty() {
-            t.token_name.to_string()
-        } else {
-            current
-        }
+    let preview_name_is_placeholder = name().trim().is_empty();
+    let preview_name = if preview_name_is_placeholder {
+        t.token_name.to_string()
+    } else {
+        name()
     };
-    let preview_symbol = {
-        let current = symbol();
-        if current.trim().is_empty() {
-            "TKN".to_string()
-        } else {
-            current
-        }
+    let preview_symbol_is_placeholder = symbol().trim().is_empty();
+    let preview_symbol = if preview_symbol_is_placeholder {
+        "TKN".to_string()
+    } else {
+        symbol()
     };
 
     let save_failure = t.save_failure.to_string();
@@ -301,13 +323,23 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             min: "0",
                             max: "18",
                         }
-                        FormField {
-                            label: t.initial_total_supply,
-                            r#type: "number",
-                            value: initial_supply(),
-                            oninput: move |e: FormEvent| initial_supply.set(e.value()),
-                            placeholder: "1000000".to_string(),
-                            min: "0",
+                        div {
+                            FormField {
+                                label: t.initial_total_supply,
+                                r#type: "number",
+                                value: initial_supply(),
+                                oninput: move |e: FormEvent| initial_supply.set(e.value()),
+                                placeholder: "1000000".to_string(),
+                                min: "0",
+                            }
+                            // Inline thousand-separator preview.
+                            if let Ok(parsed) = initial_supply().parse::<i64>() {
+                                if parsed >= 1000 {
+                                    p { class: "mt-1 text-xs font-semibold text-foreground-soft",
+                                        "= {format_number(parsed)}"
+                                    }
+                                }
+                            }
                         }
                         div { class: "md:col-span-2",
                             FormField {
@@ -416,7 +448,12 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
                                     {t.token_name}
                                 }
-                                p { class: "mt-2 text-lg font-semibold text-foreground",
+                                p {
+                                    class: if preview_name_is_placeholder {
+                                        "mt-2 text-lg font-semibold italic text-foreground-muted"
+                                    } else {
+                                        "mt-2 text-lg font-semibold text-foreground"
+                                    },
                                     "{preview_name}"
                                 }
                             }
@@ -425,7 +462,12 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                     p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
                                         {t.token_symbol}
                                     }
-                                    p { class: "mt-2 text-lg font-semibold text-foreground",
+                                    p {
+                                        class: if preview_symbol_is_placeholder {
+                                            "mt-2 text-lg font-semibold italic text-foreground-muted"
+                                        } else {
+                                            "mt-2 text-lg font-semibold text-foreground"
+                                        },
                                         "{preview_symbol}"
                                     }
                                 }

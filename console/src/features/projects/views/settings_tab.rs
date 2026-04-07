@@ -7,10 +7,18 @@ use crate::common::components::dialog::*;
 use crate::common::ui::*;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
+use crate::features::projects::views::project_editor::{ProjectEditorCard, ProjectEditorMode};
 
-/// Brand settings tab. Currently just the danger zone (brand delete);
-/// once more brand-level settings land they'll be added here as
-/// additional sections above the danger card.
+/// Brand settings tab. Renders the editable brand profile inline (name,
+/// description, logo, monthly token supply, treasury reserve rate) plus a
+/// Danger Zone card at the bottom for brand deletion.
+///
+/// Previously brand editing lived on a separate `/edit` page and the
+/// `/settings` URL only contained the Danger Zone, which made the
+/// "Settings" tab name misleading. Editing was reachable only via a
+/// header button. Consolidating both into one tab matches typical SaaS
+/// settings conventions: editable fields up top, destructive actions
+/// behind a clear danger boundary at the bottom.
 ///
 /// Brand deletion requires the user to **type the brand name** into
 /// the confirmation dialog. This is the only place in the app where
@@ -31,6 +39,8 @@ pub fn SettingsTab(
     let brand_name = project.name.clone();
     let brand_name_for_match = brand_name.clone();
     let brand_name_for_action = brand_name.clone();
+    let project_for_editor = project.clone();
+    let pid_for_editor = project_id();
 
     let name_matches = confirm_input().trim() == brand_name_for_match;
 
@@ -65,7 +75,15 @@ pub fn SettingsTab(
     };
 
     rsx! {
-        div { class: "space-y-6",
+        div { class: "space-y-8",
+            // Editable brand profile — name, description, logo, supply, treasury rate.
+            ProjectEditorCard {
+                mode: ProjectEditorMode::Edit {
+                    project_id: pid_for_editor,
+                    project: project_for_editor,
+                },
+            }
+
             DangerCard {
                 div { class: "flex flex-col gap-5 md:flex-row md:items-start md:justify-between",
                     div { class: "flex items-start gap-4",

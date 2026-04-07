@@ -24,21 +24,14 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
         div { class: "grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
             SectionCard {
                 SectionTitle { {t.project_info} }
+                // The brand avatar + name header lives in the page header
+                // (`ProjectDetailLayout`) just above this card, so we don't
+                // repeat it here. The optional description is the only
+                // identity-level information that the page header doesn't
+                // already show, so we surface it as a single intro line.
                 div { class: "space-y-5",
-                    div { class: "flex items-start gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
-                        BrandAvatar {
-                            name: project.name.clone(),
-                            logo_url: project.brand_logo_url.clone(),
-                            size: BrandAvatarSize::Md,
-                        }
-                        div { class: "space-y-2",
-                            p { class: "font-display text-xl font-bold tracking-tight text-foreground",
-                                "{project.name}"
-                            }
-                            if let Some(desc) = project.description.clone() {
-                                p { class: "text-sm leading-6 text-foreground-muted", "{desc}" }
-                            }
-                        }
+                    if let Some(desc) = project.description.clone() {
+                        p { class: "text-sm leading-6 text-foreground-soft", "{desc}" }
                     }
 
                     div { class: "grid gap-4 sm:grid-cols-2",
@@ -52,10 +45,16 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             value: format_timestamp(project.created_at),
                             code_like: false,
                         }
-                        InfoRow {
-                            label: t.updated_at.to_string(),
-                            value: format_timestamp(project.updated_at),
-                            code_like: false,
+                        // Updated row only shown when it actually differs
+                        // from Created — for a brand-new brand the two are
+                        // the same to the millisecond, and showing both
+                        // wastes a row and looks like a bug.
+                        if project.updated_at > project.created_at {
+                            InfoRow {
+                                label: t.updated_at.to_string(),
+                                value: format_timestamp(project.updated_at),
+                                code_like: false,
+                            }
                         }
                         InfoRow {
                             label: t.monthly_supply.to_string(),
@@ -79,37 +78,48 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
             SectionCard {
                 SectionTitle { {t.token_info} }
                 match &token {
-                    Ok(tok) => {
-                        let tok = &*tok.read();
-                        rsx! {
-                            div { class: "space-y-5",
-                                div { class: "flex items-center gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
-                                    div { class: "flex h-14 w-14 items-center justify-center rounded-[18px] bg-brand-soft text-brand",
-                                        IconToken { class: "h-7 w-7" }
-                                    }
-                                    div {
-                                        p { class: "font-display text-xl font-bold tracking-tight text-foreground",
-                                            "{tok.name}"
+                    Ok(loaded) => {
+                        let loaded = loaded.read();
+                        match &*loaded {
+                            Some(tok) => rsx! {
+                                div { class: "space-y-5",
+                                    div { class: "flex items-center gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
+                                        div { class: "flex h-14 w-14 items-center justify-center rounded-[18px] bg-brand-soft text-brand",
+                                            IconToken { class: "h-7 w-7" }
                                         }
-                                        StatusBadge { color: BadgeColor::Blue, "{tok.symbol}" }
+                                        div {
+                                            p { class: "font-display text-xl font-bold tracking-tight text-foreground",
+                                                "{tok.name}"
+                                            }
+                                            StatusBadge { color: BadgeColor::Blue, "{tok.symbol}" }
+                                        }
+                                    }
+                                    if let Some(ref desc) = tok.description {
+                                        p { class: "text-sm leading-6 text-foreground-muted", "{desc}" }
+                                    }
+                                    div { class: "grid gap-4 sm:grid-cols-3",
+                                        StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
+                                        StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
+                                        StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
                                     }
                                 }
-                                if let Some(ref desc) = tok.description {
-                                    p { class: "text-sm leading-6 text-foreground-muted", "{desc}" }
+                            },
+                            None => rsx! {
+                                EmptyState {
+                                    icon: rsx! { IconToken {} },
+                                    title: t.no_token.to_string(),
+                                    description: t.no_token_desc.to_string(),
                                 }
-                                div { class: "grid gap-4 sm:grid-cols-3",
-                                    StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
-                                    StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
-                                    StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
-                                }
-                            }
+                            },
                         }
                     }
+                    // Backend error (network, auth, etc.) — distinct from "no token yet".
+                    // We surface a quiet message rather than the empty-state CTA so the
+                    // user is not invited to "create" a token that may already exist
+                    // but failed to load.
                     Err(_) => rsx! {
-                        EmptyState {
-                            icon: rsx! { IconToken {} },
-                            title: t.no_token.to_string(),
-                            description: t.no_token_desc.to_string(),
+                        div { class: "rounded-[24px] border border-border bg-panel-muted p-6 text-sm text-foreground-muted",
+                            {t.token_load_error}
                         }
                     }
                 }
@@ -119,24 +129,30 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                 SectionTitle { {t.point_info} }
                 match &aggregation {
                     Ok(agg) => {
-                        let agg = &*agg.read();
-                        rsx! {
-                            div { class: "space-y-5",
-                                div { class: "grid gap-4 sm:grid-cols-2",
-                                    StatCard { color: StatColor::Green, label: t.total_awarded.to_string(), value: format_number(agg.awarded_points) }
-                                    StatCard { color: StatColor::Red, label: t.total_deducted.to_string(), value: format_number(agg.deducted_points) }
+                        let agg = agg.read();
+                        let has_activity = agg.awarded_points != 0 || agg.deducted_points != 0;
+                        if has_activity {
+                            rsx! {
+                                div { class: "space-y-5",
+                                    div { class: "grid gap-4 sm:grid-cols-2",
+                                        StatCard { color: StatColor::Green, label: t.total_awarded.to_string(), value: format_number(agg.awarded_points) }
+                                        StatCard { color: StatColor::Red, label: t.total_deducted.to_string(), value: format_number(agg.deducted_points) }
+                                    }
                                 }
-                                p { class: "text-sm leading-6 text-foreground-muted",
-                                    {t.no_points_desc}
+                            }
+                        } else {
+                            rsx! {
+                                EmptyState {
+                                    icon: rsx! { IconStar {} },
+                                    title: t.no_points_yet.to_string(),
+                                    description: t.no_points_desc.to_string(),
                                 }
                             }
                         }
                     }
                     Err(_) => rsx! {
-                        EmptyState {
-                            icon: rsx! { IconStar {} },
-                            title: t.no_points_yet.to_string(),
-                            description: t.no_points_desc.to_string(),
+                        div { class: "rounded-[24px] border border-border bg-panel-muted p-6 text-sm text-foreground-muted",
+                            {t.point_load_error}
                         }
                     }
                 }

@@ -13,8 +13,6 @@ pub struct ProjectResponse {
     pub brand_logo_url: Option<String>,
     pub monthly_token_supply: i64,
     pub treasury_reserve_rate: f64,
-    pub simulated_sales_total: i64,
-    pub treasury_balance: i64,
     pub status: ProjectStatus,
     pub created_at: i64,
     pub updated_at: i64,

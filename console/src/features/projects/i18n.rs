@@ -44,8 +44,12 @@ translate! {
         ko: "월별 토큰 공급량",
     },
     monthly_supply_placeholder: {
-        en: "Enter monthly token supply (0 for manual provisioning)",
-        ko: "월별 토큰 공급량 입력 (수동 프로비저닝은 0)",
+        en: "e.g. 1,000,000 — set to 0 to provision manually",
+        ko: "예: 1,000,000 — 수동 프로비저닝은 0",
+    },
+    monthly_supply_help: {
+        en: "Per-month budget for rewarding users with points convertible to this brand's token. Independent of the token's on-chain total supply (set on the Token tab).",
+        ko: "이 브랜드의 토큰으로 전환 가능한 포인트를 사용자에게 지급할 월별 예산입니다. 토큰의 온체인 총 공급량(토큰 탭에서 설정)과는 별개입니다.",
     },
     symbol: {
         en: "Symbol",
@@ -259,6 +263,14 @@ translate! {
         en: "Create your first token for this brand.",
         ko: "이 브랜드의 첫 번째 토큰을 생성하세요.",
     },
+    token_load_error: {
+        en: "Could not load token information. Please refresh and try again.",
+        ko: "토큰 정보를 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.",
+    },
+    point_load_error: {
+        en: "Could not load point activity. Please refresh and try again.",
+        ko: "포인트 활동을 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.",
+    },
     create_token: {
         en: "Create Token",
         ko: "토큰 생성",
@@ -351,6 +363,38 @@ translate! {
         en: "Target User ID",
         ko: "대상 사용자 ID",
     },
+    target_user_id_placeholder: {
+        en: "User ID or wallet address",
+        ko: "사용자 ID 또는 지갑 주소",
+    },
+    mint_requires_deploy: {
+        en: "Deploy the token contract first to mint tokens to addresses.",
+        ko: "토큰 컨트랙트를 먼저 배포해야 토큰을 발행할 수 있습니다.",
+    },
+    deploy_token_confirm_title: {
+        en: "Deploy token to chain?",
+        ko: "토큰을 체인에 배포할까요?",
+    },
+    deploy_treasury_confirm_title: {
+        en: "Deploy treasury contract?",
+        ko: "트레저리 컨트랙트를 배포할까요?",
+    },
+    deploy_confirm_message: {
+        en: "This will publish the contract to the selected blockchain network.",
+        ko: "선택한 블록체인 네트워크에 컨트랙트를 게시합니다.",
+    },
+    deploy_confirm_irreversible_title: {
+        en: "This action cannot be undone",
+        ko: "이 작업은 되돌릴 수 없습니다",
+    },
+    deploy_confirm_irreversible_body: {
+        en: "Once deployed, the token name, symbol, decimals, and initial supply are locked on-chain. Gas fees apply.",
+        ko: "한번 배포되면 토큰 이름, 심볼, decimals, 초기 공급량은 온체인에서 잠깁니다. 가스비가 발생합니다.",
+    },
+    deploy_confirm_acknowledge: {
+        en: "I understand this deploys to the blockchain and cannot be undone.",
+        ko: "이 작업이 블록체인에 배포되고 되돌릴 수 없음을 이해합니다.",
+    },
     mint_amount: {
         en: "Mint Amount",
         ko: "발행 수량",
@@ -431,9 +475,239 @@ translate! {
         en: "Save failed: ",
         ko: "저장 실패: ",
     },
-    treasury_simulation: {
-        en: "Treasury (Simulation)",
-        ko: "트레저리(시뮬레이션)",
+    treasury_overview: {
+        en: "Treasury Overview",
+        ko: "트레저리 개요",
+    },
+    treasury_page_placeholder: {
+        en: "Treasury data is being rebuilt around on-chain balances and a real sales ledger. Live status and manual entry tools land next.",
+        ko: "트레저리 데이터는 온체인 잔고와 실제 매출 로그 기반으로 재설계 중입니다. 실시간 상태와 수동 입력 도구가 곧 추가됩니다.",
+    },
+    treasury_not_deployed: {
+        en: "Treasury contracts are not deployed yet. Deploy the brand token from the Tokens tab to see the live on-chain treasury.",
+        ko: "트레저리 컨트랙트가 아직 배포되지 않았습니다. 토큰 탭에서 브랜드 토큰을 배포하면 온체인 트레저리 상태를 확인할 수 있습니다.",
+    },
+    treasury_onchain_title: {
+        en: "On-Chain Treasury Status",
+        ko: "온체인 트레저리 현황",
+    },
+    treasury_onchain_balance: {
+        en: "Treasury Balance",
+        ko: "트레저리 잔고",
+    },
+    treasury_onchain_floor: {
+        en: "Floor Price",
+        ko: "하한가",
+    },
+    treasury_onchain_circulating: {
+        en: "Circulating Supply",
+        ko: "유통 공급량",
+    },
+    treasury_onchain_total_supply: {
+        en: "Total Supply",
+        ko: "총 발행량",
+    },
+    treasury_contract_address_label: {
+        en: "Treasury contract:",
+        ko: "트레저리 컨트랙트:",
+    },
+    open_simulator: {
+        en: "Open Floor Price Simulator",
+        ko: "하한가 시뮬레이터 열기",
+    },
+    open_sales_log: {
+        en: "Open Sales Log",
+        ko: "매출 로그 열기",
+    },
+    close: {
+        en: "Close",
+        ko: "닫기",
+    },
+    // --- Floor Price Simulator (Dialog A) ---
+    simulator_title: {
+        en: "Floor Price Simulator",
+        ko: "하한가 시뮬레이터",
+    },
+    simulator_subtitle: {
+        en: "What-if tool. Nothing here is saved to the database or the blockchain — it only shows how the floor price mechanism reacts to sales, reward mints, and redemptions.",
+        ko: "가상 시나리오 도구입니다. 입력값은 DB나 블록체인에 저장되지 않으며, 매출·리워드 발행·환매에 따라 하한가가 어떻게 변하는지 보여줄 뿐입니다.",
+    },
+    simulator_config_title: {
+        en: "Configuration",
+        ko: "설정",
+    },
+    simulator_reserve_rate: {
+        en: "Reserve Rate",
+        ko: "트레저리 적립률",
+    },
+    simulator_action_sale_title: {
+        en: "Record Sale",
+        ko: "매출 입력",
+    },
+    simulator_action_sale_hint: {
+        en: "Adds amount × reserve rate to treasury.",
+        ko: "매출 × 적립률만큼 트레저리가 증가합니다.",
+    },
+    simulator_apply_sale: {
+        en: "Add Sale",
+        ko: "매출 반영",
+    },
+    simulator_action_mint_title: {
+        en: "Reward Mint",
+        ko: "리워드 발행",
+    },
+    simulator_action_mint_hint: {
+        en: "Mints tokens without adding treasury. Dilutes floor.",
+        ko: "트레저리 증가 없이 토큰만 발행합니다. 하한가가 희석됩니다.",
+    },
+    simulator_apply_mint: {
+        en: "Mint",
+        ko: "발행",
+    },
+    simulator_action_redeem_title: {
+        en: "Redeem (Buyback)",
+        ko: "환매",
+    },
+    simulator_action_redeem_hint: {
+        en: "Burns tokens at the floor price. Floor price is preserved.",
+        ko: "하한가로 토큰을 소각합니다. 하한가는 유지됩니다.",
+    },
+    simulator_apply_redeem: {
+        en: "Redeem",
+        ko: "환매",
+    },
+    simulator_chart_title: {
+        en: "Treasury / Supply / Floor Over Time",
+        ko: "시간에 따른 트레저리 · 발행량 · 하한가",
+    },
+    simulator_log_title: {
+        en: "Action Log",
+        ko: "액션 로그",
+    },
+    simulator_log_empty: {
+        en: "No actions yet. Try recording a sale above.",
+        ko: "아직 액션이 없습니다. 위에서 매출을 입력해보세요.",
+    },
+    simulator_log_col_action: {
+        en: "Action",
+        ko: "액션",
+    },
+    simulator_log_col_amount: {
+        en: "Input",
+        ko: "입력",
+    },
+    simulator_log_col_delta: {
+        en: "Δ Treasury",
+        ko: "Δ 트레저리",
+    },
+    simulator_log_col_treasury: {
+        en: "Treasury",
+        ko: "트레저리",
+    },
+    simulator_log_col_supply: {
+        en: "Supply",
+        ko: "발행량",
+    },
+    simulator_log_col_floor: {
+        en: "Floor",
+        ko: "하한가",
+    },
+    simulator_log_kind_sale: {
+        en: "Sale",
+        ko: "매출",
+    },
+    simulator_log_kind_mint: {
+        en: "Mint",
+        ko: "발행",
+    },
+    simulator_log_kind_redeem: {
+        en: "Redeem",
+        ko: "환매",
+    },
+    simulator_reset: {
+        en: "Reset",
+        ko: "초기화",
+    },
+    // --- Sales Log Dialog (Dialog B) ---
+    sales_log_title: {
+        en: "Sales Log",
+        ko: "매출 로그",
+    },
+    sales_log_subtitle: {
+        en: "Real sales ledger. Each row is a recorded sale and is persisted to the database. Normal production flow is the brand's POS calling the sales log API directly — this dialog is for manual onboarding and demos.",
+        ko: "실제 매출 이력입니다. 모든 행이 DB에 저장됩니다. 정상 운영에서는 브랜드 POS가 API를 직접 호출하며, 이 다이얼로그는 수동 입력이나 시연용입니다.",
+    },
+    sales_log_count_label: {
+        en: "Rows",
+        ko: "건수",
+    },
+    sales_log_total_label: {
+        en: "Total Amount",
+        ko: "합계",
+    },
+    sales_log_add_title: {
+        en: "Add Sale",
+        ko: "매출 추가",
+    },
+    sales_log_amount_label: {
+        en: "Amount",
+        ko: "금액",
+    },
+    sales_log_amount_placeholder: {
+        en: "e.g. 129000",
+        ko: "예: 129000",
+    },
+    sales_log_amount_invalid: {
+        en: "Enter a positive amount.",
+        ko: "양의 금액을 입력해주세요.",
+    },
+    sales_log_memo_label: {
+        en: "Memo (optional)",
+        ko: "메모 (선택)",
+    },
+    sales_log_memo_placeholder: {
+        en: "e.g. Order #123",
+        ko: "예: 주문 #123",
+    },
+    sales_log_add_button: {
+        en: "Add",
+        ko: "추가",
+    },
+    sales_log_submitting: {
+        en: "Adding...",
+        ko: "추가 중...",
+    },
+    sales_log_add_success: {
+        en: "Sale added.",
+        ko: "매출이 추가되었습니다.",
+    },
+    sales_log_add_failure: {
+        en: "Failed to add sale: ",
+        ko: "매출 추가 실패: ",
+    },
+    sales_log_list_title: {
+        en: "Recent Sales",
+        ko: "최근 매출",
+    },
+    sales_log_empty: {
+        en: "No sales recorded yet.",
+        ko: "아직 기록된 매출이 없습니다.",
+    },
+    sales_log_col_created_at: {
+        en: "Time",
+        ko: "시각",
+    },
+    sales_log_col_amount: {
+        en: "Amount",
+        ko: "금액",
+    },
+    sales_log_col_memo: {
+        en: "Memo",
+        ko: "메모",
+    },
+    brands_breadcrumb: {
+        en: "Brands",
+        ko: "브랜드",
     },
     treasury_balance: {
         en: "Treasury Balance",
@@ -452,8 +726,8 @@ translate! {
         ko: "하한가(예상) = 트레저리 잔고 / 총 발행량 (시뮬레이션 기준)",
     },
     revenue_to_treasury_simulation: {
-        en: "Revenue -> Treasury Simulation",
-        ko: "매출 -> 트레저리 시뮬레이션",
+        en: "Revenue → Treasury Simulation",
+        ko: "매출 → 트레저리 시뮬레이션",
     },
     revenue_input: {
         en: "Revenue Input",

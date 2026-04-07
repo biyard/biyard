@@ -1,5 +1,12 @@
 use dioxus::prelude::*;
 
+/// Category indicator on a stat card. Only the small leading dot and the
+/// label tone change between variants — the card background and border
+/// stay neutral so a row of stat cards reads as a calm row of numbers
+/// instead of a colorful "0 = warning" alarm.
+///
+/// Reserve `Red` for actual errors and `Amber` for actual warnings; for
+/// counters that just happen to be zero, prefer `Gray`.
 #[derive(Copy, Clone, PartialEq, Default)]
 pub enum StatColor {
     #[default]
@@ -14,18 +21,6 @@ pub enum StatColor {
 }
 
 impl StatColor {
-    fn card_class(&self) -> &'static str {
-        match self {
-            StatColor::Gray => "border-border bg-panel-muted",
-            StatColor::Green | StatColor::Emerald => "border-success bg-success-soft",
-            StatColor::Red => "border-danger bg-danger-soft",
-            StatColor::Blue => "border-brand bg-brand-soft",
-            StatColor::Indigo => "border-info bg-info-soft",
-            StatColor::Amber => "border-warning bg-warning-soft",
-            StatColor::Purple => "border-purple bg-purple-soft",
-        }
-    }
-
     fn label_class(&self) -> &'static str {
         match self {
             StatColor::Gray => "text-foreground-muted",
@@ -54,14 +49,16 @@ impl StatColor {
 #[component]
 pub fn StatCard(label: String, value: String, #[props(default)] color: StatColor) -> Element {
     rsx! {
-        div { class: "rounded-[24px] border p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] {color.card_class()}",
+        // Unified neutral card chrome — same border + background regardless
+        // of category. The category dot + label color carry the meaning.
+        div { class: "rounded-2xl border border-border bg-panel p-5",
             div { class: "flex items-center gap-3",
-                span { class: "h-2.5 w-2.5 rounded-full {color.dot_class()}" }
+                span { class: "h-2 w-2 rounded-full {color.dot_class()}" }
                 dt { class: "text-[11px] font-semibold uppercase tracking-[0.14em] {color.label_class()}",
                     "{label}"
                 }
             }
-            dd { class: "mt-4 font-display text-[1.75rem] font-bold tracking-tight text-foreground",
+            dd { class: "mt-3 font-display text-2xl font-bold tracking-tight text-foreground",
                 "{value}"
             }
         }

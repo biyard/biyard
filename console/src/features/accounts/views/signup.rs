@@ -69,21 +69,21 @@ pub fn SignUp() -> Element {
     };
 
     rsx! {
-        div { class: "flex justify-center items-center px-4 min-h-screen bg-gray-50 dark:bg-gray-900",
-            div { class: "space-y-8 w-full max-w-md",
+        div { class: "flex min-h-screen items-center justify-center bg-background px-4 text-foreground",
+            div { class: "w-full max-w-md space-y-6",
                 div { class: "text-center",
-                    h1 { class: "text-4xl font-bold text-gray-900 dark:text-white",
+                    h1 { class: "font-display text-3xl font-bold tracking-tight text-foreground",
                         {t.title}
                     }
-                    p { class: "mt-2 text-sm text-gray-600 dark:text-gray-400",
+                    p { class: "mt-1 text-sm text-foreground-muted",
                         {t.tagline}
                     }
-                    h2 { class: "mt-6 text-3xl font-extrabold text-gray-900 dark:text-white",
+                    h2 { class: "mt-6 text-base font-semibold text-foreground-soft",
                         {t.sign_up_heading}
                     }
                 }
 
-                form { class: "mt-8 space-y-6", method: "post", onsubmit: handle_submit,
+                form { class: "space-y-5", method: "post", onsubmit: handle_submit,
                     if let Some(err) = error() {
                         AlertMessage { variant: AlertVariant::Error, "{err}" }
                     }
@@ -97,7 +97,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| name.set(e.value()),
                             placeholder: t.name_placeholder.to_string(),
                             autocomplete: "name",
-                            icon: rsx! { IconUser { class: "w-5 h-5 text-gray-400" } },
+                            icon: rsx! { IconUser { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -108,7 +108,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| email.set(e.value()),
                             placeholder: t.email_placeholder.to_string(),
                             autocomplete: "email",
-                            icon: rsx! { IconMail { class: "w-5 h-5 text-gray-400" } },
+                            icon: rsx! { IconMail { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -119,7 +119,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| password.set(e.value()),
                             placeholder: t.password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! { IconLock { class: "w-5 h-5 text-gray-400" } },
+                            icon: rsx! { IconLock { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -130,7 +130,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| confirm_password.set(e.value()),
                             placeholder: t.confirm_password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! { IconLock { class: "w-5 h-5 text-gray-400" } },
+                            icon: rsx! { IconLock { class: "h-5 w-5 text-foreground-muted" } },
                         }
                     }
 
@@ -146,11 +146,11 @@ pub fn SignUp() -> Element {
                     }
 
                     div { class: "text-center",
-                        p { class: "text-sm text-gray-600 dark:text-gray-400",
+                        p { class: "text-sm text-foreground-muted",
                             {t.have_account} " "
                             Link {
                                 to: Route::SignIn {},
-                                class: "font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500",
+                                class: "font-medium text-brand hover:text-brand-strong",
                                 {t.sign_in_link}
                             }
                         }

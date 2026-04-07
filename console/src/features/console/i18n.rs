@@ -251,4 +251,12 @@ translate! {
         en: "Theme",
         ko: "테마",
     },
+    theme_dark: {
+        en: "Dark",
+        ko: "다크",
+    },
+    theme_light: {
+        en: "Light",
+        ko: "라이트",
+    },
 }

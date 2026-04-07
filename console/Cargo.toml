@@ -62,6 +62,7 @@ web-sys = { version = "0.3", features = [
     "File",
     "FormData",
     "Headers",
+    "Location",
     "Request",
     "RequestInit",
     "Response",

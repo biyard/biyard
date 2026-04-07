@@ -25,6 +25,7 @@ pub enum EntityType {
 
     // Project feature
     Project,
+    SalesLog,
 
     // Point feature
     Month(String),

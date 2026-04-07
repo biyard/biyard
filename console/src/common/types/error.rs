@@ -121,8 +121,7 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 | EnterpriseError::LastOwnerCannotLeave
                 | EnterpriseError::LastOwnerCannotDemote
                 | EnterpriseError::AccountAlreadyInEnterprise
-                | EnterpriseError::InvalidEnterpriseName
-                | EnterpriseError::InvalidEnterpriseSlug => StatusCode::BAD_REQUEST,
+                | EnterpriseError::InvalidEnterpriseName => StatusCode::BAD_REQUEST,
             },
             Error::Project(e) => match e {
                 ProjectError::ProjectNotFound => StatusCode::NOT_FOUND,

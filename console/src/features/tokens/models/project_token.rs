@@ -37,6 +37,11 @@ impl ProjectToken {
         let now = crate::common::utils::time_utils::get_now();
         let initial_supply = initial_supply.max(0);
 
+        // `circulating_supply` represents tokens actually in the wild
+        // (deployed + minted to addresses). A freshly created brand has
+        // not deployed yet, so circulating must be 0 — initializing it
+        // to `initial_supply` would lie about chain state. It is
+        // increased on `mint()`/deploy and decreased on `burn()`.
         Self {
             pk: project_id,
             sk: EntityType::Token,
@@ -44,7 +49,7 @@ impl ProjectToken {
             symbol,
             decimals,
             total_supply: initial_supply,
-            circulating_supply: initial_supply,
+            circulating_supply: 0,
             description,
             contract_address: None,
             treasury_contract_address: None,

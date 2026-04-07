@@ -64,7 +64,9 @@ pub fn PageHeader(
                 }
             }
             if let Some(actions) = actions {
-                div { class: "flex flex-wrap items-center gap-3", {actions} }
+                // Always right-aligned, even on narrow viewports where the
+                // header stacks (title on top, actions on the next row).
+                div { class: "flex flex-wrap items-center justify-end gap-3", {actions} }
             }
         }
     }

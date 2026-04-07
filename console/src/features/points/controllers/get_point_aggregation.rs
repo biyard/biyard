@@ -5,8 +5,14 @@ use dioxus::prelude::*;
 #[cfg(feature = "server")]
 use crate::common::{CommonConfig, ProjectAuth};
 #[cfg(feature = "server")]
-use crate::features::points::{MonthlyPointAggregation, PointError};
+use crate::features::points::MonthlyPointAggregation;
 
+/// Returns the aggregated point activity for a project for a given month.
+///
+/// Always returns `200 OK`. If no aggregation row exists yet (e.g. fresh
+/// brand with zero point activity), the response is a zero-filled
+/// aggregation rather than a 404, so the client can render "No activity
+/// this month" cleanly without log noise.
 #[get("/v1/projects/:project_id/points?date", auth: ProjectAuth)]
 pub async fn get_point_aggregation_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
@@ -15,10 +21,10 @@ pub async fn get_point_aggregation_handler(
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    let (pk, sk) = MonthlyPointAggregation::keys(auth.project.pk, date);
-    let res = MonthlyPointAggregation::get(cli, &pk, Some(sk))
-        .await?
-        .ok_or(PointError::PointAggregationNotFound)?;
+    let (pk, sk) = MonthlyPointAggregation::keys(auth.project.pk, date.clone());
+    let res = MonthlyPointAggregation::get(cli, &pk, Some(sk)).await?;
 
-    Ok(res.into())
+    Ok(res
+        .map(Into::into)
+        .unwrap_or_else(|| MonthlyPointAggregationResponse::empty(date)))
 }

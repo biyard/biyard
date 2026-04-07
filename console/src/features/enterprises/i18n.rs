@@ -84,7 +84,7 @@ translate! {
         ko: "취소",
     },
     member_list: {
-        en: "Members",
+        en: "Member list",
         ko: "멤버 목록",
     },
     name: {
@@ -188,14 +188,6 @@ translate! {
     enterprise_name_help: {
         en: "The display name shown in the sidebar, page headers, and invitations.",
         ko: "사이드바, 페이지 헤더, 초대장에 표시되는 이름입니다.",
-    },
-    enterprise_slug: {
-        en: "Slug",
-        ko: "슬러그",
-    },
-    enterprise_slug_help: {
-        en: "Used in shareable links. Lowercase letters, numbers, and dashes only.",
-        ko: "공유 링크에 사용됩니다. 소문자, 숫자, 대시만 사용할 수 있습니다.",
     },
     save_changes: {
         en: "Save changes",

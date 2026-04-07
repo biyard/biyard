@@ -1,4 +1,4 @@
-mod app;
+pub mod app;
 pub mod common;
 pub mod features;
 mod route;

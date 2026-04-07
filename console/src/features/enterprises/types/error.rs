@@ -24,6 +24,4 @@ pub enum EnterpriseError {
     AccountAlreadyInEnterprise,
     #[error("Enterprise name cannot be empty")]
     InvalidEnterpriseName,
-    #[error("Enterprise slug is invalid")]
-    InvalidEnterpriseSlug,
 }

@@ -7,7 +7,7 @@ use crate::features::accounts::context::use_app_context;
 use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::enterprises::EnterpriseTranslate;
 
-/// `/enterprise/settings/general` — edit enterprise name and slug.
+/// `/enterprise/settings/general` — edit the enterprise name.
 ///
 /// Only Owners can save changes. Viewers and Admins see the form in
 /// disabled state with an inline notice so they know *why*.
@@ -24,25 +24,19 @@ pub fn EnterpriseGeneralPage() -> Element {
     let store = ctx.account_context;
 
     let current = store().current_enterprise.clone();
-    let (initial_name, initial_slug, role) = match current.as_ref() {
-        Some(ent) => (
-            ent.enterprise.name.clone(),
-            ent.enterprise.slug.clone(),
-            ent.role,
-        ),
-        None => (String::new(), String::new(), OrganizationRole::Viewer),
+    let (initial_name, role) = match current.as_ref() {
+        Some(ent) => (ent.enterprise.name.clone(), ent.role),
+        None => (String::new(), OrganizationRole::Viewer),
     };
     let can_edit = role.allows(OrganizationRole::Owner);
 
     let mut name = use_signal(|| initial_name);
-    let mut slug = use_signal(|| initial_slug);
     let mut saving = use_signal(|| false);
     let mut error = use_signal(|| None::<String>);
     let mut success = use_signal(|| None::<String>);
 
     let on_save = move |_| {
         let next_name = name();
-        let next_slug = slug();
         let trimmed_name = next_name.trim().to_string();
         if trimmed_name.is_empty() {
             return;
@@ -55,7 +49,6 @@ pub fn EnterpriseGeneralPage() -> Element {
         spawn(async move {
             let res = crate::features::enterprises::controllers::update_enterprise_handler(
                 Some(trimmed_name),
-                Some(next_slug),
             )
             .await;
             match res {
@@ -90,8 +83,6 @@ pub fn EnterpriseGeneralPage() -> Element {
             }
 
             SectionCard {
-                SectionTitle { {t.general_title} }
-
                 div { class: "space-y-6",
                     div {
                         FormField {
@@ -103,19 +94,6 @@ pub fn EnterpriseGeneralPage() -> Element {
                         }
                         p { class: "mt-2 text-xs text-foreground-muted",
                             {t.enterprise_name_help}
-                        }
-                    }
-
-                    div {
-                        FormField {
-                            label: t.enterprise_slug,
-                            r#type: "text",
-                            value: slug(),
-                            oninput: move |e: FormEvent| slug.set(e.value()),
-                            disabled: !can_edit,
-                        }
-                        p { class: "mt-2 text-xs text-foreground-muted",
-                            {t.enterprise_slug_help}
                         }
                     }
 

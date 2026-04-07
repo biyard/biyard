@@ -1,5 +1,8 @@
 use dioxus::prelude::*;
 
+/// Centered empty state. Renders bare (no border, no background) so it
+/// doesn't double-up borders when placed inside a `SectionCard`. The
+/// outer card already provides the chrome.
 #[component]
 pub fn EmptyState(
     icon: Element,
@@ -8,11 +11,11 @@ pub fn EmptyState(
     actions: Option<Element>,
 ) -> Element {
     rsx! {
-        div { class: "rounded-[28px] border border-border bg-panel p-12 text-center shadow-[0_18px_40px_rgba(15,23,42,0.05)]",
-            div { class: "mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-[20px] bg-brand-soft text-brand [&_svg]:h-7 [&_svg]:w-7",
+        div { class: "py-10 text-center",
+            div { class: "mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-brand [&_svg]:h-6 [&_svg]:w-6",
                 {icon}
             }
-            h3 { class: "font-display text-xl font-bold text-foreground",
+            h3 { class: "font-display text-lg font-bold text-foreground",
                 "{title}"
             }
             if !description.is_empty() {
@@ -21,7 +24,7 @@ pub fn EmptyState(
                 }
             }
             if let Some(actions) = actions {
-                div { class: "mt-6 flex justify-center", {actions} }
+                div { class: "mt-5 flex justify-center", {actions} }
             }
         }
     }

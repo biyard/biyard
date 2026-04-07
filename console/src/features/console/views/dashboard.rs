@@ -77,29 +77,32 @@ pub fn Dashboard() -> Element {
                 },
             }
 
-            div { class: "relative overflow-hidden rounded-[32px] bg-[linear-gradient(135deg,#5f6666_0%,#6f767b_54%,#8b7e69_100%)] px-8 py-8 text-white shadow-[0_28px_70px_rgba(29,33,34,0.22)]",
-                div { class: "pointer-events-none absolute right-[-4rem] top-[-4rem] h-56 w-56 rounded-full bg-white/10 blur-2xl" }
-                div { class: "pointer-events-none absolute bottom-[-5rem] right-[14rem] h-48 w-48 rounded-full bg-stone-100/10 blur-2xl" }
+            // Enterprise summary card. Uses the surface tokens (panel +
+            // border) so it adapts to both light and dark themes instead
+            // of relying on a single grey-on-grey gradient that read as
+            // dead in light mode.
+            div { class: "relative overflow-hidden rounded-3xl border border-border bg-panel px-8 py-8 text-foreground",
+                div { class: "pointer-events-none absolute right-[-4rem] top-[-4rem] h-56 w-56 rounded-full bg-brand/10 blur-2xl" }
 
                 div { class: "relative flex flex-col gap-8",
                     div { class: "max-w-3xl",
-                        p { class: "text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70",
+                        p { class: "text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground-muted",
                             {t.enterprise_summary}
                         }
-                        h2 { class: "mt-3 font-display text-2xl font-bold leading-tight tracking-[-0.04em] sm:text-3xl lg:text-[2.25rem]",
+                        h2 { class: "mt-3 font-display text-2xl font-bold leading-tight tracking-[-0.04em] text-foreground sm:text-3xl",
                             "{enterprise_ready_headline}"
                         }
-                        p { class: "mt-4 max-w-2xl text-sm font-medium leading-6 text-white/82",
+                        p { class: "mt-4 max-w-2xl text-sm font-medium leading-6 text-foreground-muted",
                             {t.welcome_description}
                         }
                         div { class: "mt-6 flex flex-wrap gap-3",
-                            div { class: "rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em]",
+                            div { class: "rounded-full border border-border bg-panel-muted px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground-soft",
                                 "{project_t.title}: {total_projects}"
                             }
-                            div { class: "rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em]",
+                            div { class: "rounded-full border border-border bg-panel-muted px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground-soft",
                                 "{credential_t.title}: {credential_list.len()}"
                             }
-                            div { class: "rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em]",
+                            div { class: "rounded-full border border-border bg-panel-muted px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-foreground-soft",
                                 "{account.email}"
                             }
                         }
@@ -119,7 +122,9 @@ pub fn Dashboard() -> Element {
                     value: active_projects.to_string(),
                 }
                 StatCard {
-                    color: StatColor::Amber,
+                    // Neutral by default — `0 active credentials` is not a warning,
+                    // just a fresh account.
+                    color: StatColor::Gray,
                     label: credential_t.active.to_string(),
                     value: active_credentials.to_string(),
                 }
@@ -163,7 +168,6 @@ pub fn Dashboard() -> Element {
                                     let logo_url = project.brand_logo_url.clone();
                                     let description = project.description.clone().unwrap_or_else(|| project_t.project_info.to_string());
                                     let monthly_supply = project.monthly_token_supply;
-                                    let treasury_balance = project.treasury_balance;
                                     let status = project.status;
 
                                     rsx! {
@@ -191,15 +195,20 @@ pub fn Dashboard() -> Element {
                                                         "{project.id}"
                                                     }
                                                 }
-                                                div { class: "flex flex-wrap gap-3 md:justify-end",
-                                                    StatusBadge {
-                                                        color: match status {
-                                                            ProjectStatus::Active => BadgeColor::Green,
-                                                            ProjectStatus::Inactive => BadgeColor::Gray,
-                                                        },
-                                                        match status {
-                                                            ProjectStatus::Active => {project_t.active},
-                                                            ProjectStatus::Inactive => {project_t.inactive},
+                                                div { class: "flex flex-wrap items-center gap-3 md:justify-end",
+                                                    // Self-shrink so the pill stays its natural
+                                                    // size instead of stretching to match the
+                                                    // taller stat tiles next to it.
+                                                    div { class: "self-center",
+                                                        StatusBadge {
+                                                            color: match status {
+                                                                ProjectStatus::Active => BadgeColor::Green,
+                                                                ProjectStatus::Inactive => BadgeColor::Gray,
+                                                            },
+                                                            match status {
+                                                                ProjectStatus::Active => {project_t.active},
+                                                                ProjectStatus::Inactive => {project_t.inactive},
+                                                            }
                                                         }
                                                     }
                                                     div { class: "rounded-2xl border border-border bg-panel px-3 py-2 text-right",
@@ -208,14 +217,6 @@ pub fn Dashboard() -> Element {
                                                         }
                                                         p { class: "mt-1 text-sm font-semibold text-foreground",
                                                             "{format_number(monthly_supply)}"
-                                                        }
-                                                    }
-                                                    div { class: "rounded-2xl border border-border bg-panel px-3 py-2 text-right",
-                                                        p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
-                                                            {project_t.treasury_balance}
-                                                        }
-                                                        p { class: "mt-1 text-sm font-semibold text-foreground",
-                                                            "{format_number(treasury_balance)}"
                                                         }
                                                     }
                                                 }

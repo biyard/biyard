@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
+use crate::app::ThemeIsDark;
 use crate::common::ProjectPartition;
 use crate::common::ui::{
     IconBuilding, IconChevronDown, IconChevronLeft, IconChevronRight, IconCredentials,
@@ -121,6 +122,7 @@ pub fn ConsoleSidebar() -> Element {
         | Route::ProjectPoints { project_id }
         | Route::ProjectSettings { project_id }
         | Route::ProjectToken { project_id }
+        | Route::ProjectTreasury { project_id }
         | Route::ProjectEdit { project_id }
         | Route::TokenCreate { project_id }
         | Route::TokenEdit { project_id }
@@ -663,25 +665,18 @@ fn LanguageMenuAction(on_close: EventHandler<()>) -> Element {
 #[component]
 fn ThemeMenuAction(on_close: EventHandler<()>) -> Element {
     let t: ConsoleTranslate = use_translate();
-    let mut is_dark = use_signal(|| false);
 
-    #[cfg(not(feature = "server"))]
-    {
-        use_effect(move || {
-            let mut theme =
-                document::eval(r#"document.documentElement.getAttribute("data-theme")"#);
-            spawn(async move {
-                if let Ok(val) = theme.recv::<String>().await {
-                    is_dark.set(val == "dark");
-                }
-            });
-        });
-    }
+    // Theme signal is owned by the root `App` component (`ThemeIsDark`
+    // provider) so it survives every remount of this drop-down. The
+    // previous attempts (`use_signal` local + `use_root_context`) both
+    // either lost state or panicked with `ValueDroppedError` when the
+    // menu was closed and reopened.
+    let ThemeIsDark(mut is_dark) = use_context::<ThemeIsDark>();
 
     rsx! {
         MenuAction {
             label: t.theme.to_string(),
-            value: Some(if is_dark() { "Dark".to_string() } else { "Light".to_string() }),
+            value: Some(if is_dark() { t.theme_dark.to_string() } else { t.theme_light.to_string() }),
             onclick: move |_| {
                 let new_dark = !is_dark();
                 is_dark.set(new_dark);

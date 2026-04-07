@@ -130,9 +130,16 @@ fn BrandCard(
     // brand settings page where the user types the brand name to
     // confirm. Keeping a one-click trash icon on a list card makes it
     // too easy to misfire.
+    //
+    // The card is rendered as a `<div role="link">` rather than a
+    // `<button>` because it contains an `<h3>` heading and a `<code>`
+    // chip — flow content that HTML forbids inside an interactive
+    // element. The keyboard handler restores Enter/Space activation.
     rsx! {
-        button {
-            class: "group flex w-full flex-col gap-6 rounded-[32px] border border-border bg-panel p-8 text-left shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_20px_48px_rgba(15,23,42,0.1)] md:flex-row md:items-center md:gap-8",
+        div {
+            class: "group flex w-full flex-col gap-6 rounded-3xl border border-border bg-panel p-8 text-left transition-all hover:-translate-y-0.5 hover:border-brand/40 md:flex-row md:items-center md:gap-8",
+            role: "link",
+            tabindex: "0",
             onclick: move |_| {
                 nav.push(Route::ProjectDetail {
                     project_id: id_for_nav.clone().into(),
@@ -168,8 +175,10 @@ fn BrandCard(
                         "{desc}"
                     }
                 }
-                code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                    "{id}"
+                code {
+                    class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                    title: "{id}",
+                    "{shorten_id(&id)}"
                 }
             }
 

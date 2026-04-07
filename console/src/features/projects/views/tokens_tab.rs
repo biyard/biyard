@@ -2,33 +2,28 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::Route;
-use crate::common::Result;
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
 use crate::common::{ProjectPartition, SupportedChain, chain_display_name};
 use crate::features::projects::i18n::ProjectsTranslate;
-use crate::features::tokens::TokenResponse;
 
 #[component]
 pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
     let nav = use_navigator();
-    let mut mint_amount = use_signal(|| "1000".to_string());
-    let mut target_user_id = use_signal(|| "treasury".to_string());
+    let mut mint_amount = use_signal(String::new);
+    let mut target_user_id = use_signal(String::new);
     let mut description = use_signal(String::new);
     let mut minting = use_signal(|| false);
     let mut deploying = use_signal(|| false);
     let mut message = use_signal(|| None::<String>);
     let mut show_confirm = use_signal(|| false);
+    let mut show_deploy_confirm = use_signal(|| false);
+    let mut deploy_understood = use_signal(|| false);
     let mut selected_chain = use_signal(|| SupportedChain::KaiaKairos.chain_id());
 
     let mut token = use_loader(move || async move {
-        let result: Result<Option<TokenResponse>> = Ok(
-            crate::features::tokens::controllers::get_token_handler(project_id())
-                .await
-                .ok(),
-        );
-        result
+        crate::features::tokens::controllers::get_token_handler(project_id()).await
     })?;
 
     let token_opt = token();
@@ -228,31 +223,8 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                             disabled: deploying(),
                                             class: "mt-5 w-full justify-center",
                                             onclick: move |_| {
-                                                let pid = project_id();
-                                                let chain = if has_token_contract {
-                                                    token_data.chain_id.unwrap_or(selected_chain())
-                                                } else {
-                                                    selected_chain()
-                                                };
-                                                spawn(async move {
-                                                    deploying.set(true);
-                                                    message.set(None);
-                                                    let res = crate::features::tokens::controllers::deploy_token_handler(pid, chain).await;
-                                                    match res {
-                                                        Ok(_) => {
-                                                            token.restart();
-                                                            message.set(Some(
-                                                                if is_token_only {
-                                                                    t.treasury_deploy_success.to_string()
-                                                                } else {
-                                                                    t.deploy_success.to_string()
-                                                                }
-                                                            ));
-                                                        }
-                                                        Err(e) => message.set(Some(format!("{}{e}", t.deploy_failure))),
-                                                    }
-                                                    deploying.set(false);
-                                                });
+                                                deploy_understood.set(false);
+                                                show_deploy_confirm.set(true);
                                             },
                                             if deploying() {
                                                 {t.deploying}
@@ -275,14 +247,17 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     r#type: "text",
                                     value: target_user_id(),
                                     oninput: move |e: FormEvent| target_user_id.set(e.value()),
-                                    placeholder: "treasury".to_string(),
+                                    placeholder: t.target_user_id_placeholder.to_string(),
+                                    disabled: !is_deployed,
                                 }
                                 FormField {
                                     label: t.mint_amount,
                                     r#type: "number",
                                     value: mint_amount(),
                                     oninput: move |e: FormEvent| mint_amount.set(e.value()),
+                                    placeholder: "1000".to_string(),
                                     min: "1",
+                                    disabled: !is_deployed,
                                 }
                                 FormField {
                                     label: t.description,
@@ -290,6 +265,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     value: description(),
                                     oninput: move |e: FormEvent| description.set(e.value()),
                                     placeholder: t.mint_description_placeholder.to_string(),
+                                    disabled: !is_deployed,
                                 }
                             }
 
@@ -297,12 +273,16 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                 p { class: "mt-3 text-sm font-medium text-success",
                                     "{t.on_chain} · {deployed_chain_name}"
                                 }
+                            } else {
+                                p { class: "mt-3 text-sm font-medium text-foreground-muted",
+                                    {t.mint_requires_deploy}
+                                }
                             }
 
                             div { class: "mt-6 flex justify-end",
                                 Btn {
                                     variant: BtnVariant::Primary,
-                                    disabled: minting(),
+                                    disabled: minting() || !is_deployed,
                                     onclick: move |_| {
                                         let target = target_user_id();
                                         let amount = mint_amount().parse::<i64>().unwrap_or(0);
@@ -315,6 +295,91 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                         show_confirm.set(true);
                                     },
                                     if minting() { {t.minting} } else { {t.token_mint} }
+                                }
+                            }
+                        }
+
+                        DialogRoot {
+                            open: show_deploy_confirm(),
+                            on_open_change: move |v: bool| {
+                                if !v {
+                                    deploy_understood.set(false);
+                                }
+                                show_deploy_confirm.set(v);
+                            },
+                            DialogContent {
+                                DialogTitle {
+                                    if is_token_only {
+                                        {t.deploy_treasury_confirm_title}
+                                    } else {
+                                        {t.deploy_token_confirm_title}
+                                    }
+                                }
+                                DialogDescription {
+                                    {t.deploy_confirm_message}
+                                }
+                                div { class: "mt-4 rounded-[20px] border border-warning bg-warning-soft p-4 text-sm leading-6 text-foreground",
+                                    p { class: "font-semibold", {t.deploy_confirm_irreversible_title} }
+                                    p { class: "mt-1 text-foreground-soft", {t.deploy_confirm_irreversible_body} }
+                                }
+                                label { class: "mt-4 flex cursor-pointer items-start gap-3 text-sm text-foreground",
+                                    input {
+                                        r#type: "checkbox",
+                                        checked: "{deploy_understood()}",
+                                        oninput: move |e: FormEvent| {
+                                            deploy_understood.set(e.value() == "true");
+                                        },
+                                        class: "mt-0.5 h-4 w-4 rounded border-border bg-panel text-brand focus:ring-brand",
+                                    }
+                                    span { {t.deploy_confirm_acknowledge} }
+                                }
+                                DialogActions {
+                                    Btn {
+                                        variant: BtnVariant::Secondary,
+                                        onclick: move |_| {
+                                            deploy_understood.set(false);
+                                            show_deploy_confirm.set(false);
+                                        },
+                                        {t.cancel}
+                                    }
+                                    Btn {
+                                        variant: BtnVariant::Primary,
+                                        disabled: !deploy_understood() || deploying(),
+                                        onclick: move |_| {
+                                            show_deploy_confirm.set(false);
+                                            deploy_understood.set(false);
+                                            let pid = project_id();
+                                            let chain = if has_token_contract {
+                                                token_data.chain_id.unwrap_or(selected_chain())
+                                            } else {
+                                                selected_chain()
+                                            };
+                                            spawn(async move {
+                                                deploying.set(true);
+                                                message.set(None);
+                                                let res = crate::features::tokens::controllers::deploy_token_handler(pid, chain).await;
+                                                match res {
+                                                    Ok(_) => {
+                                                        token.restart();
+                                                        message.set(Some(
+                                                            if is_token_only {
+                                                                t.treasury_deploy_success.to_string()
+                                                            } else {
+                                                                t.deploy_success.to_string()
+                                                            }
+                                                        ));
+                                                    }
+                                                    Err(e) => message.set(Some(format!("{}{e}", t.deploy_failure))),
+                                                }
+                                                deploying.set(false);
+                                            });
+                                        },
+                                        if is_token_only {
+                                            {t.deploy_treasury_on_chain}
+                                        } else {
+                                            {t.deploy_token_on_chain}
+                                        }
+                                    }
                                 }
                             }
                         }
