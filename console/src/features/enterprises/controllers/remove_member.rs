@@ -6,9 +6,9 @@ use crate::common::{CommonConfig, EnterpriseContextAuth, EntityType, Organizatio
 #[cfg(feature = "server")]
 use crate::features::accounts::Account;
 #[cfg(feature = "server")]
-use crate::features::enterprises::controllers::count_owners;
-#[cfg(feature = "server")]
 use crate::features::enterprises::EnterpriseError;
+#[cfg(feature = "server")]
+use crate::features::enterprises::controllers::count_owners;
 
 /// Remove a member from the current enterprise. The target Account is
 /// not deleted \u2014 it becomes orphaned (`enterprise_id = None`,

@@ -34,6 +34,13 @@ pub fn shorten_id(id: &str) -> String {
         return id.to_string();
     }
     let head: String = id.chars().take(4).collect();
-    let tail: String = id.chars().rev().take(4).collect::<String>().chars().rev().collect();
+    let tail: String = id
+        .chars()
+        .rev()
+        .take(4)
+        .collect::<String>()
+        .chars()
+        .rev()
+        .collect();
     format!("{head}…{tail}")
 }

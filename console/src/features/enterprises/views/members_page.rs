@@ -23,12 +23,15 @@ pub fn MembersPage() -> Element {
     let mut error = use_signal(|| None::<String>);
     let mut success = use_signal(|| None::<String>);
 
-    let mut members = use_loader(move || async move {
+
+    let members_result = use_loader(move || async move {
         crate::features::enterprises::controllers::list_members_handler().await
-    })?;
-    let mut invitations = use_loader(move || async move {
+    });
+    let invitations_result = use_loader(move || async move {
         crate::features::enterprises::controllers::list_invitations_handler().await
-    })?;
+    });
+    let mut members = members_result?;
+    let mut invitations = invitations_result?;
 
     let members_data = members();
     let invitations_data = invitations();

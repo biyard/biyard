@@ -15,21 +15,25 @@ pub fn Dashboard() -> Element {
     let credential_t: CredentialsTranslate = use_translate();
     let account_ctx = use_account_context();
 
+    let projects_result = use_loader(move || async move {
+        crate::features::projects::controllers::list_projects_handler(100, None).await
+    });
+    let credentials_result = use_loader(move || async move {
+        crate::features::credentials::controllers::list_credentials_handler().await
+    });
+    let projects = projects_result?;
+    let credentials = credentials_result?;
+
     let Some(account) = account_ctx().account.clone() else {
         return rsx! {
-            div { class: "text-sm font-medium text-foreground-muted", {t.loading} }
+            div { class: "space-y-8",
+                div { class: "text-sm font-medium text-foreground-muted", {t.loading} }
+            }
         };
     };
     let enterprise_name = account_ctx()
         .enterprise_name()
         .unwrap_or_else(|| "Default enterprise".to_string());
-
-    let projects = use_loader(move || async move {
-        crate::features::projects::controllers::list_projects_handler(100, None).await
-    })?;
-    let credentials = use_loader(move || async move {
-        crate::features::credentials::controllers::list_credentials_handler().await
-    })?;
 
     let project_list = projects();
     let credential_list = credentials();
@@ -135,9 +139,7 @@ pub fn Dashboard() -> Element {
                     div { class: "mb-6 flex items-center justify-between gap-4",
                         div {
                             SectionTitle { {t.recent_brands_title} }
-                            p { class: "text-sm text-foreground-muted",
-                                {t.recent_brands_desc}
-                            }
+                            p { class: "text-sm text-foreground-muted", {t.recent_brands_desc} }
                         }
                         Link {
                             to: Route::Projects {},
@@ -148,7 +150,9 @@ pub fn Dashboard() -> Element {
 
                     if project_list.items.is_empty() {
                         EmptyState {
-                            icon: rsx! { IconFolderOpen {} },
+                            icon: rsx! {
+                                IconFolderOpen {}
+                            },
                             title: project_t.no_projects.to_string(),
                             description: project_t.no_projects_desc.to_string(),
                             actions: rsx! {
@@ -166,29 +170,31 @@ pub fn Dashboard() -> Element {
                                     let id = project.id.clone();
                                     let name = project.name.clone();
                                     let logo_url = project.brand_logo_url.clone();
-                                    let description = project.description.clone().unwrap_or_else(|| project_t.project_info.to_string());
+                                    let description = project
+                                        .description
+                                        .clone()
+                                        .unwrap_or_else(|| project_t.project_info.to_string());
                                     let monthly_supply = project.monthly_token_supply;
                                     let status = project.status;
-
                                     rsx! {
                                         Link {
-                                            to: Route::ProjectDetail { project_id: id.clone().into() },
+                                            to: Route::ProjectDetail {
+                                                project_id: id.clone().into(),
+                                            },
                                             class: "block rounded-[24px] border border-border bg-panel-muted p-5 transition-all hover:-translate-y-0.5 hover:border-border-strong hover:bg-panel-strong",
                                             div { class: "flex flex-col gap-4 md:flex-row md:items-start md:justify-between",
                                                 div { class: "space-y-2",
                                                     div { class: "flex items-center gap-3",
                                                         BrandAvatar {
                                                             name: name.clone(),
-                                                            logo_url: logo_url,
+                                                            logo_url,
                                                             size: BrandAvatarSize::Sm,
                                                         }
                                                         div {
                                                             p { class: "font-display text-lg font-bold tracking-tight text-foreground",
                                                                 "{name}"
                                                             }
-                                                            p { class: "text-sm text-foreground-muted",
-                                                                "{description}"
-                                                            }
+                                                            p { class: "text-sm text-foreground-muted", "{description}" }
                                                         }
                                                     }
                                                     code { class: "inline-flex rounded-full border border-border bg-panel px-3 py-1 text-xs font-medium text-foreground-muted",
@@ -206,8 +212,8 @@ pub fn Dashboard() -> Element {
                                                                 ProjectStatus::Inactive => BadgeColor::Gray,
                                                             },
                                                             match status {
-                                                                ProjectStatus::Active => {project_t.active},
-                                                                ProjectStatus::Inactive => {project_t.inactive},
+                                                                ProjectStatus::Active => project_t.active,
+                                                                ProjectStatus::Inactive => project_t.inactive,
                                                             }
                                                         }
                                                     }
@@ -273,9 +279,7 @@ pub fn Dashboard() -> Element {
                                 p { class: "mt-2 font-display text-xl font-bold tracking-tight text-foreground",
                                     "{account.name}"
                                 }
-                                p { class: "mt-1 text-sm text-foreground-muted",
-                                    "{account.email}"
-                                }
+                                p { class: "mt-1 text-sm text-foreground-muted", "{account.email}" }
                             }
 
                             div { class: "grid gap-4 sm:grid-cols-2",
@@ -302,10 +306,7 @@ pub fn Dashboard() -> Element {
             }
 
             if active_projects < total_projects {
-                AlertMessage {
-                    variant: AlertVariant::Info,
-                    {t.some_brands_inactive}
-                }
+                AlertMessage { variant: AlertVariant::Info, {t.some_brands_inactive} }
             }
         }
     }

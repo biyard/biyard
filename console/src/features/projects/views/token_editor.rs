@@ -20,12 +20,14 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
     let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
 
-    let existing = use_loader(move || async move {
+    let existing_result = use_loader(move || async move {
         crate::features::tokens::controllers::get_token_handler(project_id()).await
-    })?;
-    let project = use_loader(move || async move {
+    });
+    let project_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
-    })?;
+    });
+    let existing = existing_result?;
+    let project = project_result?;
 
     let pid_back = project_id();
     let token_opt = existing();
@@ -123,12 +125,15 @@ pub fn TokenEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
     let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
 
-    let token = use_loader(move || async move {
+
+    let token_result = use_loader(move || async move {
         crate::features::tokens::controllers::get_token_handler(project_id()).await
-    })?;
-    let project = use_loader(move || async move {
+    });
+    let project_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
-    })?;
+    });
+    let token = token_result?;
+    let project = project_result?;
 
     let pid_back = project_id();
     let brand_name = project().name.clone();

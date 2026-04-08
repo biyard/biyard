@@ -18,8 +18,9 @@ pub fn InviteAccept(token: String) -> Element {
     let nav = use_navigator();
     let mut account_ctx = use_account_context();
 
+
     let token_for_loader = token.clone();
-    let preview = use_loader(move || {
+    let preview_result = use_loader(move || {
         let token = token_for_loader.clone();
         async move {
             let result: Result<Option<InvitationPreviewResponse>> = Ok(
@@ -29,7 +30,7 @@ pub fn InviteAccept(token: String) -> Element {
             );
             result
         }
-    })?;
+    });
 
     let mut name = use_signal(String::new);
     let mut email = use_signal(String::new);
@@ -37,6 +38,7 @@ pub fn InviteAccept(token: String) -> Element {
     let mut error = use_signal(|| None::<String>);
     let mut loading = use_signal(|| false);
 
+    let preview = preview_result?;
     let preview_data = preview();
 
     let token_for_submit = token.clone();

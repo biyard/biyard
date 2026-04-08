@@ -20,6 +20,11 @@ use crate::features::projects::i18n::ProjectsTranslate;
 /// sidebar can be collapsed to an icon rail. Below `lg:` the sidebar
 /// is a drawer and always renders in its full expanded form when open,
 /// regardless of this value.
+///
+/// In-memory only: the preference resets to expanded on every page
+/// load. We intentionally do not persist this to localStorage/cookies
+/// because the collapse state is a low-stakes session preference and
+/// SSR-time persistence isn't worth the hydration flicker.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SidebarCollapsed(pub bool);
 
@@ -75,28 +80,9 @@ pub fn ConsoleSidebar() -> Element {
     // this collapses back to the raw `collapsed` value.
     let collapsed = collapsed_ctx().0 && !sidebar_open;
 
-    // Hydrate collapsed state from localStorage on the client.
-    #[cfg(not(feature = "server"))]
-    use_effect(move || {
-        let mut js = document::eval(r#"localStorage.getItem("sidebar-collapsed") || """#);
-        spawn(async move {
-            if let Ok(val) = js.recv::<String>().await {
-                collapsed_ctx.set(SidebarCollapsed(val == "true"));
-            }
-        });
-    });
-
     let toggle_collapsed = move |_| {
         let next = !collapsed_ctx().0;
         collapsed_ctx.set(SidebarCollapsed(next));
-        #[cfg(not(feature = "server"))]
-        {
-            let js = format!(
-                r#"localStorage.setItem("sidebar-collapsed", "{}");"#,
-                next
-            );
-            document::eval(&js);
-        }
     };
 
     let close_drawer = move |_| sidebar_open_ctx.set(SidebarOpen(false));
@@ -136,7 +122,10 @@ pub fn ConsoleSidebar() -> Element {
         .as_ref()
         .and_then(|pid| {
             let id_str = pid.to_string();
-            brands_items.iter().find(|p| p.id == id_str).map(|p| p.name.clone())
+            brands_items
+                .iter()
+                .find(|p| p.id == id_str)
+                .map(|p| p.name.clone())
         })
         .unwrap_or_default();
 
@@ -148,14 +137,26 @@ pub fn ConsoleSidebar() -> Element {
     // overrides the mobile translate, and the width flips between
     // `lg:w-16` and `lg:w-[17rem]` based on the user's desktop
     // `collapsed` preference.
-    let mobile_transform = if sidebar_open { "translate-x-0" } else { "-translate-x-full" };
+    let mobile_transform = if sidebar_open {
+        "translate-x-0"
+    } else {
+        "-translate-x-full"
+    };
     // Use the raw (persisted) collapsed preference for the desktop
     // width class, not `effective_collapsed`, because the latter is
     // forced to false whenever the mobile drawer is open.
-    let lg_width = if collapsed_ctx().0 { "lg:w-16" } else { "lg:w-[17rem]" };
+    let lg_width = if collapsed_ctx().0 {
+        "lg:w-16"
+    } else {
+        "lg:w-[17rem]"
+    };
     // Padding on mobile is always the expanded form so the drawer
     // content is roomy. At `lg:` it follows `effective_collapsed`.
-    let lg_padding = if collapsed { "lg:py-4 lg:px-0" } else { "lg:px-4 lg:py-5" };
+    let lg_padding = if collapsed {
+        "lg:py-4 lg:px-0"
+    } else {
+        "lg:px-4 lg:py-5"
+    };
     let aside_class = format!(
         "fixed inset-y-0 left-0 z-40 flex w-[17rem] flex-col border-r border-sidebar-border bg-sidebar px-4 py-5 text-sidebar-foreground transition-transform duration-200 {mobile_transform} lg:translate-x-0 lg:transition-[width,padding] {lg_width} {lg_padding}"
     );
@@ -252,17 +253,9 @@ pub fn ConsoleSidebar() -> Element {
                                 }
                             }
                             button {
-                                class: if in_brand_scope {
-                                    "flex w-full items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand-soft py-2.5 pl-3 pr-3 text-left text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-brand-soft"
-                                } else {
-                                    "flex w-full items-center gap-2.5 rounded-2xl border border-sidebar-border bg-sidebar-panel py-2.5 pl-3 pr-3 text-left text-sm font-medium text-sidebar-muted transition-colors hover:bg-white/5 hover:text-sidebar-foreground"
-                                },
+                                class: if in_brand_scope { "flex w-full items-center gap-2.5 rounded-2xl border border-brand/40 bg-brand-soft py-2.5 pl-3 pr-3 text-left text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-brand-soft" } else { "flex w-full items-center gap-2.5 rounded-2xl border border-sidebar-border bg-sidebar-panel py-2.5 pl-3 pr-3 text-left text-sm font-medium text-sidebar-muted transition-colors hover:bg-white/5 hover:text-sidebar-foreground" },
                                 onclick: move |_| brand_switcher_open.set(!brand_switcher_open()),
-                                div { class: if in_brand_scope {
-                                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-contrast"
-                                } else {
-                                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-panel text-sidebar-muted"
-                                },
+                                div { class: if in_brand_scope { "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-contrast" } else { "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-panel text-sidebar-muted" },
                                     if in_brand_scope {
                                         "{current_brand_name.chars().next().unwrap_or('B')}"
                                     } else {
@@ -292,42 +285,52 @@ pub fn ConsoleSidebar() -> Element {
                         div { class: if collapsed { "space-y-1" } else { "mt-2 space-y-1 pl-1" },
                             NavItem {
                                 label: projects_t.overview.to_string(),
-                                to: Route::ProjectDetail { project_id: pid.clone() },
+                                to: Route::ProjectDetail {
+                                    project_id: pid.clone(),
+                                },
                                 is_active: matches!(route, Route::ProjectDetail { .. }),
                                 icon: NavIcon::BrandOverview,
                                 collapsed,
                             }
                             NavItem {
                                 label: projects_t.tokens.to_string(),
-                                to: Route::ProjectToken { project_id: pid.clone() },
+                                to: Route::ProjectToken {
+                                    project_id: pid.clone(),
+                                },
                                 is_active: matches!(
                                     route,
                                     Route::ProjectToken { .. }
-                                        | Route::TokenCreate { .. }
-                                        | Route::TokenEdit { .. }
-                                        | Route::LegacyTokenCreateRedirect { .. }
-                                        | Route::LegacyTokenEditRedirect { .. }
+                                    | Route::TokenCreate { .. }
+                                    | Route::TokenEdit { .. }
+                                    | Route::LegacyTokenCreateRedirect { .. }
+                                    | Route::LegacyTokenEditRedirect { .. }
                                 ),
                                 icon: NavIcon::Token,
                                 collapsed,
                             }
                             NavItem {
                                 label: projects_t.points.to_string(),
-                                to: Route::ProjectPoints { project_id: pid.clone() },
+                                to: Route::ProjectPoints {
+                                    project_id: pid.clone(),
+                                },
                                 is_active: matches!(route, Route::ProjectPoints { .. }),
                                 icon: NavIcon::Points,
                                 collapsed,
                             }
                             NavItem {
                                 label: t.nav_brand_treasury.to_string(),
-                                to: Route::ProjectTreasury { project_id: pid.clone() },
+                                to: Route::ProjectTreasury {
+                                    project_id: pid.clone(),
+                                },
                                 is_active: matches!(route, Route::ProjectTreasury { .. }),
                                 icon: NavIcon::Treasury,
                                 collapsed,
                             }
                             NavItem {
                                 label: projects_t.settings_tab.to_string(),
-                                to: Route::ProjectSettings { project_id: pid },
+                                to: Route::ProjectSettings {
+                                    project_id: pid,
+                                },
                                 is_active: matches!(route, Route::ProjectSettings { .. } | Route::ProjectEdit { .. }),
                                 icon: NavIcon::Settings,
                                 collapsed,
@@ -377,9 +380,7 @@ pub fn ConsoleSidebar() -> Element {
             // ── Account card ───────────────────────────────────────
             div { class: if collapsed { "mt-4 px-1" } else { "relative mt-3" },
                 if !collapsed && menu_open() {
-                    AccountMenu {
-                        on_close: move |_| menu_open.set(false),
-                    }
+                    AccountMenu { on_close: move |_| menu_open.set(false) }
                 }
 
                 if collapsed {
@@ -388,21 +389,31 @@ pub fn ConsoleSidebar() -> Element {
                             class: "flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-sm font-bold text-brand-contrast",
                             "aria-label": "Account",
                             onclick: move |_| menu_open.set(!menu_open()),
-                            if initials.is_empty() { "BY" } else { "{initials}" }
+                            if initials.is_empty() {
+                                "BY"
+                            } else {
+                                "{initials}"
+                            }
                         }
                     }
                 } else {
                     div { class: "rounded-2xl border border-sidebar-border bg-sidebar-panel p-2.5",
                         div { class: "flex items-center gap-3",
                             div { class: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand text-sm font-bold text-brand-contrast",
-                                if initials.is_empty() { "BY" } else { "{initials}" }
+                                if initials.is_empty() {
+                                    "BY"
+                                } else {
+                                    "{initials}"
+                                }
                             }
                             div { class: "min-w-0 flex-1",
                                 p { class: "truncate text-sm font-semibold text-sidebar-foreground",
                                     "{account_name}"
                                 }
                                 if !account_email.is_empty() {
-                                    p { class: "truncate text-xs text-sidebar-muted", "{account_email}" }
+                                    p { class: "truncate text-xs text-sidebar-muted",
+                                        "{account_email}"
+                                    }
                                 }
                             }
                             button {
@@ -453,11 +464,9 @@ fn BrandSwitcherMenu(
     rsx! {
         div { class: "absolute top-full left-0 right-0 z-20 mt-2 max-h-[22rem] overflow-y-auto rounded-2xl border border-sidebar-border bg-sidebar-panel p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.25)]",
             if items.is_empty() {
-                p { class: "px-3 py-3 text-xs text-sidebar-muted",
-                    {t.brand_switcher_no_brands}
-                }
+                p { class: "px-3 py-3 text-xs text-sidebar-muted", {t.brand_switcher_no_brands} }
             } else {
-                for (id, name) in items.iter() {
+                for (id , name) in items.iter() {
                     {
                         let id = id.clone();
                         let name = name.clone();
@@ -552,10 +561,9 @@ fn NavItem(label: String, to: Route, is_active: bool, icon: NavIcon, collapsed: 
     // runs in addition. On desktop `sidebar_open` is already false
     // so this is a no-op.
     rsx! {
-        div {
-            onclick: move |_| sidebar_open_ctx.set(SidebarOpen(false)),
-            Link { class: "{class}", to: to,
-                NavIconView { icon: icon }
+        div { onclick: move |_| sidebar_open_ctx.set(SidebarOpen(false)),
+            Link { class: "{class}", to,
+                NavIconView { icon }
                 if !collapsed {
                     span { "{label}" }
                 }
@@ -567,15 +575,33 @@ fn NavItem(label: String, to: Route, is_active: bool, icon: NavIcon, collapsed: 
 #[component]
 fn NavIconView(icon: NavIcon) -> Element {
     match icon {
-        NavIcon::Dashboard => rsx! { IconDashboard { class: "h-5 w-5" } },
-        NavIcon::Credentials => rsx! { IconCredentials { class: "h-5 w-5" } },
-        NavIcon::Members => rsx! { IconMembers { class: "h-5 w-5" } },
-        NavIcon::Enterprise => rsx! { IconBuilding { class: "h-5 w-5" } },
-        NavIcon::BrandOverview => rsx! { IconFolderOpen { class: "h-5 w-5" } },
-        NavIcon::Token => rsx! { IconToken { class: "h-5 w-5" } },
-        NavIcon::Points => rsx! { IconStar { class: "h-5 w-5" } },
-        NavIcon::Treasury => rsx! { IconLock { class: "h-5 w-5" } },
-        NavIcon::Settings => rsx! { IconSettings { class: "h-5 w-5" } },
+        NavIcon::Dashboard => rsx! {
+            IconDashboard { class: "h-5 w-5" }
+        },
+        NavIcon::Credentials => rsx! {
+            IconCredentials { class: "h-5 w-5" }
+        },
+        NavIcon::Members => rsx! {
+            IconMembers { class: "h-5 w-5" }
+        },
+        NavIcon::Enterprise => rsx! {
+            IconBuilding { class: "h-5 w-5" }
+        },
+        NavIcon::BrandOverview => rsx! {
+            IconFolderOpen { class: "h-5 w-5" }
+        },
+        NavIcon::Token => rsx! {
+            IconToken { class: "h-5 w-5" }
+        },
+        NavIcon::Points => rsx! {
+            IconStar { class: "h-5 w-5" }
+        },
+        NavIcon::Treasury => rsx! {
+            IconLock { class: "h-5 w-5" }
+        },
+        NavIcon::Settings => rsx! {
+            IconSettings { class: "h-5 w-5" }
+        },
     }
 }
 
@@ -595,18 +621,12 @@ fn AccountMenu(on_close: EventHandler<()>) -> Element {
                 IconSettings { class: "h-4 w-4" }
             }
 
-            LanguageMenuAction {
-                on_close: move |_| on_close.call(()),
-            }
-            ThemeMenuAction {
-                on_close: move |_| on_close.call(()),
-            }
+            LanguageMenuAction { on_close: move |_| on_close.call(()) }
+            ThemeMenuAction { on_close: move |_| on_close.call(()) }
 
             div { class: "my-1 border-t border-sidebar-border" }
 
-            SignOutButton {
-                on_close: move |_| on_close.call(()),
-            }
+            SignOutButton { on_close: move |_| on_close.call(()) }
         }
     }
 }
@@ -626,9 +646,7 @@ fn MenuAction(
     };
 
     rsx! {
-        button {
-            class: "{class}",
-            onclick: move |event| onclick.call(event),
+        button { class: "{class}", onclick: move |event| onclick.call(event),
             {children}
             span { class: "flex-1 text-left", "{label}" }
             if let Some(value) = value {
@@ -685,8 +703,8 @@ fn ThemeMenuAction(on_close: EventHandler<()>) -> Element {
                     let theme = if new_dark { "dark" } else { "light" };
                     let js = format!(
                         r#"document.documentElement.setAttribute("data-theme", "{theme}");
-                           localStorage.setItem("theme", "{theme}");
-                           document.cookie = "theme={theme}; path=/; max-age=31536000; samesite=lax";"#,
+                                           localStorage.setItem("theme", "{theme}");
+                                           document.cookie = "theme={theme}; path=/; max-age=31536000; samesite=lax";"#,
                     );
                     document::eval(&js);
                 }
@@ -705,18 +723,26 @@ fn ThemeMenuAction(on_close: EventHandler<()>) -> Element {
 fn SignOutButton(on_close: EventHandler<()>) -> Element {
     let t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
+    let mut account_ctx = use_account_context();
+
+    let on_signout = move |_| {
+        spawn(async move {
+            let _ = crate::features::accounts::controllers::signout_handler().await;
+            {
+                let mut w = account_ctx.write();
+                w.account = None;
+                w.current_enterprise = None;
+            }
+            nav.push(Route::SignIn {});
+            on_close.call(());
+        });
+    };
 
     rsx! {
         MenuAction {
             label: t.sign_out.to_string(),
             danger: true,
-            onclick: move |_| {
-                on_close.call(());
-                spawn(async move {
-                    let _ = crate::features::accounts::controllers::signout_handler().await;
-                    nav.push(Route::SignIn {});
-                });
-            },
+            onclick: on_signout,
             IconLogout { class: "h-4 w-4" }
         }
     }

@@ -1,8 +1,4 @@
-fn password_policy_checklist(
-    password: &str,
-    email: Option<&str>,
-    name: Option<&str>,
-) -> [bool; 7] {
+fn password_policy_checklist(password: &str, email: Option<&str>, name: Option<&str>) -> [bool; 7] {
     let lowered_password = password.to_ascii_lowercase();
     let email_ok = email
         .and_then(|value| value.split('@').next())

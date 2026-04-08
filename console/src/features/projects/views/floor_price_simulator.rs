@@ -7,28 +7,6 @@ use crate::common::components::dialog::{
 use crate::common::ui::*;
 use crate::features::projects::i18n::ProjectsTranslate;
 
-// Chart.js bridge. The actual `Chart` global is loaded from the CDN
-// via a `document::Script` tag below; `floor_chart.js` registers a
-// narrow facade on `window.biyard.floorChart`. All calls are gated
-// behind `cfg(not(feature = "server"))` so the SSR build stays lean.
-#[cfg(not(feature = "server"))]
-#[wasm_bindgen::prelude::wasm_bindgen(js_namespace = ["window", "biyard", "floorChart"])]
-extern "C" {
-    #[wasm_bindgen(js_name = render)]
-    fn floor_chart_render(
-        canvas_id: &str,
-        labels: wasm_bindgen::JsValue,
-        treasury: wasm_bindgen::JsValue,
-        supply: wasm_bindgen::JsValue,
-        floor: wasm_bindgen::JsValue,
-    );
-
-    #[wasm_bindgen(js_name = destroy)]
-    fn floor_chart_destroy(canvas_id: &str);
-}
-
-const CHART_CANVAS_ID: &str = "biyard-floor-simulator-chart";
-
 /// What-if simulator for the floor price mechanism.
 ///
 /// 100% client-side — nothing touches DynamoDB, the blockchain, or any
@@ -69,55 +47,6 @@ pub fn FloorPriceSimulatorDialog(
 
     let floor_price = compute_floor(treasury(), supply());
     let floor_display = format_floor_display(floor_price);
-
-    // Re-render the Chart.js instance whenever the log changes. The
-    // series are reconstructed from the log in chronological order
-    // (log is stored newest-first, so we reverse it for the chart).
-    //
-    // The render helper retries silently until Chart.js finishes
-    // loading from the CDN, and also no-ops if the canvas isn't
-    // currently in the DOM (dialog closed). That keeps this effect
-    // idempotent and cheap.
-    #[cfg(not(feature = "server"))]
-    use_effect(move || {
-        if !open {
-            floor_chart_destroy(CHART_CANVAS_ID);
-            return;
-        }
-
-        use wasm_bindgen::JsValue;
-
-        let rows = log();
-        let labels = js_sys::Array::new();
-        let treasury_series = js_sys::Array::new();
-        let supply_series = js_sys::Array::new();
-        let floor_series = js_sys::Array::new();
-
-        // Seed the chart with a "t=0" point so the reset state isn't
-        // a blank canvas. This makes the slope of the first action
-        // visible.
-        labels.push(&JsValue::from_str("0"));
-        treasury_series.push(&JsValue::from_f64(0.0));
-        supply_series.push(&JsValue::from_f64(0.0));
-        floor_series.push(&JsValue::from_f64(0.0));
-
-        // `log` is newest-first; walk it in reverse so the chart
-        // x-axis reads left-to-right chronologically.
-        for (idx, row) in rows.iter().rev().enumerate() {
-            labels.push(&JsValue::from_str(&(idx + 1).to_string()));
-            treasury_series.push(&JsValue::from_f64(row.treasury_after as f64));
-            supply_series.push(&JsValue::from_f64(row.supply_after as f64));
-            floor_series.push(&JsValue::from_f64(row.floor_after));
-        }
-
-        floor_chart_render(
-            CHART_CANVAS_ID,
-            labels.into(),
-            treasury_series.into(),
-            supply_series.into(),
-            floor_series.into(),
-        );
-    });
 
     let reset = move |_| {
         treasury.set(0);
@@ -230,12 +159,6 @@ pub fn FloorPriceSimulatorDialog(
                 }
             },
             DialogContent {
-                // Chart.js runtime from CDN + our thin facade. Both
-                // tags are idempotent on re-render — the browser
-                // deduplicates by `src`.
-                document::Script { src: "https://cdn.jsdelivr.net/npm/chart.js" }
-                document::Script { src: asset!("/assets/floor_chart.js") }
-
                 DialogTitle { {t.simulator_title} }
                 DialogDescription { {t.simulator_subtitle} }
 
@@ -304,18 +227,6 @@ pub fn FloorPriceSimulatorDialog(
                         oninput: move |e: FormEvent| redeem_amount_input.set(e.value()),
                         on_submit: redeem,
                         button_label: t.simulator_apply_redeem.to_string(),
-                    }
-                }
-
-                // Chart
-                div { class: "mt-6",
-                    p { class: "mb-2 text-sm font-semibold text-foreground",
-                        {t.simulator_chart_title}
-                    }
-                    div { class: "rounded-xl border border-border bg-panel-muted p-3",
-                        div { class: "relative h-64 w-full",
-                            canvas { id: "{CHART_CANVAS_ID}" }
-                        }
                     }
                 }
 

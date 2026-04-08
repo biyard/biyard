@@ -576,10 +576,6 @@ translate! {
         en: "Redeem",
         ko: "환매",
     },
-    simulator_chart_title: {
-        en: "Treasury / Supply / Floor Over Time",
-        ko: "시간에 따른 트레저리 · 발행량 · 하한가",
-    },
     simulator_log_title: {
         en: "Action Log",
         ko: "액션 로그",

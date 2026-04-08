@@ -47,9 +47,9 @@ pub fn EnterpriseGeneralPage() -> Element {
         success.set(None);
 
         spawn(async move {
-            let res = crate::features::enterprises::controllers::update_enterprise_handler(
-                Some(trimmed_name),
-            )
+            let res = crate::features::enterprises::controllers::update_enterprise_handler(Some(
+                trimmed_name,
+            ))
             .await;
             match res {
                 Ok(_) => {
@@ -92,9 +92,7 @@ pub fn EnterpriseGeneralPage() -> Element {
                             oninput: move |e: FormEvent| name.set(e.value()),
                             disabled: !can_edit,
                         }
-                        p { class: "mt-2 text-xs text-foreground-muted",
-                            {t.enterprise_name_help}
-                        }
+                        p { class: "mt-2 text-xs text-foreground-muted", {t.enterprise_name_help} }
                     }
 
                     div { class: "flex justify-end",
@@ -102,7 +100,11 @@ pub fn EnterpriseGeneralPage() -> Element {
                             variant: BtnVariant::Primary,
                             disabled: !can_edit || saving() || name().trim().is_empty(),
                             onclick: on_save,
-                            if saving() { {t.saving} } else { {t.save_changes} }
+                            if saving() {
+                                {t.saving}
+                            } else {
+                                {t.save_changes}
+                            }
                         }
                     }
                 }

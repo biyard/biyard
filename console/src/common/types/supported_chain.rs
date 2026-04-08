@@ -11,16 +11,25 @@ struct ChainMetadata {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SupportedChain {
+    Local,
+
     KaiaKairos,
 
     Kaia,
 }
 
 impl SupportedChain {
-    const ALL: [Self; 2] = [Self::KaiaKairos, Self::Kaia];
+    const ALL: [Self; 3] = [Self::Local, Self::KaiaKairos, Self::Kaia];
 
     fn metadata(&self) -> ChainMetadata {
         match self {
+            Self::Local => ChainMetadata {
+                chain_id: 31337,
+                name: "Local",
+                explorer_url: "",
+                symbol: "ETH",
+                is_testnet: true,
+            },
             Self::KaiaKairos => ChainMetadata {
                 chain_id: 1001,
                 name: "Kaia Kairos",
@@ -64,6 +73,16 @@ impl SupportedChain {
 
     pub fn all() -> impl Iterator<Item = Self> {
         Self::ALL.into_iter()
+    }
+
+    /// Chains visible to the UI based on the current build environment.
+    /// `Local` only shows up when the binary was built with `ENV=local`.
+    pub fn visible() -> impl Iterator<Item = Self> {
+        use crate::common::config::Environment;
+        let env = Environment::default();
+        Self::ALL
+            .into_iter()
+            .filter(move |c| !matches!(c, Self::Local) || env == Environment::Local)
     }
 
     pub fn testnets() -> impl Iterator<Item = Self> {

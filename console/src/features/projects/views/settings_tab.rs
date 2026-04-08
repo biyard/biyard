@@ -25,10 +25,7 @@ use crate::features::projects::views::project_editor::{ProjectEditorCard, Projec
 /// a brand can be deleted — the brands list card intentionally has
 /// no delete affordance.
 #[component]
-pub fn SettingsTab(
-    project_id: ReadSignal<ProjectPartition>,
-    project: ProjectResponse,
-) -> Element {
+pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectResponse) -> Element {
     let t: ProjectsTranslate = use_translate();
     let nav = use_navigator();
     let mut show_delete = use_signal(|| false);

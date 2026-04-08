@@ -43,9 +43,7 @@ pub async fn signup_with_invite_handler(
     let now = crate::common::utils::time_utils::get_now();
     match invitation.status {
         InvitationStatus::Revoked => return Err(EnterpriseError::InvitationRevoked.into()),
-        InvitationStatus::Accepted => {
-            return Err(EnterpriseError::InvitationAlreadyAccepted.into())
-        }
+        InvitationStatus::Accepted => return Err(EnterpriseError::InvitationAlreadyAccepted.into()),
         InvitationStatus::Pending => {}
     }
     if invitation.expires_at <= now {

@@ -160,7 +160,10 @@ pub fn ProjectEditorCard(
         }
     };
     // Input is whole percent — display as-is, clamped to a sane range.
-    let reserve_percent = reserve_rate().parse::<f64>().unwrap_or(0.0).clamp(0.0, 100.0);
+    let reserve_percent = reserve_rate()
+        .parse::<f64>()
+        .unwrap_or(0.0)
+        .clamp(0.0, 100.0);
 
     let settings_saved = t.settings_saved.to_string();
     let save_failure = t.save_failure.to_string();

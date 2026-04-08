@@ -15,18 +15,12 @@ use crate::features::enterprises::{
 /// Intentionally returns minimal information \u2014 no inviter identity,
 /// no member roster.
 #[get("/v1/invitations/:token")]
-pub async fn get_invitation_preview_handler(
-    token: String,
-) -> Result<InvitationPreviewResponse> {
+pub async fn get_invitation_preview_handler(token: String) -> Result<InvitationPreviewResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    let (invitations, _) = Invitation::find_by_token(
-        cli,
-        &token,
-        InvitationQueryOption::builder().limit(1),
-    )
-    .await?;
+    let (invitations, _) =
+        Invitation::find_by_token(cli, &token, InvitationQueryOption::builder().limit(1)).await?;
 
     let invitation = invitations
         .into_iter()
@@ -36,9 +30,7 @@ pub async fn get_invitation_preview_handler(
     let now = crate::common::utils::time_utils::get_now();
     match invitation.status {
         InvitationStatus::Revoked => return Err(EnterpriseError::InvitationRevoked.into()),
-        InvitationStatus::Accepted => {
-            return Err(EnterpriseError::InvitationAlreadyAccepted.into())
-        }
+        InvitationStatus::Accepted => return Err(EnterpriseError::InvitationAlreadyAccepted.into()),
         InvitationStatus::Pending => {}
     }
 

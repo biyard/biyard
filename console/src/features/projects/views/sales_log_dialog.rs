@@ -27,19 +27,20 @@ pub fn SalesLogDialog(
     let t: ProjectsTranslate = use_translate();
 
     let pid_for_loader = project_id.clone();
-    let mut logs_loader = use_loader(move || {
+    let logs_loader_result = use_loader(move || {
         let pid = pid_for_loader.clone();
         async move {
             crate::features::projects::controllers::list_sales_logs_handler(pid, 50, None).await
         }
-    })?;
-    let logs_page = logs_loader();
-    let logs: Vec<SalesLogResponse> = logs_page.items;
-
+    });
     let mut amount_input = use_signal(String::new);
     let mut memo_input = use_signal(String::new);
     let mut submitting = use_signal(|| false);
     let mut message = use_signal(|| None::<(AlertVariant, String)>);
+
+    let mut logs_loader = logs_loader_result?;
+    let logs_page = logs_loader();
+    let logs: Vec<SalesLogResponse> = logs_page.items;
 
     let pid_for_submit = project_id.clone();
     let on_submit = move |_| {
@@ -73,10 +74,9 @@ pub fn SalesLogDialog(
         message.set(None);
         let pid = pid_for_submit.clone();
         spawn(async move {
-            let res = crate::features::projects::controllers::create_sales_log_handler(
-                pid, amount, memo,
-            )
-            .await;
+            let res =
+                crate::features::projects::controllers::create_sales_log_handler(pid, amount, memo)
+                    .await;
             match res {
                 Ok(_) => {
                     amount_input.set(String::new());
@@ -102,7 +102,7 @@ pub fn SalesLogDialog(
 
     rsx! {
         DialogRoot {
-            open: open,
+            open,
             on_open_change: move |v: bool| {
                 if !v {
                     on_close.call(());
@@ -133,7 +133,7 @@ pub fn SalesLogDialog(
                     }
                     if let Some((variant, msg)) = message() {
                         div { class: "mb-3",
-                            AlertMessage { variant: variant, "{msg}" }
+                            AlertMessage { variant, "{msg}" }
                         }
                     }
                     div { class: "grid gap-3 sm:grid-cols-2",
@@ -164,7 +164,11 @@ pub fn SalesLogDialog(
                             variant: BtnVariant::Primary,
                             disabled: submitting() || amount_input().trim().is_empty(),
                             onclick: on_submit,
-                            if submitting() { {t.sales_log_submitting} } else { {t.sales_log_add_button} }
+                            if submitting() {
+                                {t.sales_log_submitting}
+                            } else {
+                                {t.sales_log_add_button}
+                            }
                         }
                     }
                 }
@@ -190,7 +194,9 @@ pub fn SalesLogDialog(
                                 }
                                 tbody {
                                     for log in logs.iter() {
-                                        tr { key: "{log.id}", class: "border-t border-border",
+                                        tr {
+                                            key: "{log.id}",
+                                            class: "border-t border-border",
                                             td { class: "px-3 py-2 font-mono text-foreground-muted",
                                                 "{format_timestamp(log.created_at)}"
                                             }

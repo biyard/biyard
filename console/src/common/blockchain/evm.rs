@@ -52,21 +52,35 @@ pub fn deployer_address(chain_id: u64) -> Result<Address, String> {
     Ok(deployer_wallet(chain_id)?.address())
 }
 
-fn default_rpc_url(chain_id: u64) -> Option<&'static str> {
+fn rpc_url_for_chain(chain_id: u64) -> Result<&'static str, String> {
     match chain_id {
-        1001 => Some("https://public-en-kairos.node.kaia.io"),
-        8217 => Some("https://public-en.node.kaia.io"),
-        _ => None,
+        31337 => Ok("http://localhost:8545"),
+        1001 => Ok("https://public-en-kairos.node.kaia.io"),
+        8217 => Ok("https://public-en.node.kaia.io"),
+        _ => Err(format!("Unsupported chain ID: {chain_id}")),
     }
 }
 
-fn rpc_url_for_chain(chain_id: u64) -> Result<String, String> {
-    if let Ok(url) = std::env::var(format!("RPC_URL_{chain_id}")) {
-        return Ok(url);
+/// Built-in stable token (USDT) address per chain.
+///
+/// - **8217 (Kaia mainnet):** native Tether USDT, launched May 2025. Verified
+///   via Kaia docs (`docs.kaia.io/build/tutorials/how-to-send-usdt-tokens-using-kaia-sdk/`).
+/// - **1001 (Kairos testnet):** same address as mainnet. Verified on-chain via
+///   `eth_getTransactionReceipt` against `public-en-kairos.node.kaia.io` —
+///   a Kairos faucet tx emits a standard ERC20 Transfer log whose contract
+///   address is `0xd077a400968890eacc75cdc901f0356c943e4fdb`.
+/// - **31337 (local Anvil/Hardhat):** intentionally `None`. Every
+///   `npx hardhat node` run produces a fresh MockUSDT at a different address,
+///   so a hardcoded value would be misleading. Treasury deploy on 31337 is
+///   expected to fail until we either auto-deploy MockUSDT in this code path
+///   or thread the freshly-deployed address through explicitly.
+fn default_stable_token(chain_id: u64) -> Option<&'static str> {
+    match chain_id {
+        31337 => None,
+        1001 => Some("0xd077a400968890eacc75cdc901f0356c943e4fdb"),
+        8217 => Some("0xd077a400968890eacc75cdc901f0356c943e4fdb"),
+        _ => None,
     }
-    default_rpc_url(chain_id)
-        .map(|s| s.to_string())
-        .ok_or_else(|| format!("Unsupported chain ID: {chain_id}"))
 }
 
 pub fn provider(chain_id: u64) -> Result<Provider<Http>, String> {
@@ -80,49 +94,44 @@ pub fn signer(chain_id: u64) -> Result<SignerMiddleware<Provider<Http>, LocalWal
     Ok(SignerMiddleware::new(provider, wallet))
 }
 
-fn env_for_chain(base: &str, chain_id: u64) -> Option<String> {
-    std::env::var(format!("{base}_{chain_id}"))
-        .ok()
-        .or_else(|| std::env::var(base).ok())
-        .map(|value| value.trim().to_string())
-        .filter(|value| !value.is_empty())
-}
-
-fn parse_address(var_name: &str, value: &str) -> Result<Address, String> {
+pub fn stable_token_address(chain_id: u64) -> Result<Address, String> {
+    let value = default_stable_token(chain_id)
+        .ok_or_else(|| format!("No built-in stable token address for chain {chain_id}"))?;
     value
         .parse::<Address>()
-        .map_err(|e| format!("Invalid {var_name}: {e}"))
+        .map_err(|e| format!("Invalid stable token address for chain {chain_id}: {e}"))
 }
 
-pub fn stable_token_address(chain_id: u64) -> Result<Address, String> {
-    let value = env_for_chain("STABLE_TOKEN_ADDRESS", chain_id).ok_or_else(|| {
-        format!("STABLE_TOKEN_ADDRESS_{chain_id} or STABLE_TOKEN_ADDRESS must be set")
-    })?;
-    parse_address("stable token address", &value)
-}
-
+/// The project-owner address is currently always the deployer wallet.
+/// A separate per-project owner is intentionally deferred until we add
+/// real project-owner key management; until then, do not introduce a
+/// `PROJECT_OWNER_ADDRESS*` env var.
 fn project_owner_address(chain_id: u64) -> Result<Address, String> {
-    if let Some(value) = env_for_chain("PROJECT_OWNER_ADDRESS", chain_id) {
-        return parse_address("project owner address", &value);
-    }
-
     deployer_address(chain_id)
 }
 
+/// Compile-time bytecode for `BiyardToken.sol`, produced by `build.rs`
+/// from the Hardhat artifact under `contracts/artifacts/`.
+const BIYARD_TOKEN_BYTECODE: &str =
+    include_str!(concat!(env!("OUT_DIR"), "/BIYARD_TOKEN_BYTECODE.hex"));
+
+/// Compile-time bytecode for `FloorPriceTreasury.sol`, produced by `build.rs`.
+const FLOOR_PRICE_TREASURY_BYTECODE: &str = include_str!(concat!(
+    env!("OUT_DIR"),
+    "/FLOOR_PRICE_TREASURY_BYTECODE.hex"
+));
+
 async fn deploy_contract(
     chain_id: u64,
-    bytecode_env: &str,
+    bytecode_hex: &str,
     constructor_args: Vec<u8>,
 ) -> Result<(Address, TxHash), String> {
     let _ = SupportedChain::from_chain_id(chain_id)
         .ok_or_else(|| format!("Unsupported chain: {chain_id}"))?;
     let client = Arc::new(signer(chain_id)?);
 
-    let bytecode_hex =
-        std::env::var(bytecode_env).map_err(|_| format!("{bytecode_env} env var not set"))?;
-
     let bytecode = hex::decode(bytecode_hex.trim_start_matches("0x"))
-        .map_err(|e| format!("Invalid bytecode hex for {bytecode_env}: {e}"))?;
+        .map_err(|e| format!("Invalid embedded bytecode hex: {e}"))?;
 
     let mut deploy_data = bytecode;
     deploy_data.extend_from_slice(&constructor_args);
@@ -164,7 +173,7 @@ pub async fn deploy_token(
         ethers::abi::Token::Uint(U256::from(max_supply)),
     ]);
 
-    deploy_contract(chain_id, "BIYARD_TOKEN_BYTECODE", constructor_args).await
+    deploy_contract(chain_id, BIYARD_TOKEN_BYTECODE, constructor_args).await
 }
 
 pub async fn deploy_floor_price_treasury(
@@ -183,7 +192,7 @@ pub async fn deploy_floor_price_treasury(
     ]);
 
     let (treasury_address, tx_hash) =
-        deploy_contract(chain_id, "FLOOR_PRICE_TREASURY_BYTECODE", constructor_args).await?;
+        deploy_contract(chain_id, FLOOR_PRICE_TREASURY_BYTECODE, constructor_args).await?;
 
     Ok((treasury_address, tx_hash, stable_token, project_owner))
 }

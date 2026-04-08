@@ -20,7 +20,12 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let mut show_confirm = use_signal(|| false);
     let mut show_deploy_confirm = use_signal(|| false);
     let mut deploy_understood = use_signal(|| false);
-    let mut selected_chain = use_signal(|| SupportedChain::KaiaKairos.chain_id());
+    let mut selected_chain = use_signal(|| {
+        SupportedChain::visible()
+            .next()
+            .map(|c| c.chain_id())
+            .unwrap_or_else(|| SupportedChain::KaiaKairos.chain_id())
+    });
 
     let mut token = use_loader(move || async move {
         crate::features::tokens::controllers::get_token_handler(project_id()).await
@@ -203,7 +208,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                         selected_chain.set(v);
                                                     }
                                                 },
-                                                for chain in SupportedChain::all() {
+                                                for chain in SupportedChain::visible() {
                                                     option { value: "{chain.chain_id()}", "{chain.display_name()}" }
                                                 }
                                             }

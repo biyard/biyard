@@ -21,15 +21,19 @@ pub fn Settings() -> Element {
 
     let nav = use_navigator();
     let mut show_delete_dialog = use_signal(|| false);
+    let initial_name = account_ctx()
+        .account
+        .as_ref()
+        .map(|a| a.name.clone())
+        .unwrap_or_default();
+    let mut name = use_signal(move || initial_name.clone());
+    let mut saving = use_signal(|| false);
+    let mut error = use_signal(|| None::<String>);
+    let mut success = use_signal(|| None::<String>);
 
     let Some(account) = account_ctx().account else {
         return rsx! {};
     };
-
-    let mut name = use_signal(|| account.name.clone());
-    let mut saving = use_signal(|| false);
-    let mut error = use_signal(|| None::<String>);
-    let mut success = use_signal(|| None::<String>);
 
     let on_save = move |_| {
         let next_name = name();
@@ -82,9 +86,7 @@ pub fn Settings() -> Element {
                             value: name(),
                             oninput: move |e: FormEvent| name.set(e.value()),
                         }
-                        p { class: "mt-2 text-xs text-foreground-muted",
-                            {t.display_name_help}
-                        }
+                        p { class: "mt-2 text-xs text-foreground-muted", {t.display_name_help} }
                     }
 
                     div {
@@ -95,9 +97,7 @@ pub fn Settings() -> Element {
                             oninput: move |_: FormEvent| {},
                             disabled: true,
                         }
-                        p { class: "mt-2 text-xs text-foreground-muted",
-                            {t.email_readonly_help}
-                        }
+                        p { class: "mt-2 text-xs text-foreground-muted", {t.email_readonly_help} }
                     }
 
                     div { class: "grid gap-4 sm:grid-cols-2",
@@ -116,7 +116,11 @@ pub fn Settings() -> Element {
                             variant: BtnVariant::Primary,
                             disabled: saving() || name().trim().is_empty(),
                             onclick: on_save,
-                            if saving() { {t.loading} } else { {t.save_profile} }
+                            if saving() {
+                                {t.loading}
+                            } else {
+                                {t.save_profile}
+                            }
                         }
                     }
                 }
@@ -184,9 +188,7 @@ fn InfoBlock(label: String, value: String) -> Element {
             p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                 "{label}"
             }
-            p { class: "mt-2 break-all text-sm font-semibold text-foreground",
-                "{value}"
-            }
+            p { class: "mt-2 break-all text-sm font-semibold text-foreground", "{value}" }
         }
     }
 }

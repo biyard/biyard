@@ -42,14 +42,13 @@ pub async fn deploy_token_handler(
     let treasury_reserve_bps =
         (project.treasury_reserve_rate.clamp(0.0, 1.0) * 10000.0).round() as u64;
     let now = crate::common::utils::time_utils::get_now();
-    let mut updater = ProjectToken::updater(token.pk.clone(), token.sk.clone()).with_updated_at(now);
+    let mut updater =
+        ProjectToken::updater(token.pk.clone(), token.sk.clone()).with_updated_at(now);
 
     let (contract_address, token_addr_str, deployment_tx_hash) =
         if let Some(existing_token_address) = token.contract_address.as_deref() {
             let parsed = existing_token_address.parse::<Address>().map_err(|e| {
-                TokenError::DeployFailed(format!(
-                    "Invalid existing token contract address: {e}"
-                ))
+                TokenError::DeployFailed(format!("Invalid existing token contract address: {e}"))
             })?;
 
             updater = updater.with_chain_id(token.chain_id.unwrap_or(chain_id));

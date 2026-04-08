@@ -7,11 +7,7 @@ use crate::common::ui::*;
 use crate::features::enterprises::EnterpriseTranslate;
 
 #[component]
-pub fn InviteModal(
-    open: bool,
-    on_close: EventHandler,
-    on_success: EventHandler,
-) -> Element {
+pub fn InviteModal(open: bool, on_close: EventHandler, on_success: EventHandler) -> Element {
     let t: EnterpriseTranslate = use_translate();
 
     let mut email = use_signal(String::new);

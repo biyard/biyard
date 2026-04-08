@@ -19,21 +19,22 @@ use crate::features::projects::{ProjectResponse, TreasuryStatusResponse};
 pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
 
-    let project_loader = use_loader(move || async move {
+    let project_loader_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
-    })?;
-    let project: ProjectResponse = project_loader();
-
-    let status_loader = use_loader(move || async move {
+    });
+    let status_loader_result = use_loader(move || async move {
         crate::features::projects::controllers::get_treasury_status_handler(project_id()).await
-    })?;
+    });
+    let mut show_simulator = use_signal(|| false);
+    let mut show_sales_log = use_signal(|| false);
+
+    let project_loader = project_loader_result?;
+    let project: ProjectResponse = project_loader();
+    let status_loader = status_loader_result?;
     let status: TreasuryStatusResponse = status_loader();
 
     let reserve_rate_pct = (project.treasury_reserve_rate * 100.0).round();
     let initial_reserve_rate = project.treasury_reserve_rate;
-
-    let mut show_simulator = use_signal(|| false);
-    let mut show_sales_log = use_signal(|| false);
 
     rsx! {
         div { class: "space-y-6",
@@ -71,9 +72,7 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
             if status.deployed {
                 TreasuryOnChainPanel { status: status.clone() }
             } else {
-                AlertMessage { variant: AlertVariant::Info,
-                    {t.treasury_not_deployed}
-                }
+                AlertMessage { variant: AlertVariant::Info, {t.treasury_not_deployed} }
             }
 
             // Dialogs — kept at the bottom of the view so their state
@@ -81,7 +80,7 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
             FloorPriceSimulatorDialog {
                 open: show_simulator(),
                 on_close: move |_| show_simulator.set(false),
-                initial_reserve_rate: initial_reserve_rate,
+                initial_reserve_rate,
             }
             SalesLogDialog {
                 open: show_sales_log(),
@@ -96,11 +95,13 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
 fn TreasuryOnChainPanel(status: TreasuryStatusResponse) -> Element {
     let t: ProjectsTranslate = use_translate();
 
-    let treasury_display = format_token_amount(&status.treasury_balance_raw, status.stable_decimals);
+    let treasury_display =
+        format_token_amount(&status.treasury_balance_raw, status.stable_decimals);
     let circulating_display =
         format_token_amount(&status.circulating_supply_raw, status.token_decimals);
     let total_display = format_token_amount(&status.total_supply_raw, status.token_decimals);
-    let floor_display = format_floor_price_raw(&status.floor_price_raw_1e18, status.stable_decimals);
+    let floor_display =
+        format_floor_price_raw(&status.floor_price_raw_1e18, status.stable_decimals);
 
     let stable_symbol = status.stable_symbol.clone();
     let treasury_value = format!("{treasury_display} {stable_symbol}");
