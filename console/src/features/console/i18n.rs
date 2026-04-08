@@ -36,8 +36,8 @@ translate! {
         ko: "개요",
     },
     nav_enterprise_general: {
-        en: "General",
-        ko: "일반",
+        en: "Settings",
+        ko: "설정",
     },
     nav_enterprise_members: {
         en: "Members",

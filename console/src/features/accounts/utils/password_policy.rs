@@ -1,4 +1,4 @@
-fn password_policy_checklist(password: &str, email: Option<&str>, name: Option<&str>) -> [bool; 7] {
+fn password_policy_checklist(password: &str, email: Option<&str>, name: Option<&str>) -> [bool; 6] {
     let lowered_password = password.to_ascii_lowercase();
     let email_ok = email
         .and_then(|value| value.split('@').next())
@@ -18,9 +18,8 @@ fn password_policy_checklist(password: &str, email: Option<&str>, name: Option<&
         .unwrap_or(true);
 
     [
-        password.chars().count() >= 12,
+        password.chars().count() >= 10,
         password.chars().any(|c| c.is_ascii_lowercase()),
-        password.chars().any(|c| c.is_ascii_uppercase()),
         password.chars().any(|c| c.is_ascii_digit()),
         password
             .chars()
@@ -41,7 +40,7 @@ pub fn validate_password_rules(
     let lowered_password = password.to_ascii_lowercase();
 
     if !checklist[0] {
-        violations.push("Password must be at least 12 characters.".to_string());
+        violations.push("Password must be at least 10 characters.".to_string());
     }
 
     if !checklist[1] {
@@ -49,22 +48,18 @@ pub fn validate_password_rules(
     }
 
     if !checklist[2] {
-        violations.push("Password must include an uppercase letter.".to_string());
-    }
-
-    if !checklist[3] {
         violations.push("Password must include a number.".to_string());
     }
 
-    if !checklist[4] {
+    if !checklist[3] {
         violations.push("Password must include a special character.".to_string());
     }
 
-    if !checklist[5] {
+    if !checklist[4] {
         violations.push("Password cannot contain spaces.".to_string());
     }
 
-    if !checklist[6] {
+    if !checklist[5] {
         let contains_email = email
             .and_then(|value| value.split('@').next())
             .map(str::trim)

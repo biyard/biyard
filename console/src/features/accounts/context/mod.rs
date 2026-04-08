@@ -1,5 +1,6 @@
 use crate::{
     Error,
+    common::OrganizationRole,
     features::accounts::{AccountResponse, AccountType, controllers::get_me_handler},
     features::enterprises::{
         CurrentEnterpriseResponse, controllers::get_current_enterprise_handler,
@@ -94,5 +95,22 @@ impl AccountContext {
         self.current_enterprise
             .as_ref()
             .map(|enterprise| enterprise.enterprise.name.clone())
+    }
+
+    /// Role of the current account within the current enterprise. Falls
+    /// back to `Viewer` (least-privileged) if the enterprise has not yet
+    /// loaded, so write-action UI stays hidden until we know otherwise.
+    pub fn role(&self) -> OrganizationRole {
+        self.current_enterprise
+            .as_ref()
+            .map(|e| e.role)
+            .unwrap_or(OrganizationRole::Viewer)
+    }
+
+    /// True when the current account has at least Admin privileges in
+    /// the current enterprise. Use this to gate any write-action UI
+    /// (create / invite / edit / delete buttons).
+    pub fn can_write(&self) -> bool {
+        self.role().allows(OrganizationRole::Admin)
     }
 }

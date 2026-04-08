@@ -13,7 +13,7 @@ test.describe("Sidebar Navigation", () => {
 
     // Navigate to General (enterprise settings)
     await page
-      .getByRole("link", { name: "General", exact: true })
+      .getByRole("link", { name: "Settings", exact: true })
       .first()
       .click();
     await page.waitForURL("**/enterprise/settings/general");

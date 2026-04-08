@@ -177,7 +177,6 @@ pub fn MembersPage() -> Element {
             open: show_invite(),
             on_close: move |_| show_invite.set(false),
             on_success: move |_| {
-                show_invite.set(false);
                 invitations.restart();
                 success.set(Some("Invitation created.".to_string()));
             },
