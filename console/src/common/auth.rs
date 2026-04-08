@@ -10,6 +10,8 @@ use crate::features::accounts::{Account, AccountError, AccountType};
 use crate::features::credentials::{
     Credential, CredentialError, CredentialQueryOption, CredentialStatus,
 };
+use crate::features::enterprises::Enterprise;
+use crate::features::enterprises::controllers::ensure_current_enterprise_for_account;
 use crate::features::projects::{Project, ProjectError};
 
 /// Extract Account from request using session only.
@@ -63,6 +65,36 @@ where
         }
 
         Ok(Self { account })
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct EnterpriseContextAuth {
+    pub account: Account,
+    pub enterprise: Enterprise,
+    pub role: OrganizationRole,
+}
+
+impl<S> FromRequestParts<S> for EnterpriseContextAuth
+where
+    S: Send + Sync,
+    Session: FromRequestParts<S, Rejection: std::fmt::Debug>,
+{
+    type Rejection = Error;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        let config = CommonConfig::default();
+        let cli = config.dynamodb();
+
+        let account = resolve_account_from_parts(parts, state, cli).await?;
+        let (account, enterprise) = ensure_current_enterprise_for_account(cli, &account).await?;
+        let role = account.organization_role;
+
+        Ok(Self {
+            account,
+            enterprise,
+            role,
+        })
     }
 }
 
@@ -158,7 +190,9 @@ where
 
     let account = resolve_account_from_parts(parts, state, cli).await?;
     let project = load_project_from_path(parts, cli).await?;
-    let role = infer_project_role(&account, &project).ok_or(ProjectError::ProjectAccessDenied)?;
+    let role = infer_project_role(cli, &account, &project)
+        .await?
+        .ok_or(ProjectError::ProjectAccessDenied)?;
 
     if !role.allows(required_role) {
         return Err(Error::Forbidden);
@@ -219,17 +253,38 @@ async fn load_project_from_path(
         .ok_or(ProjectError::ProjectNotFound.into())
 }
 
-fn infer_project_role(account: &Account, project: &Project) -> Option<OrganizationRole> {
+async fn infer_project_role(
+    _cli: &aws_sdk_dynamodb::Client,
+    account: &Account,
+    project: &Project,
+) -> crate::common::Result<Option<OrganizationRole>> {
     if account.user_type == AccountType::SystemAdmin {
-        return Some(OrganizationRole::Owner);
+        return Ok(Some(OrganizationRole::Owner));
     }
 
-    // TODO: Replace with OrganizationMember lookup when org membership model is introduced.
-    if project.account_id == account.pk {
-        return Some(OrganizationRole::Owner);
+    // Single-membership invariant: an Account belongs to at most one
+    // Enterprise, and the role on that Enterprise is stored on Account
+    // itself (Account.organization_role). A request can access a Project
+    // iff the project's organization_id matches the caller's
+    // enterprise_id.
+    //
+    // NOTE: this is the *only* place in the codebase where
+    // Account.enterprise_id is compared directly. All other call sites
+    // must go through EnterpriseContextAuth so that a future migration
+    // to multi-membership only needs to update the auth extractor.
+    if matches!(project.organization_id, Partition::None) {
+        return Ok(None);
     }
 
-    None
+    if matches!(account.enterprise_id, Partition::None) {
+        return Ok(None);
+    }
+
+    if project.organization_id != account.enterprise_id {
+        return Ok(None);
+    }
+
+    Ok(Some(account.organization_role))
 }
 
 /// Extract project_id from URL path like /v1/projects/:project_id/...
@@ -297,7 +352,7 @@ pub(crate) async fn authenticate_by_credential(
     api_key: &str,
     cli: &aws_sdk_dynamodb::Client,
 ) -> crate::common::Result<Account> {
-    let api_key_hash = crate::common::utils::password_utils::hash_password(api_key);
+    let api_key_hash = crate::common::utils::password_utils::hash_secret_for_lookup(api_key);
 
     let (credentials, _) = Credential::find_by_api_key_hash(
         cli,

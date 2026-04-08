@@ -3,19 +3,29 @@ use dioxus_translate::use_translate;
 
 use crate::Route;
 use crate::common::ProjectPartition;
+use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
+use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::projects::ProjectStatus;
 use crate::features::projects::i18n::ProjectsTranslate;
 
 use super::overview_tab::OverviewTab;
-use super::points_tab::PointsTab;
-use super::settings_tab::SettingsTab;
-use super::tokens_tab::TokensTab;
 
+/// Shared layout for all `/projects/:project_id/*` detail pages.
+///
+/// Loads the project once, renders the header (brand badge, stats,
+/// edit CTA), and delegates the body to the nested route via
+/// `<Outlet>`. Tab navigation for Overview / Token / Points /
+/// Settings lives in the sidebar (A-pattern brand scope).
 #[component]
-pub fn ProjectDetail(project_id: ReadSignal<ProjectPartition>) -> Element {
+pub fn ProjectDetailLayout(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
+    let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
-    let mut tab_value = use_signal(|| "overview".to_string());
+    let account_ctx = use_account_context();
+    let enterprise_name = account_ctx()
+        .enterprise_name()
+        .unwrap_or_else(|| "Default enterprise".to_string());
 
     let project = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
@@ -24,191 +34,97 @@ pub fn ProjectDetail(project_id: ReadSignal<ProjectPartition>) -> Element {
     let project_data = project();
 
     rsx! {
-        div {
-            // Header
-            div { class: "mb-6",
-                button {
-                    class: "flex items-center text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mb-4",
-                    onclick: move |_| { nav.push(Route::Projects {}); },
-                    svg {
-                        class: "h-4 w-4 mr-1",
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "24",
-                        height: "24",
-                        view_box: "0 0 24 24",
-                        fill: "none",
-                        stroke: "currentColor",
-                        stroke_width: "2",
-                        stroke_linecap: "round",
-                        stroke_linejoin: "round",
-                        path { d: "m12 19-7-7 7-7" }
-                        path { d: "M19 12H5" }
-                    }
-                    {t.back_to_projects}
-                }
-
-                div { class: "flex items-center justify-between",
-                    div {
-                        h1 { class: "text-3xl font-bold text-gray-900 dark:text-white",
-                            "{project_data.name}"
-                        }
-                        if let Some(ref desc) = project_data.description {
-                            p { class: "mt-1 text-gray-500 dark:text-gray-400",
-                                "{desc}"
-                            }
-                        }
-                    }
-                    span {
-                        class: format!(
-                            "px-3 py-1 text-sm font-semibold rounded-full {}",
-                            match project_data.status {
-                                ProjectStatus::Active => "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                                ProjectStatus::Inactive => "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
-                            }
-                        ),
-                        match project_data.status {
-                            ProjectStatus::Active => {t.active},
-                            ProjectStatus::Inactive => {t.inactive},
-                        }
-                    }
-                }
-            }
-
-            // Tabs
-            div { class: "border-b border-gray-200 dark:border-gray-700 mb-6",
-                nav { class: "-mb-px flex space-x-8",
+        div { class: "space-y-8",
+            div { class: "rounded-3xl border border-border bg-panel p-6",
+                // Brand editing now lives inside the Settings tab, which is
+                // already in the sidebar. A separate "Edit Brand" header
+                // button would be redundant from every tab and self-referential
+                // from the Settings tab itself.
+                div { class: "mb-6 flex items-center gap-3",
                     button {
-                        class: format!(
-                            "flex items-center py-4 px-1 border-b-2 text-sm font-medium {}",
-                            if tab_value() == "overview" {
-                                "border-blue-500 text-blue-600 dark:text-blue-400"
-                            } else {
-                                "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
-                            }
-                        ),
-                        onclick: move |_| tab_value.set("overview".to_string()),
-                        svg {
-                            class: "h-4 w-4",
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            rect { width: "7", height: "9", x: "3", y: "3", rx: "1" }
-                            rect { width: "7", height: "5", x: "14", y: "3", rx: "1" }
-                            rect { width: "7", height: "9", x: "14", y: "12", rx: "1" }
-                            rect { width: "7", height: "5", x: "3", y: "16", rx: "1" }
-                        }
-                        span { class: "ml-2", {t.overview} }
+                        class: "inline-flex items-center gap-2 text-sm font-semibold text-foreground-muted transition-colors hover:text-foreground",
+                        onclick: move |_| { nav.push(Route::Projects {}); },
+                        IconArrowLeft { class: "h-4 w-4" }
+                        {t.back_to_projects}
                     }
+                }
 
-                    button {
-                        class: format!(
-                            "flex items-center py-4 px-1 border-b-2 text-sm font-medium {}",
-                            if tab_value() == "tokens" {
-                                "border-blue-500 text-blue-600 dark:text-blue-400"
-                            } else {
-                                "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
-                            }
-                        ),
-                        onclick: move |_| tab_value.set("tokens".to_string()),
-                        svg {
-                            class: "h-4 w-4",
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            circle { cx: "8", cy: "8", r: "6" }
-                            path { d: "M18.09 10.37A6 6 0 1 1 10.34 18" }
-                            path { d: "M7 6h1v4" }
-                            path { d: "m16.71 13.88.7.71-2.82 2.82" }
+                div { class: "space-y-5",
+                    div { class: "flex items-start gap-4",
+                        BrandAvatar {
+                            name: project_data.name.clone(),
+                            logo_url: project_data.brand_logo_url.clone(),
+                            size: BrandAvatarSize::Md,
                         }
-                        span { class: "ml-2", {t.tokens} }
-                    }
-
-                    button {
-                        class: format!(
-                            "flex items-center py-4 px-1 border-b-2 text-sm font-medium {}",
-                            if tab_value() == "points" {
-                                "border-blue-500 text-blue-600 dark:text-blue-400"
-                            } else {
-                                "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
+                        div { class: "space-y-3",
+                            span { class: "inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-soft px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-brand",
+                                "{console_t.brand_scope_label} · {project_data.name}"
                             }
-                        ),
-                        onclick: move |_| tab_value.set("points".to_string()),
-                        svg {
-                            class: "h-4 w-4",
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            polygon { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" }
-                        }
-                        span { class: "ml-2", {t.points} }
-                    }
-
-                    button {
-                        class: format!(
-                            "flex items-center py-4 px-1 border-b-2 text-sm font-medium {}",
-                            if tab_value() == "settings" {
-                                "border-blue-500 text-blue-600 dark:text-blue-400"
-                            } else {
-                                "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
+                            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                                "{console_t.enterprise_scope_label} / {enterprise_name}"
                             }
-                        ),
-                        onclick: move |_| tab_value.set("settings".to_string()),
-                        svg {
-                            class: "h-4 w-4",
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            path { d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" }
-                            circle { cx: "12", cy: "12", r: "3" }
+                            div { class: "flex flex-wrap items-center gap-3",
+                                h1 { class: "font-display text-2xl font-bold tracking-[-0.04em] text-foreground sm:text-3xl lg:text-[2.25rem]",
+                                    "{project_data.name}"
+                                }
+                                StatusBadge {
+                                    color: match project_data.status {
+                                        ProjectStatus::Active => BadgeColor::Green,
+                                        ProjectStatus::Inactive => BadgeColor::Gray,
+                                    },
+                                    match project_data.status {
+                                        ProjectStatus::Active => {t.active},
+                                        ProjectStatus::Inactive => {t.inactive},
+                                    }
+                                }
+                            }
+                            if let Some(ref desc) = project_data.description {
+                                p { class: "max-w-2xl text-sm leading-6 text-foreground-muted",
+                                    "{desc}"
+                                }
+                            }
+                            // Shortened brand id chip — full id is available in the
+                            // Settings tab so users who actually need it can copy it.
+                            code {
+                                class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                                title: "{project_data.id}",
+                                "{shorten_id(&project_data.id)}"
+                            }
                         }
-                        span { class: "ml-2", {t.settings_tab} }
                     }
                 }
             }
 
-            // Tab Content
-            if tab_value() == "overview" {
-                OverviewTab {
-                    project_id: project_id,
-                    project: project_data.clone(),
-                }
+            // Tab nav moved to the sidebar: when the user is in brand
+            // scope, the sidebar exposes Overview / Token / Points /
+            // Settings as sub-nav items under the brand switcher.
+            SuspenseBoundary {
+                fallback: move |_| rsx! {
+                    div { class: "flex justify-center py-10",
+                        Spinner { class: "h-5 w-5 animate-spin" }
+                    }
+                },
+                Outlet::<Route> {}
             }
-            if tab_value() == "tokens" {
-                TokensTab { project_id: project_id }
-            }
-            if tab_value() == "points" {
-                PointsTab { project_id: project_id }
-            }
-            if tab_value() == "settings" {
-                SettingsTab {
-                    project_id: project_id,
-                    project: project_data.clone(),
-                }
-            }
+        }
+    }
+}
+
+/// `/projects/:project_id/overview` — brand overview tab content.
+///
+/// The header comes from `ProjectDetailLayout`; tab navigation lives
+/// in the sidebar. This component only renders the overview body.
+#[component]
+pub fn ProjectDetail(project_id: ReadSignal<ProjectPartition>) -> Element {
+    let project = use_loader(move || async move {
+        crate::features::projects::controllers::get_project_handler(project_id()).await
+    })?;
+    let project_data = project();
+
+    rsx! {
+        OverviewTab {
+            project_id: project_id,
+            project: project_data,
         }
     }
 }

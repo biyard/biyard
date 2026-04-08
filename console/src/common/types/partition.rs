@@ -16,9 +16,13 @@ pub enum Partition {
     // Credential
     Credential(String),
 
+    // Enterprise
+    Enterprise(String),
+
     // Project
     Project(String),
     MonthlyPoints(String),
+    SalesLog(String),
 
     // Point Feature
     MetaUser(String),

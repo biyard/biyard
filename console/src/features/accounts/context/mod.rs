@@ -1,6 +1,9 @@
 use crate::{
     Error,
     features::accounts::{AccountResponse, AccountType, controllers::get_me_handler},
+    features::enterprises::{
+        CurrentEnterpriseResponse, controllers::get_current_enterprise_handler,
+    },
 };
 use dioxus::fullstack::Loading;
 use dioxus::prelude::*;
@@ -17,6 +20,7 @@ impl Context {
             Ok::<_, Error>(match get_me_handler().await {
                 Ok(resp) => AccountContext {
                     account: Some(resp),
+                    current_enterprise: get_current_enterprise_handler().await.ok(),
                 },
                 Err(_) => AccountContext::default(),
             })
@@ -29,15 +33,45 @@ impl Context {
 
         Ok(ctx)
     }
+
+    /// Re-fetch the current account and enterprise from the server and
+    /// write the fresh values into the shared store. Any component that
+    /// reads `use_account_context()` will see the updated fields on
+    /// next render.
+    ///
+    /// Call this after mutations that change the canonical state —
+    /// e.g. renaming the enterprise, updating profile info, switching
+    /// themes that depend on the server, etc.
+    ///
+    /// This deliberately does not block: it spawns a task and returns
+    /// immediately so the caller's UI stays responsive. The store is
+    /// written only after the fetches succeed.
+    pub fn refresh(self) {
+        let mut ctx = self.account_context;
+        spawn(async move {
+            let account = get_me_handler().await.ok();
+            let enterprise = get_current_enterprise_handler().await.ok();
+            let mut w = ctx.write();
+            w.account = account;
+            w.current_enterprise = enterprise;
+        });
+    }
 }
 
 pub fn use_account_context() -> Store<AccountContext> {
     use_context::<Context>().account_context
 }
 
+/// Convenience hook that returns the full `Context` handle, which
+/// exposes `refresh()` in addition to the underlying store.
+pub fn use_app_context() -> Context {
+    use_context::<Context>()
+}
+
 #[derive(Store, Default, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct AccountContext {
     pub account: Option<AccountResponse>,
+    pub current_enterprise: Option<CurrentEnterpriseResponse>,
 }
 
 impl AccountContext {
@@ -54,5 +88,11 @@ impl AccountContext {
             .as_ref()
             .map(|u| u.user_type == AccountType::SystemAdmin)
             .unwrap_or(false)
+    }
+
+    pub fn enterprise_name(&self) -> Option<String> {
+        self.current_enterprise
+            .as_ref()
+            .map(|enterprise| enterprise.enterprise.name.clone())
     }
 }

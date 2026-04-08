@@ -1,8 +1,68 @@
 use dioxus::prelude::*;
 
+use crate::common::ui::Spinner;
+
+/// Inline script injected into <head> to apply the theme and language
+/// **before** the first paint. Reading order:
+///   - theme:    cookie → localStorage → "dark" (default)
+///   - language: cookie → localStorage → navigator.language
+///
+/// Dark is the primary mode (matches the Biyard landing identity). Users can
+/// switch to light explicitly via the sidebar toggle.
+///
+/// This runs synchronously in the browser parser, so the body never flashes
+/// the wrong theme/language during SSR hydration.
+const BOOTSTRAP_SCRIPT: &str = r#"
+(function () {
+  try {
+    function cookie(name) {
+      var m = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]+)"));
+      return m && m[1];
+    }
+
+    var t = cookie("theme") || localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", t);
+
+    var l = cookie("language") || localStorage.getItem("language");
+    if (!l) {
+      var nav = (navigator.language || "en").split("-")[0];
+      l = nav === "ko" ? "ko" : "en";
+    }
+    document.documentElement.setAttribute("lang", l);
+  } catch (e) {}
+})();
+"#;
+
+/// Newtype wrapper for the theme context signal so it doesn't collide
+/// with any other `Signal<bool>` provider in the tree.
+#[derive(Clone, Copy)]
+pub struct ThemeIsDark(pub Signal<bool>);
+
+#[cfg(not(feature = "server"))]
+fn initial_theme_is_dark() -> bool {
+    web_sys::window()
+        .and_then(|w| w.document())
+        .and_then(|d| d.document_element())
+        .and_then(|el| el.get_attribute("data-theme"))
+        .map(|t| t == "dark")
+        .unwrap_or(true)
+}
+
+#[cfg(feature = "server")]
+fn initial_theme_is_dark() -> bool {
+    true
+}
+
 #[component]
 pub fn App() -> Element {
     let _ = crate::features::accounts::context::Context::init()?;
+
+    // Theme state lives at the root so it survives every child remount
+    // (e.g. opening and closing the account menu drop-down). Putting the
+    // signal inside `ThemeMenuAction` itself caused a "Dropped" panic the
+    // moment the menu unmounted.
+    use_context_provider(|| ThemeIsDark(Signal::new(initial_theme_is_dark())));
+
     rsx! {
         document::Link { rel: "icon", href: asset!("/assets/favicon.ico") }
         document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }
@@ -10,26 +70,19 @@ pub fn App() -> Element {
             rel: "stylesheet",
             href: asset!("/assets/dx-components-theme.css"),
         }
+        document::Script { {BOOTSTRAP_SCRIPT} }
         SuspenseBoundary {
             fallback: move |_| rsx! {
-                div { class: "min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900",
-                    svg {
-                        class: "h-12 w-12 text-gray-400 animate-spin",
-                        xmlns: "http://www.w3.org/2000/svg",
-                        fill: "none",
-                        view_box: "0 0 24 24",
-                        circle {
-                            class: "opacity-25",
-                            cx: "12",
-                            cy: "12",
-                            r: "10",
-                            stroke: "currentColor",
-                            stroke_width: "4",
-                        }
-                        path {
-                            class: "opacity-75",
-                            fill: "currentColor",
-                            d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z",
+                div { class: "flex min-h-screen items-center justify-center bg-background px-6",
+                    div { class: "flex w-full max-w-sm items-center gap-4 rounded-[28px] border border-border bg-panel px-6 py-5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]",
+                        Spinner { class: "h-7 w-7 animate-spin" }
+                        div {
+                            p { class: "font-display text-lg font-bold text-foreground",
+                                "Loading console"
+                            }
+                            p { class: "text-sm text-foreground-muted",
+                                "Preparing your workspace"
+                            }
                         }
                     }
                 }

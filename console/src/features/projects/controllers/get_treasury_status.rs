@@ -1,0 +1,58 @@
+use crate::common::{ProjectPartition, Result};
+use crate::features::projects::TreasuryStatusResponse;
+use dioxus::prelude::*;
+
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, EntityType, ProjectViewerAuth};
+#[cfg(feature = "server")]
+use crate::features::tokens::ProjectToken;
+
+#[get("/v1/projects/:project_id/treasury/status", auth: ProjectViewerAuth)]
+pub async fn get_treasury_status_handler(
+    #[allow(unused_variables)] project_id: ProjectPartition,
+) -> Result<TreasuryStatusResponse> {
+    let config = CommonConfig::default();
+    let cli = config.dynamodb();
+
+    // The treasury contract address lives on the project's token
+    // record; the project itself no longer caches on-chain state.
+    let token = ProjectToken::get(cli, &auth.project.pk, Some(EntityType::Token)).await?;
+
+    let Some(token) = token else {
+        return Ok(TreasuryStatusResponse::default());
+    };
+
+    let (Some(treasury_address), Some(brand_token_address), Some(chain_id)) = (
+        token.treasury_contract_address.as_deref(),
+        token.contract_address.as_deref(),
+        token.chain_id,
+    ) else {
+        return Ok(TreasuryStatusResponse::default());
+    };
+
+    // Fetch the live snapshot from chain. If the RPC call fails we
+    // surface it as an error so the UI can show "unavailable" rather
+    // than silently returning zeros that look like a deployed-but-
+    // empty treasury.
+    let status = crate::common::blockchain::get_treasury_status(
+        chain_id,
+        treasury_address,
+        brand_token_address,
+    )
+    .await
+    .map_err(crate::common::Error::InternalServerError)?;
+
+    Ok(TreasuryStatusResponse {
+        deployed: true,
+        chain_id: Some(chain_id),
+        treasury_contract_address: Some(treasury_address.to_string()),
+        brand_token_address: Some(brand_token_address.to_string()),
+        treasury_balance_raw: status.treasury_balance_raw.to_string(),
+        stable_decimals: status.stable_decimals,
+        stable_symbol: status.stable_symbol,
+        total_supply_raw: status.total_supply_raw.to_string(),
+        circulating_supply_raw: status.circulating_supply_raw.to_string(),
+        token_decimals: status.token_decimals,
+        floor_price_raw_1e18: status.floor_price_raw_1e18.to_string(),
+    })
+}

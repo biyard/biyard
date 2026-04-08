@@ -19,7 +19,9 @@ impl BadgeVariant {
             BadgeVariant::Primary => "bg-blue-600 text-white",
             BadgeVariant::Secondary => "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white",
             BadgeVariant::Destructive => "bg-red-600 text-white",
-            BadgeVariant::Outline => "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300",
+            BadgeVariant::Outline => {
+                "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+            }
         }
     }
 }

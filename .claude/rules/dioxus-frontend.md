@@ -1,12 +1,12 @@
 ---
-globs: ["app/**/*.rs", "app/**/Dioxus.toml", "app/**/*.css"]
+globs: ["console/**/*.rs", "landing/**/*.rs", "console/**/*.css", "landing/**/*.css", "**/Dioxus.toml"]
 ---
 
 # Dioxus Fullstack Frontend
 
 ## Overview
 
-Frontend uses Dioxus 0.7 with fullstack rendering (SSR + client-side hydration). Single package with feature-gated modules.
+Frontend uses Dioxus 0.7 with fullstack rendering (SSR + client-side hydration). Two apps: `console/` (authenticated product) and `landing/` (marketing site). Each is a single package with feature-gated modules.
 
 ## Dioxus.toml
 
@@ -20,14 +20,23 @@ title = "Biyard"
 
 ## Entry Point
 
+`console/` uses a shared `run()` that dispatches between web and server mode with session management:
+
 ```rust
-// main.rs
+// console/src/main.rs
 fn main() {
-    app_shell::common::run(app_shell::App);
+    console::common::run(console::App);
 }
 ```
 
-`common::run()` dispatches between `dioxus::launch()` (web) and server mode with session management based on feature flags.
+`landing/` calls `dioxus::launch` directly (no shared `run()`, no session management):
+
+```rust
+// landing/src/main.rs
+fn main() {
+    dioxus::launch(App);
+}
+```
 
 ## Routing
 
@@ -78,11 +87,11 @@ pub fn AppLayout() -> Element {
 ## Feature Module Structure
 
 ```
-app/src/features/<module>/
+console/src/features/<module>/
 ├── mod.rs            # Module exports
 ├── route.rs          # Feature-level router
 ├── layout.rs         # Feature layout wrapper
-├── controllers/      # Server functions (#[server])
+├── controllers/      # Server handlers (#[get]/#[post]/... from by-macros) — see server-functions.md
 ├── models/           # DynamoDB entities (feature: server)
 ├── components/       # UI components
 ├── views/            # Page-level views
@@ -97,7 +106,7 @@ app/src/features/<module>/
 
 3-layer pattern:
 
-1. **JS source** — plain JS functions in `app/assets/` or `app/js/src/`
+1. **JS source** — plain JS functions in `console/assets/` or `console/js/src/`
 2. **Registration** — mount on `window.biyard.<namespace>` in index.js
 3. **Rust FFI** — `#[wasm_bindgen(js_namespace = ["window", "biyard", "<ns>"])]`
 
@@ -116,7 +125,7 @@ Rules:
 
 ## TailwindCSS v4
 
-- Input file: `app/tailwind.css`
+- Input file: `console/tailwind.css` (and `landing/tailwind.css`)
 - Source scanning: `@source "./src/**/*.{rs,css}"`
 - Theme via `@theme static` blocks, dark/light via `[data-theme]` attribute
 - Dioxus compiles Tailwind automatically from `Dioxus.toml` config
@@ -158,7 +167,7 @@ pub fn App() -> Element {
 
 - Use `#[component]` attribute on all component functions
 - Props via function parameters with `#[props(default)]` for optional values
-- Server functions with `#[server]` macro for backend logic callable from client
+- Backend handlers are written with `#[get/post/...]` from `by-macros` (not Dioxus `#[server]`) — see [server-functions.md](server-functions.md)
 
 ## Clone Avoidance Rules
 
@@ -176,6 +185,83 @@ pub fn App() -> Element {
 
 **Prefer `Copy` for simple enums** with only unit variants — add `Copy` to derives.
 
+## Hook Call Order — Hooks Must Always Run
+
+**Hooks must be called unconditionally on every render, in the same
+order.** Dioxus tracks hooks by index, so a hook that is sometimes
+skipped and sometimes called shifts every later hook by one slot. The
+visible failure modes are `cannot reclaim ElementId(N)`, `replaceWith:
+new child contains the parent`, and stale signal state.
+
+This means **every** Dioxus hook (`use_signal`, `use_loader`,
+`use_context_provider`, `use_effect`, `use_memo`, `use_resource`,
+`use_navigator`, `use_translate`, `use_hook`, …) must be reached on
+every render. The two patterns that violate this most often:
+
+**1. `use_loader(...)?` followed by more hooks.** The `?` propagates
+`Loading` and returns from the component early, so any hook below the
+`?` is skipped on the first render and only registered once the loader
+resolves — that's a hook count change between renders.
+
+```rust
+// WRONG — `use_signal` is skipped while the loader is pending
+let project = use_loader(...)?;
+let mut show_dialog = use_signal(|| false);
+
+// WRONG — second `use_loader` is skipped while the first is pending
+let a = use_loader(...)?;
+let b = use_loader(...)?;
+
+// CORRECT — register every hook first, then propagate Loading
+let project_result = use_loader(...);
+let status_result = use_loader(...);
+let mut show_dialog = use_signal(|| false);
+let project = project_result?;
+let status = status_result?;
+```
+
+For `use_effect` that depends on a loader value, capture the loader as
+`Option<Loader<T>>` (it is `Copy`) so the effect is registered
+unconditionally and no-ops while the loader is pending:
+
+```rust
+let loaded_result = use_loader(...);
+let loaded_for_effect: Option<Loader<_>> = loaded_result.as_ref().ok().copied();
+use_effect(move || {
+    if let Some(loader) = loaded_for_effect {
+        // ... read loader() and write to a store ...
+    }
+});
+let _loaded = loaded_result?;
+```
+
+**2. `return rsx! { ... }` (or `return rsx! {};`) before all hooks are
+registered.** Even a "redirect to sign-in" early return must come
+*after* every hook call, otherwise the redirect branch and the normal
+branch register a different number of hooks.
+
+```rust
+// WRONG — context providers are skipped on the redirect branch
+let account_ctx = use_account_context();
+if !account_ctx().is_logged_in() {
+    nav.push(Route::SignIn {});
+    return rsx! {};
+}
+let _ = use_context_provider(|| Signal::new(SidebarOpen(false)));
+
+// CORRECT — register every hook first, then branch
+let account_ctx = use_account_context();
+let _ = use_context_provider(|| Signal::new(SidebarOpen(false)));
+if !account_ctx().is_logged_in() {
+    nav.push(Route::SignIn {});
+    return rsx! {};
+}
+```
+
+**Rule of thumb:** every `use_*` call belongs in the top section of the
+component, above any `?`, any `return`, any `if` that early-returns,
+and any `let Some(...) = ... else { return ... }`.
+
 ## Data Loading
 
 - **Always use `use_loader`** (from dioxus-fullstack-core), NOT `use_server_future`
@@ -184,6 +270,70 @@ pub fn App() -> Element {
   let auth = use_loader(move || async move { Ok(get_me_handler().await.ok()) })?;
   ```
 - Wrap `Outlet` with `SuspenseBoundary` when child components use `use_loader()?`
+- See **Hook Call Order** above for the chained-`?` pitfall.
+
+## Keep RSX Thin — Extract Handler Bodies
+
+**Do not inline handler logic inside `rsx!`.** Event handler closures
+(`onclick`, `onsubmit`, `oninput`, …) and computed values used by RSX
+should be defined as `let` bindings *above* the `rsx!` block, not
+written inline in the markup.
+
+Why:
+- Inline closures with `spawn(async move { ... })` and multi-line
+  bodies bury logic inside template noise, making it hard to read,
+  search, and review.
+- Cloning, error handling, and `match` arms in inline closures tend to
+  drift into ad-hoc patterns that are hard to keep consistent.
+- Hoisting handlers makes it obvious which signals/state each one
+  captures, and lets the same handler be reused by multiple buttons or
+  bound through `EventHandler` props.
+
+```rust
+// WRONG — handler body is buried inside rsx!
+rsx! {
+    Btn {
+        onclick: move |_| {
+            let pid = project_id();
+            let nav = nav.clone();
+            spawn(async move {
+                let res = create_token_handler(pid.clone(), ...).await;
+                match res {
+                    Ok(_) => nav.push(Route::ProjectDetail { project_id: pid }),
+                    Err(e) => message.set(Some((AlertVariant::Error, e.to_string()))),
+                }
+            });
+        },
+        {t.create_token}
+    }
+}
+
+// CORRECT — handler hoisted out of rsx!
+let on_create = move |_| {
+    let pid = project_id();
+    let nav = nav.clone();
+    spawn(async move {
+        match create_token_handler(pid.clone(), ...).await {
+            Ok(_) => nav.push(Route::ProjectDetail { project_id: pid }),
+            Err(e) => message.set(Some((AlertVariant::Error, e.to_string()))),
+        }
+    });
+};
+
+rsx! {
+    Btn { onclick: on_create, {t.create_token} }
+}
+```
+
+**Allowed exceptions:**
+- One-line trivial closures that just toggle a signal:
+  `onclick: move |_| show_dialog.set(true)`.
+- Pure-display formatting (`format!`, `replace`) when it's a single
+  expression directly bound into an attribute.
+
+For everything else — async work, branching, multi-step state updates,
+error handling — bind the closure to a `let` above `rsx!` and reference
+it by name inside the markup.
 
 ## Type Conventions
 
@@ -201,21 +351,9 @@ pub fn App() -> Element {
 
 - SSR forms **must** include `method: "post"` — without it, defaults to GET and exposes form data in URL
 
-## GET Handler Query Parameters
+## Backend Handler Conventions
 
-Query parameters must be declared in the `#[get]` macro URL — without curly braces:
-```rust
-// Correct: query params after ? without braces
-#[get("/v1/projects?limit&bookmark", ...)]
-
-// Wrong: missing query params (treated as body → error on GET)
-#[get("/v1/projects", ...)]
-
-// Wrong: braces around query params
-#[get("/v1/projects?{limit}&{bookmark}", ...)]
-```
-- Path params use `:param`, query params use `?param1&param2`
-
-## Reference Codebase
-
-- Follow patterns from `ratel-new/app/ratel/src/` as reference implementation
+See [server-functions.md](server-functions.md) for the full rules on
+`#[get/post/put/patch/delete]` handlers under
+`console/src/features/*/controllers/*.rs` — including path/query params, body
+parameter naming, auth extractors, and DynamoDB access.

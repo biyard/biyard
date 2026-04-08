@@ -9,8 +9,8 @@ pub mod models;
 
 pub use dto::{
     CreateProjectRequest, ExchangeRequest, ExchangeResponse, ExchangeType, ProjectResponse,
-    UpdateProjectRequest,
+    SalesLogResponse, TreasuryStatusResponse, UpdateProjectRequest,
 };
 #[cfg(feature = "server")]
-pub use models::{Project, ProjectQueryOption};
+pub use models::{Project, ProjectQueryOption, SalesLog};
 pub use types::{ProjectError, ProjectStatus};

@@ -24,4 +24,3 @@ impl OrganizationRole {
         (self as u8) >= (required as u8)
     }
 }
-

@@ -4,120 +4,160 @@ use dioxus_translate::use_translate;
 use crate::Route;
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
-use crate::features::accounts::context::use_account_context;
+use crate::features::accounts::context::use_app_context;
 use crate::features::console::i18n::ConsoleTranslate;
 
+/// `/account/profile` — personal profile page.
+///
+/// This page is intentionally **not** decorated with an enterprise
+/// scope badge: it is personal-scope and belongs to the account, not
+/// the current enterprise. Email is shown read-only because it is the
+/// login identity; only display name is editable.
 #[component]
 pub fn Settings() -> Element {
     let t: ConsoleTranslate = use_translate();
-    let account_ctx = use_account_context();
+    let ctx = use_app_context();
+    let account_ctx = ctx.account_context;
 
     let nav = use_navigator();
     let mut show_delete_dialog = use_signal(|| false);
+    let initial_name = account_ctx()
+        .account
+        .as_ref()
+        .map(|a| a.name.clone())
+        .unwrap_or_default();
+    let mut name = use_signal(move || initial_name.clone());
+    let mut saving = use_signal(|| false);
+    let mut error = use_signal(|| None::<String>);
+    let mut success = use_signal(|| None::<String>);
 
     let Some(account) = account_ctx().account else {
         return rsx! {};
     };
 
-    rsx! {
-        div { class: "max-w-3xl",
-            PageHeader { title: t.account_settings.to_string() }
+    let on_save = move |_| {
+        let next_name = name();
+        let trimmed = next_name.trim().to_string();
+        if trimmed.is_empty() {
+            return;
+        }
 
-            // Profile Section
-            div { class: "mb-6",
-                SectionCard {
-                    h2 { class: "text-xl font-semibold text-gray-900 dark:text-white mb-4",
-                        {t.profile}
+        saving.set(true);
+        error.set(None);
+        success.set(None);
+
+        spawn(async move {
+            let res =
+                crate::features::accounts::controllers::update_me_handler(Some(trimmed)).await;
+            match res {
+                Ok(_) => {
+                    ctx.refresh();
+                    success.set(Some(t.profile_saved.to_string()));
+                }
+                Err(e) => error.set(Some(e.to_string())),
+            }
+            saving.set(false);
+        });
+    };
+
+    rsx! {
+        div { class: "space-y-8",
+            // No scope badge: profile is personal-scope, not enterprise.
+            PageHeader {
+                title: t.profile.to_string(),
+                subtitle: t.profile_subtitle.to_string(),
+            }
+
+            if let Some(msg) = error() {
+                AlertMessage { variant: AlertVariant::Error, "{msg}" }
+            }
+            if let Some(msg) = success() {
+                AlertMessage { variant: AlertVariant::Success, "{msg}" }
+            }
+
+            SectionCard {
+                SectionTitle { {t.profile} }
+
+                div { class: "space-y-6",
+                    div {
+                        FormField {
+                            label: t.display_name,
+                            r#type: "text",
+                            value: name(),
+                            oninput: move |e: FormEvent| name.set(e.value()),
+                        }
+                        p { class: "mt-2 text-xs text-foreground-muted", {t.display_name_help} }
                     }
-                    div { class: "space-y-4",
-                        div {
-                            FormLabel { {t.name} }
-                            p { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "{account.name}"
-                            }
+
+                    div {
+                        FormField {
+                            label: t.email,
+                            r#type: "email",
+                            value: account.email.clone(),
+                            oninput: move |_: FormEvent| {},
+                            disabled: true,
                         }
-                        div {
-                            FormLabel { {t.email} }
-                            p { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "{account.email}"
-                            }
+                        p { class: "mt-2 text-xs text-foreground-muted", {t.email_readonly_help} }
+                    }
+
+                    div { class: "grid gap-4 sm:grid-cols-2",
+                        InfoBlock {
+                            label: t.account_id.to_string(),
+                            value: account.pk.to_string(),
                         }
-                        div {
-                            FormLabel { {t.account_id} }
-                            p { class: "mt-1 text-sm text-gray-900 dark:text-white font-mono",
-                                "{account.pk}"
+                        InfoBlock {
+                            label: t.created_at.to_string(),
+                            value: format_timestamp(account.created_at),
+                        }
+                    }
+
+                    div { class: "flex justify-end",
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            disabled: saving() || name().trim().is_empty(),
+                            onclick: on_save,
+                            if saving() {
+                                {t.loading}
+                            } else {
+                                {t.save_profile}
                             }
                         }
                     }
                 }
             }
 
-            // Danger Zone
-            div {
-                DangerCard {
-                    div { class: "flex items-start",
-                        // AlertTriangle icon
-                        svg {
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            class: "h-6 w-6 text-red-600 dark:text-red-400 mt-0.5",
-                            path { d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" }
-                            path { d: "M12 9v4" }
-                            path { d: "M12 17h.01" }
+            DangerCard {
+                div { class: "flex flex-col gap-5 md:flex-row md:items-start md:justify-between",
+                    div { class: "flex items-start gap-4",
+                        div { class: "mt-1 flex h-11 w-11 items-center justify-center rounded-2xl bg-danger text-white",
+                            IconAlertTriangle { class: "h-5 w-5" }
                         }
-                        div { class: "ml-3 flex-1",
-                            h2 { class: "text-xl font-semibold text-red-600 dark:text-red-400 mb-2",
+                        div {
+                            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-danger",
+                                {t.danger_zone}
+                            }
+                            h3 { class: "mt-2 font-display text-xl font-bold tracking-tight text-foreground",
                                 {t.delete_account}
                             }
-                            p { class: "text-sm text-gray-600 dark:text-gray-400 mb-4",
+                            p { class: "mt-2 max-w-2xl text-sm leading-6 text-foreground-soft",
                                 {t.delete_account_desc}
                             }
-                            Btn {
-                                variant: BtnVariant::Danger,
-                                onclick: move |_| show_delete_dialog.set(true),
-                                {t.delete_account}
-                            }
                         }
+                    }
+                    Btn {
+                        variant: BtnVariant::Danger,
+                        onclick: move |_| show_delete_dialog.set(true),
+                        {t.delete_account}
                     }
                 }
             }
 
-            // Confirmation Dialog
             DialogRoot {
                 open: show_delete_dialog(),
                 on_open_change: move |v| show_delete_dialog.set(v),
                 DialogContent {
-                    div { class: "flex items-center mb-4",
-                        // AlertTriangle icon
-                        svg {
-                            xmlns: "http://www.w3.org/2000/svg",
-                            width: "24",
-                            height: "24",
-                            view_box: "0 0 24 24",
-                            fill: "none",
-                            stroke: "currentColor",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            class: "h-6 w-6 text-red-600 dark:text-red-400",
-                            path { d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" }
-                            path { d: "M12 9v4" }
-                            path { d: "M12 17h.01" }
-                        }
-                        h3 { class: "ml-2 text-lg font-semibold text-gray-900 dark:text-white",
-                            {t.delete_account_confirm}
-                        }
-                    }
-                    p { class: "text-sm text-gray-600 dark:text-gray-400 mb-6",
-                        {t.delete_account_warning}
-                    }
+                    DialogTitle { {t.delete_account_confirm} }
+                    DialogDescription { {t.delete_account_warning} }
                     DialogActions {
                         Btn {
                             variant: BtnVariant::Secondary,
@@ -137,6 +177,18 @@ pub fn Settings() -> Element {
                     }
                 }
             }
+        }
+    }
+}
+
+#[component]
+fn InfoBlock(label: String, value: String) -> Element {
+    rsx! {
+        div { class: "rounded-[24px] border border-border bg-panel-muted p-4",
+            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                "{label}"
+            }
+            p { class: "mt-2 break-all text-sm font-semibold text-foreground", "{value}" }
         }
     }
 }

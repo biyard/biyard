@@ -1,5 +1,5 @@
 ---
-globs: ["api/**/*.rs", "packages/by-macros/**/*.rs"]
+globs: ["console/**/*.rs"]
 ---
 
 # DynamoDB Patterns
@@ -75,6 +75,36 @@ This generates:
 ## DynamoEnum Derive
 
 Use `DynamoEnum` for enum types stored in DynamoDB fields. Provides automatic serialization/deserialization.
+
+## ID Generation — Use UUID v7, not v4
+
+**Always use `uuid::Uuid::now_v7()` when generating identifiers for DynamoDB
+entities.** Do **not** use `Uuid::new_v4()`.
+
+```rust
+// Correct
+let id = uuid::Uuid::now_v7().to_string();
+
+// Wrong
+let id = uuid::Uuid::new_v4().to_string();
+```
+
+**Why:**
+- UUID v7 embeds a millisecond Unix timestamp in the high bits, so generated
+  IDs are **lexicographically sortable by creation time**. That means
+  time-ordered DynamoDB sort keys (e.g., `SK = TXN#<uuid>`) naturally produce
+  chronological reads without a separate `created_at` range key.
+- Insert patterns stay adjacent in the B-tree, which is friendlier to
+  DynamoDB's internal partitioning than v4's fully random layout.
+- Debuggability: you can eyeball two IDs and tell which came first.
+
+**Cargo feature:** `console/Cargo.toml` enables the `v7` feature on the `uuid`
+crate, not `v4`. Do not add `v4` back to the feature list.
+
+**Scope:** this applies to every new entity ID in `console/` (projects,
+credentials, accounts, point transactions, S3 object keys, etc.). Existing v4
+IDs already written to DynamoDB stay valid — only new generation sites must
+use v7.
 
 ## Best Practices
 

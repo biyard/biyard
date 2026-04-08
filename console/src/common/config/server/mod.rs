@@ -1,5 +1,6 @@
 #![allow(static_mut_refs)]
 pub mod dynamodb;
+pub mod s3;
 
 use super::*;
 
@@ -13,6 +14,10 @@ pub struct ServerConfig {
 impl ServerConfig {
     pub fn dynamodb(&self) -> &aws_sdk_dynamodb::Client {
         &dynamodb::DB
+    }
+
+    pub fn s3(&self) -> &crate::common::utils::s3_client::S3Client {
+        &s3::S3
     }
 }
 

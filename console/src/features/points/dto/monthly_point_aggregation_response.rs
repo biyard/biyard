@@ -9,3 +9,15 @@ pub struct MonthlyPointAggregationResponse {
     pub deducted_points: i64,
     pub exchanged_points: i64,
 }
+
+impl MonthlyPointAggregationResponse {
+    /// Zero-filled aggregation for a given month. Used when no aggregation
+    /// row exists yet (fresh brand) so the API can return `200 OK` instead
+    /// of `404`, keeping "no activity" out of the browser console error log.
+    pub fn empty(date: String) -> Self {
+        Self {
+            date,
+            ..Self::default()
+        }
+    }
+}

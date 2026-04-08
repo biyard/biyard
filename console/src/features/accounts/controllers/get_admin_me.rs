@@ -9,4 +9,3 @@ use crate::common::SystemAdminAuth;
 pub async fn get_admin_me_handler() -> Result<AccountResponse> {
     Ok(auth.account.into())
 }
-

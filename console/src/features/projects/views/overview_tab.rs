@@ -16,217 +16,165 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
 
     let aggregation = use_loader(move || async move {
         let month = chrono::Utc::now().format("%Y-%m").to_string();
-        crate::features::points::controllers::get_point_aggregation_handler(
-            project_id(),
-            month,
-        )
-        .await
+        crate::features::points::controllers::get_point_aggregation_handler(project_id(), month)
+            .await
     });
 
-    let floor_price = match &token {
-        Ok(tok) => {
-            let total_supply = tok.read().total_supply;
-            if total_supply > 0 {
-                (project.treasury_balance as f64) / (total_supply as f64)
-            } else {
-                0.0
-            }
-        }
-        Err(_) => 0.0,
-    };
-
     rsx! {
-        div { class: "space-y-6",
-            // Project Overview Card
+        div { class: "grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
             SectionCard {
-                SectionTitle { {t.overview} }
-                if project.brand_logo_url.is_some() {
-                    div { class: "mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/40",
-                        div { class: "flex items-center gap-4",
-                            if let Some(logo) = &project.brand_logo_url {
-                                img {
-                                    src: "{logo}",
-                                    alt: "brand-logo",
-                                    class: "h-14 w-14 rounded-lg object-cover border border-gray-200 dark:border-gray-600 bg-white",
-                                }
-                            } else {
-                                div { class: "h-14 w-14 rounded-lg bg-gray-200 dark:bg-gray-600" }
-                            }
-                            div {
-                                p { class: "text-xs text-gray-500 dark:text-gray-400", {t.brand} }
-                                p { class: "text-base font-semibold text-gray-900 dark:text-white",
-                                    "{project.name}"
-                                }
-                            }
-                        }
+                SectionTitle { {t.project_info} }
+                // The brand avatar + name header lives in the page header
+                // (`ProjectDetailLayout`) just above this card, so we don't
+                // repeat it here. The optional description is the only
+                // identity-level information that the page header doesn't
+                // already show, so we surface it as a single intro line.
+                div { class: "space-y-5",
+                    if let Some(desc) = project.description.clone() {
+                        p { class: "text-sm leading-6 text-foreground-soft", "{desc}" }
                     }
-                }
-                div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
-                    dl { class: "space-y-4",
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.project_id}
-                            }
-                            dd { class: "mt-1",
-                                code { class: "text-sm text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded",
-                                    "{project.id}"
-                                }
+
+                    div { class: "grid gap-4 sm:grid-cols-2",
+                        InfoRow {
+                            label: t.project_id.to_string(),
+                            value: project.id.clone(),
+                            code_like: true,
+                        }
+                        InfoRow {
+                            label: t.created_at.to_string(),
+                            value: format_timestamp(project.created_at),
+                            code_like: false,
+                        }
+                        // Updated row only shown when it actually differs
+                        // from Created — for a brand-new brand the two are
+                        // the same to the millisecond, and showing both
+                        // wastes a row and looks like a bug.
+                        if project.updated_at > project.created_at {
+                            InfoRow {
+                                label: t.updated_at.to_string(),
+                                value: format_timestamp(project.updated_at),
+                                code_like: false,
                             }
                         }
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.created_at}
-                            }
-                            dd { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "{format_timestamp(project.created_at)}"
-                            }
+                        InfoRow {
+                            label: t.monthly_supply.to_string(),
+                            value: format_number(project.monthly_token_supply),
+                            code_like: false,
                         }
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.updated_at}
-                            }
-                            dd { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "{format_timestamp(project.updated_at)}"
-                            }
+                        InfoRow {
+                            label: t.exchange_ratio.to_string(),
+                            value: "1 : 1".to_string(),
+                            code_like: false,
                         }
-                    }
-                    dl { class: "space-y-4",
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.monthly_supply}
-                            }
-                            dd { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "{format_number(project.monthly_token_supply)}"
-                            }
-                        }
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.exchange_ratio}
-                            }
-                            dd { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "1 : 1"
-                            }
-                        }
-                        div {
-                            dt { class: "text-sm font-medium text-gray-500 dark:text-gray-400",
-                                {t.token_value}
-                            }
-                            dd { class: "mt-1 text-sm text-gray-900 dark:text-white",
-                                "-"
-                            }
+                        InfoRow {
+                            label: t.token_value.to_string(),
+                            value: "-".to_string(),
+                            code_like: false,
                         }
                     }
                 }
             }
 
-            // Token Info Card
             SectionCard {
                 SectionTitle { {t.token_info} }
                 match &token {
-                    Ok(tok) => {
-                        let tok = &*tok.read();
-                        rsx! {
-                            div {
-                                div { class: "flex items-center space-x-4 mb-6",
-                                    div { class: "p-3 bg-blue-100 dark:bg-blue-900 rounded-full",
-                                        svg {
-                                            class: "h-8 w-8 text-blue-600 dark:text-blue-400",
-                                            xmlns: "http://www.w3.org/2000/svg",
-                                            width: "24",
-                                            height: "24",
-                                            view_box: "0 0 24 24",
-                                            fill: "none",
-                                            stroke: "currentColor",
-                                            stroke_width: "2",
-                                            stroke_linecap: "round",
-                                            stroke_linejoin: "round",
-                                            circle { cx: "8", cy: "8", r: "6" }
-                                            path { d: "M18.09 10.37A6 6 0 1 1 10.34 18" }
-                                            path { d: "M7 6h1v4" }
-                                            path { d: "m16.71 13.88.7.71-2.82 2.82" }
+                    Ok(loaded) => {
+                        let loaded = loaded.read();
+                        match &*loaded {
+                            Some(tok) => rsx! {
+                                div { class: "space-y-5",
+                                    div { class: "flex items-center gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
+                                        div { class: "flex h-14 w-14 items-center justify-center rounded-[18px] bg-brand-soft text-brand",
+                                            IconToken { class: "h-7 w-7" }
+                                        }
+                                        div {
+                                            p { class: "font-display text-xl font-bold tracking-tight text-foreground",
+                                                "{tok.name}"
+                                            }
+                                            StatusBadge { color: BadgeColor::Blue, "{tok.symbol}" }
                                         }
                                     }
-                                    div {
-                                        h4 { class: "text-xl font-semibold text-gray-900 dark:text-white",
-                                            "{tok.name}"
-                                        }
-                                        span { class: "px-2 py-1 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded",
-                                            "{tok.symbol}"
-                                        }
+                                    if let Some(ref desc) = tok.description {
+                                        p { class: "text-sm leading-6 text-foreground-muted", "{desc}" }
+                                    }
+                                    div { class: "grid gap-4 sm:grid-cols-3",
+                                        StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
+                                        StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
+                                        StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
                                     }
                                 }
-                                if let Some(ref desc) = tok.description {
-                                    p { class: "text-gray-500 dark:text-gray-400 mb-6", "{desc}" }
+                            },
+                            None => rsx! {
+                                EmptyState {
+                                    icon: rsx! { IconToken {} },
+                                    title: t.no_token.to_string(),
+                                    description: t.no_token_desc.to_string(),
                                 }
-                                div { class: "grid grid-cols-1 md:grid-cols-3 gap-4",
-                                    StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
-                                    StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
-                                    StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
-                                }
-                            }
+                            },
                         }
-                    },
+                    }
+                    // Backend error (network, auth, etc.) — distinct from "no token yet".
+                    // We surface a quiet message rather than the empty-state CTA so the
+                    // user is not invited to "create" a token that may already exist
+                    // but failed to load.
                     Err(_) => rsx! {
-                        div { class: "text-center py-8",
-                            svg {
-                                class: "mx-auto h-12 w-12 text-gray-400",
-                                xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24",
-                                view_box: "0 0 24 24", fill: "none", stroke: "currentColor",
-                                stroke_width: "2", stroke_linecap: "round", stroke_linejoin: "round",
-                                circle { cx: "8", cy: "8", r: "6" }
-                                path { d: "M18.09 10.37A6 6 0 1 1 10.34 18" }
-                                path { d: "M7 6h1v4" }
-                                path { d: "m16.71 13.88.7.71-2.82 2.82" }
-                            }
-                            h3 { class: "mt-2 text-sm font-medium text-gray-900 dark:text-white", {t.no_token} }
-                            p { class: "mt-1 text-sm text-gray-500 dark:text-gray-400", {t.no_token_desc} }
+                        div { class: "rounded-[24px] border border-border bg-panel-muted p-6 text-sm text-foreground-muted",
+                            {t.token_load_error}
                         }
-                    },
+                    }
                 }
             }
 
-            // Point Info Card
             SectionCard {
                 SectionTitle { {t.point_info} }
                 match &aggregation {
                     Ok(agg) => {
-                        let agg = &*agg.read();
-                        rsx! {
-                            div {
-                                div { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-6",
-                                    StatCard { color: StatColor::Green, label: t.total_awarded.to_string(), value: format_number(agg.awarded_points) }
-                                    StatCard { color: StatColor::Red, label: t.total_deducted.to_string(), value: format_number(agg.deducted_points) }
+                        let agg = agg.read();
+                        let has_activity = agg.awarded_points != 0 || agg.deducted_points != 0;
+                        if has_activity {
+                            rsx! {
+                                div { class: "space-y-5",
+                                    div { class: "grid gap-4 sm:grid-cols-2",
+                                        StatCard { color: StatColor::Green, label: t.total_awarded.to_string(), value: format_number(agg.awarded_points) }
+                                        StatCard { color: StatColor::Red, label: t.total_deducted.to_string(), value: format_number(agg.deducted_points) }
+                                    }
+                                }
+                            }
+                        } else {
+                            rsx! {
+                                EmptyState {
+                                    icon: rsx! { IconStar {} },
+                                    title: t.no_points_yet.to_string(),
+                                    description: t.no_points_desc.to_string(),
                                 }
                             }
                         }
-                    },
+                    }
                     Err(_) => rsx! {
-                        div { class: "text-center py-8",
-                            svg {
-                                class: "mx-auto h-12 w-12 text-gray-400",
-                                xmlns: "http://www.w3.org/2000/svg", width: "24", height: "24",
-                                view_box: "0 0 24 24", fill: "none", stroke: "currentColor",
-                                stroke_width: "2", stroke_linecap: "round", stroke_linejoin: "round",
-                                polygon { points: "12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" }
-                            }
-                            h3 { class: "mt-2 text-sm font-medium text-gray-900 dark:text-white", {t.no_points_yet} }
-                            p { class: "mt-1 text-sm text-gray-500 dark:text-gray-400", {t.no_points_desc} }
+                        div { class: "rounded-[24px] border border-border bg-panel-muted p-6 text-sm text-foreground-muted",
+                            {t.point_load_error}
                         }
-                    },
+                    }
                 }
             }
+        }
+    }
+}
 
-            // Treasury Simulation Card
-            SectionCard {
-                SectionTitle { {t.treasury_simulation} }
-                div { class: "grid grid-cols-1 md:grid-cols-4 gap-4",
-                    StatCard { color: StatColor::Emerald, label: t.treasury_balance.to_string(), value: format_number(project.treasury_balance) }
-                    StatCard { color: StatColor::Indigo, label: t.simulated_sales_total.to_string(), value: format_number(project.simulated_sales_total) }
-                    StatCard { color: StatColor::Blue, label: t.treasury_reserve_rate.to_string(), value: format!("{}%", (project.treasury_reserve_rate * 100.0).round()) }
-                    StatCard { color: StatColor::Amber, label: t.estimated_floor_price.to_string(), value: format_floor_price(floor_price) }
+#[component]
+fn InfoRow(label: String, value: String, code_like: bool) -> Element {
+    rsx! {
+        div { class: "rounded-[24px] border border-border bg-panel-muted p-4",
+            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                "{label}"
+            }
+            if code_like {
+                code { class: "mt-2 block break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
+                    "{value}"
                 }
-                p { class: "mt-3 text-xs text-gray-500 dark:text-gray-400",
-                    {t.floor_price_formula}
+            } else {
+                p { class: "mt-2 text-sm font-semibold text-foreground",
+                    "{value}"
                 }
             }
         }

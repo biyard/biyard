@@ -4,10 +4,10 @@ use dioxus_primitives::dialog::{
 };
 
 const BACKDROP_CLASS: &str = "fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4";
-const CONTENT_CLASS: &str = "bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-6";
-const TITLE_CLASS: &str = "text-lg font-semibold text-gray-900 dark:text-white mb-4";
-const DESCRIPTION_CLASS: &str = "text-sm text-gray-500 dark:text-gray-400 mb-4";
-const ACTIONS_CLASS: &str = "flex justify-end space-x-3 mt-6";
+const CONTENT_CLASS: &str = "w-full max-w-2xl rounded-[28px] border border-border bg-panel p-6 shadow-[0_24px_60px_rgba(2,6,23,0.26)]";
+const TITLE_CLASS: &str = "mb-3 font-display text-2xl font-bold tracking-tight text-foreground";
+const DESCRIPTION_CLASS: &str = "mb-4 text-sm leading-6 text-foreground-muted";
+const ACTIONS_CLASS: &str = "mt-6 flex justify-end gap-3";
 
 #[component]
 pub fn DialogRoot(props: DialogRootProps) -> Element {

@@ -9,8 +9,9 @@ pub struct Project {
     #[dynamo(index = "gsi1", pk, name = "find_by_account_id")]
     pub account_id: Partition,
 
-    #[dynamo(index = "gsi1", sk, name = "find_by_account_id")]
-    pub gsi1_sk: EntityType,
+    #[serde(default)]
+    #[dynamo(index = "gsi2", pk, name = "find_by_organization_id")]
+    pub organization_id: Partition,
 
     pub name: String,
     pub description: Option<String>,
@@ -24,14 +25,12 @@ pub struct Project {
     #[serde(default = "default_treasury_reserve_rate")]
     pub treasury_reserve_rate: f64,
 
-    #[serde(default)]
-    pub simulated_sales_total: i64,
-
-    #[serde(default)]
-    pub treasury_balance: i64,
-
     pub status: ProjectStatus,
+
+    #[dynamo(index = "gsi1", sk)]
+    #[dynamo(index = "gsi2", sk)]
     pub created_at: i64,
+
     pub updated_at: i64,
 }
 
@@ -42,6 +41,7 @@ fn default_treasury_reserve_rate() -> f64 {
 impl Project {
     pub fn new(
         account_id: Partition,
+        organization_id: Partition,
         name: String,
         description: Option<String>,
         monthly_token_supply: i64,
@@ -49,20 +49,18 @@ impl Project {
         treasury_reserve_rate: f64,
     ) -> Self {
         let now = crate::common::utils::time_utils::get_now();
-        let uuid = uuid::Uuid::new_v4().to_string();
+        let uuid = uuid::Uuid::now_v7().to_string();
 
         Self {
             pk: Partition::Project(uuid),
             sk: EntityType::Project,
             account_id,
-            gsi1_sk: EntityType::Project,
+            organization_id,
             name,
             description,
             brand_logo_url,
             monthly_token_supply,
             treasury_reserve_rate,
-            simulated_sales_total: 0,
-            treasury_balance: 0,
             status: ProjectStatus::Active,
             created_at: now,
             updated_at: now,
@@ -87,13 +85,12 @@ impl From<Project> for crate::features::projects::ProjectResponse {
         Self {
             id: project_id,
             account_id: project.account_id,
+            organization_id: project.organization_id,
             name: project.name,
             description: project.description,
             brand_logo_url: project.brand_logo_url,
             monthly_token_supply: project.monthly_token_supply,
             treasury_reserve_rate: project.treasury_reserve_rate,
-            simulated_sales_total: project.simulated_sales_total,
-            treasury_balance: project.treasury_balance,
             status: project.status,
             created_at: project.created_at,
             updated_at: project.updated_at,
