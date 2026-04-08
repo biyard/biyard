@@ -37,16 +37,14 @@ echo 'biyard-local-main table and GSIs created successfully'
 #   gsi2: pk=CRED#<api_key_hash>     sk=<created_at>         (find_by_api_key_hash)
 #   gsi3: pk=CRED#ENTERPRISE#<id>    sk=<created_at>         (find_by_organization_id)
 #
-# Personal-enterprise convention (see ensure_current_enterprise_for_account):
-#   enterprise_id = "acct-<account_uuid>"
-# We pre-seed enterprises with this id and set legacy_account_sync_at so the
-# auto-backfill on first login is a no-op.
+# Each seeded account is paired with its own personal Enterprise, created at
+# signup time. Account.enterprise_id points at the Enterprise's pk.
 # ----------------------------------------------------------------------------
 
 ADMIN_ACCOUNT_ID="75734ca2-d695-4c95-88ea-4328825cd936"
-ADMIN_ENTERPRISE_ID="acct-${ADMIN_ACCOUNT_ID}"
+ADMIN_ENTERPRISE_ID="01999999-0000-7000-8000-000000000001"
 TEST_ACCOUNT_ID="e1cfb27d-b0e6-43de-ab76-784974352466"
-TEST_ENTERPRISE_ID="acct-${TEST_ACCOUNT_ID}"
+TEST_ENTERPRISE_ID="01999999-0000-7000-8000-000000000002"
 
 # qwer1234!@# legacy SHA3-256
 PASSWORD_HASH="e542fdd785ab67a110adf8c0e3b3f3ff9bcdbdec3091c0114d00010501b67c05"
@@ -111,7 +109,6 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "gsi1_sk": {"S": "'"${NOW_MS}"'"},
         "owner_account_id": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
         "name": {"S": "SystemAdmin Personal"},
-        "legacy_account_sync_at": {"N": "'"${NOW_MS}"'"},
         "created_at": {"N": "'"${NOW_MS}"'"},
         "updated_at": {"N": "'"${NOW_MS}"'"}
     }'
@@ -126,7 +123,6 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "gsi1_sk": {"S": "'"${NOW_MS}"'"},
         "owner_account_id": {"S": "ACCOUNT#'"${TEST_ACCOUNT_ID}"'"},
         "name": {"S": "Playwright Test Personal"},
-        "legacy_account_sync_at": {"N": "'"${NOW_MS}"'"},
         "created_at": {"N": "'"${NOW_MS}"'"},
         "updated_at": {"N": "'"${NOW_MS}"'"}
     }'

@@ -22,10 +22,6 @@ pub async fn list_projects_handler(
         opt = opt.bookmark(bookmark);
     }
 
-    // Enterprise context is guaranteed by EnterpriseContextAuth, which lazily
-    // backfills legacy account-scoped resources on first request. Reads here
-    // can therefore go directly through gsi2 (organization_id) without an
-    // account_id fallback.
     let (projects, bookmark) =
         Project::find_by_organization_id(cli, &auth.enterprise.pk, opt).await?;
 

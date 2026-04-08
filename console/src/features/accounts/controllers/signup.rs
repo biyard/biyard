@@ -5,11 +5,11 @@ use dioxus::prelude::*;
 #[cfg(feature = "server")]
 use super::SESSION_KEY_ACCOUNT_ID;
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, Extension};
+use crate::common::{CommonConfig, Extension, OrganizationRole, Partition};
 #[cfg(feature = "server")]
 use crate::features::accounts::{Account, AccountError, AccountQueryOption, PasswordScheme};
 #[cfg(feature = "server")]
-use crate::features::enterprises::controllers::ensure_current_enterprise_for_account;
+use crate::features::enterprises::Enterprise;
 
 #[post("/v1/accounts/signup", session: Extension<tower_sessions::Session>)]
 pub async fn signup_handler(
@@ -35,10 +35,20 @@ pub async fn signup_handler(
     )?;
 
     let password_hash = crate::common::utils::user_password_utils::hash_password(&password)?;
-    let account = Account::new(name, email, password_hash, PasswordScheme::BcryptV1);
+    let mut account = Account::new(name, email, password_hash, PasswordScheme::BcryptV1);
 
+    let enterprise_pk = Partition::Enterprise(uuid::Uuid::now_v7().to_string());
+    let enterprise = Enterprise::new(
+        enterprise_pk.clone(),
+        account.pk.clone(),
+        format!("{} Personal", account.name),
+    );
+
+    account.enterprise_id = enterprise_pk;
+    account.organization_role = OrganizationRole::Owner;
+
+    enterprise.create(cli).await?;
     account.create(cli).await?;
-    let (account, _) = ensure_current_enterprise_for_account(cli, &account).await?;
 
     session
         .insert(SESSION_KEY_ACCOUNT_ID, account.pk.to_string())

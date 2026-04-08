@@ -9,8 +9,6 @@ pub struct Enterprise {
     pub owner_account_id: Partition,
 
     pub name: String,
-    #[serde(default)]
-    pub legacy_account_sync_at: Option<i64>,
 
     #[dynamo(index = "gsi1", sk)]
     pub created_at: i64,
@@ -27,7 +25,6 @@ impl Enterprise {
             sk: EntityType::Enterprise,
             owner_account_id,
             name,
-            legacy_account_sync_at: None,
             created_at: now,
             updated_at: now,
         }
