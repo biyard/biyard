@@ -56,8 +56,8 @@ translate! {
         ko: "예: 1,000,000 — 수동 프로비저닝은 0",
     },
     monthly_supply_help: {
-        en: "Per-month budget for rewarding users with points convertible to this brand's token. Independent of the token's on-chain total supply (set on the Token tab).",
-        ko: "이 브랜드의 토큰으로 전환 가능한 포인트를 사용자에게 지급할 월별 예산입니다. 토큰의 온체인 총 공급량(토큰 탭에서 설정)과는 별개입니다.",
+        en: "Per-month budget for rewarding users with points that can later be converted into this brand's token via the Treasury.",
+        ko: "이 브랜드의 토큰으로 전환 가능한 포인트를 Treasury를 통해 사용자에게 지급할 월별 예산입니다.",
     },
     symbol: {
         en: "Symbol",
