@@ -5,6 +5,7 @@ use crate::Route;
 use crate::common::ProjectPartition;
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
 use crate::features::projects::views::project_editor::{ProjectEditorCard, ProjectEditorMode};
@@ -28,6 +29,8 @@ use crate::features::projects::views::project_editor::{ProjectEditorCard, Projec
 pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectResponse) -> Element {
     let t: ProjectsTranslate = use_translate();
     let nav = use_navigator();
+    let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
     let mut show_delete = use_signal(|| false);
     let mut confirm_input = use_signal(String::new);
     let mut deleting = use_signal(|| false);
@@ -70,6 +73,44 @@ pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
             }
         });
     };
+
+    if !can_write {
+        return rsx! {
+            div { class: "space-y-6",
+                AlertMessage {
+                    variant: AlertVariant::Info,
+                    {t.viewer_readonly_notice}
+                }
+                SectionCard {
+                    SectionTitle { {t.brand_profile} }
+                    div { class: "grid gap-4 sm:grid-cols-2",
+                        div {
+                            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                                {t.name}
+                            }
+                            p { class: "mt-1 text-sm font-semibold text-foreground", {project.name.clone()} }
+                        }
+                        if let Some(desc) = project.description.clone() {
+                            div {
+                                p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                                    {t.description}
+                                }
+                                p { class: "mt-1 text-sm text-foreground", {desc} }
+                            }
+                        }
+                        div {
+                            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                                {t.monthly_supply}
+                            }
+                            p { class: "mt-1 text-sm font-semibold text-foreground",
+                                "{project.monthly_token_supply}"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
 
     rsx! {
         div { class: "space-y-8",

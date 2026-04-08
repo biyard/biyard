@@ -3,11 +3,11 @@ use crate::features::points::PointTransactionResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectViewerAuth};
 #[cfg(feature = "server")]
 use crate::features::points::PointTransaction;
 
-#[get("/v1/projects/:project_id/points/:meta_user_id/transactions?limit&bookmark&date", _auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/points/:meta_user_id/transactions?limit&bookmark&date", _auth: ProjectViewerAuth)]
 pub async fn list_user_transactions_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     meta_user_id: String,

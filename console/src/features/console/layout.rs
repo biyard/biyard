@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::Route;
-use crate::common::ui::Spinner;
+use crate::common::ui::{AlertMessage, AlertVariant, Btn, BtnVariant, SectionCard, Spinner};
 use crate::features::accounts::context::use_account_context;
 use crate::features::console::components::{ConsoleSidebar, SidebarCollapsed, SidebarOpen};
 use crate::features::console::i18n::ConsoleTranslate;
@@ -51,13 +51,59 @@ pub fn Layout() -> Element {
                                         }
                                     }
                                 },
-                                Outlet::<Route> {}
+                                // Per-route error boundary: a handler in any
+                                // route (e.g. a `use_loader?` that returns
+                                // Forbidden for a Viewer) bubbles up here
+                                // instead of tearing down the whole app
+                                // shell. The sidebar and topbar stay usable
+                                // so the user can navigate away.
+                                ErrorBoundary {
+                                    handle_error: move |_ctx: ErrorContext| rsx! {
+                                        PageErrorFallback {}
+                                    },
+                                    Outlet::<Route> {}
+                                }
                             }
                         }
                     }
                 }
             } else {
                 div { class: "flex min-h-screen items-center justify-center" }
+            }
+        }
+    }
+}
+
+#[component]
+fn PageErrorFallback() -> Element {
+    let t: ConsoleTranslate = use_translate();
+
+    let on_reload = move |_| {
+        #[cfg(not(feature = "server"))]
+        {
+            if let Some(win) = web_sys::window() {
+                let _ = win.location().reload();
+            }
+        }
+    };
+
+    rsx! {
+        div { class: "py-10",
+            SectionCard {
+                AlertMessage {
+                    variant: AlertVariant::Error,
+                    {t.page_error_body}
+                }
+                div { class: "mt-5 flex items-center justify-between gap-3",
+                    h2 { class: "font-display text-lg font-bold tracking-tight text-foreground",
+                        {t.page_error_title}
+                    }
+                    Btn {
+                        variant: BtnVariant::Primary,
+                        onclick: on_reload,
+                        {t.page_error_retry}
+                    }
+                }
             }
         }
     }

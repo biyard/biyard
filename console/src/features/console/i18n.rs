@@ -7,6 +7,18 @@ translate! {
         en: "Overview",
         ko: "개요",
     },
+    page_error_title: {
+        en: "Something went wrong",
+        ko: "문제가 발생했어요",
+    },
+    page_error_body: {
+        en: "This page could not be loaded. Try refreshing, or navigate to another page from the sidebar.",
+        ko: "페이지를 불러오지 못했습니다. 새로고침하거나 사이드바에서 다른 페이지로 이동해 주세요.",
+    },
+    page_error_retry: {
+        en: "Reload page",
+        ko: "다시 불러오기",
+    },
     projects: {
         en: "Brands",
         ko: "브랜드",
