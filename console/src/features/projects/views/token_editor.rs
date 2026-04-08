@@ -74,7 +74,7 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
 
                 SectionCard {
                     SectionTitle { {t.token_info} }
-                    div { class: "grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
+                    div { class: "grid gap-4 sm:grid-cols-2",
                         StatCard {
                             label: t.token_name.to_string(),
                             value: token.name.clone(),
@@ -84,11 +84,6 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
                             label: t.token_symbol.to_string(),
                             value: token.symbol.clone(),
                             color: StatColor::Blue,
-                        }
-                        StatCard {
-                            label: t.total_supply.to_string(),
-                            value: format_number(token.total_supply),
-                            color: StatColor::Purple,
                         }
                     }
 
@@ -275,10 +270,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
         .as_ref()
         .map(|t| t.decimals.to_string())
         .unwrap_or_else(|| "18".to_string());
-    let seed_initial_supply = existing_token
-        .as_ref()
-        .map(|t| t.total_supply.to_string())
-        .unwrap_or_else(|| "1000000".to_string());
     let seed_description = existing_token
         .as_ref()
         .and_then(|t| t.description.clone())
@@ -287,7 +278,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
     let mut name = use_signal(move || seed_name.clone());
     let mut symbol = use_signal(move || seed_symbol.clone());
     let mut decimals = use_signal(move || seed_decimals.clone());
-    let mut initial_supply = use_signal(move || seed_initial_supply.clone());
     let mut description = use_signal(move || seed_description.clone());
     let mut message = use_signal(|| None::<(AlertVariant, String)>);
     let mut loading = use_signal(|| false);
@@ -361,25 +351,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             max: "18",
                             required: true,
                         }
-                        div {
-                            FormField {
-                                label: t.initial_total_supply,
-                                r#type: "number",
-                                value: initial_supply(),
-                                oninput: move |e: FormEvent| initial_supply.set(e.value()),
-                                placeholder: "1000000".to_string(),
-                                min: "0",
-                                required: true,
-                            }
-                            // Inline thousand-separator preview.
-                            if let Ok(parsed) = initial_supply().parse::<i64>() {
-                                if parsed >= 1000 {
-                                    p { class: "mt-1 text-xs font-semibold text-foreground-soft",
-                                        "= {format_number(parsed)}"
-                                    }
-                                }
-                            }
-                        }
                         div { class: "md:col-span-2",
                             FormField {
                                 label: t.description,
@@ -413,7 +384,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 let name_val = name().trim().to_string();
                                 let symbol_val = symbol().trim().to_string();
                                 let decimals_input = decimals().trim().to_string();
-                                let initial_supply_input = initial_supply().trim().to_string();
                                 let desc_val = {
                                     let value = description();
                                     if value.trim().is_empty() { None } else { Some(value) }
@@ -422,7 +392,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 if name_val.is_empty()
                                     || symbol_val.is_empty()
                                     || decimals_input.is_empty()
-                                    || initial_supply_input.is_empty()
                                 {
                                     message.set(Some((AlertVariant::Error, required_fields_msg)));
                                     return;
@@ -432,14 +401,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                     message.set(Some((AlertVariant::Error, required_fields_msg)));
                                     return;
                                 };
-                                let Ok(initial_supply_val) = initial_supply_input.parse::<i64>() else {
-                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
-                                    return;
-                                };
-                                if initial_supply_val <= 0 {
-                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
-                                    return;
-                                }
 
                                 spawn(async move {
                                     loading.set(true);
@@ -453,7 +414,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                                 symbol_val,
                                                 decimals_val,
                                                 desc_val,
-                                                initial_supply_val,
                                             )
                                             .await
                                             .map(|_| ())
@@ -465,7 +425,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                                 Some(symbol_val),
                                                 Some(decimals_val),
                                                 desc_val,
-                                                Some(initial_supply_val),
                                             )
                                             .await
                                             .map(|_| ())
@@ -518,27 +477,17 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                     "{preview_name}"
                                 }
                             }
-                            div { class: "grid gap-3 sm:grid-cols-2",
-                                div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
-                                    p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
-                                        {t.token_symbol}
-                                    }
-                                    p {
-                                        class: if preview_symbol_is_placeholder {
-                                            "mt-2 text-lg font-semibold italic text-foreground-muted"
-                                        } else {
-                                            "mt-2 text-lg font-semibold text-foreground"
-                                        },
-                                        "{preview_symbol}"
-                                    }
+                            div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
+                                p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
+                                    {t.token_symbol}
                                 }
-                                div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
-                                    p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
-                                        {t.initial_total_supply}
-                                    }
-                                    p { class: "mt-2 text-lg font-semibold text-foreground",
-                                        "{format_number(initial_supply().parse::<i64>().unwrap_or(0))}"
-                                    }
+                                p {
+                                    class: if preview_symbol_is_placeholder {
+                                        "mt-2 text-lg font-semibold italic text-foreground-muted"
+                                    } else {
+                                        "mt-2 text-lg font-semibold text-foreground"
+                                    },
+                                    "{preview_symbol}"
                                 }
                             }
                         }

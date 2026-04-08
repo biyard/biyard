@@ -187,10 +187,6 @@ translate! {
         en: "Point Aggregation",
         ko: "포인트 집계",
     },
-    total_supply: {
-        en: "Total Supply",
-        ko: "총 공급량",
-    },
     circulating_supply: {
         en: "Circulating Supply",
         ko: "유통 공급량",
@@ -768,10 +764,6 @@ translate! {
     floor_price_overview_note: {
         en: "Floor Price (Est.) is auto-calculated based on total supply in the Overview tab.",
         ko: "하한가(예상)는 Overview 탭에서 총 발행량 기준으로 자동 계산됩니다.",
-    },
-    initial_total_supply: {
-        en: "Initial Total Supply",
-        ko: "초기 총 발행량",
     },
     token_name_placeholder: {
         en: "e.g. My Token",

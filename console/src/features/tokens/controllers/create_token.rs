@@ -14,7 +14,6 @@ pub async fn create_token_handler(
     symbol: String,
     decimals: u8,
     description: Option<String>,
-    initial_supply: i64,
 ) -> Result<TokenResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
@@ -34,7 +33,6 @@ pub async fn create_token_handler(
         symbol,
         decimals,
         description,
-        initial_supply,
     );
 
     token.create(cli).await?;

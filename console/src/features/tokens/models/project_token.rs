@@ -8,7 +8,6 @@ pub struct ProjectToken {
     pub name: String,
     pub symbol: String,
     pub decimals: u8,
-    pub total_supply: i64,
     pub circulating_supply: i64,
     pub description: Option<String>,
 
@@ -32,23 +31,15 @@ impl ProjectToken {
         symbol: String,
         decimals: u8,
         description: Option<String>,
-        initial_supply: i64,
     ) -> Self {
         let now = crate::common::utils::time_utils::get_now();
-        let initial_supply = initial_supply.max(0);
 
-        // `circulating_supply` represents tokens actually in the wild
-        // (deployed + minted to addresses). A freshly created brand has
-        // not deployed yet, so circulating must be 0 — initializing it
-        // to `initial_supply` would lie about chain state. It is
-        // increased on `mint()`/deploy and decreased on `burn()`.
         Self {
             pk: project_id,
             sk: EntityType::Token,
             name,
             symbol,
             decimals,
-            total_supply: initial_supply,
             circulating_supply: 0,
             description,
             contract_address: None,
@@ -68,7 +59,6 @@ impl ProjectToken {
     }
 
     pub fn mint(&mut self, amount: i64) {
-        self.total_supply += amount;
         self.circulating_supply += amount;
         self.updated_at = crate::common::utils::time_utils::get_now();
     }
@@ -77,7 +67,6 @@ impl ProjectToken {
         if self.circulating_supply < amount {
             return Err(crate::features::tokens::TokenError::InsufficientTokens.into());
         }
-        self.total_supply -= amount;
         self.circulating_supply -= amount;
         self.updated_at = crate::common::utils::time_utils::get_now();
         Ok(())
@@ -91,7 +80,6 @@ impl From<ProjectToken> for crate::features::tokens::TokenResponse {
             name: token.name,
             symbol: token.symbol,
             decimals: token.decimals,
-            total_supply: token.total_supply,
             circulating_supply: token.circulating_supply,
             description: token.description,
             contract_address: token.contract_address,

@@ -99,7 +99,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                             }
                                         }
                                     }
-                                    div { class: "grid gap-4 sm:grid-cols-3",
+                                    div { class: "grid gap-4 sm:grid-cols-2",
                                         StatCard {
                                             label: t.token_name.to_string(),
                                             value: token_data.name.clone(),
@@ -109,11 +109,6 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                             label: t.token_symbol.to_string(),
                                             value: token_data.symbol.clone(),
                                             color: StatColor::Blue,
-                                        }
-                                        StatCard {
-                                            label: t.total_supply.to_string(),
-                                            value: format_number(token_data.total_supply),
-                                            color: StatColor::Purple,
                                         }
                                     }
 

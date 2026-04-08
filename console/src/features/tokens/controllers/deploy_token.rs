@@ -62,7 +62,7 @@ pub async fn deploy_token_handler(
                 chain_id,
                 &token.name,
                 &token.symbol,
-                token.total_supply.max(0) as u64,
+                0u64,
                 0,
             )
             .await
