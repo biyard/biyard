@@ -18,10 +18,36 @@ pub fn InviteModal(open: bool, on_close: EventHandler, on_success: EventHandler)
     let mut copied = use_signal(|| false);
 
     let invite_url = generated_token().map(|token| {
-        // The accept page lives at /invite/:token. We render an absolute
-        // path here \u2014 the user copies it from the page so the host
-        // is whichever console domain they're already on.
-        format!("/invite/{token}")
+        #[cfg(not(feature = "server"))]
+        {
+            let origin = web_sys::window()
+                .and_then(|w| w.location().origin().ok())
+                .unwrap_or_default();
+            format!("{origin}/invite/{token}")
+        }
+        #[cfg(feature = "server")]
+        {
+            format!("/invite/{token}")
+        }
+    });
+
+    // Reset internal state whenever the modal transitions from closed to
+    // open so re-opening after a successful invite always shows the fresh
+    // form instead of the previous link screen. The `open` prop is not
+    // reactive on its own, so we mirror it into a signal and drive the
+    // reset from a `use_effect` that reads that signal.
+    let mut open_signal = use_signal(|| open);
+    if *open_signal.peek() != open {
+        open_signal.set(open);
+    }
+    use_effect(move || {
+        if open_signal() {
+            email.set(String::new());
+            role.set(OrganizationRole::Viewer);
+            error.set(None);
+            generated_token.set(None);
+            copied.set(false);
+        }
     });
 
     rsx! {
@@ -56,9 +82,20 @@ pub fn InviteModal(open: bool, on_close: EventHandler, on_success: EventHandler)
                             }
                             Btn {
                                 variant: BtnVariant::Secondary,
-                                onclick: move |_| {
-                                    copied.set(true);
-                                    on_success.call(());
+                                onclick: {
+                                    let _url = url.clone();
+                                    move |_| {
+                                        #[cfg(not(feature = "server"))]
+                                        {
+                                            if let Some(win) = web_sys::window() {
+                                                let _ = win
+                                                    .navigator()
+                                                    .clipboard()
+                                                    .write_text(&_url);
+                                            }
+                                        }
+                                        copied.set(true);
+                                    }
                                 },
                                 if copied() { {t.copied} } else { {t.copy_invite_link} }
                             }
@@ -130,10 +167,6 @@ pub fn InviteModal(open: bool, on_close: EventHandler, on_success: EventHandler)
                             onclick: move |_| {
                                 let email_val = email();
                                 let role_val = role();
-                                if email_val.trim().is_empty() {
-                                    error.set(Some("Please enter an email.".to_string()));
-                                    return;
-                                }
                                 spawn(async move {
                                     creating.set(true);
                                     error.set(None);
@@ -145,6 +178,7 @@ pub fn InviteModal(open: bool, on_close: EventHandler, on_success: EventHandler)
                                     match res {
                                         Ok(invitation) => {
                                             generated_token.set(Some(invitation.token));
+                                            on_success.call(());
                                         }
                                         Err(e) => error.set(Some(e.to_string())),
                                     }

@@ -24,8 +24,8 @@ translate! {
         ko: "초대 링크를 생성합니다. 추가하고 싶은 사람에게 공유하세요. 링크를 가진 사람은 누구나 가입하여 선택한 역할로 합류할 수 있습니다.",
     },
     invited_email: {
-        en: "Email (for reference)",
-        ko: "이메일 (참고용)",
+        en: "Email (optional, for reference)",
+        ko: "이메일 (선택, 참고용)",
     },
     invited_email_placeholder: {
         en: "person@example.com",

@@ -456,6 +456,7 @@ fn BrandSwitcherMenu(
     let nav = use_navigator();
     let t: ConsoleTranslate = use_translate();
     let mut sidebar_open_ctx = use_context::<Signal<SidebarOpen>>();
+    let can_write = use_account_context()().can_write();
     let items: Vec<(String, String)> = brands
         .iter()
         .map(|p| (p.id.clone(), p.name.clone()))
@@ -511,15 +512,17 @@ fn BrandSwitcherMenu(
                 IconFolderOpen { class: "h-4 w-4" }
                 span { {t.brand_switcher_view_all} }
             }
-            button {
-                class: "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-brand transition-colors hover:bg-white/5",
-                onclick: move |_| {
-                    on_close.call(());
-                    sidebar_open_ctx.set(SidebarOpen(false));
-                    nav.push(Route::ProjectCreate {});
-                },
-                IconPlus { class: "h-4 w-4" }
-                span { {t.brand_switcher_create_new} }
+            if can_write {
+                button {
+                    class: "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold text-brand transition-colors hover:bg-white/5",
+                    onclick: move |_| {
+                        on_close.call(());
+                        sidebar_open_ctx.set(SidebarOpen(false));
+                        nav.push(Route::ProjectCreate {});
+                    },
+                    IconPlus { class: "h-4 w-4" }
+                    span { {t.brand_switcher_create_new} }
+                }
             }
         }
     }

@@ -14,6 +14,7 @@ pub fn Dashboard() -> Element {
     let project_t: ProjectsTranslate = use_translate();
     let credential_t: CredentialsTranslate = use_translate();
     let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
 
     let projects_result = use_loader(move || async move {
         crate::features::projects::controllers::list_projects_handler(100, None).await
@@ -67,11 +68,13 @@ pub fn Dashboard() -> Element {
                 workspace_label: t.enterprise_scope_label.to_string(),
                 brand_label: t.brand_scope_label.to_string(),
                 actions: rsx! {
-                    Link {
-                        to: Route::Projects {},
-                        class: "inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-panel px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-panel-strong",
-                        IconPlus { class: "h-4 w-4" }
-                        {project_t.create_new}
+                    if can_write {
+                        Link {
+                            to: Route::Projects {},
+                            class: "inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-panel px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-panel-strong",
+                            IconPlus { class: "h-4 w-4" }
+                            {project_t.create_new}
+                        }
                     }
                     Link {
                         to: Route::Credentials {},
@@ -156,10 +159,12 @@ pub fn Dashboard() -> Element {
                             title: project_t.no_projects.to_string(),
                             description: project_t.no_projects_desc.to_string(),
                             actions: rsx! {
-                                Link {
-                                    to: Route::Projects {},
-                                    class: "inline-flex items-center justify-center gap-2 rounded-2xl border border-brand bg-brand px-4 py-2.5 text-sm font-semibold text-brand-contrast transition-colors hover:border-brand-strong hover:bg-brand-strong",
-                                    {project_t.create_new}
+                                if can_write {
+                                    Link {
+                                        to: Route::Projects {},
+                                        class: "inline-flex items-center justify-center gap-2 rounded-2xl border border-brand bg-brand px-4 py-2.5 text-sm font-semibold text-brand-contrast transition-colors hover:border-brand-strong hover:bg-brand-strong",
+                                        {project_t.create_new}
+                                    }
                                 }
                             },
                         }
@@ -244,10 +249,12 @@ pub fn Dashboard() -> Element {
                                     {credential_t.description}
                                 }
                             }
-                            Link {
-                                to: Route::Credentials {},
-                                class: "text-sm font-semibold text-brand transition-colors hover:text-brand-strong",
-                                {credential_t.create_new}
+                            if can_write {
+                                Link {
+                                    to: Route::Credentials {},
+                                    class: "text-sm font-semibold text-brand transition-colors hover:text-brand-strong",
+                                    {credential_t.create_new}
+                                }
                             }
                         }
                         div { class: "grid gap-4 sm:grid-cols-3",

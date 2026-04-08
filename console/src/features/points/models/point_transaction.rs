@@ -43,9 +43,14 @@ impl PointTransaction {
         let uuid = uuid::Uuid::now_v7().to_string();
         let user_pk = Partition::MetaUser(meta_user_id.clone());
 
+        // SK embeds month so `(project, user, month)` can be resolved
+        // with a single base-table query via `begins_with("POINT_TRANSACTION#<month>#")`.
+        // UUID v7 in the suffix keeps month-internal ordering chronological.
+        let sk_value = format!("{}#{}", month, uuid);
+
         Self {
             pk: CompositePartition(project_pk.clone(), user_pk),
-            sk: EntityType::PointTransaction(uuid),
+            sk: EntityType::PointTransaction(sk_value),
             project_id: project_pk,
             meta_user_id,
             month,

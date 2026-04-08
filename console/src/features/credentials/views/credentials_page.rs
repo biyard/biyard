@@ -13,6 +13,7 @@ pub fn Credentials() -> Element {
     let t: CredentialsTranslate = use_translate();
     let console_t: ConsoleTranslate = use_translate();
     let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
     let enterprise_name = account_ctx()
         .enterprise_name()
         .unwrap_or_else(|| "Default enterprise".to_string());
@@ -40,12 +41,14 @@ pub fn Credentials() -> Element {
                 workspace_label: console_t.enterprise_scope_label.to_string(),
                 brand_label: console_t.brand_scope_label.to_string(),
                 actions: rsx! {
-                    Btn {
-                        variant: BtnVariant::Primary,
-                        onclick: move |_| show_create_dialog.set(true),
-                        class: "flex items-center",
-                        IconPlus { class: "h-5 w-5" }
-                        {t.create_new}
+                    if can_write {
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            onclick: move |_| show_create_dialog.set(true),
+                            class: "flex items-center",
+                            IconPlus { class: "h-5 w-5" }
+                            {t.create_new}
+                        }
                     }
                 },
             }
@@ -74,10 +77,12 @@ pub fn Credentials() -> Element {
                     title: t.no_credentials.to_string(),
                     description: t.description.to_string(),
                     actions: rsx! {
-                        Btn {
-                            variant: BtnVariant::Primary,
-                            onclick: move |_| show_create_dialog.set(true),
-                            {t.create_new}
+                        if can_write {
+                            Btn {
+                                variant: BtnVariant::Primary,
+                                onclick: move |_| show_create_dialog.set(true),
+                                {t.create_new}
+                            }
                         }
                     },
                 }
@@ -160,20 +165,22 @@ pub fn Credentials() -> Element {
                                             }
                                         }
                                         TableCell {
-                                            button {
-                                                class: "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-panel text-danger transition-colors hover:bg-danger-soft",
-                                                "aria-label": "{t.actions}",
-                                                onclick: {
-                                                    let id = id.clone();
-                                                    move |_| {
+                                            if can_write {
+                                                button {
+                                                    class: "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-panel text-danger transition-colors hover:bg-danger-soft",
+                                                    "aria-label": "{t.actions}",
+                                                    onclick: {
                                                         let id = id.clone();
-                                                        spawn(async move {
-                                                            let _ = crate::features::credentials::controllers::revoke_credential_handler(id).await;
-                                                            credentials.restart();
-                                                        });
-                                                    }
-                                                },
-                                                IconTrash { class: "h-4 w-4" }
+                                                        move |_| {
+                                                            let id = id.clone();
+                                                            spawn(async move {
+                                                                let _ = crate::features::credentials::controllers::revoke_credential_handler(id).await;
+                                                                credentials.restart();
+                                                            });
+                                                        }
+                                                    },
+                                                    IconTrash { class: "h-4 w-4" }
+                                                }
                                             }
                                         }
                                     }

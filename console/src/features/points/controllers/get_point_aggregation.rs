@@ -3,7 +3,7 @@ use crate::features::points::MonthlyPointAggregationResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAuth};
+use crate::common::{CommonConfig, ProjectViewerAuth};
 #[cfg(feature = "server")]
 use crate::features::points::MonthlyPointAggregation;
 
@@ -13,7 +13,7 @@ use crate::features::points::MonthlyPointAggregation;
 /// brand with zero point activity), the response is a zero-filled
 /// aggregation rather than a 404, so the client can render "No activity
 /// this month" cleanly without log noise.
-#[get("/v1/projects/:project_id/points?date", auth: ProjectAuth)]
+#[get("/v1/projects/:project_id/points?date", auth: ProjectViewerAuth)]
 pub async fn get_point_aggregation_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     date: String,

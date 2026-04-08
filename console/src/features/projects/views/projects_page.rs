@@ -14,6 +14,7 @@ pub fn Projects() -> Element {
     let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
     let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
     let enterprise_name = account_ctx()
         .enterprise_name()
         .unwrap_or_else(|| "Default enterprise".to_string());
@@ -43,14 +44,16 @@ pub fn Projects() -> Element {
                 workspace_label: console_t.enterprise_scope_label.to_string(),
                 brand_label: console_t.brand_scope_label.to_string(),
                 actions: rsx! {
-                    Btn {
-                        variant: BtnVariant::Primary,
-                        class: "flex items-center",
-                        onclick: move |_| {
-                            nav.push(Route::ProjectCreate {});
-                        },
-                        IconPlus { class: "h-5 w-5" }
-                        {t.create_new}
+                    if can_write {
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            class: "flex items-center",
+                            onclick: move |_| {
+                                nav.push(Route::ProjectCreate {});
+                            },
+                            IconPlus { class: "h-5 w-5" }
+                            {t.create_new}
+                        }
                     }
                 },
             }
@@ -79,13 +82,15 @@ pub fn Projects() -> Element {
                     title: t.no_projects.to_string(),
                     description: t.no_projects_desc.to_string(),
                     actions: rsx! {
-                        Btn {
-                            variant: BtnVariant::Primary,
-                            class: "flex items-center",
-                            onclick: move |_| {
-                                nav.push(Route::ProjectCreate {});
-                            },
-                            {t.create_new}
+                        if can_write {
+                            Btn {
+                                variant: BtnVariant::Primary,
+                                class: "flex items-center",
+                                onclick: move |_| {
+                                    nav.push(Route::ProjectCreate {});
+                                },
+                                {t.create_new}
+                            }
                         }
                     },
                 }
