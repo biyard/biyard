@@ -130,6 +130,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                 label: t.contract_address.to_string(),
                                                 value: addr.clone(),
                                                 code_like: true,
+                                                copyable: true,
                                             }
                                             InfoItem {
                                                 label: t.chain.to_string(),
@@ -141,6 +142,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                     label: t.tx_hash.to_string(),
                                                     value: tx.clone(),
                                                     code_like: true,
+                                                    copyable: true,
                                                 }
                                             }
                                         }
@@ -152,6 +154,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                 label: t.treasury_contract_address.to_string(),
                                                 value: treasury_addr.clone(),
                                                 code_like: true,
+                                                copyable: true,
                                             }
                                             InfoItem {
                                                 label: t.stable_token_address.to_string(),
@@ -160,6 +163,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                     .clone()
                                                     .unwrap_or_else(|| "-".to_string()),
                                                 code_like: true,
+                                                copyable: token_data.stable_token_address.is_some(),
                                             }
                                             div { class: "grid gap-4 md:grid-cols-2",
                                                 InfoItem {
@@ -178,6 +182,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                     label: t.treasury_deployment_tx_hash.to_string(),
                                                     value: tx.clone(),
                                                     code_like: true,
+                                                    copyable: true,
                                                 }
                                             }
                                         }
@@ -476,15 +481,25 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
 }
 
 #[component]
-fn InfoItem(label: String, value: String, code_like: bool) -> Element {
+fn InfoItem(
+    label: String,
+    value: String,
+    code_like: bool,
+    #[props(default)] copyable: bool,
+) -> Element {
     rsx! {
         div {
             p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                 "{label}"
             }
             if code_like {
-                code { class: "mt-2 block break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
-                    "{value}"
+                div { class: "mt-2 flex items-center gap-2",
+                    code { class: "block flex-1 break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
+                        "{value}"
+                    }
+                    if copyable {
+                        CopyButton { value: value.clone() }
+                    }
                 }
             } else {
                 p { class: "mt-2 text-sm font-semibold text-foreground",

@@ -39,6 +39,7 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             label: t.project_id.to_string(),
                             value: project.id.clone(),
                             code_like: true,
+                            copyable: true,
                         }
                         InfoRow {
                             label: t.created_at.to_string(),
@@ -161,15 +162,25 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
 }
 
 #[component]
-fn InfoRow(label: String, value: String, code_like: bool) -> Element {
+fn InfoRow(
+    label: String,
+    value: String,
+    code_like: bool,
+    #[props(default)] copyable: bool,
+) -> Element {
     rsx! {
         div { class: "rounded-[24px] border border-border bg-panel-muted p-4",
             p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                 "{label}"
             }
             if code_like {
-                code { class: "mt-2 block break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
-                    "{value}"
+                div { class: "mt-2 flex items-center gap-2",
+                    code { class: "block flex-1 break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
+                        "{value}"
+                    }
+                    if copyable {
+                        CopyButton { value: value.clone() }
+                    }
                 }
             } else {
                 p { class: "mt-2 text-sm font-semibold text-foreground",

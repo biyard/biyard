@@ -135,10 +135,10 @@ fn TreasuryOnChainPanel(status: TreasuryStatusResponse) -> Element {
             }
 
             if let Some(addr) = status.treasury_contract_address.as_deref() {
-                p { class: "mt-4 text-xs text-foreground-muted break-all",
+                div { class: "mt-4 flex flex-wrap items-center gap-2 text-xs text-foreground-muted",
                     span { class: "font-semibold", {t.treasury_contract_address_label} }
-                    " "
-                    code { "{addr}" }
+                    code { class: "break-all", "{addr}" }
+                    CopyButton { value: addr.to_string(), size: CopyButtonSize::Sm }
                 }
             }
         }
