@@ -24,7 +24,7 @@ echo 'biyard-local-main table and GSIs created successfully'
 #   gsi3: pk=ENTERPRISE#<id>         sk=ACCOUNT              (find_by_enterprise_id)
 #
 # Enterprise  pk=ENTERPRISE#<id>     sk=ENTERPRISE
-#   gsi1: pk=ACCOUNT#<owner_uuid>    sk=<created_at>         (find_by_owner_account_id)
+#   gsi1: pk=OWNER#ACCOUNT#<owner_uuid>   sk=<created_at>    (find_by_owner_account_id)
 #
 # Project     pk=PROJECT#<id>        sk=PROJECT
 #   gsi1: pk=ACCOUNT#<uuid>          sk=<created_at>         (find_by_account_id)
@@ -68,7 +68,7 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "name": {"S": "SystemAdmin"},
         "email": {"S": "admin@biyard.co"},
         "password": {"S": "'"${PASSWORD_HASH}"'"},
-        "password_scheme": {"S": "LEGACY_SHA3"},
+        "password_scheme": {"S": "LEGACY_SHA_3"},
         "enterprise_id": {"S": "ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
         "organization_role": {"N": "3"},
         "user_type": {"N": "99"},
@@ -91,7 +91,7 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "name": {"S": "Playwright Test"},
         "email": {"S": "test@biyard.co"},
         "password": {"S": "'"${PASSWORD_HASH}"'"},
-        "password_scheme": {"S": "LEGACY_SHA3"},
+        "password_scheme": {"S": "LEGACY_SHA_3"},
         "enterprise_id": {"S": "ENTERPRISE#'"${TEST_ENTERPRISE_ID}"'"},
         "organization_role": {"N": "3"},
         "user_type": {"N": "1"},
@@ -107,8 +107,8 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
     --item '{
         "pk": {"S": "ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
         "sk": {"S": "ENTERPRISE"},
-        "gsi1_pk": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
-        "gsi1_sk": {"N": "'"${NOW_MS}"'"},
+        "gsi1_pk": {"S": "OWNER#ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
+        "gsi1_sk": {"S": "'"${NOW_MS}"'"},
         "owner_account_id": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
         "name": {"S": "SystemAdmin Personal"},
         "legacy_account_sync_at": {"N": "'"${NOW_MS}"'"},
@@ -122,8 +122,8 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
     --item '{
         "pk": {"S": "ENTERPRISE#'"${TEST_ENTERPRISE_ID}"'"},
         "sk": {"S": "ENTERPRISE"},
-        "gsi1_pk": {"S": "ACCOUNT#'"${TEST_ACCOUNT_ID}"'"},
-        "gsi1_sk": {"N": "'"${NOW_MS}"'"},
+        "gsi1_pk": {"S": "OWNER#ACCOUNT#'"${TEST_ACCOUNT_ID}"'"},
+        "gsi1_sk": {"S": "'"${NOW_MS}"'"},
         "owner_account_id": {"S": "ACCOUNT#'"${TEST_ACCOUNT_ID}"'"},
         "name": {"S": "Playwright Test Personal"},
         "legacy_account_sync_at": {"N": "'"${NOW_MS}"'"},
@@ -142,9 +142,9 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "pk": {"S": "PROJECT#ratel"},
         "sk": {"S": "PROJECT"},
         "gsi1_pk": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
-        "gsi1_sk": {"N": "'"${PROJECT_CREATED_AT}"'"},
+        "gsi1_sk": {"S": "'"${PROJECT_CREATED_AT}"'"},
         "gsi2_pk": {"S": "ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
-        "gsi2_sk": {"N": "'"${PROJECT_CREATED_AT}"'"},
+        "gsi2_sk": {"S": "'"${PROJECT_CREATED_AT}"'"},
         "account_id": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
         "organization_id": {"S": "ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
         "name": {"S": "RATEL"},
@@ -193,11 +193,11 @@ aws --endpoint-url=$DYNAMO_ENDPOINT dynamodb put-item \
         "pk": {"S": "CREDENTIAL#admin-api-credential"},
         "sk": {"S": "CREDENTIAL"},
         "gsi1_pk": {"S": "CRED#ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
-        "gsi1_sk": {"N": "'"${NOW_MS}"'"},
+        "gsi1_sk": {"S": "'"${NOW_MS}"'"},
         "gsi2_pk": {"S": "CRED#'"${API_KEY_HASH}"'"},
-        "gsi2_sk": {"N": "'"${NOW_MS}"'"},
+        "gsi2_sk": {"S": "'"${NOW_MS}"'"},
         "gsi3_pk": {"S": "CRED#ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
-        "gsi3_sk": {"N": "'"${NOW_MS}"'"},
+        "gsi3_sk": {"S": "'"${NOW_MS}"'"},
         "account_id": {"S": "ACCOUNT#'"${ADMIN_ACCOUNT_ID}"'"},
         "organization_id": {"S": "ENTERPRISE#'"${ADMIN_ENTERPRISE_ID}"'"},
         "name": {"S": "Local Development API Key"},
