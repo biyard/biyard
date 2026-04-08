@@ -4,6 +4,7 @@ use dioxus_translate::use_translate;
 use crate::Route;
 use crate::common::ProjectPartition;
 use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
 use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::projects::i18n::ProjectsTranslate;
 use crate::features::tokens::TokenResponse;
@@ -19,6 +20,7 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
     let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
+    let account_ctx = use_account_context();
 
     let existing_result = use_loader(move || async move {
         crate::features::tokens::controllers::get_token_handler(project_id()).await
@@ -26,8 +28,22 @@ pub fn TokenCreate(project_id: ReadSignal<ProjectPartition>) -> Element {
     let project_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
     });
+
+    // Viewers cannot create tokens — bounce them to the brand detail.
+    // Registered before the `?` below so the hook count stays stable.
+    let can_write = account_ctx().can_write();
+    use_effect(move || {
+        if !can_write {
+            nav.replace(Route::ProjectDetail { project_id: project_id() });
+        }
+    });
+
     let existing = existing_result?;
     let project = project_result?;
+
+    if !can_write {
+        return rsx! {};
+    }
 
     let pid_back = project_id();
     let token_opt = existing();
@@ -124,7 +140,7 @@ pub fn TokenEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
     let console_t: ConsoleTranslate = use_translate();
     let nav = use_navigator();
-
+    let account_ctx = use_account_context();
 
     let token_result = use_loader(move || async move {
         crate::features::tokens::controllers::get_token_handler(project_id()).await
@@ -132,8 +148,21 @@ pub fn TokenEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
     let project_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
     });
+
+    // Viewers cannot edit tokens — bounce them to the brand detail.
+    let can_write = account_ctx().can_write();
+    use_effect(move || {
+        if !can_write {
+            nav.replace(Route::ProjectDetail { project_id: project_id() });
+        }
+    });
+
     let token = token_result?;
     let project = project_result?;
+
+    if !can_write {
+        return rsx! {};
+    }
 
     let pid_back = project_id();
     let brand_name = project().name.clone();
@@ -289,6 +318,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
 
     let save_failure = t.save_failure.to_string();
     let token_saved = t.token_saved.to_string();
+    let required_fields_msg = t.token_required_fields.to_string();
 
     rsx! {
         SectionCard {
@@ -311,6 +341,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             value: name(),
                             oninput: move |e: FormEvent| name.set(e.value()),
                             placeholder: t.token_name_placeholder.to_string(),
+                            required: true,
                         }
                         FormField {
                             label: t.token_symbol,
@@ -318,6 +349,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             oninput: move |e: FormEvent| symbol.set(e.value()),
                             placeholder: t.symbol_placeholder.to_string(),
                             maxlength: "10",
+                            required: true,
                         }
                         FormField {
                             label: t.token_decimals,
@@ -327,6 +359,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             placeholder: t.decimals_placeholder.to_string(),
                             min: "0",
                             max: "18",
+                            required: true,
                         }
                         div {
                             FormField {
@@ -336,6 +369,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 oninput: move |e: FormEvent| initial_supply.set(e.value()),
                                 placeholder: "1000000".to_string(),
                                 min: "0",
+                                required: true,
                             }
                             // Inline thousand-separator preview.
                             if let Ok(parsed) = initial_supply().parse::<i64>() {
@@ -375,15 +409,37 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 let nav = nav.clone();
                                 let token_saved = token_saved.clone();
                                 let save_failure = save_failure.clone();
-                                let name_val = name();
-                                let symbol_val = symbol();
-                                let decimals_val = decimals().parse::<u8>().unwrap_or(18);
-                                let initial_supply_val =
-                                    initial_supply().parse::<i64>().unwrap_or(1_000_000);
+                                let required_fields_msg = required_fields_msg.clone();
+                                let name_val = name().trim().to_string();
+                                let symbol_val = symbol().trim().to_string();
+                                let decimals_input = decimals().trim().to_string();
+                                let initial_supply_input = initial_supply().trim().to_string();
                                 let desc_val = {
                                     let value = description();
                                     if value.trim().is_empty() { None } else { Some(value) }
                                 };
+
+                                if name_val.is_empty()
+                                    || symbol_val.is_empty()
+                                    || decimals_input.is_empty()
+                                    || initial_supply_input.is_empty()
+                                {
+                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
+                                    return;
+                                }
+
+                                let Ok(decimals_val) = decimals_input.parse::<u8>() else {
+                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
+                                    return;
+                                };
+                                let Ok(initial_supply_val) = initial_supply_input.parse::<i64>() else {
+                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
+                                    return;
+                                };
+                                if initial_supply_val <= 0 {
+                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
+                                    return;
+                                }
 
                                 spawn(async move {
                                     loading.set(true);
@@ -419,7 +475,7 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                     match result {
                                         Ok(_) => {
                                             message.set(Some((AlertVariant::Success, token_saved.clone())));
-                                            nav.push(Route::ProjectDetail { project_id: pid });
+                                            nav.push(Route::ProjectToken { project_id: pid });
                                         }
                                         Err(error) => {
                                             message.set(Some((

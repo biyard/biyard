@@ -5,12 +5,15 @@ use crate::Route;
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
 use crate::common::{ProjectPartition, SupportedChain, chain_display_name};
+use crate::features::accounts::context::use_account_context;
 use crate::features::projects::i18n::ProjectsTranslate;
 
 #[component]
 pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
     let nav = use_navigator();
+    let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
     let mut mint_amount = use_signal(String::new);
     let mut target_user_id = use_signal(String::new);
     let mut description = use_signal(String::new);
@@ -49,12 +52,14 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                 title: t.no_token.to_string(),
                                 description: t.no_token_desc.to_string(),
                                 actions: rsx! {
-                                    Btn {
-                                        variant: BtnVariant::Primary,
-                                        onclick: move |_| {
-                                            nav.push(Route::TokenCreate { project_id: to_create.clone() });
-                                        },
-                                        {t.create_token}
+                                    if can_write {
+                                        Btn {
+                                            variant: BtnVariant::Primary,
+                                            onclick: move |_| {
+                                                nav.push(Route::TokenCreate { project_id: to_create.clone() });
+                                            },
+                                            {t.create_token}
+                                        }
                                     }
                                 },
                             }
@@ -76,7 +81,8 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                     rsx! {
                         SectionCard {
                             div { class: "flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between",
-                                div { class: "space-y-5 xl:max-w-2xl",
+                                div {
+                                    class: if is_deployed { "flex-1 space-y-5" } else { "space-y-5 xl:max-w-2xl" },
                                     div { class: "flex flex-wrap items-center gap-3",
                                         SectionTitle { class: "mb-0", {t.token_info} }
                                         if is_deployed {
@@ -111,7 +117,7 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                         }
                                     }
 
-                                    if !has_token_contract {
+                                    if !has_token_contract && can_write {
                                         div {
                                             Btn {
                                                 variant: BtnVariant::Secondary,
@@ -124,47 +130,43 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     }
 
                                     if let Some(ref addr) = token_data.contract_address {
-                                        div { class: "rounded-[24px] border border-success bg-success-soft p-5",
-                                            div { class: "grid gap-4 md:grid-cols-2",
-                                                InfoItem {
-                                                    label: t.contract_address.to_string(),
-                                                    value: addr.clone(),
-                                                    code_like: true,
-                                                }
-                                                InfoItem {
-                                                    label: t.chain.to_string(),
-                                                    value: deployed_chain_name.clone(),
-                                                    code_like: false,
-                                                }
+                                        div { class: "flex flex-col gap-4 rounded-[24px] border border-success bg-success-soft p-5",
+                                            InfoItem {
+                                                label: t.contract_address.to_string(),
+                                                value: addr.clone(),
+                                                code_like: true,
+                                            }
+                                            InfoItem {
+                                                label: t.chain.to_string(),
+                                                value: deployed_chain_name.clone(),
+                                                code_like: false,
                                             }
                                             if let Some(ref tx) = token_data.deployment_tx_hash {
-                                                div { class: "mt-4",
-                                                    InfoItem {
-                                                        label: t.tx_hash.to_string(),
-                                                        value: tx.clone(),
-                                                        code_like: true,
-                                                    }
+                                                InfoItem {
+                                                    label: t.tx_hash.to_string(),
+                                                    value: tx.clone(),
+                                                    code_like: true,
                                                 }
                                             }
                                         }
                                     }
 
                                     if let Some(ref treasury_addr) = token_data.treasury_contract_address {
-                                        div { class: "rounded-[24px] border border-border bg-panel-muted p-5",
+                                        div { class: "flex flex-col gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
+                                            InfoItem {
+                                                label: t.treasury_contract_address.to_string(),
+                                                value: treasury_addr.clone(),
+                                                code_like: true,
+                                            }
+                                            InfoItem {
+                                                label: t.stable_token_address.to_string(),
+                                                value: token_data
+                                                    .stable_token_address
+                                                    .clone()
+                                                    .unwrap_or_else(|| "-".to_string()),
+                                                code_like: true,
+                                            }
                                             div { class: "grid gap-4 md:grid-cols-2",
-                                                InfoItem {
-                                                    label: t.treasury_contract_address.to_string(),
-                                                    value: treasury_addr.clone(),
-                                                    code_like: true,
-                                                }
-                                                InfoItem {
-                                                    label: t.stable_token_address.to_string(),
-                                                    value: token_data
-                                                        .stable_token_address
-                                                        .clone()
-                                                        .unwrap_or_else(|| "-".to_string()),
-                                                    code_like: true,
-                                                }
                                                 InfoItem {
                                                     label: t.treasury_reserve_rate.to_string(),
                                                     value: format!("{:.2}%", token_data.treasury_reserve_bps as f64 / 100.0),
@@ -177,19 +179,17 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                 }
                                             }
                                             if let Some(ref tx) = token_data.treasury_deployment_tx_hash {
-                                                div { class: "mt-4",
-                                                    InfoItem {
-                                                        label: t.treasury_deployment_tx_hash.to_string(),
-                                                        value: tx.clone(),
-                                                        code_like: true,
-                                                    }
+                                                InfoItem {
+                                                    label: t.treasury_deployment_tx_hash.to_string(),
+                                                    value: tx.clone(),
+                                                    code_like: true,
                                                 }
                                             }
                                         }
                                     }
                                 }
 
-                                if !is_deployed {
+                                if !is_deployed && can_write {
                                     div { class: "w-full rounded-[24px] border border-border bg-panel-muted p-5 xl:max-w-sm",
                                         p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                                             {t.select_chain}
@@ -244,62 +244,64 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                             }
                         }
 
-                        SectionCard {
-                            SectionTitle { {t.token_mint} }
-                            div { class: "grid gap-4 md:grid-cols-3",
-                                FormField {
-                                    label: t.target_user_id,
-                                    r#type: "text",
-                                    value: target_user_id(),
-                                    oninput: move |e: FormEvent| target_user_id.set(e.value()),
-                                    placeholder: t.target_user_id_placeholder.to_string(),
-                                    disabled: !is_deployed,
+                        if can_write {
+                            SectionCard {
+                                SectionTitle { {t.token_mint} }
+                                div { class: "grid gap-4 md:grid-cols-3",
+                                    FormField {
+                                        label: t.target_user_id,
+                                        r#type: "text",
+                                        value: target_user_id(),
+                                        oninput: move |e: FormEvent| target_user_id.set(e.value()),
+                                        placeholder: t.target_user_id_placeholder.to_string(),
+                                        disabled: !is_deployed,
+                                    }
+                                    FormField {
+                                        label: t.mint_amount,
+                                        r#type: "number",
+                                        value: mint_amount(),
+                                        oninput: move |e: FormEvent| mint_amount.set(e.value()),
+                                        placeholder: "1000".to_string(),
+                                        min: "1",
+                                        disabled: !is_deployed,
+                                    }
+                                    FormField {
+                                        label: t.description,
+                                        r#type: "text",
+                                        value: description(),
+                                        oninput: move |e: FormEvent| description.set(e.value()),
+                                        placeholder: t.mint_description_placeholder.to_string(),
+                                        disabled: !is_deployed,
+                                    }
                                 }
-                                FormField {
-                                    label: t.mint_amount,
-                                    r#type: "number",
-                                    value: mint_amount(),
-                                    oninput: move |e: FormEvent| mint_amount.set(e.value()),
-                                    placeholder: "1000".to_string(),
-                                    min: "1",
-                                    disabled: !is_deployed,
-                                }
-                                FormField {
-                                    label: t.description,
-                                    r#type: "text",
-                                    value: description(),
-                                    oninput: move |e: FormEvent| description.set(e.value()),
-                                    placeholder: t.mint_description_placeholder.to_string(),
-                                    disabled: !is_deployed,
-                                }
-                            }
 
-                            if is_deployed {
-                                p { class: "mt-3 text-sm font-medium text-success",
-                                    "{t.on_chain} · {deployed_chain_name}"
+                                if is_deployed {
+                                    p { class: "mt-3 text-sm font-medium text-success",
+                                        "{t.on_chain} · {deployed_chain_name}"
+                                    }
+                                } else {
+                                    p { class: "mt-3 text-sm font-medium text-foreground-muted",
+                                        {t.mint_requires_deploy}
+                                    }
                                 }
-                            } else {
-                                p { class: "mt-3 text-sm font-medium text-foreground-muted",
-                                    {t.mint_requires_deploy}
-                                }
-                            }
 
-                            div { class: "mt-6 flex justify-end",
-                                Btn {
-                                    variant: BtnVariant::Primary,
-                                    disabled: minting() || !is_deployed,
-                                    onclick: move |_| {
-                                        let target = target_user_id();
-                                        let amount = mint_amount().parse::<i64>().unwrap_or(0);
+                                div { class: "mt-6 flex justify-end",
+                                    Btn {
+                                        variant: BtnVariant::Primary,
+                                        disabled: minting() || !is_deployed,
+                                        onclick: move |_| {
+                                            let target = target_user_id();
+                                            let amount = mint_amount().parse::<i64>().unwrap_or(0);
 
-                                        if target.trim().is_empty() || amount <= 0 {
-                                            message.set(Some(t.validation_error.to_string()));
-                                            return;
-                                        }
+                                            if target.trim().is_empty() || amount <= 0 {
+                                                message.set(Some(t.validation_error.to_string()));
+                                                return;
+                                            }
 
-                                        show_confirm.set(true);
-                                    },
-                                    if minting() { {t.minting} } else { {t.token_mint} }
+                                            show_confirm.set(true);
+                                        },
+                                        if minting() { {t.minting} } else { {t.token_mint} }
+                                    }
                                 }
                             }
                         }

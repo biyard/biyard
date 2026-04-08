@@ -27,6 +27,14 @@ translate! {
         en: "Name",
         ko: "이름",
     },
+    brand_profile: {
+        en: "Brand profile",
+        ko: "브랜드 프로필",
+    },
+    viewer_readonly_notice: {
+        en: "You have view-only access. Ask an admin to make changes on your behalf.",
+        ko: "읽기 전용 권한입니다. 변경이 필요하면 관리자에게 요청하세요.",
+    },
     name_placeholder: {
         en: "Enter brand name",
         ko: "브랜드 이름 입력",
@@ -880,6 +888,10 @@ translate! {
     token_saved: {
         en: "Token saved.",
         ko: "토큰이 저장되었습니다.",
+    },
+    token_required_fields: {
+        en: "Please fill in token name, symbol, decimals, and initial supply.",
+        ko: "토큰 이름, 심볼, 소수점 자릿수, 초기 발행량을 모두 입력해주세요.",
     },
     create_project_subtitle: {
         en: "Define the brand identity and treasury defaults. You can configure the token in the next step.",

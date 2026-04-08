@@ -29,6 +29,19 @@ pub fn ProjectCreate() -> Element {
         .enterprise_name()
         .unwrap_or_else(|| "Default enterprise".to_string());
 
+    // Viewers cannot create brands — bounce them back to the list. The
+    // redirect runs in an effect (not inline) so every hook above is
+    // still registered on every render.
+    let can_write = account_ctx().can_write();
+    use_effect(move || {
+        if !can_write {
+            nav.replace(Route::Projects {});
+        }
+    });
+    if !can_write {
+        return rsx! {};
+    }
+
     rsx! {
         div { class: "space-y-8",
             PageHeader {
@@ -345,15 +358,15 @@ pub fn ProjectEditorCard(
                                             .await
                                             {
                                                 Ok(project) => {
-                                                    // Hard navigation (full page load) so the sidebar's
-                                                    // `brands_loader` re-fetches and the brand switcher
-                                                    // reflects the brand-new project. A SPA `nav.push`
-                                                    // would leave the cached brands list stale and the
-                                                    // selector would render with an empty name.
+                                                    // Brand creation flows straight into token creation
+                                                    // so the user can finish the "brand + token" setup
+                                                    // in one pass. Hard navigation (full page load) so
+                                                    // the sidebar's `brands_loader` re-fetches and the
+                                                    // brand switcher reflects the brand-new project.
                                                     #[cfg(not(feature = "server"))]
                                                     {
                                                         let target = format!(
-                                                            "/projects/{}/overview",
+                                                            "/projects/{}/token/new",
                                                             project.id,
                                                         );
                                                         let _ = web_sys::window()
@@ -361,7 +374,7 @@ pub fn ProjectEditorCard(
                                                     }
                                                     #[cfg(feature = "server")]
                                                     {
-                                                        nav.push(Route::ProjectDetail {
+                                                        nav.push(Route::TokenCreate {
                                                             project_id: ProjectPartition::from(project.id),
                                                         });
                                                     }

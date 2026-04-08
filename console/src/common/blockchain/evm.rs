@@ -37,12 +37,14 @@ abigen!(
     ]"#
 );
 
-fn deployer_private_key() -> String {
-    std::env::var("DEPLOYER_PRIVATE_KEY").expect("DEPLOYER_PRIVATE_KEY must be set")
+fn deployer_private_key() -> Result<&'static str, String> {
+    option_env!("DEPLOYER_PRIVATE_KEY")
+        .filter(|s| !s.is_empty())
+        .ok_or_else(|| "DEPLOYER_PRIVATE_KEY must be set at build time".to_string())
 }
 
 fn deployer_wallet(chain_id: u64) -> Result<LocalWallet, String> {
-    deployer_private_key()
+    deployer_private_key()?
         .parse::<LocalWallet>()
         .map_err(|e| format!("Invalid private key: {e}"))
         .map(|wallet| wallet.with_chain_id(chain_id))

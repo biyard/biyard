@@ -5,7 +5,7 @@ pub struct Enterprise {
     pub pk: Partition,
     pub sk: EntityType,
 
-    #[dynamo(index = "gsi1", pk, name = "find_by_owner_account_id")]
+    #[dynamo(index = "gsi1", pk, prefix = "OWNER", name = "find_by_owner_account_id")]
     pub owner_account_id: Partition,
 
     pub name: String,

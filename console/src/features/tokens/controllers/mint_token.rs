@@ -28,7 +28,7 @@ pub async fn mint_token_handler(
     let to_address = if meta_user_id.starts_with("0x") && meta_user_id.len() == 42 {
         meta_user_id.clone()
     } else {
-        let wallet: ethers::signers::LocalWallet = std::env::var("DEPLOYER_PRIVATE_KEY")
+        let wallet: ethers::signers::LocalWallet = option_env!("DEPLOYER_PRIVATE_KEY")
             .unwrap_or_default()
             .parse()
             .map_err(|_| TokenError::MintFailed("Invalid deployer key".to_string()))?;

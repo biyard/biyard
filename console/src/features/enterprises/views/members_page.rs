@@ -4,6 +4,7 @@ use dioxus_translate::use_translate;
 use crate::common::OrganizationRole;
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
 use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::enterprises::EnterpriseTranslate;
 use crate::features::enterprises::MemberResponse;
@@ -18,6 +19,9 @@ pub fn MembersPage() -> Element {
     let t: EnterpriseTranslate = use_translate();
     let console_t: ConsoleTranslate = use_translate();
 
+    let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
+
     let mut show_invite = use_signal(|| false);
     let mut show_remove_confirm = use_signal(|| None::<MemberResponse>);
     let mut error = use_signal(|| None::<String>);
@@ -27,8 +31,16 @@ pub fn MembersPage() -> Element {
     let members_result = use_loader(move || async move {
         crate::features::enterprises::controllers::list_members_handler().await
     });
+    // Viewers are forbidden from listing invitations (initial signup
+    // management is an admin-only concern), so short-circuit the call
+    // and hand the loader an empty Vec. Calling the handler anyway
+    // would raise `Forbidden` and blow up the whole page via `?`.
     let invitations_result = use_loader(move || async move {
-        crate::features::enterprises::controllers::list_invitations_handler().await
+        if can_write {
+            crate::features::enterprises::controllers::list_invitations_handler().await
+        } else {
+            Ok(Vec::new())
+        }
     });
     let mut members = members_result?;
     let mut invitations = invitations_result?;
@@ -49,10 +61,12 @@ pub fn MembersPage() -> Element {
                 workspace_label: console_t.enterprise_scope_label.to_string(),
                 brand_label: console_t.brand_scope_label.to_string(),
                 actions: rsx! {
-                    Btn {
-                        variant: BtnVariant::Primary,
-                        onclick: move |_| show_invite.set(true),
-                        {t.invite_member}
+                    if can_write {
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            onclick: move |_| show_invite.set(true),
+                            {t.invite_member}
+                        }
                     }
                 },
             }
@@ -64,9 +78,12 @@ pub fn MembersPage() -> Element {
                 AlertMessage { variant: AlertVariant::Success, "{msg}" }
             }
 
-            // Pending invitations table.
-            SectionCard {
-                SectionTitle { {t.pending_invitations} }
+            // Pending invitations table. Hidden entirely for Viewers —
+            // they cannot list or manage invitations, and the handler
+            // would return Forbidden anyway.
+            if can_write {
+                SectionCard {
+                    SectionTitle { {t.pending_invitations} }
                 if invitations_data.is_empty() {
                     p { class: "text-sm text-foreground-muted", {t.no_pending_invitations} }
                 } else {
@@ -90,19 +107,21 @@ pub fn MembersPage() -> Element {
                                             TableCell { "{role_label}" }
                                             TableCell { "{expires}" }
                                             TableCell {
-                                                Btn {
-                                                    variant: BtnVariant::Secondary,
-                                                    onclick: move |_| {
-                                                        let token = token.clone();
-                                                        spawn(async move {
-                                                            let res = crate::features::enterprises::controllers::revoke_invitation_handler(token).await;
-                                                            match res {
-                                                                Ok(_) => invitations.restart(),
-                                                                Err(e) => error.set(Some(e.to_string())),
-                                                            }
-                                                        });
-                                                    },
-                                                    {t.revoke}
+                                                if can_write {
+                                                    Btn {
+                                                        variant: BtnVariant::Secondary,
+                                                        onclick: move |_| {
+                                                            let token = token.clone();
+                                                            spawn(async move {
+                                                                let res = crate::features::enterprises::controllers::revoke_invitation_handler(token).await;
+                                                                match res {
+                                                                    Ok(_) => invitations.restart(),
+                                                                    Err(e) => error.set(Some(e.to_string())),
+                                                                }
+                                                            });
+                                                        },
+                                                        {t.revoke}
+                                                    }
                                                 }
                                             }
                                         }
@@ -112,6 +131,7 @@ pub fn MembersPage() -> Element {
                         }
                     }
                 }
+            }
             }
 
             // Members table.
@@ -151,15 +171,17 @@ pub fn MembersPage() -> Element {
                                             }
                                             TableCell { "{joined}" }
                                             TableCell {
-                                                if is_last_owner {
-                                                    span { class: "text-xs text-foreground-muted",
-                                                        "Last owner"
-                                                    }
-                                                } else {
-                                                    Btn {
-                                                        variant: BtnVariant::Danger,
-                                                        onclick: move |_| show_remove_confirm.set(Some(m.clone())),
-                                                        {t.remove}
+                                                if can_write {
+                                                    if is_last_owner {
+                                                        span { class: "text-xs text-foreground-muted",
+                                                            "Last owner"
+                                                        }
+                                                    } else {
+                                                        Btn {
+                                                            variant: BtnVariant::Danger,
+                                                            onclick: move |_| show_remove_confirm.set(Some(m.clone())),
+                                                            {t.remove}
+                                                        }
                                                     }
                                                 }
                                             }
@@ -177,7 +199,6 @@ pub fn MembersPage() -> Element {
             open: show_invite(),
             on_close: move |_| show_invite.set(false),
             on_success: move |_| {
-                show_invite.set(false);
                 invitations.restart();
                 success.set(Some("Invitation created.".to_string()));
             },
