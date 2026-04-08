@@ -125,6 +125,7 @@ jobs:
           ENV: dev
           DYNAMO_TABLE_PREFIX: biyard-dev
           API_DOMAIN: api.dev.biyard.co
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEV_DEPLOYER_PRIVATE_KEY }}
         run: make build
 
       - name: Build and push Docker image
