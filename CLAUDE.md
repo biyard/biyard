@@ -165,6 +165,19 @@ make <target>
 
 ## Frontend Code Quality Rules
 
+### Hooks Must Always Be Called
+- **Every Dioxus hook (`use_signal`, `use_loader`, `use_context_provider`, `use_effect`, `use_memo`, `use_navigator`, `use_translate`, …) must run unconditionally on every render, in the same order.** Dioxus tracks hooks by index, so a skipped hook shifts every later slot and crashes with `cannot reclaim ElementId(N)` / `replaceWith: new child contains the parent`.
+- **Never put a hook below `use_loader(...)?`.** The `?` propagates `Loading` and returns from the component early, skipping every following hook on the first render. Register all `use_loader`s first into local `Result` bindings, declare the rest of your hooks, then `?` the loader results at the end.
+- **Never put a hook below an early `return rsx! { ... }` / `return rsx! {};`.** Even auth-redirect branches must come *after* every `use_*` call.
+- For `use_effect` that depends on a loader value, capture it as `Option<Loader<T>>` (it is `Copy`) so the effect is registered unconditionally and no-ops while pending.
+- See [.claude/rules/dioxus-frontend.md](.claude/rules/dioxus-frontend.md) "Hook Call Order" for the canonical patterns.
+
+### Keep RSX Thin — Hoist Handler Bodies
+- **Do not inline non-trivial handler logic inside `rsx!`.** `onclick` / `onsubmit` / `oninput` closures with `spawn(async move { ... })`, `match` arms, multi-step state updates, or error handling must be defined as `let on_xxx = move |_| { ... };` *above* the `rsx!` block and referenced by name in the markup.
+- **Allowed exceptions:** one-line trivial closures that just toggle a signal (`onclick: move |_| open.set(true)`) and pure-display formatting bound directly to an attribute.
+- This keeps RSX scannable, makes captured state explicit, and lets the same handler be reused across multiple buttons.
+- See [.claude/rules/dioxus-frontend.md](.claude/rules/dioxus-frontend.md) "Keep RSX Thin" for full examples.
+
 ### Internationalization Discipline
 - **Do not hardcode user-facing copy in UI code.** Any text visible to users must go through i18n (`translate!`, `i18n.rs`, `use_translate()`).
 - **Always localize all chrome text**, including:
