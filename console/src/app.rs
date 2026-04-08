@@ -65,6 +65,19 @@ pub fn App() -> Element {
 
     rsx! {
         document::Link { rel: "icon", href: asset!("/assets/favicon.ico") }
+        // Preconnect to Pretendard's CDN so the font stylesheet + WOFF2
+        // files start resolving before CSS parsing reaches the @font-face
+        // rules. Pretendard renders Korean + Latin in one family, so we
+        // don't need a secondary web font.
+        document::Link {
+            rel: "preconnect",
+            href: "https://cdn.jsdelivr.net",
+            crossorigin: "anonymous",
+        }
+        document::Link {
+            rel: "stylesheet",
+            href: "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css",
+        }
         document::Link { rel: "stylesheet", href: asset!("/assets/tailwind.css") }
         document::Link {
             rel: "stylesheet",

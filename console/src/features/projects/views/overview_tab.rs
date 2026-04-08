@@ -21,7 +21,7 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
     });
 
     rsx! {
-        div { class: "grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
+        div { class: "flex flex-col gap-6",
             SectionCard {
                 SectionTitle { {t.project_info} }
                 // The brand avatar + name header lives in the page header
