@@ -69,14 +69,15 @@ pub async fn signup_with_invite_handler(
     account.enterprise_id = invitation.pk.clone();
     account.organization_role = invitation.role;
 
-    account.create(cli).await?;
-
-    // Mark the invitation as accepted so it cannot be reused.
-    Invitation::updater(invitation.pk.clone(), invitation.sk.clone())
+    let invitation_update = Invitation::updater(invitation.pk.clone(), invitation.sk.clone())
         .with_status(InvitationStatus::Accepted)
-        .with_updated_at(now)
-        .execute(cli)
-        .await?;
+        .with_updated_at(now);
+
+    crate::transact_write!(
+        cli,
+        account.create_transact_write_item(),
+        invitation_update.transact_write_item(),
+    )?;
 
     session
         .insert(SESSION_KEY_ACCOUNT_ID, account.pk.to_string())

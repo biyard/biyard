@@ -47,8 +47,11 @@ pub async fn signup_handler(
     account.enterprise_id = enterprise_pk;
     account.organization_role = OrganizationRole::Owner;
 
-    enterprise.create(cli).await?;
-    account.create(cli).await?;
+    crate::transact_write!(
+        cli,
+        enterprise.create_transact_write_item(),
+        account.create_transact_write_item(),
+    )?;
 
     session
         .insert(SESSION_KEY_ACCOUNT_ID, account.pk.to_string())
