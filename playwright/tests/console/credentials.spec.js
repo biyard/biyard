@@ -3,19 +3,19 @@ import { goto } from "../utils.js";
 
 test.describe("Credentials", () => {
   test("displays the credentials page", async ({ page }) => {
-    await goto(page, "/credentials");
-    await expect(page.getByText("API Credentials").first()).toBeVisible();
+    await goto(page, "/enterprise/settings/api-keys");
+    await expect(page.getByText("API Keys").first()).toBeVisible();
   });
 
   test("shows create new credential button", async ({ page }) => {
-    await goto(page, "/credentials");
+    await goto(page, "/enterprise/settings/api-keys");
     await expect(
       page.getByRole("button", { name: /Create New/ }).first(),
     ).toBeVisible();
   });
 
   test("opens and closes create credential dialog", async ({ page }) => {
-    await goto(page, "/credentials");
+    await goto(page, "/enterprise/settings/api-keys");
 
     // Open create dialog — retry to handle WASM hydration timing
     await expect(async () => {

@@ -13,7 +13,7 @@ test("create storage state", async ({ page }) => {
   await page.getByRole("button", { name: "Sign In" }).click();
 
   // Wait for navigation to dashboard after successful sign-in
-  await page.waitForURL("**/dashboard", { waitUntil: "load" });
+  await page.waitForURL("**/enterprise/overview", { waitUntil: "load" });
   await expect(page.getByText("Biyard Console", { exact: true })).toBeVisible();
 
   // Save storage state for authenticated tests
