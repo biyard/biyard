@@ -3,12 +3,19 @@ use dioxus_translate::use_translate;
 
 use crate::common::components::dialog::*;
 use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
+use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::credentials::CredentialStatus;
 use crate::features::credentials::i18n::CredentialsTranslate;
 
 #[component]
 pub fn Credentials() -> Element {
     let t: CredentialsTranslate = use_translate();
+    let console_t: ConsoleTranslate = use_translate();
+    let account_ctx = use_account_context();
+    let enterprise_name = account_ctx()
+        .enterprise_name()
+        .unwrap_or_else(|| "Default enterprise".to_string());
     let mut show_create_dialog = use_signal(|| false);
     let mut generated_key = use_signal(|| None::<String>);
     let mut copied_key = use_signal(|| None::<String>);
@@ -18,190 +25,155 @@ pub fn Credentials() -> Element {
     })?;
 
     let creds_data = credentials();
+    let active_count = creds_data
+        .iter()
+        .filter(|credential| credential.status == CredentialStatus::Active)
+        .count();
+    let revoked_count = creds_data.len().saturating_sub(active_count);
 
     rsx! {
-        div {
+        div { class: "space-y-8",
             PageHeader {
                 title: t.title.to_string(),
-                subtitle: t.description.to_string(),
+                subtitle: t.subtitle_in.replace("{enterprise}", &enterprise_name),
+                scope: PageScope::Workspace,
+                workspace_label: console_t.enterprise_scope_label.to_string(),
+                brand_label: console_t.brand_scope_label.to_string(),
                 actions: rsx! {
                     Btn {
+                        variant: BtnVariant::Primary,
                         onclick: move |_| show_create_dialog.set(true),
                         class: "flex items-center",
-                        svg {
-                            class: "mr-2 w-5 h-5",
-                            fill: "none",
-                            stroke: "currentColor",
-                            view_box: "0 0 24 24",
-                            stroke_width: "2",
-                            stroke_linecap: "round",
-                            stroke_linejoin: "round",
-                            line { x1: "12", y1: "5", x2: "12", y2: "19" }
-                            line { x1: "5", y1: "12", x2: "19", y2: "12" }
-                        }
+                        IconPlus { class: "h-5 w-5" }
                         {t.create_new}
                     }
                 },
             }
 
-            div {
-                if creds_data.is_empty() {
-                    EmptyState {
-                        icon: rsx! {
-                            svg {
-                                class: "mx-auto w-12 h-12 text-gray-400",
-                                fill: "none",
-                                stroke: "currentColor",
-                                view_box: "0 0 24 24",
-                                stroke_width: "2",
-                                stroke_linecap: "round",
-                                stroke_linejoin: "round",
-                                path { d: "m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" }
-                            }
-                        },
-                        title: t.no_credentials.to_string(),
-                        actions: rsx! {
-                            Btn {
-                                onclick: move |_| show_create_dialog.set(true),
-                                class: "inline-flex items-center",
-                                svg {
-                                    class: "mr-2 w-5 h-5",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    view_box: "0 0 24 24",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    line { x1: "12", y1: "5", x2: "12", y2: "19" }
-                                    line { x1: "5", y1: "12", x2: "19", y2: "12" }
-                                }
-                                {t.create_new}
-                            }
-                        },
-                    }
-                } else {
-                    DataTable {
-                        TableHead {
-                            TableHeadCell { {t.name} }
-                            TableHeadCell { {t.api_key} }
-                            TableHeadCell { {t.created_at} }
-                            TableHeadCell { {t.status} }
-                            TableHeadCell { {t.actions} }
+            div { class: "grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
+                StatCard {
+                    color: StatColor::Blue,
+                    label: t.title.to_string(),
+                    value: creds_data.len().to_string(),
+                }
+                StatCard {
+                    color: StatColor::Green,
+                    label: t.active.to_string(),
+                    value: active_count.to_string(),
+                }
+                StatCard {
+                    color: StatColor::Red,
+                    label: t.inactive.to_string(),
+                    value: revoked_count.to_string(),
+                }
+            }
+
+            if creds_data.is_empty() {
+                EmptyState {
+                    icon: rsx! { IconSearchOff {} },
+                    title: t.no_credentials.to_string(),
+                    description: t.description.to_string(),
+                    actions: rsx! {
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            onclick: move |_| show_create_dialog.set(true),
+                            {t.create_new}
                         }
-                        TableBody {
-                            for cred in creds_data.iter() {
-                                {
-                                    let id = cred.id.clone();
-                                    let name = cred.name.clone();
-                                    let api_key_prefix = cred.api_key_prefix.clone();
-                                    let status = cred.status;
-                                    let created_at = cred.created_at;
-                                    let masked_key = mask_key(&api_key_prefix);
-                                    let badge_color = match status {
-                                        CredentialStatus::Active => BadgeColor::Green,
-                                        CredentialStatus::Revoked => BadgeColor::Red,
-                                    };
-                                    let status_text = match status {
-                                        CredentialStatus::Active => t.active,
-                                        CredentialStatus::Revoked => t.inactive,
-                                    };
-                                    rsx! {
-                                        tr {
-                                            TableCell { class: "text-sm font-medium text-gray-900 dark:text-white",
-                                                "{name}"
-                                            }
-                                            TableCell { class: "text-sm text-gray-500 dark:text-gray-400",
-                                                div { class: "flex items-center",
-                                                    code { class: "mr-2", "{masked_key}" }
-                                                    {
-                                                        let prefix_for_copy = api_key_prefix.clone();
-                                                        rsx! {
-                                                            button {
-                                                                class: "p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700",
-                                                                title: "{t.copy}",
-                                                                onclick: move |_| {
-                                                                    let key = prefix_for_copy.clone();
-                                                                    copy_to_clipboard(&key);
-                                                                    copied_key.set(Some(key));
-                                                                    #[cfg(not(feature = "server"))]
-                                                                    {
-                                                                        let mut copied = copied_key;
-                                                                        spawn(async move {
-                                                                            let mut eval = document::eval(
-                                                                                "await new Promise(r => setTimeout(r, 2000)); dioxus.send(true);",
-                                                                            );
-                                                                            let _ = eval.recv::<bool>().await;
-                                                                            copied.set(None);
-                                                                        });
-                                                                    }
-                                                                },
-                                                                if copied_key().as_deref() == Some(&*api_key_prefix) {
-                                                                    // Check icon
-                                                                    svg {
-                                                                        class: "w-4 h-4 text-green-600",
-                                                                        fill: "none",
-                                                                        stroke: "currentColor",
-                                                                        view_box: "0 0 24 24",
-                                                                        stroke_width: "2",
-                                                                        stroke_linecap: "round",
-                                                                        stroke_linejoin: "round",
-                                                                        polyline { points: "20 6 9 17 4 12" }
-                                                                    }
-                                                                } else {
-                                                                    // Copy icon
-                                                                    svg {
-                                                                        class: "w-4 h-4",
-                                                                        fill: "none",
-                                                                        stroke: "currentColor",
-                                                                        view_box: "0 0 24 24",
-                                                                        stroke_width: "2",
-                                                                        stroke_linecap: "round",
-                                                                        stroke_linejoin: "round",
-                                                                        rect { x: "9", y: "9", width: "13", height: "13", rx: "2", ry: "2" }
-                                                                        path { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" }
-                                                                    }
+                    },
+                }
+            } else {
+                DataTable {
+                    TableHead {
+                        TableHeadCell { {t.name} }
+                        TableHeadCell { {t.api_key} }
+                        TableHeadCell { {t.created_at} }
+                        TableHeadCell { {t.status} }
+                        TableHeadCell { {t.actions} }
+                    }
+                    TableBody {
+                        for cred in creds_data.iter() {
+                            {
+                                let id = cred.id.clone();
+                                let name = cred.name.clone();
+                                let api_key_prefix = cred.api_key_prefix.clone();
+                                let status = cred.status;
+                                let created_at = cred.created_at;
+                                let masked_key = mask_key(&api_key_prefix);
+                                let badge_color = match status {
+                                    CredentialStatus::Active => BadgeColor::Green,
+                                    CredentialStatus::Revoked => BadgeColor::Red,
+                                };
+                                let status_text = match status {
+                                    CredentialStatus::Active => t.active,
+                                    CredentialStatus::Revoked => t.inactive,
+                                };
+
+                                rsx! {
+                                    tr { class: "transition-colors hover:bg-panel-muted",
+                                        TableCell {
+                                            p { class: "font-semibold text-foreground", "{name}" }
+                                        }
+                                        TableCell {
+                                            div { class: "flex items-center gap-2",
+                                                code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                                                    "{masked_key}"
+                                                }
+                                                {
+                                                    let prefix_for_copy = api_key_prefix.clone();
+                                                    rsx! {
+                                                        button {
+                                                            class: "inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-border bg-panel text-foreground-muted transition-colors hover:bg-panel-strong hover:text-foreground",
+                                                            title: "{t.copy}",
+                                                            "aria-label": "{t.copy}",
+                                                            onclick: move |_| {
+                                                                let key = prefix_for_copy.clone();
+                                                                copy_to_clipboard(&key);
+                                                                copied_key.set(Some(key));
+                                                                #[cfg(not(feature = "server"))]
+                                                                {
+                                                                    let mut copied = copied_key;
+                                                                    spawn(async move {
+                                                                        let mut eval = document::eval(
+                                                                            "await new Promise(r => setTimeout(r, 2000)); dioxus.send(true);",
+                                                                        );
+                                                                        let _ = eval.recv::<bool>().await;
+                                                                        copied.set(None);
+                                                                    });
                                                                 }
+                                                            },
+                                                            if copied_key().as_deref() == Some(&*api_key_prefix) {
+                                                                IconCheck { class: "h-4 w-4 text-success" }
+                                                            } else {
+                                                                IconCopy { class: "h-4 w-4" }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
-                                            TableCell { class: "text-sm text-gray-500 dark:text-gray-400",
-                                                "{format_timestamp(created_at)}"
+                                        }
+                                        TableCell { class: "text-sm text-foreground-muted",
+                                            "{format_timestamp(created_at)}"
+                                        }
+                                        TableCell {
+                                            StatusBadge { color: badge_color,
+                                                "{status_text}"
                                             }
-                                            TableCell {
-                                                StatusBadge { color: badge_color,
-                                                    "{status_text}"
-                                                }
-                                            }
-                                            TableCell { class: "text-sm",
-                                                button {
-                                                    class: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
-                                                    onclick: {
+                                        }
+                                        TableCell {
+                                            button {
+                                                class: "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-panel text-danger transition-colors hover:bg-danger-soft",
+                                                "aria-label": "{t.actions}",
+                                                onclick: {
+                                                    let id = id.clone();
+                                                    move |_| {
                                                         let id = id.clone();
-                                                        move |_| {
-                                                            let id = id.clone();
-                                                            spawn(async move {
-                                                                let _ = crate::features::credentials::controllers::revoke_credential_handler(id).await;
-                                                                credentials.restart();
-                                                            });
-                                                        }
-                                                    },
-                                                    // Trash2 icon
-                                                    svg {
-                                                        class: "w-4 h-4",
-                                                        fill: "none",
-                                                        stroke: "currentColor",
-                                                        view_box: "0 0 24 24",
-                                                        stroke_width: "2",
-                                                        stroke_linecap: "round",
-                                                        stroke_linejoin: "round",
-                                                        polyline { points: "3 6 5 6 21 6" }
-                                                        path { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" }
-                                                        line { x1: "10", y1: "11", x2: "10", y2: "17" }
-                                                        line { x1: "14", y1: "11", x2: "14", y2: "17" }
+                                                        spawn(async move {
+                                                            let _ = crate::features::credentials::controllers::revoke_credential_handler(id).await;
+                                                            credentials.restart();
+                                                        });
                                                     }
-                                                }
+                                                },
+                                                IconTrash { class: "h-4 w-4" }
                                             }
                                         }
                                     }
@@ -212,7 +184,6 @@ pub fn Credentials() -> Element {
                 }
             }
 
-            // Create Credential Dialog
             if show_create_dialog() {
                 CreateCredentialDialog {
                     on_close: move |_| show_create_dialog.set(false),
@@ -224,7 +195,6 @@ pub fn Credentials() -> Element {
                 }
             }
 
-            // Generated Key Dialog
             if let Some(ref key) = generated_key() {
                 GeneratedKeyDialog {
                     api_key: key.clone(),
@@ -268,15 +238,16 @@ fn CreateCredentialDialog(on_close: EventHandler, on_created: EventHandler<Strin
         spawn(async move {
             loading.set(true);
 
-            match crate::features::credentials::controllers::create_credential_handler(name_val).await {
+            match crate::features::credentials::controllers::create_credential_handler(name_val)
+                .await
+            {
                 Ok(response) => {
                     name.set(String::new());
                     on_created.call(response.api_key);
                 }
-                Err(_e) => {
-                    // Error handled silently
-                }
+                Err(_e) => {}
             }
+
             loading.set(false);
         });
     };
@@ -284,9 +255,16 @@ fn CreateCredentialDialog(on_close: EventHandler, on_created: EventHandler<Strin
     rsx! {
         DialogRoot {
             open: true,
-            on_open_change: move |v: bool| { if !v { on_close.call(()); } },
+            on_open_change: move |v: bool| {
+                if !v {
+                    on_close.call(());
+                }
+            },
             DialogContent {
                 DialogTitle { {t.create_new} }
+                DialogDescription {
+                    "Create a new credential for server-to-server calls, automation, or operator tooling."
+                }
                 FormField {
                     label: t.name,
                     value: name(),
@@ -305,7 +283,7 @@ fn CreateCredentialDialog(on_close: EventHandler, on_created: EventHandler<Strin
                         onclick: handle_create,
                         class: "flex items-center",
                         if loading() {
-                            Spinner { class: "mr-2 -ml-1 w-4 h-4 animate-spin" }
+                            Spinner { class: "h-4 w-4 animate-spin" }
                             {t.loading}
                         } else {
                             {t.generate_key}
@@ -330,51 +308,36 @@ fn GeneratedKeyDialog(
     rsx! {
         DialogRoot {
             open: true,
-            on_open_change: move |v: bool| { if !v { on_close.call(()); } },
+            on_open_change: move |v: bool| {
+                if !v {
+                    on_close.call(());
+                }
+            },
             DialogContent {
                 DialogTitle { {t.key_generated} }
-                div { class: "p-4 mb-4 bg-gray-50 rounded-md dark:bg-gray-900",
-                div { class: "flex justify-between items-center",
-                    code { class: "text-sm text-gray-900 break-all dark:text-white",
-                        "{api_key}"
-                    }
-                    button {
-                        class: "p-2 ml-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700",
-                        onclick: move |_| {
-                            on_copy.call(key_for_onclick.clone());
-                        },
-                        if copied_key.as_deref() == Some(&*api_key) {
-                            // Check icon
-                            svg {
-                                class: "w-5 h-5 text-green-600",
-                                fill: "none",
-                                stroke: "currentColor",
-                                view_box: "0 0 24 24",
-                                stroke_width: "2",
-                                stroke_linecap: "round",
-                                stroke_linejoin: "round",
-                                polyline { points: "20 6 9 17 4 12" }
-                            }
-                        } else {
-                            // Copy icon
-                            svg {
-                                class: "w-5 h-5",
-                                fill: "none",
-                                stroke: "currentColor",
-                                view_box: "0 0 24 24",
-                                stroke_width: "2",
-                                stroke_linecap: "round",
-                                stroke_linejoin: "round",
-                                rect { x: "9", y: "9", width: "13", height: "13", rx: "2", ry: "2" }
-                                path { d: "M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" }
+                DialogDescription { {t.key_generated_warning} }
+                div { class: "rounded-[24px] border border-border bg-panel-muted p-4",
+                    div { class: "flex items-start gap-3",
+                        code { class: "flex-1 break-all text-sm font-semibold text-foreground",
+                            "{api_key}"
+                        }
+                        button {
+                            class: "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-panel text-foreground-muted transition-colors hover:bg-panel-strong hover:text-foreground",
+                            "aria-label": "{t.copy}",
+                            onclick: move |_| {
+                                on_copy.call(key_for_onclick.clone());
+                            },
+                            if copied_key.as_deref() == Some(&*api_key) {
+                                IconCheck { class: "h-5 w-5 text-success" }
+                            } else {
+                                IconCopy { class: "h-5 w-5" }
                             }
                         }
                     }
                 }
-            }
-            AlertMessage { variant: AlertVariant::Error,
-                {t.key_generated_warning}
-            }
+                AlertMessage { variant: AlertVariant::Error,
+                    {t.key_generated_warning}
+                }
                 DialogActions {
                     Btn {
                         onclick: move |_| on_close.call(()),

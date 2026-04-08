@@ -10,6 +10,7 @@ AWS_ACCESS_KEY_ID ?= $(shell aws configure get aws_access_key_id $(AWS_FLAG))
 AWS_SECRET_ACCESS_KEY ?= $(shell aws configure get aws_secret_access_key $(AWS_FLAG))
 AWS_REGION ?= $(shell aws configure get region)
 AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output text)
+DEPLOYER_PRIVATE_KEY ?=
 
 REPOSITORY ?= biyard/console
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
@@ -24,7 +25,8 @@ BUILD_ENV ?= DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) \
 	AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 	AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 	AWS_REGION=$(AWS_REGION) \
-	RUSTFLAGS='$(RUSTFLAGS)'
+	RUSTFLAGS='$(RUSTFLAGS)' \
+	DEPLOYER_PRIVATE_KEY=$(DEPLOYER_PRIVATE_KEY)
 
 
 dev: 

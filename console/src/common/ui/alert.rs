@@ -11,26 +11,28 @@ pub enum AlertVariant {
 impl AlertVariant {
     fn outer_class(&self) -> &'static str {
         match self {
-            AlertVariant::Info => "p-3 rounded-md bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200",
-            AlertVariant::Error => "p-4 bg-red-50 rounded-md dark:bg-red-900/20",
-            AlertVariant::Success => "p-3 rounded-md bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-200",
+            AlertVariant::Info => {
+                "rounded-2xl border border-brand bg-brand-soft px-4 py-3 text-brand"
+            }
+            AlertVariant::Error => {
+                "rounded-2xl border border-danger bg-danger-soft px-4 py-3 text-danger"
+            }
+            AlertVariant::Success => {
+                "rounded-2xl border border-success bg-success-soft px-4 py-3 text-success"
+            }
         }
     }
 
     fn text_class(&self) -> &'static str {
         match self {
-            AlertVariant::Info => "",
-            AlertVariant::Error => "text-sm text-red-800 dark:text-red-400",
-            AlertVariant::Success => "",
+            AlertVariant::Info | AlertVariant::Success => "text-sm font-medium",
+            AlertVariant::Error => "text-sm font-medium",
         }
     }
 }
 
 #[component]
-pub fn AlertMessage(
-    #[props(default)] variant: AlertVariant,
-    children: Element,
-) -> Element {
+pub fn AlertMessage(#[props(default)] variant: AlertVariant, children: Element) -> Element {
     let text_class = variant.text_class();
     rsx! {
         div { class: variant.outer_class(),

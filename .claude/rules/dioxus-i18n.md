@@ -1,13 +1,14 @@
 ---
-globs: ["app/**/i18n.rs", "app/**/*.rs", "packages/dioxus-translate*/**/*.rs"]
+globs: ["console/**/i18n.rs", "landing/**/i18n.rs", "console/**/*.rs", "landing/**/*.rs"]
 ---
 
 # Translation System (dioxus-translate)
 
-Compile-time i18n system with three packages:
-- **dioxus-translate-types** — `Translator` trait (`en()`, `ko()`)
-- **dioxus-translate-macro** — `translate!` macro + `#[derive(Translate)]`
-- **dioxus-translate** — Runtime: `Language` enum, hooks, global signal
+Compile-time i18n system sourced from `dioxus-translate` (pinned to
+`biyard/ratel.git`), providing:
+- **`Translator` trait** — `en()`, `ko()`
+- **`translate!` macro + `#[derive(Translate)]`** — compile-time string generation
+- **Runtime** — `Language` enum, `use_translate()` / `use_language()` hooks, global signal
 
 ## `translate!` Macro
 
@@ -101,9 +102,10 @@ features/<module>/
 
 ## Feature Flags
 
-Enable Korean in `Cargo.toml`:
+Korean is already enabled at the workspace level in the root `Cargo.toml`:
 ```toml
-dioxus-translate = { version = "0.1.*", features = ["ko"] }
+dioxus-translate = { version = "0.1", git = "https://github.com/biyard/ratel.git", rev = "...", features = ["ko"] }
 ```
 
-Without `ko` feature, only `Language::En` is available and `ko:` entries in `translate!` are compiled out.
+Without the `ko` feature, only `Language::En` is available and `ko:` entries
+in `translate!` are compiled out.

@@ -5,6 +5,7 @@ use crate::Route;
 use crate::common::ui::*;
 use crate::features::accounts::context::{AccountContext, use_account_context};
 use crate::features::accounts::i18n::SignUpTranslate;
+use crate::features::accounts::utils::password_policy_error_message;
 
 #[component]
 pub fn SignUp() -> Element {
@@ -20,6 +21,13 @@ pub fn SignUp() -> Element {
 
     let handle_submit = move |e: FormEvent| {
         e.prevent_default();
+
+        if let Some(message) =
+            password_policy_error_message(&password(), Some(&email()), Some(&name()))
+        {
+            error.set(Some(message));
+            return;
+        }
 
         if password() != confirm_password() {
             error.set(Some(t.password_mismatch.to_string()));
@@ -42,8 +50,13 @@ pub fn SignUp() -> Element {
             .await
             {
                 Ok(resp) => {
+                    let current_enterprise =
+                        crate::features::enterprises::controllers::get_current_enterprise_handler()
+                            .await
+                            .ok();
                     account_ctx.set(AccountContext {
                         account: Some(resp),
+                        current_enterprise,
                     });
                     nav.push(Route::Dashboard {});
                 }
@@ -56,21 +69,21 @@ pub fn SignUp() -> Element {
     };
 
     rsx! {
-        div { class: "flex justify-center items-center px-4 min-h-screen bg-gray-50 dark:bg-gray-900",
-            div { class: "space-y-8 w-full max-w-md",
+        div { class: "flex min-h-screen items-center justify-center bg-background px-4 text-foreground",
+            div { class: "w-full max-w-md space-y-6",
                 div { class: "text-center",
-                    h1 { class: "text-4xl font-bold text-gray-900 dark:text-white",
+                    h1 { class: "font-display text-3xl font-bold tracking-tight text-foreground",
                         {t.title}
                     }
-                    p { class: "mt-2 text-sm text-gray-600 dark:text-gray-400",
+                    p { class: "mt-1 text-sm text-foreground-muted",
                         {t.tagline}
                     }
-                    h2 { class: "mt-6 text-3xl font-extrabold text-gray-900 dark:text-white",
+                    h2 { class: "mt-6 text-base font-semibold text-foreground-soft",
                         {t.sign_up_heading}
                     }
                 }
 
-                form { class: "mt-8 space-y-6", method: "post", onsubmit: handle_submit,
+                form { class: "space-y-5", method: "post", onsubmit: handle_submit,
                     if let Some(err) = error() {
                         AlertMessage { variant: AlertVariant::Error, "{err}" }
                     }
@@ -84,22 +97,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| name.set(e.value()),
                             placeholder: t.name_placeholder.to_string(),
                             autocomplete: "name",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    path { d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" }
-                                    circle { cx: "12", cy: "7", r: "4" }
-                                }
-                            },
+                            icon: rsx! { IconUser { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -110,28 +108,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| email.set(e.value()),
                             placeholder: t.email_placeholder.to_string(),
                             autocomplete: "email",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "20",
-                                        height: "16",
-                                        x: "2",
-                                        y: "4",
-                                        rx: "2",
-                                    }
-                                    path { d: "m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" }
-                                }
-                            },
+                            icon: rsx! { IconMail { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -142,29 +119,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| password.set(e.value()),
                             placeholder: t.password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "18",
-                                        height: "11",
-                                        x: "3",
-                                        y: "11",
-                                        rx: "2",
-                                        ry: "2",
-                                    }
-                                    path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
-                                }
-                            },
+                            icon: rsx! { IconLock { class: "h-5 w-5 text-foreground-muted" } },
                         }
 
                         FormFieldWithIcon {
@@ -175,29 +130,7 @@ pub fn SignUp() -> Element {
                             oninput: move |e: FormEvent| confirm_password.set(e.value()),
                             placeholder: t.confirm_password_placeholder.to_string(),
                             autocomplete: "new-password",
-                            icon: rsx! {
-                                svg {
-                                    class: "w-5 h-5 text-gray-400",
-                                    xmlns: "http://www.w3.org/2000/svg",
-                                    width: "24",
-                                    height: "24",
-                                    view_box: "0 0 24 24",
-                                    fill: "none",
-                                    stroke: "currentColor",
-                                    stroke_width: "2",
-                                    stroke_linecap: "round",
-                                    stroke_linejoin: "round",
-                                    rect {
-                                        width: "18",
-                                        height: "11",
-                                        x: "3",
-                                        y: "11",
-                                        rx: "2",
-                                        ry: "2",
-                                    }
-                                    path { d: "M7 11V7a5 5 0 0 1 10 0v4" }
-                                }
-                            },
+                            icon: rsx! { IconLock { class: "h-5 w-5 text-foreground-muted" } },
                         }
                     }
 
@@ -213,11 +146,11 @@ pub fn SignUp() -> Element {
                     }
 
                     div { class: "text-center",
-                        p { class: "text-sm text-gray-600 dark:text-gray-400",
+                        p { class: "text-sm text-foreground-muted",
                             {t.have_account} " "
                             Link {
                                 to: Route::SignIn {},
-                                class: "font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500",
+                                class: "font-medium text-brand hover:text-brand-strong",
                                 {t.sign_in_link}
                             }
                         }

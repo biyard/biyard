@@ -1,0 +1,483 @@
+use dioxus::prelude::*;
+use dioxus_translate::use_translate;
+
+use crate::Route;
+use crate::common::ProjectPartition;
+use crate::common::components::file_uploader::FileUploader;
+use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
+use crate::features::console::i18n::ConsoleTranslate;
+use crate::features::projects::ProjectResponse;
+use crate::features::projects::i18n::ProjectsTranslate;
+
+#[derive(Clone, PartialEq)]
+pub enum ProjectEditorMode {
+    Create,
+    Edit {
+        project_id: ProjectPartition,
+        project: ProjectResponse,
+    },
+}
+
+#[component]
+pub fn ProjectCreate() -> Element {
+    let t: ProjectsTranslate = use_translate();
+    let console_t: ConsoleTranslate = use_translate();
+    let nav = use_navigator();
+    let account_ctx = use_account_context();
+    let enterprise_name = account_ctx()
+        .enterprise_name()
+        .unwrap_or_else(|| "Default enterprise".to_string());
+
+    rsx! {
+        div { class: "space-y-8",
+            PageHeader {
+                title: t.create_project.to_string(),
+                subtitle: t.create_brand_subtitle_in.replace("{enterprise}", &enterprise_name),
+                scope: PageScope::Workspace,
+                // Page is about creating a Brand — show "BRANDS" in the
+                // breadcrumb tag, not "ENTERPRISE".
+                workspace_label: t.brands_breadcrumb.to_string(),
+                brand_label: console_t.brand_scope_label.to_string(),
+                actions: rsx! {
+                    Btn {
+                        variant: BtnVariant::Secondary,
+                        onclick: move |_| {
+                            nav.push(Route::Projects {});
+                        },
+                        {t.back_to_projects}
+                    }
+                },
+            }
+
+            ProjectEditorCard {
+                mode: ProjectEditorMode::Create,
+            }
+        }
+    }
+}
+
+/// Legacy `/projects/:project_id/edit` URL.
+///
+/// Brand editing now lives inline in the Settings tab. Anyone who lands
+/// on `/edit` (bookmarks, old links) is redirected to the new location.
+#[component]
+pub fn ProjectEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
+    let nav = use_navigator();
+    use_effect(move || {
+        nav.replace(Route::ProjectSettings {
+            project_id: project_id(),
+        });
+    });
+    rsx! {}
+}
+
+#[component]
+pub fn ProjectEditorCard(
+    mode: ProjectEditorMode,
+    #[props(default)] on_saved: Option<EventHandler>,
+) -> Element {
+    let t: ProjectsTranslate = use_translate();
+    let nav = use_navigator();
+    let cancel_nav = nav.clone();
+    let submit_nav = nav.clone();
+    let is_create = matches!(&mode, ProjectEditorMode::Create);
+
+    let existing_project = match &mode {
+        ProjectEditorMode::Create => None,
+        ProjectEditorMode::Edit { project, .. } => Some(project.clone()),
+    };
+    let existing_project_id = match &mode {
+        ProjectEditorMode::Create => None,
+        ProjectEditorMode::Edit { project_id, .. } => Some(project_id.clone()),
+    };
+
+    let seed_name = existing_project
+        .as_ref()
+        .map(|project| project.name.clone())
+        .unwrap_or_default();
+    let seed_description = existing_project
+        .as_ref()
+        .and_then(|project| project.description.clone())
+        .unwrap_or_default();
+    let seed_brand_logo_url = existing_project
+        .as_ref()
+        .and_then(|project| project.brand_logo_url.clone())
+        .unwrap_or_default();
+    let seed_monthly_supply = existing_project
+        .as_ref()
+        .map(|project| project.monthly_token_supply.to_string())
+        .unwrap_or_else(|| "1000000".to_string());
+    // Reserve rate is stored as a 0..1 fraction in the model but the UI
+    // takes whole percent (0..100). Multiplying once at hydration and
+    // dividing once on submit keeps the user-visible value sane and
+    // prevents the "type 10 → submit 1000%" footgun.
+    let seed_reserve_rate = existing_project
+        .as_ref()
+        .map(|project| ((project.treasury_reserve_rate * 100.0).round() as i64).to_string())
+        .unwrap_or_else(|| "10".to_string());
+
+    let mut name = use_signal(move || seed_name.clone());
+    let mut description = use_signal(move || seed_description.clone());
+    let mut brand_logo_url = use_signal(move || seed_brand_logo_url.clone());
+    let mut monthly_supply = use_signal(move || seed_monthly_supply.clone());
+    let mut reserve_rate = use_signal(move || seed_reserve_rate.clone());
+    let mut message = use_signal(|| None::<(AlertVariant, String)>);
+    let mut loading = use_signal(|| false);
+
+    let title = if is_create {
+        t.create_project.to_string()
+    } else {
+        t.brand_settings.to_string()
+    };
+    let helper_text = if is_create {
+        t.brand_create_helper
+    } else {
+        t.brand_edit_helper
+    };
+
+    // `preview_*_is_placeholder` flags let the live preview render
+    // empty-state values in a muted/italic style so the user does not
+    // mistake them for actual input.
+    let preview_name_is_placeholder = name().trim().is_empty();
+    let preview_name = if preview_name_is_placeholder {
+        t.brand.to_string()
+    } else {
+        name()
+    };
+    let preview_description_is_placeholder = description().trim().is_empty();
+    let preview_description = if preview_description_is_placeholder {
+        t.brand_preview_description_placeholder.to_string()
+    } else {
+        description()
+    };
+    let preview_logo_url = {
+        let current = brand_logo_url();
+        if current.trim().is_empty() {
+            None
+        } else {
+            Some(current)
+        }
+    };
+    // Input is whole percent — display as-is, clamped to a sane range.
+    let reserve_percent = reserve_rate()
+        .parse::<f64>()
+        .unwrap_or(0.0)
+        .clamp(0.0, 100.0);
+
+    let settings_saved = t.settings_saved.to_string();
+    let save_failure = t.save_failure.to_string();
+
+    rsx! {
+        SectionCard {
+            div { class: "mb-6 flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between",
+                div {
+                    SectionTitle { "{title}" }
+                    p { class: "text-sm leading-6 text-foreground-muted", "{helper_text}" }
+                }
+                if let Some(project_id) = existing_project_id.clone() {
+                    code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                        "{project_id}"
+                    }
+                }
+            }
+
+            if let Some((variant, text)) = message() {
+                div { class: "mb-5",
+                    AlertMessage { variant: variant, "{text}" }
+                }
+            }
+
+            div { class: "grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]",
+                div { class: "space-y-6",
+                    div { class: "grid gap-4 md:grid-cols-2",
+                        div { class: "md:col-span-2",
+                            FormField {
+                                label: t.brand_name,
+                                value: name(),
+                                oninput: move |e: FormEvent| name.set(e.value()),
+                                placeholder: t.name_placeholder.to_string(),
+                            }
+                        }
+
+                        div { class: "md:col-span-2",
+                            FormLabel { {t.brand_logo} }
+                            FileUploader {
+                                prefix: "brand-logos".to_string(),
+                                accept: "image/*".to_string(),
+                                on_upload_success: move |url: String| brand_logo_url.set(url),
+                                class: "mt-2 block".to_string(),
+                                div { class: "flex items-center gap-4 rounded-2xl border border-dashed border-border bg-panel-muted px-4 py-4 text-sm text-foreground-muted transition-colors hover:border-brand hover:bg-panel-strong",
+                                    if brand_logo_url().trim().is_empty() {
+                                        div { class: "flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-panel text-foreground-muted",
+                                            IconUpload { class: "h-5 w-5" }
+                                        }
+                                        div { class: "flex-1",
+                                            p { class: "font-semibold text-foreground", {t.brand_logo_upload_cta} }
+                                            p { class: "text-xs text-foreground-muted", {t.brand_logo_upload_hint} }
+                                        }
+                                    } else {
+                                        img {
+                                            src: "{brand_logo_url()}",
+                                            alt: "brand-logo",
+                                            class: "h-12 w-12 rounded-xl border border-border bg-panel object-cover",
+                                        }
+                                        div { class: "flex-1 min-w-0",
+                                            p { class: "truncate font-semibold text-foreground", "{brand_logo_url()}" }
+                                            p { class: "text-xs text-foreground-muted", {t.brand_logo_change_cta} }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        div { class: "md:col-span-2",
+                            FormField {
+                                label: t.description,
+                                value: description(),
+                                oninput: move |e: FormEvent| description.set(e.value()),
+                                placeholder: t.description_placeholder.to_string(),
+                            }
+                        }
+
+                        div {
+                            FormField {
+                                label: t.monthly_supply,
+                                r#type: "number",
+                                value: monthly_supply(),
+                                oninput: move |e: FormEvent| monthly_supply.set(e.value()),
+                                placeholder: t.monthly_supply_placeholder.to_string(),
+                                min: "0",
+                            }
+                            // Inline preview of the typed number with thousand separators.
+                            // Helps the user verify they typed `1,000,000` not `100,000` etc.
+                            if let Ok(parsed) = monthly_supply().parse::<i64>() {
+                                if parsed >= 1000 {
+                                    p { class: "mt-1 text-xs font-semibold text-foreground-soft",
+                                        "= {format_number(parsed)}"
+                                    }
+                                }
+                            }
+                            p { class: "mt-2 text-xs font-medium text-foreground-muted",
+                                {t.monthly_supply_help}
+                            }
+                        }
+
+                        div {
+                            FormField {
+                                label: t.treasury_reserve_rate,
+                                r#type: "number",
+                                value: reserve_rate(),
+                                oninput: move |e: FormEvent| reserve_rate.set(e.value()),
+                                placeholder: "10".to_string(),
+                                min: "0",
+                                max: "100",
+                                step: "1",
+                                suffix: "%",
+                            }
+                            p { class: "mt-2 text-xs font-medium text-foreground-muted",
+                                {t.treasury_reserve_rate_desc}
+                            }
+                        }
+                    }
+
+                    div { class: "flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end",
+                        Btn {
+                            variant: BtnVariant::Secondary,
+                            disabled: loading(),
+                            onclick: move |_| {
+                                if is_create {
+                                    cancel_nav.push(Route::Projects {});
+                                } else if let Some(pid) = existing_project_id.clone() {
+                                    cancel_nav.push(Route::ProjectDetail { project_id: pid });
+                                }
+                            },
+                            {t.cancel}
+                        }
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            class: "sm:min-w-40",
+                            disabled: loading(),
+                            onclick: move |_| {
+                                let mode = mode.clone();
+                                let nav = submit_nav.clone();
+                                let on_saved = on_saved.clone();
+                                let settings_saved = settings_saved.clone();
+                                let save_failure = save_failure.clone();
+                                let name_val = name();
+                                let desc_val = {
+                                    let value = description();
+                                    if value.trim().is_empty() { None } else { Some(value) }
+                                };
+                                let brand_logo_url_val = {
+                                    let value = brand_logo_url();
+                                    if value.trim().is_empty() { None } else { Some(value) }
+                                };
+                                let monthly_supply_input = monthly_supply();
+                                let reserve_rate_input = reserve_rate();
+
+                                spawn(async move {
+                                    loading.set(true);
+                                    message.set(None);
+
+                                    // The reserve_rate input is now whole percent (0-100).
+                                    // Convert to a 0..1 fraction for the API/model.
+                                    let parse_reserve_pct = |s: &str, fallback: f64| -> f64 {
+                                        s.parse::<f64>()
+                                            .map(|p| (p / 100.0).clamp(0.0, 1.0))
+                                            .unwrap_or(fallback)
+                                    };
+
+                                    match mode {
+                                        ProjectEditorMode::Create => {
+                                            let monthly_supply_val =
+                                                monthly_supply_input.parse::<i64>().unwrap_or(1_000_000);
+                                            let reserve_rate_val =
+                                                parse_reserve_pct(&reserve_rate_input, 0.1);
+
+                                            match crate::features::projects::controllers::create_project_handler(
+                                                name_val,
+                                                desc_val,
+                                                brand_logo_url_val,
+                                                monthly_supply_val,
+                                                reserve_rate_val,
+                                            )
+                                            .await
+                                            {
+                                                Ok(project) => {
+                                                    // Hard navigation (full page load) so the sidebar's
+                                                    // `brands_loader` re-fetches and the brand switcher
+                                                    // reflects the brand-new project. A SPA `nav.push`
+                                                    // would leave the cached brands list stale and the
+                                                    // selector would render with an empty name.
+                                                    #[cfg(not(feature = "server"))]
+                                                    {
+                                                        let target = format!(
+                                                            "/projects/{}/overview",
+                                                            project.id,
+                                                        );
+                                                        let _ = web_sys::window()
+                                                            .and_then(|w| w.location().assign(&target).ok());
+                                                    }
+                                                    #[cfg(feature = "server")]
+                                                    {
+                                                        nav.push(Route::ProjectDetail {
+                                                            project_id: ProjectPartition::from(project.id),
+                                                        });
+                                                    }
+                                                }
+                                                Err(error) => {
+                                                    message.set(Some((AlertVariant::Error, error.to_string())));
+                                                }
+                                            }
+                                        }
+                                        ProjectEditorMode::Edit { project_id, project } => {
+                                            let monthly_supply_val = monthly_supply_input
+                                                .parse::<i64>()
+                                                .unwrap_or(project.monthly_token_supply);
+                                            let reserve_rate_val =
+                                                parse_reserve_pct(&reserve_rate_input, project.treasury_reserve_rate);
+
+                                            match crate::features::projects::controllers::update_project_handler(
+                                                project_id.clone(),
+                                                Some(name_val),
+                                                desc_val,
+                                                brand_logo_url_val,
+                                                Some(monthly_supply_val),
+                                                Some(reserve_rate_val),
+                                                None,
+                                            )
+                                            .await
+                                            {
+                                                Ok(_) => {
+                                                    message.set(Some((AlertVariant::Success, settings_saved.clone())));
+                                                    if let Some(on_saved) = on_saved {
+                                                        on_saved.call(());
+                                                    } else {
+                                                        nav.push(Route::ProjectDetail { project_id });
+                                                    }
+                                                }
+                                                Err(error) => {
+                                                    message.set(Some((
+                                                        AlertVariant::Error,
+                                                        format!("{save_failure}{error}"),
+                                                    )));
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    loading.set(false);
+                                });
+                            },
+                            if loading() {
+                                if is_create { {t.creating} } else { {t.saving} }
+                            } else if is_create {
+                                {t.next_create_token}
+                            } else {
+                                {t.save_settings}
+                            }
+                        }
+                    }
+                }
+
+                div { class: "space-y-4",
+                    div { class: "rounded-[24px] border border-border bg-panel-muted p-5",
+                        p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                            {t.live_preview}
+                        }
+                        div { class: "mt-4 flex items-start gap-4",
+                            BrandAvatar {
+                                name: preview_name.clone(),
+                                logo_url: preview_logo_url,
+                                size: BrandAvatarSize::Lg,
+                            }
+                            div { class: "space-y-2",
+                                h4 {
+                                    class: if preview_name_is_placeholder {
+                                        "font-display text-[1.5rem] font-bold tracking-tight italic text-foreground-muted"
+                                    } else {
+                                        "font-display text-[1.5rem] font-bold tracking-tight text-foreground"
+                                    },
+                                    "{preview_name}"
+                                }
+                                p {
+                                    class: if preview_description_is_placeholder {
+                                        "text-sm leading-6 italic text-foreground-muted"
+                                    } else {
+                                        "text-sm leading-6 text-foreground-muted"
+                                    },
+                                    "{preview_description}"
+                                }
+                            }
+                        }
+                    }
+
+                    div { class: "rounded-[24px] border border-border bg-panel-muted p-5",
+                        p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                            {t.operating_defaults}
+                        }
+                        div { class: "mt-4 grid gap-3",
+                            div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
+                                p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
+                                    {t.monthly_supply}
+                                }
+                                p { class: "mt-2 text-lg font-semibold text-foreground",
+                                    "{format_number(monthly_supply().parse::<i64>().unwrap_or_default())}"
+                                }
+                            }
+                            div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
+                                p { class: "text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground-muted",
+                                    {t.treasury_reserve_rate}
+                                }
+                                p { class: "mt-2 text-lg font-semibold text-foreground",
+                                    "{reserve_percent.round()}%"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

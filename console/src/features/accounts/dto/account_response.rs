@@ -1,3 +1,4 @@
+use crate::common::OrganizationRole;
 use crate::common::types::Partition;
 use crate::features::accounts::AccountType;
 use serde::{Deserialize, Serialize};
@@ -7,6 +8,10 @@ pub struct AccountResponse {
     pub pk: Partition,
     pub name: String,
     pub email: String,
+    #[serde(default)]
+    pub enterprise_id: Partition,
+    #[serde(default)]
+    pub organization_role: OrganizationRole,
     #[serde(default)]
     pub user_type: AccountType,
     pub created_at: i64,

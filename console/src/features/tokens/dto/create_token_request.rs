@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 pub struct CreateTokenRequest {
     pub name: String,
     pub symbol: String,
+    #[serde(default)]
     pub decimals: u8,
     pub description: Option<String>,
+    #[serde(default)]
+    pub initial_supply: i64,
 }

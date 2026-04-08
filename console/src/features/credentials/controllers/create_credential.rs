@@ -3,23 +3,32 @@ use crate::features::credentials::CredentialResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, Partition};
+use crate::common::EnterpriseContextAuth;
 #[cfg(feature = "server")]
-use crate::features::accounts::Account;
+use crate::common::OrganizationRole;
+#[cfg(feature = "server")]
+use crate::common::{CommonConfig, Partition};
 #[cfg(feature = "server")]
 use crate::features::credentials::Credential;
 
-#[post("/v1/credentials", account: Account)]
+#[post("/v1/credentials", auth: EnterpriseContextAuth)]
 pub async fn create_credential_handler(name: String) -> Result<CredentialResponse> {
+    // API key issuance is a privileged action: a leaked key grants
+    // full API-level access to the enterprise's data. Only Admin or
+    // higher may create credentials.
+    if !auth.role.allows(OrganizationRole::Admin) {
+        return Err(crate::common::Error::Forbidden);
+    }
+
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
     let api_key = format!(
         "biyard_{}",
-        uuid::Uuid::new_v4().to_string().replace("-", "")
+        uuid::Uuid::now_v7().to_string().replace("-", "")
     );
 
-    let credential = Credential::new(account.pk, name, &api_key);
+    let credential = Credential::new(auth.account.pk, auth.enterprise.pk, name, &api_key);
     credential.create(cli).await?;
 
     let response = CredentialResponse {

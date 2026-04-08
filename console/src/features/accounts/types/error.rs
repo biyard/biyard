@@ -10,4 +10,10 @@ pub enum AccountError {
 
     #[error("Account not found")]
     AccountNotFound,
+
+    #[error("Weak password: {0}")]
+    WeakPassword(String),
+
+    #[error("Name cannot be empty")]
+    InvalidName,
 }
