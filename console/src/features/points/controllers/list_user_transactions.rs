@@ -18,7 +18,8 @@ pub async fn list_user_transactions_handler(
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    // month without any post-filtering.
+    let pk = CompositePartition(auth.project.pk, Partition::MetaUser(meta_user_id));
+
     let sk_prefix = match &month {
         Some(m) => format!("POINT_TRANSACTION#{m}#"),
         None => "POINT_TRANSACTION#".to_string(),
