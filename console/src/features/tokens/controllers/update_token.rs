@@ -14,7 +14,6 @@ pub async fn update_token_handler(
     symbol: Option<String>,
     decimals: Option<u8>,
     description: Option<String>,
-    initial_supply: Option<i64>,
 ) -> Result<TokenResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
@@ -42,12 +41,6 @@ pub async fn update_token_handler(
     }
     if let Some(description) = description {
         updater = updater.with_description(description);
-    }
-    if let Some(initial_supply) = initial_supply {
-        let supply = initial_supply.max(0);
-        updater = updater
-            .with_total_supply(supply)
-            .with_circulating_supply(supply);
     }
 
     updater = updater.with_updated_at(now);

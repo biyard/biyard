@@ -21,7 +21,7 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
     });
 
     rsx! {
-        div { class: "grid gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
+        div { class: "flex flex-col gap-6",
             SectionCard {
                 SectionTitle { {t.project_info} }
                 // The brand avatar + name header lives in the page header
@@ -39,6 +39,7 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             label: t.project_id.to_string(),
                             value: project.id.clone(),
                             code_like: true,
+                            copyable: true,
                         }
                         InfoRow {
                             label: t.created_at.to_string(),
@@ -97,8 +98,7 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                                     if let Some(ref desc) = tok.description {
                                         p { class: "text-sm leading-6 text-foreground-muted", "{desc}" }
                                     }
-                                    div { class: "grid gap-4 sm:grid-cols-3",
-                                        StatCard { color: StatColor::Gray, label: t.total_supply.to_string(), value: format_number(tok.total_supply) }
+                                    div { class: "grid gap-4 sm:grid-cols-2",
                                         StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: format_number(tok.circulating_supply) }
                                         StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
                                     }
@@ -162,15 +162,25 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
 }
 
 #[component]
-fn InfoRow(label: String, value: String, code_like: bool) -> Element {
+fn InfoRow(
+    label: String,
+    value: String,
+    code_like: bool,
+    #[props(default)] copyable: bool,
+) -> Element {
     rsx! {
         div { class: "rounded-[24px] border border-border bg-panel-muted p-4",
             p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                 "{label}"
             }
             if code_like {
-                code { class: "mt-2 block break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
-                    "{value}"
+                div { class: "mt-2 flex items-center gap-2",
+                    code { class: "block flex-1 break-all rounded-2xl border border-border bg-panel px-3 py-2 text-sm font-medium text-foreground",
+                        "{value}"
+                    }
+                    if copyable {
+                        CopyButton { value: value.clone() }
+                    }
                 }
             } else {
                 p { class: "mt-2 text-sm font-semibold text-foreground",

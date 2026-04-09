@@ -56,8 +56,8 @@ translate! {
         ko: "예: 1,000,000 — 수동 프로비저닝은 0",
     },
     monthly_supply_help: {
-        en: "Per-month budget for rewarding users with points convertible to this brand's token. Independent of the token's on-chain total supply (set on the Token tab).",
-        ko: "이 브랜드의 토큰으로 전환 가능한 포인트를 사용자에게 지급할 월별 예산입니다. 토큰의 온체인 총 공급량(토큰 탭에서 설정)과는 별개입니다.",
+        en: "Per-month budget for rewarding users with points that can later be converted into this brand's token via the Treasury.",
+        ko: "이 브랜드의 토큰으로 전환 가능한 포인트를 Treasury를 통해 사용자에게 지급할 월별 예산입니다.",
     },
     symbol: {
         en: "Symbol",
@@ -186,10 +186,6 @@ translate! {
     point_aggregation: {
         en: "Point Aggregation",
         ko: "포인트 집계",
-    },
-    total_supply: {
-        en: "Total Supply",
-        ko: "총 공급량",
     },
     circulating_supply: {
         en: "Circulating Supply",
@@ -768,10 +764,6 @@ translate! {
     floor_price_overview_note: {
         en: "Floor Price (Est.) is auto-calculated based on total supply in the Overview tab.",
         ko: "하한가(예상)는 Overview 탭에서 총 발행량 기준으로 자동 계산됩니다.",
-    },
-    initial_total_supply: {
-        en: "Initial Total Supply",
-        ko: "초기 총 발행량",
     },
     token_name_placeholder: {
         en: "e.g. My Token",

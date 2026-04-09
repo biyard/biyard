@@ -189,8 +189,11 @@ pub fn ProjectEditorCard(
                     p { class: "text-sm leading-6 text-foreground-muted", "{helper_text}" }
                 }
                 if let Some(project_id) = existing_project_id.clone() {
-                    code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                        "{project_id}"
+                    div { class: "flex items-center gap-2",
+                        code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                            "{project_id}"
+                        }
+                        CopyButton { value: project_id.clone(), size: CopyButtonSize::Sm }
                     }
                 }
             }

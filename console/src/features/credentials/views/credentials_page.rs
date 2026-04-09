@@ -19,7 +19,6 @@ pub fn Credentials() -> Element {
         .unwrap_or_else(|| "Default enterprise".to_string());
     let mut show_create_dialog = use_signal(|| false);
     let mut generated_key = use_signal(|| None::<String>);
-    let mut copied_key = use_signal(|| None::<String>);
 
     let mut credentials = use_loader(move || async move {
         crate::features::credentials::controllers::list_credentials_handler().await
@@ -100,10 +99,9 @@ pub fn Credentials() -> Element {
                             {
                                 let id = cred.id.clone();
                                 let name = cred.name.clone();
-                                let api_key_prefix = cred.api_key_prefix.clone();
                                 let status = cred.status;
                                 let created_at = cred.created_at;
-                                let masked_key = mask_key(&api_key_prefix);
+                                let masked_key = mask_key(&cred.api_key_prefix);
                                 let badge_color = match status {
                                     CredentialStatus::Active => BadgeColor::Green,
                                     CredentialStatus::Revoked => BadgeColor::Red,
@@ -119,41 +117,8 @@ pub fn Credentials() -> Element {
                                             p { class: "font-semibold text-foreground", "{name}" }
                                         }
                                         TableCell {
-                                            div { class: "flex items-center gap-2",
-                                                code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                                                    "{masked_key}"
-                                                }
-                                                {
-                                                    let prefix_for_copy = api_key_prefix.clone();
-                                                    rsx! {
-                                                        button {
-                                                            class: "inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-border bg-panel text-foreground-muted transition-colors hover:bg-panel-strong hover:text-foreground",
-                                                            title: "{t.copy}",
-                                                            "aria-label": "{t.copy}",
-                                                            onclick: move |_| {
-                                                                let key = prefix_for_copy.clone();
-                                                                copy_to_clipboard(&key);
-                                                                copied_key.set(Some(key));
-                                                                #[cfg(not(feature = "server"))]
-                                                                {
-                                                                    let mut copied = copied_key;
-                                                                    spawn(async move {
-                                                                        let mut eval = document::eval(
-                                                                            "await new Promise(r => setTimeout(r, 2000)); dioxus.send(true);",
-                                                                        );
-                                                                        let _ = eval.recv::<bool>().await;
-                                                                        copied.set(None);
-                                                                    });
-                                                                }
-                                                            },
-                                                            if copied_key().as_deref() == Some(&*api_key_prefix) {
-                                                                IconCheck { class: "h-4 w-4 text-success" }
-                                                            } else {
-                                                                IconCopy { class: "h-4 w-4" }
-                                                            }
-                                                        }
-                                                    }
-                                                }
+                                            code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                                                "{masked_key}"
                                             }
                                         }
                                         TableCell { class: "text-sm text-foreground-muted",
@@ -205,22 +170,6 @@ pub fn Credentials() -> Element {
             if let Some(ref key) = generated_key() {
                 GeneratedKeyDialog {
                     api_key: key.clone(),
-                    copied_key: copied_key(),
-                    on_copy: move |key: String| {
-                        copy_to_clipboard(&key);
-                        copied_key.set(Some(key));
-                        #[cfg(not(feature = "server"))]
-                        {
-                            let mut copied = copied_key;
-                            spawn(async move {
-                                let mut eval = document::eval(
-                                    "await new Promise(r => setTimeout(r, 2000)); dioxus.send(true);",
-                                );
-                                let _ = eval.recv::<bool>().await;
-                                copied.set(None);
-                            });
-                        }
-                    },
                     on_close: move |_| {
                         generated_key.set(None);
                     },
@@ -303,14 +252,8 @@ fn CreateCredentialDialog(on_close: EventHandler, on_created: EventHandler<Strin
 }
 
 #[component]
-fn GeneratedKeyDialog(
-    api_key: String,
-    copied_key: Option<String>,
-    on_copy: EventHandler<String>,
-    on_close: EventHandler,
-) -> Element {
+fn GeneratedKeyDialog(api_key: String, on_close: EventHandler) -> Element {
     let t: CredentialsTranslate = use_translate();
-    let key_for_onclick = api_key.clone();
 
     rsx! {
         DialogRoot {
@@ -328,18 +271,7 @@ fn GeneratedKeyDialog(
                         code { class: "flex-1 break-all text-sm font-semibold text-foreground",
                             "{api_key}"
                         }
-                        button {
-                            class: "inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-panel text-foreground-muted transition-colors hover:bg-panel-strong hover:text-foreground",
-                            "aria-label": "{t.copy}",
-                            onclick: move |_| {
-                                on_copy.call(key_for_onclick.clone());
-                            },
-                            if copied_key.as_deref() == Some(&*api_key) {
-                                IconCheck { class: "h-5 w-5 text-success" }
-                            } else {
-                                IconCopy { class: "h-5 w-5" }
-                            }
-                        }
+                        CopyButton { value: api_key.clone() }
                     }
                 }
                 AlertMessage { variant: AlertVariant::Error,
@@ -361,12 +293,4 @@ fn mask_key(key: &str) -> String {
         return key.to_string();
     }
     format!("{}...{}", &key[..12], &key[key.len() - 4..])
-}
-
-fn copy_to_clipboard(_text: &str) {
-    #[cfg(not(feature = "server"))]
-    {
-        let js = format!("navigator.clipboard.writeText('{}')", _text);
-        document::eval(&js);
-    }
 }

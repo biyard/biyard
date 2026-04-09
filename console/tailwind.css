@@ -15,8 +15,8 @@
  * ============================================================================ */
 
 @theme {
-    --font-display: "Space Grotesk", "Inter", sans-serif;
-    --font-sans: "Inter", sans-serif;
+    --font-display: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
     /* Surfaces — dark by default */
     --color-background: #020408;
