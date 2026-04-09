@@ -533,96 +533,100 @@ translate! {
         ko: "하한가 시뮬레이터",
     },
     simulator_subtitle: {
-        en: "What-if tool. Nothing here is saved to the database or the blockchain — it only shows how the floor price mechanism reacts to sales, reward mints, and redemptions.",
-        ko: "가상 시나리오 도구입니다. 입력값은 DB나 블록체인에 저장되지 않으며, 매출·리워드 발행·환매에 따라 하한가가 어떻게 변하는지 보여줄 뿐입니다.",
+        en: "What-if tool. Enter your monthly sales and see, month by month, how the floor price evolves given the project's monthly token supply and reserve rate. Nothing is saved.",
+        ko: "가상 시나리오 도구입니다. 월 매출액을 입력하면, 프로젝트에 설정된 월별 토큰 발행량과 적립률을 기준으로 월별 하한가가 어떻게 변하는지 한눈에 보여줍니다. 저장되지 않습니다.",
     },
     simulator_config_title: {
-        en: "Configuration",
-        ko: "설정",
+        en: "Inputs",
+        ko: "입력값",
     },
     simulator_reserve_rate: {
         en: "Reserve Rate",
         ko: "트레저리 적립률",
     },
-    simulator_action_sale_title: {
-        en: "Record Sale",
-        ko: "매출 입력",
+    simulator_initial_treasury: {
+        en: "Initial Treasury",
+        ko: "초기 트레저리",
     },
-    simulator_action_sale_hint: {
-        en: "Adds amount × reserve rate to treasury.",
-        ko: "매출 × 적립률만큼 트레저리가 증가합니다.",
+    simulator_monthly_sales: {
+        en: "Initial Monthly Sales",
+        ko: "초기 월 매출액",
     },
-    simulator_apply_sale: {
-        en: "Add Sale",
-        ko: "매출 반영",
+    simulator_sales_growth: {
+        en: "Monthly Sales Growth",
+        ko: "월 매출 성장률",
     },
-    simulator_action_mint_title: {
-        en: "Reward Mint",
-        ko: "리워드 발행",
+    simulator_supply_decrease_rate: {
+        en: "Monthly Supply Decrease Rate",
+        ko: "월 토큰 발행량 감소율",
     },
-    simulator_action_mint_hint: {
-        en: "Mints tokens without adding treasury. Dilutes floor.",
-        ko: "트레저리 증가 없이 토큰만 발행합니다. 하한가가 희석됩니다.",
+    simulator_horizon: {
+        en: "Months",
+        ko: "시뮬레이션 개월 수",
     },
-    simulator_apply_mint: {
-        en: "Mint",
-        ko: "발행",
+    simulator_monthly_supply_hint: {
+        en: "Monthly token supply (from project setting):",
+        ko: "월별 토큰 발행량 (프로젝트 설정값):",
     },
-    simulator_action_redeem_title: {
-        en: "Redeem (Buyback)",
-        ko: "환매",
+    simulator_final_treasury_label: {
+        en: "Final Treasury",
+        ko: "최종 트레저리",
     },
-    simulator_action_redeem_hint: {
-        en: "Burns tokens at the floor price. Floor price is preserved.",
-        ko: "하한가로 토큰을 소각합니다. 하한가는 유지됩니다.",
+    simulator_final_supply_label: {
+        en: "Final Supply",
+        ko: "최종 발행량",
     },
-    simulator_apply_redeem: {
-        en: "Redeem",
-        ko: "환매",
+    simulator_final_floor_label: {
+        en: "Final Floor Price",
+        ko: "최종 하한가",
     },
-    simulator_log_title: {
-        en: "Action Log",
-        ko: "액션 로그",
+    simulator_chart_title: {
+        en: "Floor Price Projection",
+        ko: "하한가 예측 차트",
     },
-    simulator_log_empty: {
-        en: "No actions yet. Try recording a sale above.",
-        ko: "아직 액션이 없습니다. 위에서 매출을 입력해보세요.",
+    simulator_chart_treasury: {
+        en: "Cumulative Treasury (USDT)",
+        ko: "누적 트레저리 (USDT)",
     },
-    simulator_log_col_action: {
-        en: "Action",
-        ko: "액션",
+    simulator_chart_supply: {
+        en: "Cumulative Supply (tokens)",
+        ko: "누적 발행량 (tokens)",
     },
-    simulator_log_col_amount: {
-        en: "Input",
-        ko: "입력",
+    simulator_chart_floor: {
+        en: "Floor Price (USDT)",
+        ko: "하한가 (USDT)",
     },
-    simulator_log_col_delta: {
-        en: "Δ Treasury",
-        ko: "Δ 트레저리",
+    simulator_chart_x: {
+        en: "Month",
+        ko: "월",
     },
-    simulator_log_col_treasury: {
-        en: "Treasury",
-        ko: "트레저리",
+    simulator_chart_y_left: {
+        en: "Treasury (USDT)",
+        ko: "트레저리 (USDT)",
     },
-    simulator_log_col_supply: {
-        en: "Supply",
-        ko: "발행량",
+    simulator_chart_y_right: {
+        en: "Floor Price (USDT)",
+        ko: "하한가 (USDT)",
     },
-    simulator_log_col_floor: {
-        en: "Floor",
-        ko: "하한가",
+    simulator_table_title: {
+        en: "Monthly Projection",
+        ko: "월별 예측",
     },
-    simulator_log_kind_sale: {
-        en: "Sale",
-        ko: "매출",
+    simulator_col_month: {
+        en: "Month",
+        ko: "월",
     },
-    simulator_log_kind_mint: {
-        en: "Mint",
-        ko: "발행",
+    simulator_col_treasury: {
+        en: "Treasury (USDT)",
+        ko: "트레저리 (USDT)",
     },
-    simulator_log_kind_redeem: {
-        en: "Redeem",
-        ko: "환매",
+    simulator_col_supply: {
+        en: "Supply (tokens)",
+        ko: "발행량 (tokens)",
+    },
+    simulator_col_floor: {
+        en: "Floor (USDT)",
+        ko: "하한가 (USDT)",
     },
     simulator_reset: {
         en: "Reset",
