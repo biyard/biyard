@@ -12,10 +12,52 @@ use crate::features::projects::i18n::ProjectsTranslate;
 use wasm_bindgen::prelude::*;
 
 #[cfg(not(feature = "server"))]
-#[wasm_bindgen(js_namespace = ["window", "biyard", "simulator"])]
+#[wasm_bindgen]
 extern "C" {
-    fn render_chart(canvas_id: &str, payload_json: &str);
-    fn destroy_chart(canvas_id: &str);
+    #[wasm_bindgen(js_name = eval)]
+    fn js_eval(script: &str) -> wasm_bindgen::JsValue;
+}
+
+#[cfg(not(feature = "server"))]
+fn render_chart(canvas_id: &str, payload_json: &str) {
+    use wasm_bindgen::JsCast;
+    let window = web_sys::window().unwrap();
+    let biyard = js_sys::Reflect::get(&window, &"biyard".into()).ok();
+    let Some(biyard) = biyard.filter(|v| !v.is_undefined() && !v.is_null()) else {
+        return;
+    };
+    let simulator = js_sys::Reflect::get(&biyard, &"simulator".into()).ok();
+    let Some(simulator) = simulator.filter(|v| !v.is_undefined() && !v.is_null()) else {
+        return;
+    };
+    let Ok(func) = js_sys::Reflect::get(&simulator, &"render_chart".into()) else {
+        return;
+    };
+    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
+        return;
+    };
+    let _ = func.call2(&simulator, &canvas_id.into(), &payload_json.into());
+}
+
+#[cfg(not(feature = "server"))]
+fn destroy_chart(canvas_id: &str) {
+    use wasm_bindgen::JsCast;
+    let window = web_sys::window().unwrap();
+    let biyard = js_sys::Reflect::get(&window, &"biyard".into()).ok();
+    let Some(biyard) = biyard.filter(|v| !v.is_undefined() && !v.is_null()) else {
+        return;
+    };
+    let simulator = js_sys::Reflect::get(&biyard, &"simulator".into()).ok();
+    let Some(simulator) = simulator.filter(|v| !v.is_undefined() && !v.is_null()) else {
+        return;
+    };
+    let Ok(func) = js_sys::Reflect::get(&simulator, &"destroy_chart".into()) else {
+        return;
+    };
+    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
+        return;
+    };
+    let _ = func.call1(&simulator, &canvas_id.into());
 }
 
 const CANVAS_ID: &str = "floor-price-simulator-chart";
