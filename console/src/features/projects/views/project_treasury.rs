@@ -81,6 +81,7 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
                 open: show_simulator(),
                 on_close: move |_| show_simulator.set(false),
                 initial_reserve_rate,
+                monthly_token_supply: project.monthly_token_supply,
             }
             SalesLogDialog {
                 open: show_sales_log(),

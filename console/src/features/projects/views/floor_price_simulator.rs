@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_translate::use_translate;
+use serde::Serialize;
 
 use crate::common::components::dialog::{
     DialogActions, DialogContent, DialogDescription, DialogRoot, DialogTitle,
@@ -7,269 +8,336 @@ use crate::common::components::dialog::{
 use crate::common::ui::*;
 use crate::features::projects::i18n::ProjectsTranslate;
 
-/// What-if simulator for the floor price mechanism.
+#[cfg(not(feature = "server"))]
+use wasm_bindgen::prelude::*;
+
+#[cfg(not(feature = "server"))]
+#[wasm_bindgen(js_namespace = ["window", "biyard", "simulator"])]
+extern "C" {
+    fn render_chart(canvas_id: &str, payload_json: &str);
+    fn destroy_chart(canvas_id: &str);
+}
+
+const CANVAS_ID: &str = "floor-price-simulator-chart";
+
+/// Hardcoded KRW→USDT rate used for converting sales/treasury amounts
+/// throughout the simulator. Not user-configurable by design (the goal
+/// is a stable reference point for the what-if tool).
+const KRW_PER_USDT: f64 = 1500.0;
+
+/// What-if floor price simulator.
 ///
-/// 100% client-side — nothing touches DynamoDB, the blockchain, or any
-/// controller. The user can tune initial parameters (reserve rate,
-/// circulating supply, treasury balance) and then fire actions:
-/// - Record a sale: adds `amount * reserve_rate` to treasury (no supply change)
-/// - Reward mint: adds tokens to circulating supply without adding treasury
-///   (demonstrates floor price dilution)
-/// - Redeem: removes tokens at current floor price and burns them
-///   (demonstrates floor price preservation during buybacks)
+/// Models a brand whose token has:
+/// - a fixed monthly emission (taken from the project setting),
+/// - a treasury that starts at some seed value and grows by
+///   `monthly_sales × reserve_rate` each month,
+/// - monthly sales that grow (or shrink) by a configurable rate,
+/// - monthly emission that grows (or shrinks) by a configurable rate.
 ///
-/// Every action is logged in a table so operators can walk a customer
-/// through the mechanism step-by-step. "Reset" clears state and the log.
+/// The chart and table answer the question: "if my brand brings in this
+/// much sales every month, where does the floor price land over the next
+/// N months?"
 #[component]
 pub fn FloorPriceSimulatorDialog(
-    open: bool,
+    open: ReadSignal<bool>,
     on_close: EventHandler<()>,
     initial_reserve_rate: f64,
+    monthly_token_supply: i64,
 ) -> Element {
     let t: ProjectsTranslate = use_translate();
 
-    // --- configuration inputs ---
     let mut reserve_rate_pct = use_signal(|| (initial_reserve_rate * 100.0).round() as i64);
+    let mut initial_treasury_input = use_signal(|| String::from("0"));
+    let mut monthly_sales_input = use_signal(|| format_with_commas(10_000_000));
+    let mut sales_growth_pct = use_signal(|| 10i64);
+    let mut supply_decrease_pct = use_signal(|| 5i64);
+    let mut horizon_months = use_signal(|| 12i64);
+    // Override for user-edited cumulative treasury. Stores the most
+    // recent edit as (month, new_treasury_usdt). Applied in
+    // `final_rows_memo` by shifting every row from that month onward
+    // by the delta between the new value and the base value.
+    let mut treasury_override = use_signal(|| None::<(i64, f64)>);
 
-    // --- simulator state ---
-    // Treasury stable balance and circulating supply are the only two
-    // quantities needed to compute the floor price.
-    let mut treasury = use_signal(|| 0i64);
-    let mut supply = use_signal(|| 0i64);
+    let rows_memo = use_memo(move || {
+        let initial_treasury: f64 = parse_commas(&initial_treasury_input()).max(0.0);
+        let monthly_sales: f64 = parse_commas(&monthly_sales_input()).max(0.0);
+        let rate = (reserve_rate_pct() as f64 / 100.0).clamp(0.0, 1.0);
+        let sales_growth = sales_growth_pct() as f64 / 100.0;
+        let supply_growth = -(supply_decrease_pct() as f64) / 100.0;
+        let months = horizon_months().clamp(1, 120);
+        build_rows(
+            months,
+            initial_treasury,
+            monthly_sales,
+            rate,
+            sales_growth,
+            monthly_token_supply as f64,
+            supply_growth,
+        )
+    });
 
-    // --- action form inputs ---
-    let mut sale_amount_input = use_signal(String::new);
-    let mut mint_amount_input = use_signal(String::new);
-    let mut redeem_amount_input = use_signal(String::new);
+    // Whenever any of the reactive inputs change, stale overrides
+    // would no longer match the new baseline — clear them.
+    use_effect(move || {
+        let _ = rows_memo();
+        treasury_override.set(None);
+    });
 
-    // --- action log ---
-    let mut log = use_signal(Vec::<SimLogRow>::new);
+    let final_rows_memo = use_memo(move || {
+        let base = rows_memo();
+        let Some((edit_month, new_value)) = treasury_override() else {
+            return base;
+        };
+        let Some(base_row) = base.iter().find(|r| r.month == edit_month) else {
+            return base;
+        };
+        let delta = new_value - base_row.treasury;
+        base.into_iter()
+            .map(|mut r| {
+                if r.month >= edit_month {
+                    r.treasury += delta;
+                    r.floor = if r.supply > 0.0 {
+                        r.treasury / r.supply
+                    } else {
+                        0.0
+                    };
+                }
+                r
+            })
+            .collect()
+    });
 
-    let floor_price = compute_floor(treasury(), supply());
-    let floor_display = format_floor_display(floor_price);
+    let labels_en = ChartLabels {
+        treasury: t.simulator_chart_treasury,
+        supply: t.simulator_chart_supply,
+        floor: t.simulator_chart_floor,
+        x: t.simulator_chart_x,
+        y_left: t.simulator_chart_y_left,
+        y_right: t.simulator_chart_y_right,
+    };
+
+    let payload_memo = use_memo(move || {
+        let rows = final_rows_memo();
+        let payload = ChartPayload {
+            labels: rows.iter().map(|r| r.month).collect(),
+            treasury: rows.iter().map(|r| r.treasury.round()).collect(),
+            supply: rows.iter().map(|r| r.supply.round()).collect(),
+            floor: rows.iter().map(|r| r.floor).collect(),
+            t: labels_en,
+        };
+        serde_json::to_string(&payload).unwrap_or_default()
+    });
+
+    use_effect(move || {
+        let json = payload_memo();
+        let is_open = open();
+        #[cfg(not(feature = "server"))]
+        {
+            if is_open {
+                render_chart(CANVAS_ID, &json);
+            } else {
+                destroy_chart(CANVAS_ID);
+            }
+        }
+        #[cfg(feature = "server")]
+        {
+            let _ = json;
+            let _ = is_open;
+        }
+    });
+
+    let rows = final_rows_memo();
+    let last_row = rows.last().cloned();
+    let final_floor_display = last_row
+        .as_ref()
+        .map(|r| format!("{} USDT", format_floor_display(r.floor)))
+        .unwrap_or_else(|| "0 USDT".to_string());
+    let final_treasury_display = last_row
+        .as_ref()
+        .map(|r| format!("{} USDT", format_compact(r.treasury)))
+        .unwrap_or_else(|| "0 USDT".to_string());
+    let final_supply_display = last_row
+        .as_ref()
+        .map(|r| format!("{} tokens", format_compact(r.supply)))
+        .unwrap_or_else(|| "0 tokens".to_string());
 
     let reset = move |_| {
-        treasury.set(0);
-        supply.set(0);
-        sale_amount_input.set(String::new());
-        mint_amount_input.set(String::new());
-        redeem_amount_input.set(String::new());
-        log.set(Vec::new());
-    };
-
-    let record_sale = move |_| {
-        let Ok(amount) = sale_amount_input().trim().parse::<i64>() else {
-            return;
-        };
-        if amount <= 0 {
-            return;
-        }
-        let rate = (reserve_rate_pct() as f64 / 100.0).clamp(0.0, 1.0);
-        let contribution = ((amount as f64) * rate).round() as i64;
-
-        let new_treasury = treasury() + contribution;
-        treasury.set(new_treasury);
-
-        let floor_after = compute_floor(new_treasury, supply());
-        let mut rows = log();
-        rows.insert(
-            0,
-            SimLogRow {
-                kind: SimLogKind::Sale,
-                amount,
-                contribution,
-                treasury_after: new_treasury,
-                supply_after: supply(),
-                floor_after,
-            },
-        );
-        log.set(rows);
-        sale_amount_input.set(String::new());
-    };
-
-    let mint_reward = move |_| {
-        let Ok(amount) = mint_amount_input().trim().parse::<i64>() else {
-            return;
-        };
-        if amount <= 0 {
-            return;
-        }
-        let new_supply = supply() + amount;
-        supply.set(new_supply);
-
-        let floor_after = compute_floor(treasury(), new_supply);
-        let mut rows = log();
-        rows.insert(
-            0,
-            SimLogRow {
-                kind: SimLogKind::RewardMint,
-                amount,
-                contribution: 0,
-                treasury_after: treasury(),
-                supply_after: new_supply,
-                floor_after,
-            },
-        );
-        log.set(rows);
-        mint_amount_input.set(String::new());
-    };
-
-    let redeem = move |_| {
-        let Ok(amount) = redeem_amount_input().trim().parse::<i64>() else {
-            return;
-        };
-        if amount <= 0 || amount > supply() {
-            return;
-        }
-        let current_floor = compute_floor(treasury(), supply());
-        // The redeem payout is exactly `amount * floor`. Done as an
-        // integer proportional reduction so the math stays identical
-        // to the smart contract (T - (amount/supply)*T, rounded).
-        let payout = ((amount as f64) * current_floor).round() as i64;
-        let payout = payout.min(treasury());
-
-        let new_treasury = treasury() - payout;
-        let new_supply = supply() - amount;
-        treasury.set(new_treasury);
-        supply.set(new_supply);
-
-        let floor_after = compute_floor(new_treasury, new_supply);
-        let mut rows = log();
-        rows.insert(
-            0,
-            SimLogRow {
-                kind: SimLogKind::Redeem,
-                amount,
-                contribution: payout,
-                treasury_after: new_treasury,
-                supply_after: new_supply,
-                floor_after,
-            },
-        );
-        log.set(rows);
-        redeem_amount_input.set(String::new());
+        reserve_rate_pct.set((initial_reserve_rate * 100.0).round() as i64);
+        initial_treasury_input.set(String::from("0"));
+        monthly_sales_input.set(format_with_commas(10_000_000));
+        sales_growth_pct.set(10);
+        supply_decrease_pct.set(5);
+        horizon_months.set(12);
     };
 
     rsx! {
+        document::Script { src: "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" }
+        document::Script { src: asset!("/assets/floor_price_chart.js") }
+
         DialogRoot {
-            open: open,
+            open: open(),
             on_open_change: move |v: bool| {
                 if !v {
                     on_close.call(());
                 }
             },
             DialogContent {
+                class: "w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[28px] border border-border bg-panel p-6 shadow-[0_24px_60px_rgba(2,6,23,0.26)]",
                 DialogTitle { {t.simulator_title} }
                 DialogDescription { {t.simulator_subtitle} }
 
-                // Current state panel — what the contract would report
-                // right now for the tuned inputs.
                 div { class: "mt-2 grid gap-3 sm:grid-cols-3",
                     StatCard {
                         color: StatColor::Emerald,
-                        label: t.treasury_onchain_balance.to_string(),
-                        value: format_number(treasury()),
+                        label: t.simulator_final_treasury_label.to_string(),
+                        value: final_treasury_display,
                     }
                     StatCard {
                         color: StatColor::Gray,
-                        label: t.treasury_onchain_circulating.to_string(),
-                        value: format_number(supply()),
+                        label: t.simulator_final_supply_label.to_string(),
+                        value: final_supply_display,
                     }
                     StatCard {
                         color: StatColor::Indigo,
-                        label: t.treasury_onchain_floor.to_string(),
-                        value: floor_display,
+                        label: t.simulator_final_floor_label.to_string(),
+                        value: final_floor_display,
                     }
                 }
 
-                // Configuration
-                div { class: "mt-5 rounded-2xl border border-border bg-panel-muted p-4",
-                    p { class: "mb-3 text-sm font-semibold text-foreground",
+                div { class: "mt-4 rounded-2xl border border-border bg-panel-muted p-3",
+                    p { class: "mb-2 text-sm font-semibold text-foreground",
                         {t.simulator_config_title}
                     }
-                    FormField {
-                        label: t.simulator_reserve_rate,
-                        r#type: "number",
-                        value: "{reserve_rate_pct()}",
-                        oninput: move |e: FormEvent| {
-                            if let Ok(v) = e.value().trim().parse::<i64>() {
-                                reserve_rate_pct.set(v.clamp(0, 100));
-                            }
-                        },
-                        min: "0",
-                        max: "100",
-                        suffix: "%",
-                    }
-                }
-
-                // Actions
-                div { class: "mt-5 grid gap-4 md:grid-cols-3",
-                    ActionPanel {
-                        title: t.simulator_action_sale_title.to_string(),
-                        hint: t.simulator_action_sale_hint.to_string(),
-                        value: sale_amount_input(),
-                        oninput: move |e: FormEvent| sale_amount_input.set(e.value()),
-                        on_submit: record_sale,
-                        button_label: t.simulator_apply_sale.to_string(),
-                    }
-                    ActionPanel {
-                        title: t.simulator_action_mint_title.to_string(),
-                        hint: t.simulator_action_mint_hint.to_string(),
-                        value: mint_amount_input(),
-                        oninput: move |e: FormEvent| mint_amount_input.set(e.value()),
-                        on_submit: mint_reward,
-                        button_label: t.simulator_apply_mint.to_string(),
-                    }
-                    ActionPanel {
-                        title: t.simulator_action_redeem_title.to_string(),
-                        hint: t.simulator_action_redeem_hint.to_string(),
-                        value: redeem_amount_input(),
-                        oninput: move |e: FormEvent| redeem_amount_input.set(e.value()),
-                        on_submit: redeem,
-                        button_label: t.simulator_apply_redeem.to_string(),
-                    }
-                }
-
-                // Log
-                div { class: "mt-6",
-                    p { class: "mb-2 text-sm font-semibold text-foreground",
-                        {t.simulator_log_title}
-                    }
-                    if log().is_empty() {
-                        p { class: "rounded-xl border border-dashed border-border bg-panel-muted px-4 py-6 text-center text-sm text-foreground-muted",
-                            {t.simulator_log_empty}
-                        }
-                    } else {
-                        div { class: "max-h-60 overflow-y-auto rounded-xl border border-border",
-                            table { class: "w-full text-left text-xs",
-                                thead { class: "sticky top-0 bg-panel-muted text-foreground-muted",
-                                    tr {
-                                        th { class: "px-3 py-2", {t.simulator_log_col_action} }
-                                        th { class: "px-3 py-2 text-right", {t.simulator_log_col_amount} }
-                                        th { class: "px-3 py-2 text-right", {t.simulator_log_col_delta} }
-                                        th { class: "px-3 py-2 text-right", {t.simulator_log_col_treasury} }
-                                        th { class: "px-3 py-2 text-right", {t.simulator_log_col_supply} }
-                                        th { class: "px-3 py-2 text-right", {t.simulator_log_col_floor} }
-                                    }
+                    div { class: "grid gap-3 sm:grid-cols-2 lg:grid-cols-3",
+                        FormField {
+                            label: t.simulator_reserve_rate,
+                            r#type: "number",
+                            value: "{reserve_rate_pct()}",
+                            oninput: move |e: FormEvent| {
+                                if let Ok(v) = e.value().trim().parse::<i64>() {
+                                    reserve_rate_pct.set(v.clamp(0, 100));
                                 }
-                                tbody {
-                                    for (idx, row) in log().iter().enumerate() {
-                                        tr { key: "{idx}", class: "border-t border-border",
-                                            td { class: "px-3 py-2 font-medium text-foreground",
-                                                {sim_log_kind_label(&row.kind, &t)}
-                                            }
-                                            td { class: "px-3 py-2 text-right font-mono", "{format_number(row.amount)}" }
-                                            td { class: "px-3 py-2 text-right font-mono",
-                                                if row.contribution == 0 {
-                                                    "—"
-                                                } else {
-                                                    "{format_number(row.contribution)}"
+                            },
+                            min: "0",
+                            max: "100",
+                            suffix: "%",
+                        }
+                        FormField {
+                            label: t.simulator_initial_treasury,
+                            value: initial_treasury_input(),
+                            oninput: move |e: FormEvent| {
+                                initial_treasury_input.set(reformat_commas(&e.value()));
+                            },
+                            suffix: "USDT",
+                        }
+                        FormField {
+                            label: t.simulator_monthly_sales,
+                            value: monthly_sales_input(),
+                            oninput: move |e: FormEvent| {
+                                monthly_sales_input.set(reformat_commas(&e.value()));
+                            },
+                            suffix: "₩",
+                        }
+                        FormField {
+                            label: t.simulator_sales_growth,
+                            r#type: "number",
+                            value: "{sales_growth_pct()}",
+                            oninput: move |e: FormEvent| {
+                                if let Ok(v) = e.value().trim().parse::<i64>() {
+                                    sales_growth_pct.set(v.clamp(-100, 100));
+                                }
+                            },
+                            min: "-100",
+                            max: "100",
+                            suffix: "%",
+                        }
+                        FormField {
+                            label: t.simulator_supply_decrease_rate,
+                            r#type: "number",
+                            value: "{supply_decrease_pct()}",
+                            oninput: move |e: FormEvent| {
+                                if let Ok(v) = e.value().trim().parse::<i64>() {
+                                    supply_decrease_pct.set(v.clamp(0, 100));
+                                }
+                            },
+                            min: "0",
+                            max: "100",
+                            suffix: "%",
+                        }
+                        FormField {
+                            label: t.simulator_horizon,
+                            r#type: "number",
+                            value: "{horizon_months()}",
+                            oninput: move |e: FormEvent| {
+                                if let Ok(v) = e.value().trim().parse::<i64>() {
+                                    horizon_months.set(v.clamp(1, 120));
+                                }
+                            },
+                            min: "1",
+                            max: "120",
+                        }
+                    }
+                    p { class: "mt-3 text-xs text-foreground-muted",
+                        {t.simulator_monthly_supply_hint}
+                        " "
+                        span { class: "font-mono text-foreground",
+                            "{format_number(monthly_token_supply)}"
+                        }
+                    }
+                }
+
+                div { class: "mt-4 rounded-2xl border border-border bg-panel p-3",
+                    p { class: "mb-2 text-sm font-semibold text-foreground",
+                        {t.simulator_chart_title}
+                    }
+                    div { class: "relative h-56 w-full",
+                        canvas { id: CANVAS_ID }
+                    }
+                }
+
+                div { class: "mt-4",
+                    p { class: "mb-2 text-sm font-semibold text-foreground",
+                        {t.simulator_table_title}
+                    }
+                    div { class: "max-h-40 overflow-y-auto rounded-xl border border-border",
+                        table { class: "w-full text-left text-xs",
+                            thead { class: "sticky top-0 bg-panel-muted text-foreground-muted",
+                                tr {
+                                    th { class: "px-3 py-2", {t.simulator_col_month} }
+                                    th { class: "px-3 py-2 text-right", {t.simulator_col_treasury} }
+                                    th { class: "px-3 py-2 text-right", {t.simulator_col_supply} }
+                                    th { class: "px-3 py-2 text-right", {t.simulator_col_floor} }
+                                }
+                            }
+                            tbody {
+                                for row in rows.iter() {
+                                    {
+                                        let row_month = row.month;
+                                        let treasury_str = format_with_commas(row.treasury.round() as i64);
+                                        rsx! {
+                                            tr {
+                                                key: "{row_month}",
+                                                class: "border-t border-border",
+                                                td { class: "px-3 py-2 font-medium text-foreground",
+                                                    "{row_month}"
                                                 }
-                                            }
-                                            td { class: "px-3 py-2 text-right font-mono", "{format_number(row.treasury_after)}" }
-                                            td { class: "px-3 py-2 text-right font-mono", "{format_number(row.supply_after)}" }
-                                            td { class: "px-3 py-2 text-right font-mono",
-                                                "{format_floor_display(row.floor_after)}"
+                                                td { class: "px-3 py-2 text-right font-mono",
+                                                    input {
+                                                        r#type: "text",
+                                                        value: "{treasury_str}",
+                                                        class: "w-full bg-transparent text-right font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-brand rounded px-1",
+                                                        onchange: move |e: FormEvent| {
+                                                            let parsed = parse_commas(&e.value());
+                                                            treasury_override.set(Some((row_month, parsed)));
+                                                        },
+                                                    }
+                                                }
+                                                td { class: "px-3 py-2 text-right font-mono",
+                                                    "{format_compact(row.supply)}"
+                                                }
+                                                td { class: "px-3 py-2 text-right font-mono",
+                                                    "{format_floor_display(row.floor)}"
+                                                }
                                             }
                                         }
                                     }
@@ -280,11 +348,7 @@ pub fn FloorPriceSimulatorDialog(
                 }
 
                 DialogActions {
-                    Btn {
-                        variant: BtnVariant::Secondary,
-                        onclick: reset,
-                        {t.simulator_reset}
-                    }
+                    Btn { variant: BtnVariant::Secondary, onclick: reset, {t.simulator_reset} }
                     Btn {
                         variant: BtnVariant::Primary,
                         onclick: move |_| on_close.call(()),
@@ -296,65 +360,73 @@ pub fn FloorPriceSimulatorDialog(
     }
 }
 
-#[component]
-fn ActionPanel(
-    title: String,
-    hint: String,
-    value: String,
-    oninput: EventHandler<FormEvent>,
-    on_submit: EventHandler<MouseEvent>,
-    button_label: String,
-) -> Element {
-    rsx! {
-        div { class: "rounded-2xl border border-border bg-panel p-4",
-            p { class: "text-sm font-semibold text-foreground", {title} }
-            p { class: "mt-1 text-xs text-foreground-muted", {hint} }
-            div { class: "mt-3",
-                input {
-                    r#type: "number",
-                    value: value,
-                    oninput: move |e| oninput.call(e),
-                    min: "0",
-                    class: "w-full rounded-lg border border-border bg-panel-muted px-3 py-2 text-sm text-foreground focus:border-brand focus:outline-none",
-                }
-            }
-            div { class: "mt-3 flex justify-end",
-                Btn {
-                    variant: BtnVariant::Primary,
-                    onclick: move |e| on_submit.call(e),
-                    {button_label}
-                }
-            }
+#[derive(Clone, PartialEq)]
+struct MonthRow {
+    month: i64,
+    treasury: f64,
+    supply: f64,
+    floor: f64,
+}
+
+#[derive(Serialize)]
+struct ChartPayload {
+    labels: Vec<i64>,
+    treasury: Vec<f64>,
+    supply: Vec<f64>,
+    floor: Vec<f64>,
+    t: ChartLabels,
+}
+
+#[derive(Serialize, Clone, Copy)]
+struct ChartLabels {
+    treasury: &'static str,
+    supply: &'static str,
+    floor: &'static str,
+    x: &'static str,
+    y_left: &'static str,
+    y_right: &'static str,
+}
+
+fn build_rows(
+    months: i64,
+    initial_treasury_usdt: f64,
+    monthly_sales_krw: f64,
+    rate: f64,
+    sales_growth: f64,
+    monthly_supply: f64,
+    supply_growth: f64,
+) -> Vec<MonthRow> {
+    let mut rows = Vec::with_capacity(months as usize);
+    // Treasury is in USDT end-to-end (initial value, accumulation,
+    // chart, table, Floor Price). Only sales come in as KRW from the
+    // UI and are converted to USDT once when added to the treasury.
+    let mut treasury = initial_treasury_usdt;
+    let mut supply = 0.0_f64;
+    let mut sales_m = monthly_sales_krw;
+    let mut supply_m = monthly_supply;
+
+    for m in 1..=months {
+        treasury += (sales_m * rate) / KRW_PER_USDT;
+        supply += supply_m;
+
+        let floor = if supply > 0.0 { treasury / supply } else { 0.0 };
+        rows.push(MonthRow {
+            month: m,
+            treasury,
+            supply,
+            floor,
+        });
+
+        sales_m *= 1.0 + sales_growth;
+        supply_m *= 1.0 + supply_growth;
+        if sales_m < 0.0 {
+            sales_m = 0.0;
+        }
+        if supply_m < 0.0 {
+            supply_m = 0.0;
         }
     }
-}
-
-// ----------------------------------------------------------------------
-// Simulator state types + math
-// ----------------------------------------------------------------------
-
-#[derive(Clone, PartialEq)]
-enum SimLogKind {
-    Sale,
-    RewardMint,
-    Redeem,
-}
-
-#[derive(Clone, PartialEq)]
-struct SimLogRow {
-    kind: SimLogKind,
-    amount: i64,
-    contribution: i64,
-    treasury_after: i64,
-    supply_after: i64,
-    floor_after: f64,
-}
-
-fn compute_floor(treasury: i64, supply: i64) -> f64 {
-    if supply <= 0 {
-        return 0.0;
-    }
-    treasury as f64 / supply as f64
+    rows
 }
 
 fn format_floor_display(value: f64) -> String {
@@ -369,10 +441,57 @@ fn format_floor_display(value: f64) -> String {
     }
 }
 
-fn sim_log_kind_label(kind: &SimLogKind, t: &ProjectsTranslate) -> &'static str {
-    match kind {
-        SimLogKind::Sale => t.simulator_log_kind_sale,
-        SimLogKind::RewardMint => t.simulator_log_kind_mint,
-        SimLogKind::Redeem => t.simulator_log_kind_redeem,
+fn format_with_commas(value: i64) -> String {
+    let s = value.abs().to_string();
+    let mut out = String::new();
+    for (i, ch) in s.chars().rev().enumerate() {
+        if i > 0 && i % 3 == 0 {
+            out.push(',');
+        }
+        out.push(ch);
+    }
+    let mut result: String = out.chars().rev().collect();
+    if value < 0 {
+        result.insert(0, '-');
+    }
+    result
+}
+
+fn parse_commas(s: &str) -> f64 {
+    s.trim().replace(',', "").parse::<f64>().unwrap_or(0.0)
+}
+
+fn reformat_commas(input: &str) -> String {
+    let digits: String = input.chars().filter(|c| c.is_ascii_digit()).collect();
+    if digits.is_empty() {
+        return String::new();
+    }
+    let trimmed = digits.trim_start_matches('0');
+    let normalized = if trimmed.is_empty() { "0" } else { trimmed };
+    match normalized.parse::<i64>() {
+        Ok(n) => format_with_commas(n),
+        Err(_) => normalized.to_string(),
+    }
+}
+
+fn format_compact(value: f64) -> String {
+    let abs = value.abs();
+    let (scaled, suffix) = if abs >= 1e12 {
+        (value / 1e12, "T")
+    } else if abs >= 1e9 {
+        (value / 1e9, "B")
+    } else if abs >= 1e6 {
+        (value / 1e6, "M")
+    } else if abs >= 1e3 {
+        (value / 1e3, "K")
+    } else {
+        return format_number(value.round() as i64);
+    };
+    if scaled.abs() >= 100.0 {
+        format!("{:.0}{suffix}", scaled)
+    } else if scaled.abs() >= 10.0 {
+        format!("{:.1}{suffix}", scaled)
+    } else {
+        format!("{:.2}{suffix}", scaled)
     }
 }
