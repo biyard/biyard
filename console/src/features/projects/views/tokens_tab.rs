@@ -14,13 +14,9 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let nav = use_navigator();
     let account_ctx = use_account_context();
     let can_write = account_ctx().can_write();
-    let mut mint_amount = use_signal(String::new);
-    let mut target_user_id = use_signal(String::new);
-    let mut description = use_signal(String::new);
     let mut minting = use_signal(|| false);
     let mut deploying = use_signal(|| false);
     let mut message = use_signal(|| None::<String>);
-    let mut show_confirm = use_signal(|| false);
     let mut show_deploy_confirm = use_signal(|| false);
     let mut deploy_understood = use_signal(|| false);
     let mut selected_chain = use_signal(|| {
@@ -156,6 +152,14 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                                 code_like: true,
                                                 copyable: true,
                                             }
+                                            if let Some(ref ms_addr) = token_data.multisig_address {
+                                                InfoItem {
+                                                    label: t.multisig_address.to_string(),
+                                                    value: ms_addr.clone(),
+                                                    code_like: true,
+                                                    copyable: true,
+                                                }
+                                            }
                                             InfoItem {
                                                 label: t.stable_token_address.to_string(),
                                                 value: token_data
@@ -244,64 +248,44 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                             }
                         }
 
-                        if can_write {
+                        if can_write && is_deployed {
                             SectionCard {
-                                SectionTitle { {t.token_mint} }
-                                div { class: "grid gap-4 md:grid-cols-3",
-                                    FormField {
-                                        label: t.target_user_id,
-                                        r#type: "text",
-                                        value: target_user_id(),
-                                        oninput: move |e: FormEvent| target_user_id.set(e.value()),
-                                        placeholder: t.target_user_id_placeholder.to_string(),
-                                        disabled: !is_deployed,
-                                    }
-                                    FormField {
-                                        label: t.mint_amount,
-                                        r#type: "number",
-                                        value: mint_amount(),
-                                        oninput: move |e: FormEvent| mint_amount.set(e.value()),
-                                        placeholder: "1000".to_string(),
-                                        min: "1",
-                                        disabled: !is_deployed,
-                                    }
-                                    FormField {
-                                        label: t.description,
-                                        r#type: "text",
-                                        value: description(),
-                                        oninput: move |e: FormEvent| description.set(e.value()),
-                                        placeholder: t.mint_description_placeholder.to_string(),
-                                        disabled: !is_deployed,
-                                    }
+                                SectionTitle { {t.trigger_monthly_mint} }
+                                p { class: "text-sm text-foreground-muted",
+                                    {t.trigger_monthly_mint_desc}
                                 }
-
-                                if is_deployed {
-                                    p { class: "mt-3 text-sm font-medium text-success",
-                                        "{t.on_chain} · {deployed_chain_name}"
-                                    }
-                                } else {
-                                    p { class: "mt-3 text-sm font-medium text-foreground-muted",
-                                        {t.mint_requires_deploy}
-                                    }
-                                }
-
-                                div { class: "mt-6 flex justify-end",
+                                div { class: "mt-4 flex justify-end",
                                     Btn {
                                         variant: BtnVariant::Primary,
-                                        disabled: minting() || !is_deployed,
+                                        disabled: minting(),
                                         onclick: move |_| {
-                                            let target = target_user_id();
-                                            let amount = mint_amount().parse::<i64>().unwrap_or(0);
-
-                                            if target.trim().is_empty() || amount <= 0 {
-                                                message.set(Some(t.validation_error.to_string()));
-                                                return;
-                                            }
-
-                                            show_confirm.set(true);
+                                            let pid = project_id();
+                                            spawn(async move {
+                                                minting.set(true);
+                                                message.set(None);
+                                                match crate::features::tokens::controllers::trigger_monthly_mint_handler(pid).await {
+                                                    Ok(resp) => {
+                                                        token.restart();
+                                                        message.set(Some(format!("{} Tx: {}", t.monthly_mint_success, resp.tx_hash)));
+                                                    }
+                                                    Err(e) => message.set(Some(format!("{}{e}", t.monthly_mint_failure))),
+                                                }
+                                                minting.set(false);
+                                            });
                                         },
-                                        if minting() { {t.minting} } else { {t.token_mint} }
+                                        if minting() { {t.triggering_mint} } else { {t.trigger_monthly_mint} }
                                     }
+                                }
+                            }
+
+                            SectionCard {
+                                SectionTitle { {t.distribution_slots_title} }
+                                p { class: "text-sm text-foreground-muted",
+                                    {t.distribution_slots_desc}
+                                }
+                                DistributionSlotsEditor {
+                                    project_id,
+                                    on_message: move |msg: String| message.set(Some(msg)),
                                 }
                             }
                         }
@@ -391,88 +375,6 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                             }
                         }
 
-                        DialogRoot {
-                            open: show_confirm(),
-                            on_open_change: move |v| show_confirm.set(v),
-                            DialogContent {
-                                DialogTitle { {t.mint_confirm_title} }
-                                DialogDescription { {t.mint_confirm_message} }
-
-                                div { class: "rounded-[24px] border border-border bg-panel-muted p-5",
-                                    div { class: "space-y-3",
-                                        ConfirmLine {
-                                            label: t.mint_confirm_target.to_string(),
-                                            value: target_user_id(),
-                                        }
-                                        ConfirmLine {
-                                            label: t.mint_confirm_amount.to_string(),
-                                            value: format!(
-                                                "{} {}",
-                                                format_number(mint_amount().parse::<i64>().unwrap_or(0)),
-                                                token_data.symbol
-                                            ),
-                                        }
-                                        if !description().is_empty() {
-                                            ConfirmLine {
-                                                label: t.description.to_string(),
-                                                value: description(),
-                                            }
-                                        }
-                                    }
-                                    if is_deployed {
-                                        p { class: "mt-4 border-t border-border pt-4 text-sm font-medium text-success",
-                                            "{t.on_chain} · {deployed_chain_name}"
-                                        }
-                                    }
-                                }
-
-                                DialogActions {
-                                    Btn {
-                                        variant: BtnVariant::Secondary,
-                                        onclick: move |_| show_confirm.set(false),
-                                        {t.cancel}
-                                    }
-                                    Btn {
-                                        variant: BtnVariant::Primary,
-                                        onclick: move |_| {
-                                            show_confirm.set(false);
-                                            let pid = project_id();
-                                            let target = target_user_id();
-                                            let amount = mint_amount().parse::<i64>().unwrap_or(0);
-                                            let desc = {
-                                                let d = description();
-                                                if d.is_empty() { None } else { Some(d) }
-                                            };
-
-                                            spawn(async move {
-                                                minting.set(true);
-                                                message.set(None);
-                                                let res = crate::features::tokens::controllers::mint_token_handler(
-                                                    pid,
-                                                    target,
-                                                    amount,
-                                                    desc,
-                                                )
-                                                .await;
-                                                match res {
-                                                    Ok(resp) => {
-                                                        token.restart();
-                                                        let mut msg = t.mint_success.to_string();
-                                                        if let Some(tx) = resp.tx_hash {
-                                                            msg.push_str(&format!(" Tx: {tx}"));
-                                                        }
-                                                        message.set(Some(msg));
-                                                    }
-                                                    Err(e) => message.set(Some(format!("{}{e}", t.mint_failure))),
-                                                }
-                                                minting.set(false);
-                                            });
-                                        },
-                                        {t.confirm}
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -511,11 +413,124 @@ fn InfoItem(
 }
 
 #[component]
-fn ConfirmLine(label: String, value: String) -> Element {
+fn DistributionSlotsEditor(
+    project_id: ReadSignal<ProjectPartition>,
+    on_message: EventHandler<String>,
+) -> Element {
+    let t: ProjectsTranslate = use_translate();
+
+    let mut slots = use_signal(|| Vec::<(String, String)>::new());
+    let mut saving = use_signal(|| false);
+
+    let total_bps: u32 = slots()
+        .iter()
+        .filter_map(|(_, bps_str)| bps_str.parse::<u32>().ok())
+        .sum();
+    let claim_pool_pct = 100.0 - (total_bps as f64 / 100.0);
+
+    let on_add = move |_| {
+        slots.write().push((String::new(), String::new()));
+    };
+
+    let on_save = move |_| {
+        let current_slots = slots();
+        let pid = project_id();
+        spawn(async move {
+            saving.set(true);
+            let slot_inputs: Vec<crate::features::tokens::controllers::DistributionSlotInput> =
+                current_slots
+                    .iter()
+                    .filter(|(w, b)| !w.is_empty() && !b.is_empty())
+                    .map(|(w, b)| {
+                        let pct: f64 = b.parse().unwrap_or(0.0);
+                        crate::features::tokens::controllers::DistributionSlotInput {
+                            wallet: w.clone(),
+                            bps: (pct * 100.0).round() as u16,
+                        }
+                    })
+                    .collect();
+
+            match crate::features::tokens::controllers::set_distribution_slots_handler(
+                pid,
+                slot_inputs,
+            )
+            .await
+            {
+                Ok(_) => on_message.call(t.slots_saved.to_string()),
+                Err(e) => on_message.call(format!("{}{e}", t.slots_save_failure)),
+            }
+            saving.set(false);
+        });
+    };
+
     rsx! {
-        div { class: "flex items-center justify-between gap-4",
-            span { class: "text-sm text-foreground-muted", "{label}" }
-            span { class: "text-sm font-semibold text-foreground", "{value}" }
+        div { class: "mt-4 space-y-3",
+            for (i, (_wallet, _bps)) in slots().iter().enumerate() {
+                {
+                    let wallet_val = _wallet.clone();
+                    let bps_val = _bps.clone();
+                    rsx! {
+                        div {
+                            key: "{i}",
+                            class: "flex items-end gap-3",
+                            div { class: "flex-1",
+                                FormField {
+                                    label: t.slot_wallet,
+                                    r#type: "text",
+                                    value: wallet_val,
+                                    oninput: move |e: FormEvent| {
+                                        slots.write()[i].0 = e.value();
+                                    },
+                                    placeholder: "0x...".to_string(),
+                                }
+                            }
+                            div { class: "w-24",
+                                FormField {
+                                    label: t.slot_bps,
+                                    r#type: "number",
+                                    value: bps_val,
+                                    oninput: move |e: FormEvent| {
+                                        slots.write()[i].1 = e.value();
+                                    },
+                                    placeholder: "10".to_string(),
+                                    min: "0",
+                                    max: "99",
+                                    suffix: "%",
+                                }
+                            }
+                            Btn {
+                                variant: BtnVariant::Secondary,
+                                onclick: move |_| {
+                                    slots.write().remove(i);
+                                },
+                                {t.remove_slot}
+                            }
+                        }
+                    }
+                }
+            }
+
+            div { class: "flex items-center justify-between",
+                Btn {
+                    variant: BtnVariant::Secondary,
+                    onclick: on_add,
+                    {t.add_slot}
+                }
+                p { class: "text-sm text-foreground-muted",
+                    "{t.claim_pool_label}: {claim_pool_pct:.1}%"
+                }
+            }
+
+            if !slots().is_empty() {
+                div { class: "flex justify-end",
+                    Btn {
+                        variant: BtnVariant::Primary,
+                        disabled: saving() || total_bps >= 10000,
+                        onclick: on_save,
+                        if saving() { {t.saving_slots} } else { {t.save_slots} }
+                    }
+                }
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ mod deploy_token;
 mod get_mint_data;
 mod get_token;
 mod mint_token;
+mod set_distribution_slots;
+mod trigger_monthly_mint;
 mod update_token;
 
 pub use add_minter::*;
@@ -14,4 +16,6 @@ pub use deploy_token::*;
 pub use get_mint_data::*;
 pub use get_token::*;
 pub use mint_token::*;
+pub use set_distribution_slots::*;
+pub use trigger_monthly_mint::*;
 pub use update_token::*;

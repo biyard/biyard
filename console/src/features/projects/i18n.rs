@@ -877,6 +877,74 @@ translate! {
         en: "Edit Brand",
         ko: "브랜드 편집",
     },
+    trigger_monthly_mint: {
+        en: "Trigger Monthly Mint",
+        ko: "월별 민팅 실행",
+    },
+    trigger_monthly_mint_desc: {
+        en: "Execute the monthly token emission via Multisig. Distribution slots receive their share, the rest goes to the claim pool.",
+        ko: "멀티시그를 통해 월별 토큰 발행을 실행합니다. 분배 슬롯이 해당 비율을 받고, 나머지는 클레임 풀로 들어갑니다.",
+    },
+    triggering_mint: {
+        en: "Minting...",
+        ko: "민팅 중...",
+    },
+    monthly_mint_success: {
+        en: "Monthly mint executed successfully.",
+        ko: "월별 민팅이 성공적으로 실행되었습니다.",
+    },
+    monthly_mint_failure: {
+        en: "Monthly mint failed: ",
+        ko: "월별 민팅 실패: ",
+    },
+    distribution_slots_title: {
+        en: "Distribution Slots",
+        ko: "분배 슬롯",
+    },
+    distribution_slots_desc: {
+        en: "Configure wallets that receive a share of each monthly emission. The remainder goes to the claim pool.",
+        ko: "월별 발행량의 일부를 받을 지갑을 설정합니다. 나머지는 클레임 풀로 들어갑니다.",
+    },
+    slot_wallet: {
+        en: "Wallet Address",
+        ko: "지갑 주소",
+    },
+    slot_bps: {
+        en: "Share (%)",
+        ko: "비율 (%)",
+    },
+    add_slot: {
+        en: "Add Slot",
+        ko: "슬롯 추가",
+    },
+    remove_slot: {
+        en: "Remove",
+        ko: "삭제",
+    },
+    save_slots: {
+        en: "Save Distribution Slots",
+        ko: "분배 슬롯 저장",
+    },
+    saving_slots: {
+        en: "Saving...",
+        ko: "저장 중...",
+    },
+    slots_saved: {
+        en: "Distribution slots saved.",
+        ko: "분배 슬롯이 저장되었습니다.",
+    },
+    slots_save_failure: {
+        en: "Failed to save distribution slots: ",
+        ko: "분배 슬롯 저장 실패: ",
+    },
+    claim_pool_label: {
+        en: "Claim Pool",
+        ko: "클레임 풀",
+    },
+    multisig_address: {
+        en: "Multisig Address",
+        ko: "멀티시그 주소",
+    },
     edit_token: {
         en: "Edit Token",
         ko: "토큰 편집",
