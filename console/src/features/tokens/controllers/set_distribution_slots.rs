@@ -30,7 +30,7 @@ pub async fn set_distribution_slots_handler(
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    let (token_pk, token_sk) = ProjectToken::keys(project_id.clone());
+    let (token_pk, token_sk) = ProjectToken::keys(project_id.clone().into());
     let token = ProjectToken::get(cli, &token_pk, Some(token_sk))
         .await?
         .ok_or(TokenError::TokenNotFound)?;

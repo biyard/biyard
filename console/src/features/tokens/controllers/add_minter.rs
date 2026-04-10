@@ -10,7 +10,7 @@ use crate::features::tokens::TokenError;
 #[post("/v1/projects/:project_id/tokens/minters", auth: ProjectAdminAuth)]
 pub async fn add_minter_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
-    wallet_address: String,
+    #[allow(unused_variables)] wallet_address: String,
 ) -> Result<AddMinterResponse> {
     Err(TokenError::MintFailed(
         "Minter role is not supported in the new BrandToken system".to_string(),

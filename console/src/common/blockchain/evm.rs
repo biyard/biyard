@@ -291,8 +291,8 @@ pub async fn trigger_monthly_mint(
         .await
         .map_err(|e| format!("approve receipt failed: {e}"))?;
 
-    let pending = ms
-        .execute(proposal_id)
+    let execute_call = ms.execute(proposal_id);
+    let pending = execute_call
         .send()
         .await
         .map_err(|e| format!("execute failed: {e}"))?;

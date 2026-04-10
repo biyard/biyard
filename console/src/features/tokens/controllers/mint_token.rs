@@ -10,8 +10,8 @@ use crate::features::tokens::TokenError;
 #[put("/v1/projects/:project_id/tokens/:meta_user_id", auth: ProjectAdminAuth)]
 pub async fn mint_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
-    meta_user_id: String,
-    amount: i64,
+    #[allow(unused_variables)] meta_user_id: String,
+    #[allow(unused_variables)] amount: i64,
     #[allow(unused_variables)] description: Option<String>,
 ) -> Result<TokenBalanceResponse> {
     Err(TokenError::MintFailed(
