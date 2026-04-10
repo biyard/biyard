@@ -600,6 +600,10 @@ translate! {
         en: "Month",
         ko: "월",
     },
+    simulator_chart_month_suffix: {
+        en: " months",
+        ko: "개월차",
+    },
     simulator_chart_y_left: {
         en: "Treasury (USDT)",
         ko: "트레저리 (USDT)",

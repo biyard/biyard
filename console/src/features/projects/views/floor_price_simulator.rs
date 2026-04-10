@@ -19,15 +19,21 @@ extern "C" {
 }
 
 #[cfg(not(feature = "server"))]
+fn get_simulator_ns() -> Option<js_sys::Object> {
+    let window = web_sys::window()?;
+    let biyard = js_sys::Reflect::get(&window, &"biyard".into())
+        .ok()
+        .filter(|v| !v.is_undefined() && !v.is_null())?;
+    js_sys::Reflect::get(&biyard, &"simulator".into())
+        .ok()
+        .filter(|v| !v.is_undefined() && !v.is_null())
+        .map(|v| v.unchecked_into())
+}
+
+#[cfg(not(feature = "server"))]
 fn render_chart(canvas_id: &str, payload_json: &str) {
     use wasm_bindgen::JsCast;
-    let window = web_sys::window().unwrap();
-    let biyard = js_sys::Reflect::get(&window, &"biyard".into()).ok();
-    let Some(biyard) = biyard.filter(|v| !v.is_undefined() && !v.is_null()) else {
-        return;
-    };
-    let simulator = js_sys::Reflect::get(&biyard, &"simulator".into()).ok();
-    let Some(simulator) = simulator.filter(|v| !v.is_undefined() && !v.is_null()) else {
+    let Some(simulator) = get_simulator_ns() else {
         return;
     };
     let Ok(func) = js_sys::Reflect::get(&simulator, &"render_chart".into()) else {
@@ -40,15 +46,24 @@ fn render_chart(canvas_id: &str, payload_json: &str) {
 }
 
 #[cfg(not(feature = "server"))]
-fn destroy_chart(canvas_id: &str) {
+fn set_on_treasury_drag(cb: &Closure<dyn FnMut(i32, f64)>) {
     use wasm_bindgen::JsCast;
-    let window = web_sys::window().unwrap();
-    let biyard = js_sys::Reflect::get(&window, &"biyard".into()).ok();
-    let Some(biyard) = biyard.filter(|v| !v.is_undefined() && !v.is_null()) else {
+    let Some(simulator) = get_simulator_ns() else {
         return;
     };
-    let simulator = js_sys::Reflect::get(&biyard, &"simulator".into()).ok();
-    let Some(simulator) = simulator.filter(|v| !v.is_undefined() && !v.is_null()) else {
+    let Ok(func) = js_sys::Reflect::get(&simulator, &"set_on_treasury_drag".into()) else {
+        return;
+    };
+    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
+        return;
+    };
+    let _ = func.call1(&simulator, cb.as_ref().unchecked_ref());
+}
+
+#[cfg(not(feature = "server"))]
+fn destroy_chart(canvas_id: &str) {
+    use wasm_bindgen::JsCast;
+    let Some(simulator) = get_simulator_ns() else {
         return;
     };
     let Ok(func) = js_sys::Reflect::get(&simulator, &"destroy_chart".into()) else {
@@ -94,11 +109,11 @@ pub fn FloorPriceSimulatorDialog(
     let mut sales_growth_pct = use_signal(|| 10i64);
     let mut supply_decrease_pct = use_signal(|| 5i64);
     let mut horizon_months = use_signal(|| 12i64);
-    // Override for user-edited cumulative treasury. Stores the most
-    // recent edit as (month, new_treasury_usdt). Applied in
-    // `final_rows_memo` by shifting every row from that month onward
-    // by the delta between the new value and the base value.
-    let mut treasury_override = use_signal(|| None::<(i64, f64)>);
+    // Per-month treasury overrides from chart drag or table edit.
+    // Key = month number, value = new treasury USDT.
+    // Only the edited month is replaced; other months keep base values.
+    // Cleared when any Input changes.
+    let mut treasury_overrides = use_signal(|| std::collections::HashMap::<i64, f64>::new());
 
     let rows_memo = use_memo(move || {
         let initial_treasury: f64 = parse_commas(&initial_treasury_input()).max(0.0);
@@ -118,26 +133,24 @@ pub fn FloorPriceSimulatorDialog(
         )
     });
 
-    // Whenever any of the reactive inputs change, stale overrides
-    // would no longer match the new baseline — clear them.
+    // Clear per-month overrides when base inputs change.
     use_effect(move || {
         let _ = rows_memo();
-        treasury_override.set(None);
+        treasury_overrides.set(Default::default());
     });
 
+    // Apply per-month overrides on top of the base rows.
+    // Only the specific edited months are replaced; others stay as-is.
     let final_rows_memo = use_memo(move || {
         let base = rows_memo();
-        let Some((edit_month, new_value)) = treasury_override() else {
+        let overrides = treasury_overrides();
+        if overrides.is_empty() {
             return base;
-        };
-        let Some(base_row) = base.iter().find(|r| r.month == edit_month) else {
-            return base;
-        };
-        let delta = new_value - base_row.treasury;
+        }
         base.into_iter()
             .map(|mut r| {
-                if r.month >= edit_month {
-                    r.treasury += delta;
+                if let Some(&new_treasury) = overrides.get(&r.month) {
+                    r.treasury = new_treasury;
                     r.floor = if r.supply > 0.0 {
                         r.treasury / r.supply
                     } else {
@@ -156,6 +169,7 @@ pub fn FloorPriceSimulatorDialog(
         x: t.simulator_chart_x,
         y_left: t.simulator_chart_y_left,
         y_right: t.simulator_chart_y_right,
+        month_suffix: t.simulator_chart_month_suffix,
     };
 
     let payload_memo = use_memo(move || {
@@ -168,6 +182,23 @@ pub fn FloorPriceSimulatorDialog(
             t: labels_en,
         };
         serde_json::to_string(&payload).unwrap_or_default()
+    });
+
+    // Register JS→Rust drag callback so chart drags update the override map.
+    use_effect(move || {
+        #[cfg(not(feature = "server"))]
+        {
+            use wasm_bindgen::prelude::*;
+            let cb = Closure::<dyn FnMut(i32, f64)>::new(move |month: i32, value: f64| {
+                treasury_overrides.write().insert(month as i64, value);
+            });
+            set_on_treasury_drag(&cb);
+            cb.forget();
+        }
+        #[cfg(feature = "server")]
+        {
+            let _ = treasury_overrides;
+        }
     });
 
     use_effect(move || {
@@ -370,7 +401,7 @@ pub fn FloorPriceSimulatorDialog(
                                                         class: "w-full bg-transparent text-right font-mono text-foreground focus:outline-none focus:ring-1 focus:ring-brand rounded px-1",
                                                         onchange: move |e: FormEvent| {
                                                             let parsed = parse_commas(&e.value());
-                                                            treasury_override.set(Some((row_month, parsed)));
+                                                            treasury_overrides.write().insert(row_month, parsed);
                                                         },
                                                     }
                                                 }
@@ -427,6 +458,7 @@ struct ChartLabels {
     x: &'static str,
     y_left: &'static str,
     y_right: &'static str,
+    month_suffix: &'static str,
 }
 
 fn build_rows(
