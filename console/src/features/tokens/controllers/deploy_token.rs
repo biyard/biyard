@@ -6,8 +6,17 @@ use dioxus::prelude::*;
 use crate::common::{CommonConfig, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
+
 #[cfg(feature = "server")]
-use ethers::types::Address;
+fn compute_max_supply(monthly_emission: u64, decay_bps: u16, months: u32) -> u64 {
+    let mut total: u128 = 0;
+    let mut emission = monthly_emission as u128;
+    for _ in 0..months {
+        total += emission;
+        emission = emission * (10000 - decay_bps as u128) / 10000;
+    }
+    total as u64
+}
 
 #[post("/v1/projects/:project_id/tokens/deploy", auth: ProjectAdminAuth)]
 pub async fn deploy_token_handler(
@@ -26,94 +35,60 @@ pub async fn deploy_token_handler(
         .await?
         .ok_or(TokenError::TokenNotFound)?;
 
-    if token.treasury_contract_address.is_some() {
+    if token.contract_address.is_some() {
         return Err(TokenError::AlreadyDeployed.into());
     }
 
-    if let Some(existing_chain_id) = token.chain_id {
-        if token.contract_address.is_some() && existing_chain_id != chain_id {
-            return Err(TokenError::DeployFailed(format!(
-                "Token is already deployed on chain {existing_chain_id}; treasury must be deployed on the same chain"
-            ))
-            .into());
-        }
-    }
+    let monthly_emission = project.monthly_token_supply.max(0) as u64;
+    let decay_rate_bps: u16 = 500;
+    let max_supply = compute_max_supply(monthly_emission, decay_rate_bps, 60);
 
+    let deployment = crate::common::blockchain::deploy_brand_system(
+        chain_id,
+        &token.name,
+        &token.symbol,
+        max_supply,
+        monthly_emission,
+        decay_rate_bps,
+    )
+    .await
+    .map_err(TokenError::DeployFailed)?;
+
+    let token_addr_str = format!("{:?}", deployment.token_address);
+    let treasury_addr_str = format!("{:?}", deployment.treasury_address);
+    let multisig_addr_str = format!("{:?}", deployment.multisig_address);
+    let stable_addr_str = format!("{:?}", deployment.stable_token_address);
+    let token_tx_str = format!("{:?}", deployment.token_tx_hash);
+    let treasury_tx_str = format!("{:?}", deployment.treasury_tx_hash);
+    let multisig_tx_str = format!("{:?}", deployment.multisig_tx_hash);
+
+    let now = crate::common::utils::time_utils::get_now();
     let treasury_reserve_bps =
         (project.treasury_reserve_rate.clamp(0.0, 1.0) * 10000.0).round() as u64;
-    let now = crate::common::utils::time_utils::get_now();
-    let mut updater =
-        ProjectToken::updater(token.pk.clone(), token.sk.clone()).with_updated_at(now);
 
-    let (contract_address, token_addr_str, deployment_tx_hash) =
-        if let Some(existing_token_address) = token.contract_address.as_deref() {
-            let parsed = existing_token_address.parse::<Address>().map_err(|e| {
-                TokenError::DeployFailed(format!("Invalid existing token contract address: {e}"))
-            })?;
-
-            updater = updater.with_chain_id(token.chain_id.unwrap_or(chain_id));
-            (
-                parsed,
-                existing_token_address.to_string(),
-                token.deployment_tx_hash.clone(),
-            )
-        } else {
-            let (contract_address, tx_hash) = crate::common::blockchain::deploy_token(
-                chain_id,
-                &token.name,
-                &token.symbol,
-                0u64,
-                0,
-            )
-            .await
-            .map_err(TokenError::DeployFailed)?;
-
-            let token_addr_str = format!("{contract_address:?}");
-            let tx_str = format!("{tx_hash:?}");
-            updater = updater
-                .with_contract_address(token_addr_str.clone())
-                .with_chain_id(chain_id)
-                .with_deployment_tx_hash(tx_str.clone());
-
-            (contract_address, token_addr_str, Some(tx_str))
-        };
-
-    let (treasury_contract_address, treasury_tx_hash, stable_token_address, _project_owner) =
-        crate::common::blockchain::deploy_floor_price_treasury(
-            chain_id,
-            contract_address,
-            treasury_reserve_bps,
-        )
-        .await
-        .map_err(|e| TokenError::DeployFailed(e))?;
-
-    let treasury_addr_str = format!("{treasury_contract_address:?}");
-    let stable_addr_str = format!("{stable_token_address:?}");
-
-    crate::common::blockchain::add_minter(chain_id, &token_addr_str, &treasury_addr_str)
-        .await
-        .map_err(|e| TokenError::DeployFailed(e))?;
-
-    let treasury_tx_str = format!("{treasury_tx_hash:?}");
-
-    updater
+    ProjectToken::updater(token.pk.clone(), token.sk.clone())
+        .with_contract_address(token_addr_str.clone())
         .with_treasury_contract_address(treasury_addr_str.clone())
+        .with_multisig_address(multisig_addr_str.clone())
         .with_stable_token_address(stable_addr_str.clone())
         .with_chain_id(chain_id)
+        .with_deployment_tx_hash(token_tx_str.clone())
         .with_treasury_deployment_tx_hash(treasury_tx_str.clone())
+        .with_multisig_deployment_tx_hash(multisig_tx_str.clone())
         .with_treasury_reserve_bps(treasury_reserve_bps)
+        .with_updated_at(now)
         .execute(cli)
         .await?;
 
     let mut updated = token;
     updated.contract_address = Some(token_addr_str);
     updated.treasury_contract_address = Some(treasury_addr_str);
+    updated.multisig_address = Some(multisig_addr_str);
     updated.stable_token_address = Some(stable_addr_str);
     updated.chain_id = Some(chain_id);
-    if deployment_tx_hash.is_some() {
-        updated.deployment_tx_hash = deployment_tx_hash;
-    }
+    updated.deployment_tx_hash = Some(token_tx_str);
     updated.treasury_deployment_tx_hash = Some(treasury_tx_str);
+    updated.multisig_deployment_tx_hash = Some(multisig_tx_str);
     updated.treasury_reserve_bps = treasury_reserve_bps;
     updated.updated_at = now;
 
