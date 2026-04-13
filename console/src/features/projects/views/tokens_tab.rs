@@ -14,23 +14,36 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let nav = use_navigator();
     let account_ctx = use_account_context();
     let can_write = account_ctx().can_write();
-    let mut minting = use_signal(|| false);
     let mut deploying = use_signal(|| false);
     let mut message = use_signal(|| None::<String>);
     let mut show_deploy_confirm = use_signal(|| false);
     let mut deploy_understood = use_signal(|| false);
-    let mut selected_chain = use_signal(|| {
-        SupportedChain::visible()
-            .next()
-            .map(|c| c.chain_id())
-            .unwrap_or_else(|| SupportedChain::KaiaKairos.chain_id())
+
+    let token_result = use_loader(move || async move {
+        crate::features::tokens::controllers::get_token_handler(project_id()).await
     });
 
-    let mut token = use_loader(move || async move {
-        crate::features::tokens::controllers::get_token_handler(project_id()).await
-    })?;
+    let mut token = token_result?;
 
     let token_opt = token();
+
+    let is_deploying_db = token_opt
+        .as_ref()
+        .map(|t| t.deploying)
+        .unwrap_or(false);
+
+    use_effect(move || {
+        if !is_deploying_db {
+            return;
+        }
+        spawn(async move {
+            #[cfg(feature = "web")]
+            {
+                gloo_timers::future::TimeoutFuture::new(5_000).await;
+                token.restart();
+            }
+        });
+    });
 
     rsx! {
         div { class: "space-y-6",
@@ -71,174 +84,54 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                         .chain_id
                         .map(chain_display_name)
                         .unwrap_or_default();
-                    let deployment_chain_id = token_data.chain_id.unwrap_or(selected_chain());
+                    let deployed_chain = token_data.chain_id.and_then(SupportedChain::from_chain_id);
                     let to_edit = project_id();
 
                     rsx! {
-                        SectionCard {
-                            div { class: "flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between",
-                                div {
-                                    class: if is_deployed { "flex-1 space-y-5" } else { "space-y-5 xl:max-w-2xl" },
-                                    div { class: "flex flex-wrap items-center gap-3",
-                                        SectionTitle { class: "mb-0", {t.token_info} }
-                                        if is_deployed {
-                                            StatusBadge { color: BadgeColor::Green,
-                                                "{t.deployed} · {deployed_chain_name}"
-                                            }
-                                        } else if has_token_contract {
-                                            StatusBadge { color: BadgeColor::Yellow,
-                                                {t.token_only}
-                                            }
-                                        } else {
-                                            StatusBadge { color: BadgeColor::Yellow,
-                                                {t.not_deployed}
-                                            }
-                                        }
-                                    }
-                                    div { class: "grid gap-4 sm:grid-cols-2",
-                                        StatCard {
-                                            label: t.token_name.to_string(),
-                                            value: token_data.name.clone(),
-                                            color: StatColor::Gray,
-                                        }
-                                        StatCard {
-                                            label: t.token_symbol.to_string(),
-                                            value: token_data.symbol.clone(),
-                                            color: StatColor::Blue,
-                                        }
-                                    }
+                        if !is_deployed {
+                            // --- Not deployed: unified card ---
+                            SectionCard {
+                                div { class: "flex flex-wrap items-center gap-3 mb-5",
+                                    SectionTitle { class: "mb-0", {t.token_info} }
+                                    StatusBadge { color: BadgeColor::Yellow, {t.not_deployed} }
+                                }
 
-                                    if !has_token_contract && can_write {
-                                        div {
-                                            Btn {
-                                                variant: BtnVariant::Secondary,
-                                                onclick: move |_| {
-                                                    nav.push(Route::TokenEdit { project_id: to_edit.clone() });
-                                                },
-                                                {t.edit_token}
-                                            }
-                                        }
+                                div { class: "grid gap-4 sm:grid-cols-2 mt-5",
+                                    StatCard {
+                                        label: t.token_name.to_string(),
+                                        value: token_data.name.clone(),
+                                        color: StatColor::Gray,
                                     }
-
-                                    if let Some(ref addr) = token_data.contract_address {
-                                        div { class: "flex flex-col gap-4 rounded-[24px] border border-success bg-success-soft p-5",
-                                            InfoItem {
-                                                label: t.contract_address.to_string(),
-                                                value: addr.clone(),
-                                                code_like: true,
-                                                copyable: true,
-                                            }
-                                            InfoItem {
-                                                label: t.chain.to_string(),
-                                                value: deployed_chain_name.clone(),
-                                                code_like: false,
-                                            }
-                                            if let Some(ref tx) = token_data.deployment_tx_hash {
-                                                InfoItem {
-                                                    label: t.tx_hash.to_string(),
-                                                    value: tx.clone(),
-                                                    code_like: true,
-                                                    copyable: true,
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if let Some(ref treasury_addr) = token_data.treasury_contract_address {
-                                        div { class: "flex flex-col gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
-                                            InfoItem {
-                                                label: t.treasury_contract_address.to_string(),
-                                                value: treasury_addr.clone(),
-                                                code_like: true,
-                                                copyable: true,
-                                            }
-                                            if let Some(ref ms_addr) = token_data.multisig_address {
-                                                InfoItem {
-                                                    label: t.multisig_address.to_string(),
-                                                    value: ms_addr.clone(),
-                                                    code_like: true,
-                                                    copyable: true,
-                                                }
-                                            }
-                                            InfoItem {
-                                                label: t.stable_token_address.to_string(),
-                                                value: token_data
-                                                    .stable_token_address
-                                                    .clone()
-                                                    .unwrap_or_else(|| "-".to_string()),
-                                                code_like: true,
-                                                copyable: token_data.stable_token_address.is_some(),
-                                            }
-                                            div { class: "grid gap-4 md:grid-cols-2",
-                                                InfoItem {
-                                                    label: t.treasury_reserve_rate.to_string(),
-                                                    value: format!("{:.2}%", token_data.treasury_reserve_bps as f64 / 100.0),
-                                                    code_like: false,
-                                                }
-                                                InfoItem {
-                                                    label: t.chain.to_string(),
-                                                    value: deployed_chain_name.clone(),
-                                                    code_like: false,
-                                                }
-                                            }
-                                            if let Some(ref tx) = token_data.treasury_deployment_tx_hash {
-                                                InfoItem {
-                                                    label: t.treasury_deployment_tx_hash.to_string(),
-                                                    value: tx.clone(),
-                                                    code_like: true,
-                                                    copyable: true,
-                                                }
-                                            }
-                                        }
+                                    StatCard {
+                                        label: t.token_symbol.to_string(),
+                                        value: token_data.symbol.clone(),
+                                        color: StatColor::Blue,
                                     }
                                 }
 
-                                if !is_deployed && can_write {
-                                    div { class: "w-full rounded-[24px] border border-border bg-panel-muted p-5 xl:max-w-sm",
-                                        p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
-                                            {t.select_chain}
-                                        }
-                                        // Native <select> shows a browser-default chevron on
-                                        // the right; `appearance-none` hides it so the custom
-                                        // SVG chevron below can take over. `pr-11` leaves
-                                        // room for that icon without text ever touching it.
-                                        div { class: "relative mt-3",
-                                            select {
-                                                class: "block w-full appearance-none rounded-2xl border border-border bg-panel pl-4 pr-11 py-3 text-sm font-medium text-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand disabled:cursor-not-allowed disabled:opacity-60",
-                                                value: "{deployment_chain_id}",
-                                                disabled: has_token_contract,
-                                                onchange: move |e: FormEvent| {
-                                                    if let Ok(v) = e.value().parse::<u64>() {
-                                                        selected_chain.set(v);
-                                                    }
-                                                },
-                                                for chain in SupportedChain::visible() {
-                                                    option { value: "{chain.chain_id()}", "{chain.display_name()}" }
-                                                }
-                                            }
-                                            span { class: "pointer-events-none absolute inset-y-0 right-3 flex items-center text-foreground-muted",
-                                                IconChevronDown { class: "h-4 w-4" }
-                                            }
-                                        }
-                                        p { class: "mt-3 text-sm leading-6 text-foreground-muted",
-                                            if is_token_only {
-                                                {t.complete_treasury_note}
-                                            } else {
-                                                {t.deploy_stack_note}
-                                            }
+                                ContractParamsPanel {
+                                    project_id,
+                                    token: token_data.clone(),
+                                }
+
+                                if can_write {
+                                    div { class: "mt-5 flex flex-wrap gap-3",
+                                        Btn {
+                                            variant: BtnVariant::Secondary,
+                                            onclick: move |_| {
+                                                nav.push(Route::TokenEdit { project_id: to_edit.clone() });
+                                            },
+                                            {t.edit_token}
                                         }
                                         Btn {
                                             variant: BtnVariant::Primary,
-                                            disabled: deploying(),
-                                            class: "mt-5 w-full justify-center",
+                                            disabled: deploying() || token_data.deploying || token_data.monthly_emission <= 0 || token_data.chain_id.is_none(),
                                             onclick: move |_| {
                                                 deploy_understood.set(false);
                                                 show_deploy_confirm.set(true);
                                             },
-                                            if deploying() {
+                                            if deploying() || token_data.deploying {
                                                 {t.deploying}
-                                            } else if is_token_only {
-                                                {t.deploy_treasury_on_chain}
                                             } else {
                                                 {t.deploy_token_on_chain}
                                             }
@@ -246,46 +139,69 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     }
                                 }
                             }
-                        }
-
-                        if can_write && is_deployed {
+                        } else {
+                            // --- Deployed: show contract info ---
                             SectionCard {
-                                SectionTitle { {t.trigger_monthly_mint} }
-                                p { class: "text-sm text-foreground-muted",
-                                    {t.trigger_monthly_mint_desc}
-                                }
-                                div { class: "mt-4 flex justify-end",
-                                    Btn {
-                                        variant: BtnVariant::Primary,
-                                        disabled: minting(),
-                                        onclick: move |_| {
-                                            let pid = project_id();
-                                            spawn(async move {
-                                                minting.set(true);
-                                                message.set(None);
-                                                match crate::features::tokens::controllers::trigger_monthly_mint_handler(pid).await {
-                                                    Ok(resp) => {
-                                                        token.restart();
-                                                        message.set(Some(format!("{} Tx: {}", t.monthly_mint_success, resp.tx_hash)));
-                                                    }
-                                                    Err(e) => message.set(Some(format!("{}{e}", t.monthly_mint_failure))),
-                                                }
-                                                minting.set(false);
-                                            });
-                                        },
-                                        if minting() { {t.triggering_mint} } else { {t.trigger_monthly_mint} }
+                                div { class: "flex flex-wrap items-center gap-3 mb-5",
+                                    SectionTitle { class: "mb-0", {t.token_info} }
+                                    StatusBadge { color: BadgeColor::Green,
+                                        "{t.deployed} · {deployed_chain_name}"
                                     }
                                 }
-                            }
 
-                            SectionCard {
-                                SectionTitle { {t.distribution_slots_title} }
-                                p { class: "text-sm text-foreground-muted",
-                                    {t.distribution_slots_desc}
+                                div { class: "grid gap-4 sm:grid-cols-2",
+                                    StatCard {
+                                        label: t.token_name.to_string(),
+                                        value: token_data.name.clone(),
+                                        color: StatColor::Gray,
+                                    }
+                                    StatCard {
+                                        label: t.token_symbol.to_string(),
+                                        value: token_data.symbol.clone(),
+                                        color: StatColor::Blue,
+                                    }
                                 }
-                                DistributionSlotsEditor {
-                                    project_id,
-                                    on_message: move |msg: String| message.set(Some(msg)),
+
+                                if let Some(ref addr) = token_data.contract_address {
+                                    div { class: "mt-4 flex flex-col gap-4 rounded-[24px] border border-success bg-success-soft p-5",
+                                        InfoItem {
+                                            label: t.contract_address.to_string(),
+                                            value: addr.clone(),
+                                            code_like: true,
+                                            copyable: true,
+                                            explorer_url: deployed_chain.map(|c| c.explorer_address_url(addr)),
+                                        }
+                                        if let Some(ref tx) = token_data.deployment_tx_hash {
+                                            InfoItem {
+                                                label: t.tx_hash.to_string(),
+                                                value: tx.clone(),
+                                                code_like: true,
+                                                copyable: true,
+                                                explorer_url: deployed_chain.map(|c| c.explorer_tx_url(tx)),
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if let Some(ref treasury_addr) = token_data.treasury_contract_address {
+                                    div { class: "mt-4 flex flex-col gap-4 rounded-[24px] border border-border bg-panel-muted p-5",
+                                        InfoItem {
+                                            label: t.treasury_contract_address.to_string(),
+                                            value: treasury_addr.clone(),
+                                            code_like: true,
+                                            copyable: true,
+                                            explorer_url: deployed_chain.map(|c| c.explorer_address_url(treasury_addr)),
+                                        }
+                                        if let Some(ref tx) = token_data.treasury_deployment_tx_hash {
+                                            InfoItem {
+                                                label: t.treasury_deployment_tx_hash.to_string(),
+                                                value: tx.clone(),
+                                                code_like: true,
+                                                copyable: true,
+                                                explorer_url: deployed_chain.map(|c| c.explorer_tx_url(tx)),
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -335,20 +251,15 @@ pub fn TokensTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                     }
                                     Btn {
                                         variant: BtnVariant::Primary,
-                                        disabled: !deploy_understood() || deploying(),
+                                        disabled: !deploy_understood() || deploying() || token_data.deploying,
                                         onclick: move |_| {
                                             show_deploy_confirm.set(false);
                                             deploy_understood.set(false);
                                             let pid = project_id();
-                                            let chain = if has_token_contract {
-                                                token_data.chain_id.unwrap_or(selected_chain())
-                                            } else {
-                                                selected_chain()
-                                            };
                                             spawn(async move {
                                                 deploying.set(true);
                                                 message.set(None);
-                                                let res = crate::features::tokens::controllers::deploy_token_handler(pid, chain).await;
+                                                let res = crate::features::tokens::controllers::deploy_token_handler(pid).await;
                                                 match res {
                                                     Ok(_) => {
                                                         token.restart();
@@ -388,6 +299,7 @@ fn InfoItem(
     value: String,
     code_like: bool,
     #[props(default)] copyable: bool,
+    #[props(default)] explorer_url: Option<String>,
 ) -> Element {
     rsx! {
         div {
@@ -401,6 +313,16 @@ fn InfoItem(
                     }
                     if copyable {
                         CopyButton { value: value.clone() }
+                    }
+                    if let Some(ref url) = explorer_url {
+                        a {
+                            href: "{url}",
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                            class: "inline-flex shrink-0 items-center justify-center rounded-xl border border-border bg-panel px-2.5 py-2 text-xs font-medium text-foreground-muted hover:border-brand hover:text-brand transition-colors",
+                            title: "View on block explorer",
+                            "↗"
+                        }
                     }
                 }
             } else {
@@ -534,3 +456,200 @@ fn DistributionSlotsEditor(
         }
     }
 }
+
+/// Returns (effective_months, cumulative_supply).
+/// effective_months = month when emission drops below 1% of initial (or 0 if decay is 0 = unlimited).
+/// cumulative_supply = total tokens emitted over effective_months (or 0 if unlimited).
+fn compute_emission_projection(monthly_emission: u64, decay_bps: u16) -> (u32, u64) {
+    if decay_bps == 0 {
+        return (0, 0); // unlimited — no convergence
+    }
+    let threshold = (monthly_emission as u128) / 100; // 1% of initial
+    let mut total: u128 = 0;
+    let mut emission = monthly_emission as u128;
+    let mut months: u32 = 0;
+    while emission >= threshold.max(1) && months < 1200 {
+        total += emission;
+        months += 1;
+        emission = emission * (10000 - decay_bps as u128) / 10000;
+    }
+    (months, total as u64)
+}
+
+fn format_with_commas(n: u64) -> String {
+    let s = n.to_string();
+    let mut result = String::new();
+    for (i, c) in s.chars().rev().enumerate() {
+        if i > 0 && i % 3 == 0 {
+            result.push(',');
+        }
+        result.push(c);
+    }
+    result.chars().rev().collect()
+}
+
+#[component]
+fn ContractParamsPanel(
+    #[allow(unused)] project_id: ReadSignal<ProjectPartition>,
+    token: crate::features::tokens::TokenResponse,
+) -> Element {
+    let t: ProjectsTranslate = use_translate();
+
+    let monthly_emission = token.monthly_emission.max(0) as u64;
+    let decay_bps = token.decay_rate_bps;
+    let (effective_months, cumulative) = compute_emission_projection(monthly_emission, decay_bps);
+    let params_configured = monthly_emission > 0;
+    let slots_count = token.distribution_slots.len();
+    let stable_label = token
+        .stable_token_address
+        .as_deref()
+        .filter(|s| !s.is_empty())
+        .map(|a| {
+            if a.len() > 10 {
+                format!("{}...{}", &a[..6], &a[a.len()-4..])
+            } else {
+                a.to_string()
+            }
+        })
+        .unwrap_or_else(|| "Not set".to_string());
+
+    rsx! {
+        div { class: "mt-5 rounded-[24px] border border-border bg-panel-muted p-5",
+            p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
+                {t.contract_params_title}
+            }
+            p { class: "mt-1 text-xs text-foreground-muted leading-5",
+                {t.contract_params_desc}
+            }
+
+            if params_configured {
+                div { class: "mt-4 grid gap-3 sm:grid-cols-2",
+                    div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                        span { class: "text-xs text-foreground-muted", {t.monthly_emission_label} }
+                        span { class: "text-sm font-semibold text-foreground",
+                            "{format_with_commas(monthly_emission)}"
+                        }
+                    }
+                    div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                        span { class: "text-xs text-foreground-muted", {t.decay_rate_label} }
+                        span { class: "text-sm font-semibold text-foreground",
+                            "{decay_bps as f64 / 100.0:.1}%"
+                        }
+                    }
+                    if effective_months > 0 {
+                        div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                            span { class: "text-xs text-foreground-muted", {t.emission_projection_label} }
+                            span { class: "text-sm font-semibold text-foreground",
+                                "{format_with_commas(cumulative)} ({effective_months} {t.months_label})"
+                            }
+                        }
+                    } else {
+                        div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                            span { class: "text-xs text-foreground-muted", {t.emission_projection_label} }
+                            span { class: "text-sm font-semibold text-foreground",
+                                {t.unlimited_emission}
+                            }
+                        }
+                    }
+                    div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                        span { class: "text-xs text-foreground-muted", {t.stable_token_label} }
+                        span { class: "text-sm font-semibold text-foreground",
+                            "{stable_label}"
+                        }
+                    }
+                    div { class: "flex items-center justify-between rounded-2xl border border-border bg-panel px-4 py-3",
+                        span { class: "text-xs text-foreground-muted", {t.distribution_slots_setup_title} }
+                        span { class: "text-sm font-semibold text-foreground",
+                            "{slots_count} slots"
+                        }
+                    }
+                }
+            } else {
+                div { class: "mt-4 rounded-2xl border border-warning bg-warning-soft px-4 py-3",
+                    p { class: "text-sm text-foreground",
+                        {t.contract_params_not_set}
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn TokenTransferCard(
+    project_id: ReadSignal<ProjectPartition>,
+    on_message: EventHandler<String>,
+) -> Element {
+    let t: ProjectsTranslate = use_translate();
+
+    let mut wallet = use_signal(String::new);
+    let mut amount = use_signal(String::new);
+    let mut transferring = use_signal(|| false);
+
+    let on_transfer = move |_| {
+        let w = wallet();
+        let a = amount();
+        let pid = project_id();
+        spawn(async move {
+            transferring.set(true);
+            let amt: i64 = match a.parse() {
+                Ok(v) if v > 0 => v,
+                _ => {
+                    on_message.call(format!("{}invalid amount", t.transfer_failure));
+                    transferring.set(false);
+                    return;
+                }
+            };
+            match crate::features::tokens::controllers::mint_token_handler(
+                pid,
+                "transfer".to_string(),
+                w,
+                amt,
+            )
+            .await
+            {
+                Ok(resp) => {
+                    let tx = resp.tx_hash.unwrap_or_default();
+                    on_message.call(format!("{}{tx}", t.transfer_success));
+                    wallet.set(String::new());
+                    amount.set(String::new());
+                }
+                Err(e) => on_message.call(format!("{}{e}", t.transfer_failure)),
+            }
+            transferring.set(false);
+        });
+    };
+
+    rsx! {
+        SectionCard {
+            SectionTitle { {t.transfer_token_title} }
+            p { class: "text-sm text-foreground-muted", {t.transfer_token_desc} }
+            div { class: "mt-4 grid gap-4 sm:grid-cols-2",
+                FormField {
+                    label: t.transfer_wallet_address,
+                    r#type: "text",
+                    value: wallet(),
+                    oninput: move |e: FormEvent| wallet.set(e.value()),
+                    placeholder: t.transfer_wallet_placeholder.to_string(),
+                }
+                FormField {
+                    label: t.transfer_amount,
+                    r#type: "number",
+                    value: amount(),
+                    oninput: move |e: FormEvent| amount.set(e.value()),
+                    placeholder: t.transfer_amount_placeholder.to_string(),
+                    min: "1",
+                }
+            }
+            div { class: "mt-4 flex justify-end",
+                Btn {
+                    variant: BtnVariant::Primary,
+                    disabled: transferring() || wallet().is_empty() || amount().is_empty(),
+                    onclick: on_transfer,
+                    if transferring() { {t.transferring} } else { {t.transfer_btn} }
+                }
+            }
+        }
+    }
+}
+
