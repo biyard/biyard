@@ -289,10 +289,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
         .as_ref()
         .map(|t| t.symbol.clone())
         .unwrap_or_default();
-    let seed_decimals = existing_token
-        .as_ref()
-        .map(|t| t.decimals.to_string())
-        .unwrap_or_else(|| "18".to_string());
     let seed_description = existing_token
         .as_ref()
         .and_then(|t| t.description.clone())
@@ -318,7 +314,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
 
     let mut name = use_signal(move || seed_name.clone());
     let mut symbol = use_signal(move || seed_symbol.clone());
-    let mut decimals = use_signal(move || seed_decimals.clone());
     let seed_monthly_emission = existing_token
         .as_ref()
         .map(|t| t.monthly_emission.to_string())
@@ -396,16 +391,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                             oninput: move |e: FormEvent| symbol.set(e.value()),
                             placeholder: t.symbol_placeholder.to_string(),
                             maxlength: "10",
-                            required: true,
-                        }
-                        FormField {
-                            label: t.token_decimals,
-                            r#type: "number",
-                            value: decimals(),
-                            oninput: move |e: FormEvent| decimals.set(e.value()),
-                            placeholder: t.decimals_placeholder.to_string(),
-                            min: "0",
-                            max: "18",
                             required: true,
                         }
                         div { class: "md:col-span-2",
@@ -625,7 +610,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                 let required_fields_msg = required_fields_msg.clone();
                                 let name_val = name().trim().to_string();
                                 let symbol_val = symbol().trim().to_string();
-                                let decimals_input = decimals().trim().to_string();
                                 let desc_val = {
                                     let value = description();
                                     if value.trim().is_empty() { None } else { Some(value) }
@@ -652,16 +636,12 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
 
                                 if name_val.is_empty()
                                     || symbol_val.is_empty()
-                                    || decimals_input.is_empty()
                                 {
                                     message.set(Some((AlertVariant::Error, required_fields_msg)));
                                     return;
                                 }
 
-                                let Ok(decimals_val) = decimals_input.parse::<u8>() else {
-                                    message.set(Some((AlertVariant::Error, required_fields_msg)));
-                                    return;
-                                };
+                                let decimals_val: u8 = 18;
 
                                 spawn(async move {
                                     loading.set(true);
