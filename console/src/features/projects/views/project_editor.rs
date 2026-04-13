@@ -117,24 +117,9 @@ pub fn ProjectEditorCard(
         .as_ref()
         .and_then(|project| project.brand_logo_url.clone())
         .unwrap_or_default();
-    let seed_monthly_supply = existing_project
-        .as_ref()
-        .map(|project| project.monthly_token_supply.to_string())
-        .unwrap_or_else(|| "1000000".to_string());
-    // Reserve rate is stored as a 0..1 fraction in the model but the UI
-    // takes whole percent (0..100). Multiplying once at hydration and
-    // dividing once on submit keeps the user-visible value sane and
-    // prevents the "type 10 → submit 1000%" footgun.
-    let seed_reserve_rate = existing_project
-        .as_ref()
-        .map(|project| ((project.treasury_reserve_rate * 100.0).round() as i64).to_string())
-        .unwrap_or_else(|| "10".to_string());
-
     let mut name = use_signal(move || seed_name.clone());
     let mut description = use_signal(move || seed_description.clone());
     let mut brand_logo_url = use_signal(move || seed_brand_logo_url.clone());
-    let mut monthly_supply = use_signal(move || seed_monthly_supply.clone());
-    let mut reserve_rate = use_signal(move || seed_reserve_rate.clone());
     let mut message = use_signal(|| None::<(AlertVariant, String)>);
     let mut loading = use_signal(|| false);
 
@@ -172,12 +157,6 @@ pub fn ProjectEditorCard(
             Some(current)
         }
     };
-    // Input is whole percent — display as-is, clamped to a sane range.
-    let reserve_percent = reserve_rate()
-        .parse::<f64>()
-        .unwrap_or(0.0)
-        .clamp(0.0, 100.0);
-
     let settings_saved = t.settings_saved.to_string();
     let save_failure = t.save_failure.to_string();
 
@@ -189,8 +168,11 @@ pub fn ProjectEditorCard(
                     p { class: "text-sm leading-6 text-foreground-muted", "{helper_text}" }
                 }
                 if let Some(project_id) = existing_project_id.clone() {
-                    code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                        "{project_id}"
+                    div { class: "flex items-center gap-2",
+                        code { class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                            "{project_id}"
+                        }
+                        CopyButton { value: project_id.clone(), size: CopyButtonSize::Sm }
                     }
                 }
             }
@@ -253,45 +235,8 @@ pub fn ProjectEditorCard(
                             }
                         }
 
-                        div {
-                            FormField {
-                                label: t.monthly_supply,
-                                r#type: "number",
-                                value: monthly_supply(),
-                                oninput: move |e: FormEvent| monthly_supply.set(e.value()),
-                                placeholder: t.monthly_supply_placeholder.to_string(),
-                                min: "0",
-                            }
-                            // Inline preview of the typed number with thousand separators.
-                            // Helps the user verify they typed `1,000,000` not `100,000` etc.
-                            if let Ok(parsed) = monthly_supply().parse::<i64>() {
-                                if parsed >= 1000 {
-                                    p { class: "mt-1 text-xs font-semibold text-foreground-soft",
-                                        "= {format_number(parsed)}"
-                                    }
-                                }
-                            }
-                            p { class: "mt-2 text-xs font-medium text-foreground-muted",
-                                {t.monthly_supply_help}
-                            }
-                        }
-
-                        div {
-                            FormField {
-                                label: t.treasury_reserve_rate,
-                                r#type: "number",
-                                value: reserve_rate(),
-                                oninput: move |e: FormEvent| reserve_rate.set(e.value()),
-                                placeholder: "10".to_string(),
-                                min: "0",
-                                max: "100",
-                                step: "1",
-                                suffix: "%",
-                            }
-                            p { class: "mt-2 text-xs font-medium text-foreground-muted",
-                                {t.treasury_reserve_rate_desc}
-                            }
-                        }
+                        // monthly_supply and treasury_reserve_rate are hardcoded
+                        // (1,000,000 and 5%) — will be refactored later.
                     }
 
                     div { class: "flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end",
@@ -326,34 +271,18 @@ pub fn ProjectEditorCard(
                                     let value = brand_logo_url();
                                     if value.trim().is_empty() { None } else { Some(value) }
                                 };
-                                let monthly_supply_input = monthly_supply();
-                                let reserve_rate_input = reserve_rate();
-
                                 spawn(async move {
                                     loading.set(true);
                                     message.set(None);
 
-                                    // The reserve_rate input is now whole percent (0-100).
-                                    // Convert to a 0..1 fraction for the API/model.
-                                    let parse_reserve_pct = |s: &str, fallback: f64| -> f64 {
-                                        s.parse::<f64>()
-                                            .map(|p| (p / 100.0).clamp(0.0, 1.0))
-                                            .unwrap_or(fallback)
-                                    };
-
                                     match mode {
                                         ProjectEditorMode::Create => {
-                                            let monthly_supply_val =
-                                                monthly_supply_input.parse::<i64>().unwrap_or(1_000_000);
-                                            let reserve_rate_val =
-                                                parse_reserve_pct(&reserve_rate_input, 0.1);
-
                                             match crate::features::projects::controllers::create_project_handler(
                                                 name_val,
                                                 desc_val,
                                                 brand_logo_url_val,
-                                                monthly_supply_val,
-                                                reserve_rate_val,
+                                                1_000_000i64,
+                                                0.05f64,
                                             )
                                             .await
                                             {
@@ -384,20 +313,14 @@ pub fn ProjectEditorCard(
                                                 }
                                             }
                                         }
-                                        ProjectEditorMode::Edit { project_id, project } => {
-                                            let monthly_supply_val = monthly_supply_input
-                                                .parse::<i64>()
-                                                .unwrap_or(project.monthly_token_supply);
-                                            let reserve_rate_val =
-                                                parse_reserve_pct(&reserve_rate_input, project.treasury_reserve_rate);
-
+                                        ProjectEditorMode::Edit { project_id, .. } => {
                                             match crate::features::projects::controllers::update_project_handler(
                                                 project_id.clone(),
                                                 Some(name_val),
                                                 desc_val,
                                                 brand_logo_url_val,
-                                                Some(monthly_supply_val),
-                                                Some(reserve_rate_val),
+                                                Some(1_000_000i64),
+                                                Some(0.05f64),
                                                 None,
                                             )
                                             .await
@@ -476,7 +399,7 @@ pub fn ProjectEditorCard(
                                     {t.monthly_supply}
                                 }
                                 p { class: "mt-2 text-lg font-semibold text-foreground",
-                                    "{format_number(monthly_supply().parse::<i64>().unwrap_or_default())}"
+                                    "{format_number(1_000_000i64)}"
                                 }
                             }
                             div { class: "rounded-2xl border border-border bg-panel px-4 py-3",
@@ -484,7 +407,7 @@ pub fn ProjectEditorCard(
                                     {t.treasury_reserve_rate}
                                 }
                                 p { class: "mt-2 text-lg font-semibold text-foreground",
-                                    "{reserve_percent.round()}%"
+                                    "5%"
                                 }
                             }
                         }

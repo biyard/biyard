@@ -10,8 +10,7 @@ use crate::features::accounts::{Account, AccountError, AccountType};
 use crate::features::credentials::{
     Credential, CredentialError, CredentialQueryOption, CredentialStatus,
 };
-use crate::features::enterprises::Enterprise;
-use crate::features::enterprises::controllers::ensure_current_enterprise_for_account;
+use crate::features::enterprises::{Enterprise, EnterpriseError};
 use crate::features::projects::{Project, ProjectError};
 
 /// Extract Account from request using session only.
@@ -87,7 +86,15 @@ where
         let cli = config.dynamodb();
 
         let account = resolve_account_from_parts(parts, state, cli).await?;
-        let (account, enterprise) = ensure_current_enterprise_for_account(cli, &account).await?;
+
+        if matches!(account.enterprise_id, Partition::None) {
+            return Err(EnterpriseError::EnterpriseNotFound.into());
+        }
+
+        let enterprise =
+            Enterprise::get(cli, &account.enterprise_id, Some(EntityType::Enterprise))
+                .await?
+                .ok_or(EnterpriseError::EnterpriseNotFound)?;
         let role = account.organization_role;
 
         Ok(Self {

@@ -28,16 +28,29 @@ pub struct TreasuryStatusResponse {
     pub stable_decimals: u8,
     /// Stable token symbol (e.g. "USDT").
     pub stable_symbol: String,
+    /// Whether the stable token has a public faucet mint (e.g. BUSDT).
+    /// When true, the console can mint + deposit for demo purposes.
+    pub stable_mintable: bool,
 
     /// Brand token `totalSupply` (raw units).
     pub total_supply_raw: String,
-    /// Brand token `circulatingSupply` from the treasury contract
-    /// (`totalSupply - treasuryHeld`).
+    /// Brand token `circulatingSupply` from the treasury contract.
     pub circulating_supply_raw: String,
+    /// Brand tokens held by the Treasury (bought back, out of circulation).
+    #[serde(default)]
+    pub treasury_held_tokens_raw: String,
     /// Brand token decimals.
     pub token_decimals: u8,
+    /// Brand token symbol (e.g. "TKN").
+    #[serde(default)]
+    pub token_symbol: String,
 
     /// Raw floor price scaled by 1e18, matching `getFloorPrice()` on
     /// the Solidity contract. `0` when circulating supply is zero.
     pub floor_price_raw_1e18: String,
+
+    /// On-chain `currentMonth()` index from the BrandToken contract.
+    /// Includes `monthOffset` from `advanceMonth()` calls.
+    #[serde(default)]
+    pub current_month: u64,
 }

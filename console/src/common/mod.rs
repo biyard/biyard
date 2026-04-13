@@ -16,6 +16,8 @@ pub mod ui;
 #[cfg(feature = "server")]
 pub mod blockchain;
 #[cfg(feature = "server")]
+pub mod dapp;
+#[cfg(feature = "server")]
 pub mod middlewares;
 #[cfg(feature = "server")]
 pub mod models;

@@ -8,8 +8,6 @@ use super::SESSION_KEY_ACCOUNT_ID;
 use crate::common::{CommonConfig, Extension};
 #[cfg(feature = "server")]
 use crate::features::accounts::{Account, AccountError, AccountQueryOption, PasswordScheme};
-#[cfg(feature = "server")]
-use crate::features::enterprises::controllers::ensure_current_enterprise_for_account;
 
 #[post("/v1/accounts/signin", session: Extension<tower_sessions::Session>)]
 pub async fn signin_handler(email: String, password: String) -> Result<AccountResponse> {
@@ -64,8 +62,6 @@ pub async fn signin_handler(email: String, password: String) -> Result<AccountRe
     session
         .insert(SESSION_KEY_ACCOUNT_ID, account.pk.to_string())
         .await?;
-
-    let (account, _) = ensure_current_enterprise_for_account(cli, &account).await?;
 
     Ok(account.into())
 }

@@ -1,3 +1,3 @@
-mod evm;
+pub mod evm;
 
 pub use evm::*;

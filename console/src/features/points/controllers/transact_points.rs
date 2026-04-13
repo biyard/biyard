@@ -42,8 +42,11 @@ pub async fn transact_points_handler(
             Transaction::Transfer { from, to, amount } => {
                 transfer_points(&project, from, to, amount, month, description)
             }
-            Transaction::Exchange { from, amount } => {
-                exchange_points(&project, from, amount, month, description)
+            Transaction::Exchange { .. } => {
+                return Err(crate::features::points::PointError::InvalidTransaction(
+                    "Exchange must be performed via mint_token".to_string(),
+                )
+                .into());
             }
         };
         txs.extend(write_items);
@@ -248,6 +251,7 @@ fn transfer_points(
 }
 
 #[cfg(feature = "server")]
+#[allow(dead_code)]
 fn exchange_points(
     project: &Project,
     from: String,

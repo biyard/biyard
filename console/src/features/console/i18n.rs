@@ -113,11 +113,11 @@ translate! {
     },
     recent_brands_desc: {
         en: "Your most recent brands and treasury posture.",
-        ko: "최근 브랜드와 트레저리 상태를 확인합니다.",
+        ko: "최근 브랜드와 트레저리 현황을 확인하세요.",
     },
     some_brands_inactive: {
         en: "Some brands are inactive. Review treasury and launch settings before the next payout window.",
-        ko: "비활성 상태의 브랜드가 있습니다. 다음 정산 주기 전에 트레저리와 출시 설정을 확인해주세요.",
+        ko: "비활성 상태인 브랜드가 있습니다. 다음 정산 주기 전에 트레저리와 출시 설정을 확인해 주세요.",
     },
     sign_out: {
         en: "Sign Out",
@@ -137,7 +137,7 @@ translate! {
     },
     welcome_description: {
         en: "Manage your brands, credentials, and account settings.",
-        ko: "브랜드, 인증정보, 계정 설정을 관리하세요.",
+        ko: "브랜드, API 키, 계정 설정을 관리하세요.",
     },
     my_account: {
         en: "My Account",
@@ -161,7 +161,7 @@ translate! {
     },
     api_credentials_desc: {
         en: "Manage API keys for accessing Biyard services",
-        ko: "Biyard 서비스 접근용 API 키를 관리합니다",
+        ko: "Biyard 서비스에 접근하기 위한 API 키를 관리합니다",
     },
     account_settings: {
         en: "Account Settings",
@@ -169,7 +169,7 @@ translate! {
     },
     account_settings_desc: {
         en: "View and manage your account",
-        ko: "계정 확인 및 관리",
+        ko: "계정을 확인하고 관리하세요.",
     },
     account_info: {
         en: "Account Information",
@@ -209,7 +209,7 @@ translate! {
     },
     email_readonly_help: {
         en: "Email is your login identity. Contact support to change it.",
-        ko: "이메일은 로그인 식별자입니다. 변경은 지원팀에 문의해 주세요.",
+        ko: "이메일은 로그인에 사용하는 식별자입니다. 변경하려면 지원팀에 문의해 주세요.",
     },
     save_profile: {
         en: "Save profile",
@@ -217,7 +217,7 @@ translate! {
     },
     profile_saved: {
         en: "Profile updated.",
-        ko: "프로필이 저장되었습니다.",
+        ko: "프로필이 업데이트되었습니다.",
     },
     security: {
         en: "Security",

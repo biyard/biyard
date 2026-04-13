@@ -8,5 +8,14 @@ pub struct CreateTokenRequest {
     pub decimals: u8,
     pub description: Option<String>,
     #[serde(default)]
-    pub initial_supply: i64,
+    pub monthly_emission: i64,
+    #[serde(default = "default_decay_rate_bps")]
+    pub decay_rate_bps: u16,
+    #[serde(default)]
+    pub distribution_slots: Vec<crate::features::tokens::DistributionSlotEntry>,
+    pub stable_token_address: Option<String>,
+}
+
+fn default_decay_rate_bps() -> u16 {
+    500
 }

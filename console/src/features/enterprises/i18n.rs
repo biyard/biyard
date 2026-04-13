@@ -9,7 +9,7 @@ translate! {
     },
     members_subtitle: {
         en: "Manage who has access to this enterprise.",
-        ko: "이 엔터프라이즈에 접근할 수 있는 사람을 관리합니다.",
+        ko: "이 기업에 접근할 수 있는 사용자를 관리합니다.",
     },
     invite_member: {
         en: "Invite Member",
@@ -21,7 +21,7 @@ translate! {
     },
     invite_modal_description: {
         en: "Generate an invite link. Share it with the person you want to add. Anyone with the link can sign up and join with the role you choose.",
-        ko: "초대 링크를 생성합니다. 추가하고 싶은 사람에게 공유하세요. 링크를 가진 사람은 누구나 가입하여 선택한 역할로 합류할 수 있습니다.",
+        ko: "초대 링크를 만들어 추가하려는 사람에게 공유하세요. 링크를 받은 사람은 가입 후 선택한 역할로 참여할 수 있습니다.",
     },
     invited_email: {
         en: "Email (optional, for reference)",
@@ -81,7 +81,7 @@ translate! {
     },
     revoke: {
         en: "Revoke",
-        ko: "취소",
+        ko: "회수",
     },
     member_list: {
         en: "Member list",
@@ -109,15 +109,15 @@ translate! {
     },
     remove: {
         en: "Remove",
-        ko: "내보내기",
+        ko: "제거",
     },
     confirm_remove_title: {
         en: "Remove member",
-        ko: "멤버 내보내기",
+        ko: "멤버 제거",
     },
     confirm_remove_message: {
         en: "This will revoke their access to the enterprise. Their account stays active but will need a new invite to re-join.",
-        ko: "이 사용자의 엔터프라이즈 접근 권한을 회수합니다. 계정은 유지되지만 다시 합류하려면 새 초대가 필요합니다.",
+        ko: "이 사용자의 기업 접근 권한을 회수합니다. 계정은 유지되지만 다시 참여하려면 새 초대가 필요합니다.",
     },
     cancel: {
         en: "Cancel",
@@ -133,21 +133,21 @@ translate! {
     },
     no_members_desc: {
         en: "Invite teammates to collaborate on this enterprise.",
-        ko: "팀원을 초대하여 이 엔터프라이즈에서 협업하세요.",
+        ko: "팀원을 초대해 이 기업에서 함께 작업하세요.",
     },
 
     // Invite accept page
     accept_title: {
         en: "Join Enterprise",
-        ko: "엔터프라이즈 합류",
+        ko: "기업 참여",
     },
     accept_subtitle: {
         en: "You have been invited to join",
-        ko: "다음 엔터프라이즈에 초대되었습니다",
+        ko: "다음 기업에 초대되었습니다",
     },
     accept_role_label: {
         en: "You will join as",
-        ko: "다음 역할로 합류합니다",
+        ko: "다음 역할로 참여하게 됩니다",
     },
     accept_create_account: {
         en: "Create account & join",
@@ -155,7 +155,7 @@ translate! {
     },
     accept_already_have_account: {
         en: "Have an account already? Sign in first, then ask the inviter to add you again.",
-        ko: "이미 계정이 있나요? 먼저 로그인한 후 초대자에게 다시 추가해 달라고 요청하세요.",
+        ko: "이미 계정이 있나요? 먼저 로그인한 뒤 초대한 사람에게 다시 초대해 달라고 요청하세요.",
     },
     invitation_invalid: {
         en: "This invitation link is invalid or expired.",
@@ -165,11 +165,11 @@ translate! {
     // No enterprise empty state
     no_enterprise_title: {
         en: "You're not part of any enterprise",
-        ko: "어떤 엔터프라이즈에도 속해 있지 않습니다",
+        ko: "어떤 기업에도 속해 있지 않습니다",
     },
     no_enterprise_desc: {
         en: "Ask an enterprise admin for an invitation link, or contact support to start a new workspace.",
-        ko: "엔터프라이즈 관리자에게 초대 링크를 요청하거나, 새 워크스페이스 생성을 위해 지원팀에 문의하세요.",
+        ko: "기업 관리자에게 초대 링크를 요청하거나, 새 기업을 시작하려면 지원팀에 문의하세요.",
     },
 
     // Enterprise general settings
@@ -179,7 +179,7 @@ translate! {
     },
     general_subtitle: {
         en: "Change how this enterprise appears across the console.",
-        ko: "이 기업이 콘솔 전반에서 어떻게 표시되는지 설정합니다.",
+        ko: "이 기업이 콘솔 전반에 어떻게 표시될지 설정합니다.",
     },
     enterprise_name: {
         en: "Enterprise name",
@@ -187,11 +187,11 @@ translate! {
     },
     enterprise_name_help: {
         en: "The display name shown in the sidebar, page headers, and invitations.",
-        ko: "사이드바, 페이지 헤더, 초대장에 표시되는 이름입니다.",
+        ko: "사이드바, 페이지 헤더, 초대 화면에 표시되는 이름입니다.",
     },
     save_changes: {
         en: "Save changes",
-        ko: "변경사항 저장",
+        ko: "변경 사항 저장",
     },
     saving: {
         en: "Saving...",
@@ -203,6 +203,6 @@ translate! {
     },
     owner_only_edit: {
         en: "Only Owners can change enterprise settings. Ask an owner to make changes.",
-        ko: "Owner만 기업 설정을 변경할 수 있습니다. Owner에게 요청해 주세요.",
+        ko: "소유자만 기업 설정을 변경할 수 있습니다. 소유자에게 요청해 주세요.",
     },
 }

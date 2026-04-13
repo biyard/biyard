@@ -14,8 +14,6 @@ pub async fn list_credentials_handler() -> Result<Vec<CredentialSummaryResponse>
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    // Enterprise context is guaranteed by EnterpriseContextAuth, which lazily
-    // backfills legacy account-scoped resources on first request.
     let (credentials, _) = Credential::find_by_organization_id(
         cli,
         auth.enterprise.pk.clone(),

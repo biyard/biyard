@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Claim — Biyard Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a;
+      --text: #e4e4e7; --muted: #71717a; --brand: #6366f1;
+      --brand-hover: #818cf8; --success: #22c55e; --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 16px;
+    }
+    .container { max-width: 560px; width: 100%; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+    .stat-label { color: var(--muted); font-size: 13px; }
+    .stat-value { font-size: 14px; font-weight: 600; }
+    .stat-value.success { color: var(--success); }
+    .stat-value.brand { color: var(--brand-hover); }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    input {
+      width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text); font-size: 14px; outline: none;
+    }
+    input:focus { border-color: var(--brand); }
+    input::placeholder { color: var(--muted); }
+    .field { margin-bottom: 16px; }
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary { background: var(--brand); color: white; }
+    .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: var(--border); color: var(--text); margin-bottom: 12px; }
+    .btn-secondary:hover { background: #3a3d4a; }
+    .btn-connect { background: #f97316; color: white; margin-bottom: 16px; }
+    .btn-connect:hover { background: #fb923c; }
+    .msg { padding: 12px 16px; border-radius: 12px; font-size: 13px; margin-top: 12px; word-break: break-all; }
+    .msg.success { background: rgba(34,197,94,0.15); color: var(--success); }
+    .msg.error { background: rgba(239,68,68,0.15); color: var(--danger); }
+    .msg.info { background: rgba(99,102,241,0.15); color: var(--brand-hover); }
+    .divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .hidden { display: none; }
+    .arrow { text-align: center; font-size: 24px; color: var(--muted); padding: 4px 0; }
+    .wallet-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,197,94,0.15); color: var(--success);
+      padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .month-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; margin-bottom: 12px;
+    }
+    .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .month-label { font-size: 15px; font-weight: 700; }
+    .month-badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    .month-badge.claimable { background: rgba(34,197,94,0.15); color: var(--success); }
+    .month-badge.claimed { background: rgba(113,113,122,0.15); color: var(--muted); }
+    .claim-btn {
+      margin-top: 8px; padding: 10px; border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer; width: 100%;
+      background: var(--brand); color: white; transition: all 0.2s;
+    }
+    .claim-btn:hover:not(:disabled) { background: var(--brand-hover); }
+    .claim-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Token Claim</h1>
+    <p class="subtitle">Claim your brand tokens based on earned points. Connect your Kaia Wallet to sign the claim transaction.</p>
+
+    <input type="hidden" id="apiBase" />
+    <input type="hidden" id="projectId" />
+
+    <!-- Wallet -->
+    <button class="btn btn-connect" id="connectBtn" onclick="connectWallet()">
+      Connect Kaia Wallet
+    </button>
+    <div class="wallet-badge hidden" id="walletBadge"></div>
+
+    <!-- User lookup -->
+    <div class="card">
+      <div class="card-title">Your Points</div>
+      <div class="field">
+        <label>User ID</label>
+        <input id="userId" placeholder="e.g. user-001" />
+      </div>
+      <button class="btn btn-secondary" onclick="lookupClaimable()">Look up claimable tokens</button>
+      <div id="lookupMsg"></div>
+    </div>
+
+    <!-- On-chain balance -->
+    <div class="card hidden" id="balanceCard">
+      <div class="card-title">On-chain Token Balance</div>
+      <div class="stat-row">
+        <span class="stat-label">BrandToken Balance</span>
+        <span class="stat-value success" id="tokenBalance">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Token Contract</span>
+        <span class="stat-value" id="tokenContract" style="font-size:12px;word-break:break-all">—</span>
+      </div>
+    </div>
+
+    <!-- Claimable months -->
+    <div class="card hidden" id="claimableCard">
+      <div class="card-title">Claimable Months</div>
+      <div id="monthsList"></div>
+      <div id="claimMsg"></div>
+    </div>
+
+    <!-- API log -->
+    <div class="card hidden" id="logCard">
+      <div class="card-title">API Call Log</div>
+      <div id="apiLog" style="font-family:monospace;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:300px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+<script>
+const BRAND_TOKEN_ABI = [
+  "function claim(uint256 month, uint256 amount, uint256 maxClaimable, uint256 nonce, uint256 deadline, bytes signature) external",
+  "function balanceOf(address) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+  "function currentMonth() view returns (uint256)",
+];
+
+const params = new URLSearchParams(location.search);
+document.getElementById("apiBase").value = params.get("api") || location.origin;
+if (params.get("project")) document.getElementById("projectId").value = params.get("project");
+
+let walletAddress = null;
+let kaiaProvider = null;
+let kaiaSigner = null;
+let tokenContractAddress = null;
+let tokenDecimals = 18;
+
+function log(msg) {
+  const el = document.getElementById("apiLog");
+  document.getElementById("logCard").classList.remove("hidden");
+  el.textContent += new Date().toLocaleTimeString() + "  " + msg + "\n";
+  el.scrollTop = el.scrollHeight;
+}
+
+function showMsg(id, type, text) {
+  document.getElementById(id).className = "msg " + type;
+  document.getElementById(id).textContent = text;
+}
+
+async function apiFetch(method, path, body) {
+  const base = document.getElementById("apiBase").value.replace(/\/$/, "");
+  log(method + " " + path);
+  const opts = { method, headers: { "Content-Type": "application/json" } };
+  if (body) {
+    opts.body = JSON.stringify(body);
+    log("  Body: " + JSON.stringify(body));
+  }
+  opts.credentials = "same-origin";
+  const res = await fetch(base + path, opts);
+  const json = await res.json();
+  log("  -> " + res.status + " " + JSON.stringify(json).slice(0, 300));
+  if (!res.ok) throw new Error(json.message || json.error || res.statusText);
+  return json;
+}
+
+async function connectWallet() {
+  try {
+    const klaytn = window.klaytn;
+    if (!klaytn) { alert("Kaia Wallet not found."); return; }
+    const accounts = await klaytn.enable();
+    walletAddress = accounts[0];
+    kaiaProvider = new ethers.BrowserProvider(klaytn);
+    kaiaSigner = await kaiaProvider.getSigner();
+
+    document.getElementById("connectBtn").classList.add("hidden");
+    const badge = document.getElementById("walletBadge");
+    badge.textContent = walletAddress.slice(0, 6) + "..." + walletAddress.slice(-4);
+    badge.classList.remove("hidden");
+    await refreshTokenBalance();
+  } catch (e) {
+    alert("Wallet connection failed: " + e.message);
+  }
+}
+
+async function refreshTokenBalance() {
+  if (!walletAddress || !kaiaProvider) return;
+  try {
+    // Get token contract address from server
+    const projectId = document.getElementById("projectId").value.trim();
+    if (!projectId) return;
+    const tokenData = await apiFetch("GET",
+      "/v1/projects/" + encodeURIComponent(projectId) + "/tokens");
+    if (!tokenData || !tokenData.contract_address) return;
+
+    tokenContractAddress = tokenData.contract_address;
+    const contract = new ethers.Contract(tokenContractAddress, BRAND_TOKEN_ABI, kaiaProvider);
+    const [balance, decimals, symbol] = await Promise.all([
+      contract.balanceOf(walletAddress),
+      contract.decimals(),
+      contract.symbol(),
+    ]);
+
+    tokenDecimals = Number(decimals);
+    const formatted = parseFloat(ethers.formatUnits(balance, decimals)).toLocaleString();
+    document.getElementById("tokenBalance").textContent = formatted + " " + symbol;
+    document.getElementById("tokenContract").textContent = tokenContractAddress;
+    document.getElementById("balanceCard").classList.remove("hidden");
+  } catch (e) {
+    log("Token balance query failed: " + e.message);
+  }
+}
+
+async function lookupClaimable() {
+  const projectId = document.getElementById("projectId").value.trim();
+  const userId = document.getElementById("userId").value.trim();
+  if (!projectId || !userId) {
+    showMsg("lookupMsg", "error", "Please enter User ID");
+    return;
+  }
+
+  try {
+    let claimableUrl = "/v1/projects/" + encodeURIComponent(projectId)
+      + "/tokens/claimable?meta_user_id=" + encodeURIComponent(userId);
+    if (walletAddress) {
+      claimableUrl += "&wallet_address=" + encodeURIComponent(walletAddress);
+    }
+    const data = await apiFetch("GET", claimableUrl);
+
+    if (!data.months || data.months.length === 0) {
+      showMsg("lookupMsg", "info", "No claimable tokens found. Points from completed months will appear here.");
+      document.getElementById("claimableCard").classList.add("hidden");
+      return;
+    }
+
+    showMsg("lookupMsg", "success", data.months.length + " month(s) with claimable tokens");
+    renderMonths(data.months);
+    document.getElementById("claimableCard").classList.remove("hidden");
+  } catch (e) {
+    showMsg("lookupMsg", "error", "Lookup failed: " + e.message);
+  }
+}
+
+function fmtTokens(raw) {
+  return parseFloat(ethers.formatUnits(BigInt(raw), tokenDecimals)).toLocaleString();
+}
+
+function renderMonths(months) {
+  const container = document.getElementById("monthsList");
+  container.innerHTML = "";
+
+  for (const m of months) {
+    const div = document.createElement("div");
+    div.className = "month-card";
+
+    const hasRemaining = m.remaining > 0;
+    const badgeClass = hasRemaining ? "claimable" : "claimed";
+    const badgeText = hasRemaining ? "Claimable" : "Fully Claimed";
+
+    div.innerHTML = `
+      <div class="month-header">
+        <span class="month-label">${m.month}</span>
+        <span class="month-badge ${badgeClass}">${badgeText}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Your Points</span>
+        <span class="stat-value">${Number(m.user_points).toLocaleString()}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Max Claimable Tokens</span>
+        <span class="stat-value brand">${fmtTokens(m.claimable_tokens)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Already Claimed</span>
+        <span class="stat-value">${fmtTokens(m.already_claimed)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Remaining</span>
+        <span class="stat-value success">${fmtTokens(m.remaining)}</span>
+      </div>
+      ${hasRemaining ? `<button class="claim-btn" onclick="claimMonth('${m.month}', '${m.remaining}')" ${!walletAddress ? 'disabled title="Connect wallet first"' : ''}>
+        Claim ${fmtTokens(m.remaining)} Tokens
+      </button>` : ''}
+    `;
+    container.appendChild(div);
+  }
+}
+
+async function claimMonth(month, amountRaw) {
+  if (!walletAddress || !kaiaSigner) {
+    showMsg("claimMsg", "error", "Connect your Kaia Wallet first");
+    return;
+  }
+
+  const projectId = document.getElementById("projectId").value.trim();
+  const userId = document.getElementById("userId").value.trim();
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  try {
+    // 1. Get claim signature from server (amount as string to avoid precision loss)
+    showMsg("claimMsg", "info", "Step 1/2: Requesting claim signature from server...");
+    const sig = await apiFetch("POST",
+      "/v1/projects/" + encodeURIComponent(projectId) + "/tokens/claim-signature",
+      { meta_user_id: userId, month, amount: amountRaw, wallet_address: walletAddress });
+
+    // 2. Send claim transaction via Kaia Wallet
+    showMsg("claimMsg", "info", "Step 2/2: Sign and send claim transaction...");
+    const contract = new ethers.Contract(sig.contract_address, BRAND_TOKEN_ABI, kaiaSigner);
+
+    const tx = await contract.claim(
+      BigInt(sig.month_index),
+      BigInt(sig.amount),
+      BigInt(sig.max_claimable),
+      BigInt(sig.nonce),
+      BigInt(sig.deadline),
+      sig.signature
+    );
+    log("Claim tx sent: " + tx.hash);
+
+    showMsg("claimMsg", "info", "Waiting for confirmation...");
+    const receipt = await tx.wait();
+    log("Claim confirmed in block " + receipt.blockNumber);
+
+    showMsg("claimMsg", "success",
+      "Claimed " + fmtTokens(amountRaw) + " tokens for " + month + "! Tx: " + receipt.hash);
+
+    // Refresh
+    await lookupClaimable();
+    await refreshTokenBalance();
+  } catch (e) {
+    showMsg("claimMsg", "error", "Claim failed: " + e.message);
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Claim";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Buyback — Biyard Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117; --card: #1a1d27; --border: #2a2d3a;
+      --text: #e4e4e7; --muted: #71717a; --brand: #6366f1;
+      --brand-hover: #818cf8; --success: #22c55e; --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 16px;
+    }
+    .container { max-width: 520px; width: 100%; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+    .stat-label { color: var(--muted); font-size: 13px; }
+    .stat-value { font-size: 14px; font-weight: 600; }
+    .stat-value.success { color: var(--success); }
+    .stat-value.brand { color: var(--brand-hover); }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    input {
+      width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text); font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--brand); }
+    input::placeholder { color: var(--muted); }
+    .field { margin-bottom: 16px; }
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary { background: var(--brand); color: white; }
+    .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-connect { background: #f97316; color: white; margin-bottom: 16px; }
+    .btn-connect:hover { background: #fb923c; }
+    .msg { padding: 12px 16px; border-radius: 12px; font-size: 13px; margin-top: 12px; word-break: break-all; }
+    .msg.success { background: rgba(34,197,94,0.15); color: var(--success); }
+    .msg.error { background: rgba(239,68,68,0.15); color: var(--danger); }
+    .msg.info { background: rgba(99,102,241,0.15); color: var(--brand-hover); }
+    .divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .hidden { display: none; }
+    .wallet-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,197,94,0.15); color: var(--success);
+      padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Token Buyback</h1>
+    <p class="subtitle">Redeem your brand tokens for BUSDT at the treasury floor price.</p>
+
+    <input type="hidden" id="tokenAddr" />
+    <input type="hidden" id="treasuryAddr" />
+
+    <!-- Treasury status (always visible if addresses present) -->
+    <div class="card hidden" id="statusCard">
+      <div class="card-title">Treasury Status</div>
+      <div class="stat-row">
+        <span class="stat-label">Floor Price</span>
+        <span class="stat-value success" id="floorPrice">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Treasury Balance</span>
+        <span class="stat-value" id="treasuryBal">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Circulating Supply</span>
+        <span class="stat-value" id="circSupply">—</span>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-row">
+        <span class="stat-label">Your Token Balance</span>
+        <span class="stat-value" id="userTokenBal">Connect wallet</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Your BUSDT Balance</span>
+        <span class="stat-value" id="userStableBal">Connect wallet</span>
+      </div>
+    </div>
+
+    <!-- Connect -->
+    <button class="btn btn-connect" id="connectBtn" onclick="connectWallet()">
+      Connect Kaia Wallet
+    </button>
+    <div class="wallet-badge hidden" id="walletBadge"></div>
+
+    <!-- Buyback -->
+    <div class="card hidden" id="buybackCard">
+      <div class="card-title">Buyback</div>
+      <div class="field">
+        <label>Token Amount</label>
+        <input id="buybackAmount" type="number" placeholder="Amount to redeem" min="1" />
+      </div>
+      <div id="estimateRow" class="stat-row hidden">
+        <span class="stat-label">Estimated BUSDT</span>
+        <span class="stat-value success" id="estimatedBusdt">—</span>
+      </div>
+      <button class="btn btn-primary" id="buybackBtn" onclick="doBuyback()" disabled>
+        Approve & Buyback
+      </button>
+      <div id="resultMsg"></div>
+    </div>
+  </div>
+
+<script>
+const TREASURY_ABI = [
+  "function getPrice() view returns (uint256)",
+  "function circulatingSupply() view returns (uint256)",
+  "function buyback(uint256 tokenAmount)",
+  "function stableToken() view returns (address)",
+];
+const ERC20_ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+];
+
+const RPC_URL = "https://public-en-kairos.node.kaia.io";
+
+let walletProvider, signer, userAddr;
+let tokenDec = 18, stableDec = 6, stableSym = "BUSDT";
+
+const params = new URLSearchParams(location.search);
+if (params.get("token")) document.getElementById("tokenAddr").value = params.get("token");
+if (params.get("treasury")) document.getElementById("treasuryAddr").value = params.get("treasury");
+
+// Load treasury status immediately (no wallet needed)
+loadTreasuryStatus();
+
+async function loadTreasuryStatus() {
+  const tokenAddr = document.getElementById("tokenAddr").value.trim();
+  const treasuryAddr = document.getElementById("treasuryAddr").value.trim();
+  if (!tokenAddr || !treasuryAddr) return;
+
+  try {
+    const rpc = new ethers.JsonRpcProvider(RPC_URL);
+    const treasury = new ethers.Contract(treasuryAddr, TREASURY_ABI, rpc);
+    const token = new ethers.Contract(tokenAddr, ERC20_ABI, rpc);
+    const stableAddr = await treasury.stableToken();
+    const stable = new ethers.Contract(stableAddr, ERC20_ABI, rpc);
+
+    const [price, circ, tBal, tDec, sDec, sSym] = await Promise.all([
+      treasury.getPrice(),
+      treasury.circulatingSupply(),
+      stable.balanceOf(treasuryAddr),
+      token.decimals(),
+      stable.decimals(),
+      stable.symbol(),
+    ]);
+
+    tokenDec = Number(tDec);
+    stableDec = Number(sDec);
+    stableSym = sSym;
+
+    document.getElementById("floorPrice").textContent =
+      parseFloat(ethers.formatUnits(price, stableDec)).toFixed(4) + " " + stableSym;
+    document.getElementById("treasuryBal").textContent =
+      parseFloat(ethers.formatUnits(tBal, stableDec)).toLocaleString() + " " + stableSym;
+    document.getElementById("circSupply").textContent =
+      parseFloat(ethers.formatUnits(circ, tokenDec)).toLocaleString();
+
+    document.getElementById("statusCard").classList.remove("hidden");
+
+    window._floorPrice = price;
+  } catch (e) {
+    showMsg("resultMsg", "error", "Failed to load treasury status: " + e.message);
+  }
+}
+
+async function connectWallet() {
+  try {
+    const klaytn = window.klaytn;
+    if (!klaytn) { alert("Kaia Wallet not found."); return; }
+    const accounts = await klaytn.enable();
+    userAddr = accounts[0];
+    walletProvider = new ethers.BrowserProvider(klaytn);
+    signer = await walletProvider.getSigner();
+
+    document.getElementById("connectBtn").classList.add("hidden");
+    const badge = document.getElementById("walletBadge");
+    badge.textContent = userAddr.slice(0, 6) + "..." + userAddr.slice(-4);
+    badge.classList.remove("hidden");
+
+    // Load user balances
+    await loadUserBalances();
+
+    document.getElementById("buybackCard").classList.remove("hidden");
+    document.getElementById("buybackBtn").disabled = false;
+  } catch (e) {
+    showMsg("resultMsg", "error", "Connection failed: " + e.message);
+  }
+}
+
+async function loadUserBalances() {
+  const tokenAddr = document.getElementById("tokenAddr").value.trim();
+  const treasuryAddr = document.getElementById("treasuryAddr").value.trim();
+  if (!tokenAddr || !treasuryAddr || !userAddr) return;
+
+  try {
+    const rpc = new ethers.JsonRpcProvider(RPC_URL);
+    const token = new ethers.Contract(tokenAddr, ERC20_ABI, rpc);
+    const stableAddr = await (new ethers.Contract(treasuryAddr, TREASURY_ABI, rpc)).stableToken();
+    const stable = new ethers.Contract(stableAddr, ERC20_ABI, rpc);
+
+    const [userTok, userStb] = await Promise.all([
+      token.balanceOf(userAddr),
+      stable.balanceOf(userAddr),
+    ]);
+
+    document.getElementById("userTokenBal").textContent =
+      parseFloat(ethers.formatUnits(userTok, tokenDec)).toLocaleString();
+    document.getElementById("userStableBal").textContent =
+      parseFloat(ethers.formatUnits(userStb, stableDec)).toLocaleString() + " " + stableSym;
+  } catch (e) {
+    console.warn("Failed to load user balances:", e);
+  }
+}
+
+document.getElementById("buybackAmount").addEventListener("input", function () {
+  const amt = this.value;
+  const row = document.getElementById("estimateRow");
+  if (!amt || !window._floorPrice) { row.classList.add("hidden"); return; }
+  try {
+    const tokenWei = ethers.parseUnits(amt, tokenDec);
+    const stableOut = (tokenWei * window._floorPrice) / ethers.parseUnits("1", 18);
+    document.getElementById("estimatedBusdt").textContent =
+      parseFloat(ethers.formatUnits(stableOut, stableDec)).toFixed(2) + " " + stableSym;
+    row.classList.remove("hidden");
+  } catch { row.classList.add("hidden"); }
+});
+
+async function doBuyback() {
+  const tokenAddr = document.getElementById("tokenAddr").value.trim();
+  const treasuryAddr = document.getElementById("treasuryAddr").value.trim();
+  const amtStr = document.getElementById("buybackAmount").value;
+  if (!amtStr || !tokenAddr || !treasuryAddr) return;
+
+  const btn = document.getElementById("buybackBtn");
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  try {
+    const tokenWei = ethers.parseUnits(amtStr, tokenDec);
+    const token = new ethers.Contract(tokenAddr, ERC20_ABI, signer);
+    const treasury = new ethers.Contract(treasuryAddr, TREASURY_ABI, signer);
+
+    showMsg("resultMsg", "info", "Step 1/2: Approving token spend...");
+    const approveTx = await token.approve(treasuryAddr, tokenWei);
+    await approveTx.wait();
+
+    showMsg("resultMsg", "info", "Step 2/2: Executing buyback...");
+    const buybackTx = await treasury.buyback(tokenWei);
+    const receipt = await buybackTx.wait();
+
+    showMsg("resultMsg", "success", "Buyback complete! Tx: " + receipt.hash);
+
+    await loadTreasuryStatus();
+    await loadUserBalances();
+    document.getElementById("buybackAmount").value = "";
+    document.getElementById("estimateRow").classList.add("hidden");
+  } catch (e) {
+    showMsg("resultMsg", "error", "Buyback failed: " + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = "Approve & Buyback";
+}
+
+function showMsg(id, type, text) {
+  const el = document.getElementById(id);
+  el.className = "msg " + type;
+  el.textContent = text;
+}
+</script>
+</body>
+</html>
