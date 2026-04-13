@@ -9,16 +9,16 @@ use crate::features::points::{MonthlyPointAggregation, PointBalance};
 #[cfg(feature = "server")]
 use crate::features::tokens::ProjectToken;
 
-#[get("/v1/projects/:project_id/points/:meta_user_id?date", auth: ProjectViewerAuth)]
+#[get("/v1/projects/:project_id/points/:meta_user_id?month", auth: ProjectViewerAuth)]
 pub async fn get_user_balance_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     meta_user_id: String,
-    date: Option<String>,
+    month: Option<String>,
 ) -> Result<PointBalanceResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
     let project = auth.project;
-    let date = date.unwrap_or_else(crate::common::utils::time_utils::timestamp_to_yyyy_mm);
+    let date = month.unwrap_or_else(crate::common::utils::time_utils::timestamp_to_yyyy_mm);
 
     let (pb_pk, pb_sk) = PointBalance::keys(project.pk.clone(), meta_user_id.clone(), date.clone());
     let balance = PointBalance::get(cli, &pb_pk, Some(pb_sk))
@@ -55,7 +55,7 @@ pub async fn get_user_balance_handler(
 
 /// Compute the user-claimable token pool for a given month.
 /// = monthlyCeiling(monthIndex) * (10000 - brandAllocationBps) / 10000
-/// Falls back to project.monthly_token_supply if token is not configured.
+/// Falls back to 0 if token is not configured.
 #[cfg(feature = "server")]
 async fn compute_month_user_pool(
     cli: &aws_sdk_dynamodb::Client,
@@ -73,8 +73,11 @@ async fn compute_month_user_pool(
     let total_slot_bps: u64 = token.distribution_slots.iter().map(|s| s.bps as u64).sum();
     let user_pool_bps = 10000u64.saturating_sub(total_slot_bps);
 
-    // Calculate month index relative to token creation
-    let month_index = month_str_to_index(month_str, token.created_at);
+    let month_index = crate::common::utils::time_utils::month_index(
+        month_str,
+        &token.start_month,
+        token.created_at,
+    );
 
     let mut ceiling = emission as u128;
     for _ in 0..month_index {
@@ -82,20 +85,4 @@ async fn compute_month_user_pool(
     }
     let user_pool = ceiling * user_pool_bps as u128 / 10000;
     user_pool as i64
-}
-
-#[cfg(feature = "server")]
-fn month_str_to_index(month_str: &str, created_at_ms: i64) -> u64 {
-    let parts: Vec<&str> = month_str.split('-').collect();
-    if parts.len() != 2 {
-        return 0;
-    }
-    let year: i64 = parts[0].parse().unwrap_or(2026);
-    let month_num: i64 = parts[1].parse().unwrap_or(1);
-
-    let target = (year - 1970) * 12 + (month_num - 1);
-    let created = created_at_ms / 1000 / (30 * 24 * 3600);
-
-    let diff = target - created;
-    if diff < 0 { 0 } else { diff as u64 }
 }

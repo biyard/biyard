@@ -126,22 +126,22 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                                             }
                                         }
                                         TableCell {
-                                            div { class: "space-y-1",
-                                                p { class: "text-sm font-semibold text-foreground", "{user_id}" }
+                                            div { class: "max-w-40 space-y-1",
+                                                p { class: "truncate text-sm font-semibold text-foreground", "{user_id}" }
                                                 if let Some(target_id) = target {
-                                                    p { class: "text-sm text-foreground-muted", "→ {target_id}" }
+                                                    p { class: "truncate text-sm text-foreground-muted", "→ {target_id}" }
                                                 }
                                             }
                                         }
                                         TableCell {
                                             span {
-                                                class: "text-sm font-semibold {amount_color}",
+                                                class: "whitespace-nowrap text-sm font-semibold {amount_color}",
                                                 "{format_amount(&tx_type, amount)}"
                                             }
                                         }
-                                        TableCell { class: "text-sm text-foreground-muted", "{month}" }
-                                        TableCell { class: "max-w-sm text-sm text-foreground-muted", "{desc}" }
-                                        TableCell { class: "text-sm text-foreground-muted", "{created}" }
+                                        TableCell { class: "whitespace-nowrap text-sm text-foreground-muted", "{month}" }
+                                        TableCell { class: "max-w-48 truncate text-sm text-foreground-muted", "{desc}" }
+                                        TableCell { class: "whitespace-nowrap text-sm text-foreground-muted", "{created}" }
                                     }
                                 }
                             }
