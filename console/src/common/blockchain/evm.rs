@@ -6,9 +6,8 @@ use crate::common::SupportedChain;
 abigen!(
     BrandTokenContract,
     r#"[
-        function triggerMonthlyMint() external
-        function claim(uint256 amount, uint256 nonce, uint256 deadline, bytes signature) external
-        function claimPool() external view returns (uint256)
+        function claim(uint256 month, uint256 amount, uint256 maxClaimable, uint256 nonce, uint256 deadline, bytes signature) external
+        function monthRemaining(uint256 month) external view returns (uint256)
         function totalSupply() external view returns (uint256)
         function balanceOf(address account) external view returns (uint256)
         function name() external view returns (string)
@@ -20,18 +19,18 @@ abigen!(
         function owner() external view returns (address)
         function monthlyEmission() external view returns (uint256)
         function decayRateBps() external view returns (uint16)
-        function maxSupply() external view returns (uint256)
         function currentMonth() external view returns (uint256)
+        function currentMonthRemaining() external view returns (uint256)
+        function cumulativeEmission() external view returns (uint256)
         function monthlyCeiling(uint256 month) external view returns (uint256)
         event Transfer(address indexed from, address indexed to, uint256 value)
-        event MonthlyMint(uint256 indexed month, uint256 amount)
+        event Claimed(address indexed user, uint256 amount, uint256 nonce)
     ]"#
 );
 
 abigen!(
     TreasuryContract,
     r#"[
-        function deposit(uint256 amount) external
         function buyback(uint256 tokenAmount) external
         function getPrice() external view returns (uint256)
         function circulatingSupply() external view returns (uint256)
@@ -62,6 +61,18 @@ abigen!(
         function totalSupply() external view returns (uint256)
         function decimals() external view returns (uint8)
         function symbol() external view returns (string)
+        function approve(address spender, uint256 amount) external returns (bool)
+        function transfer(address to, uint256 amount) external returns (bool)
+    ]"#
+);
+
+abigen!(
+    BusdtContract,
+    r#"[
+        function mint(address to, uint256 amount) external
+        function approve(address spender, uint256 amount) external returns (bool)
+        function balanceOf(address account) external view returns (uint256)
+        function decimals() external view returns (uint8)
     ]"#
 );
 
@@ -84,20 +95,9 @@ pub fn deployer_address(chain_id: u64) -> Result<Address, String> {
 
 fn rpc_url_for_chain(chain_id: u64) -> Result<&'static str, String> {
     match chain_id {
-        31337 => Ok("http://localhost:8545"),
         1001 => Ok("https://public-en-kairos.node.kaia.io"),
         8217 => Ok("https://public-en.node.kaia.io"),
         _ => Err(format!("Unsupported chain ID: {chain_id}")),
-    }
-}
-
-/// Built-in stable token (USDT/BUSDT) address per chain.
-fn default_stable_token(chain_id: u64) -> Option<&'static str> {
-    match chain_id {
-        31337 => None,
-        1001 => Some("0xd077a400968890eacc75cdc901f0356c943e4fdb"),
-        8217 => Some("0xd077a400968890eacc75cdc901f0356c943e4fdb"),
-        _ => None,
     }
 }
 
@@ -110,14 +110,6 @@ pub fn signer(chain_id: u64) -> Result<SignerMiddleware<Provider<Http>, LocalWal
     let provider = provider(chain_id)?;
     let wallet = deployer_wallet(chain_id)?;
     Ok(SignerMiddleware::new(provider, wallet))
-}
-
-pub fn stable_token_address(chain_id: u64) -> Result<Address, String> {
-    let value = default_stable_token(chain_id)
-        .ok_or_else(|| format!("No built-in stable token address for chain {chain_id}"))?;
-    value
-        .parse::<Address>()
-        .map_err(|e| format!("Invalid stable token address for chain {chain_id}: {e}"))
 }
 
 const BRAND_TOKEN_BYTECODE: &str =
@@ -182,12 +174,14 @@ pub async fn deploy_brand_system(
     chain_id: u64,
     token_name: &str,
     token_symbol: &str,
-    max_supply: u64,
-    monthly_emission: u64,
+    monthly_emission: u128,
     decay_rate_bps: u16,
+    stable_token_addr: Address,
+    distribution_wallets: Vec<Address>,
+    distribution_bps: Vec<u16>,
+    start_timestamp: u64,
 ) -> Result<BrandSystemDeployment, String> {
     let deployer = deployer_address(chain_id)?;
-    let stable_token = stable_token_address(chain_id)?;
 
     // 1. Deploy Multisig (1-of-1 with deployer)
     let ms_args = ethers::abi::encode(&[
@@ -200,35 +194,38 @@ pub async fn deploy_brand_system(
     let token_args = ethers::abi::encode(&[
         ethers::abi::Token::String(token_name.to_string()),
         ethers::abi::Token::String(token_symbol.to_string()),
-        ethers::abi::Token::Uint(U256::from(max_supply)),
         ethers::abi::Token::Uint(U256::from(monthly_emission)),
         ethers::abi::Token::Uint(U256::from(decay_rate_bps)),
         ethers::abi::Token::Address(deployer),
         ethers::abi::Token::Address(deployer),
+        ethers::abi::Token::Uint(U256::from(start_timestamp)),
     ]);
     let (token_addr, token_tx) =
         deploy_contract(chain_id, BRAND_TOKEN_BYTECODE, token_args).await?;
 
     // 3. Deploy Treasury
     let treasury_args = ethers::abi::encode(&[
-        ethers::abi::Token::Address(stable_token),
+        ethers::abi::Token::Address(stable_token_addr),
         ethers::abi::Token::Address(token_addr),
         ethers::abi::Token::Address(multisig_addr),
     ]);
     let (treasury_addr, treasury_tx) =
         deploy_contract(chain_id, TREASURY_BYTECODE, treasury_args).await?;
 
-    // 4. Configure: set treasury on token, then transfer ownership to multisig
+    // 4. Configure: set distribution slots, then transfer ownership to multisig
     let client = Arc::new(signer(chain_id)?);
     let token_contract = BrandTokenContract::new(token_addr, client.clone());
 
-    token_contract
-        .set_treasury(treasury_addr)
-        .send()
-        .await
-        .map_err(|e| format!("setTreasury failed: {e}"))?
-        .await
-        .map_err(|e| format!("setTreasury receipt failed: {e}"))?;
+    // 4a. Set distribution slots (if any)
+    if !distribution_wallets.is_empty() {
+        token_contract
+            .set_distribution_slots(distribution_wallets, distribution_bps)
+            .send()
+            .await
+            .map_err(|e| format!("setDistributionSlots failed: {e}"))?
+            .await
+            .map_err(|e| format!("setDistributionSlots receipt failed: {e}"))?;
+    }
 
     token_contract
         .transfer_ownership(multisig_addr)
@@ -245,64 +242,8 @@ pub async fn deploy_brand_system(
         token_tx_hash: token_tx,
         treasury_address: treasury_addr,
         treasury_tx_hash: treasury_tx,
-        stable_token_address: stable_token,
+        stable_token_address: stable_token_addr,
     })
-}
-
-pub async fn trigger_monthly_mint(
-    chain_id: u64,
-    multisig_address: &str,
-    token_address: &str,
-) -> Result<TxHash, String> {
-    let client = Arc::new(signer(chain_id)?);
-
-    let ms_addr: Address = multisig_address
-        .parse()
-        .map_err(|e| format!("Invalid multisig address: {e}"))?;
-    let token_addr: Address = token_address
-        .parse()
-        .map_err(|e| format!("Invalid token address: {e}"))?;
-
-    let ms = MultisigContract::new(ms_addr, client.clone());
-
-    let mint_calldata = BrandTokenContract::new(token_addr, client.clone())
-        .trigger_monthly_mint()
-        .calldata()
-        .ok_or("Failed to encode triggerMonthlyMint calldata")?;
-
-    let proposal_count = ms
-        .proposal_count()
-        .call()
-        .await
-        .map_err(|e| format!("proposalCount failed: {e}"))?;
-    let proposal_id = proposal_count;
-
-    ms.propose(token_addr, mint_calldata.to_vec().into(), U256::zero())
-        .send()
-        .await
-        .map_err(|e| format!("propose failed: {e}"))?
-        .await
-        .map_err(|e| format!("propose receipt failed: {e}"))?;
-
-    ms.approve(proposal_id)
-        .send()
-        .await
-        .map_err(|e| format!("approve failed: {e}"))?
-        .await
-        .map_err(|e| format!("approve receipt failed: {e}"))?;
-
-    let execute_call = ms.execute(proposal_id);
-    let pending = execute_call
-        .send()
-        .await
-        .map_err(|e| format!("execute failed: {e}"))?;
-
-    let tx_hash = pending.tx_hash();
-    pending
-        .await
-        .map_err(|e| format!("execute receipt failed: {e}"))?;
-
-    Ok(tx_hash)
 }
 
 pub async fn get_on_chain_balance(
@@ -389,8 +330,11 @@ pub struct TreasuryStatus {
     pub stable_symbol: String,
     pub total_supply_raw: u128,
     pub circulating_supply_raw: u128,
+    pub treasury_held_tokens_raw: u128,
     pub token_decimals: u8,
+    pub token_symbol: String,
     pub floor_price_raw_1e18: u128,
+    pub current_month: u64,
 }
 
 pub async fn get_treasury_status(
@@ -410,6 +354,7 @@ pub async fn get_treasury_status(
 
     let treasury = TreasuryContract::new(treasury_addr, prov.clone());
     let brand_token = Erc20Contract::new(token_addr, prov.clone());
+    let brand_token_full = BrandTokenContract::new(token_addr, prov.clone());
 
     let stable_addr = treasury
         .stable_token()
@@ -443,36 +388,58 @@ pub async fn get_treasury_status(
         },
     )?;
 
-    let (total_supply, circulating_supply, floor_price, token_decimals) = tokio::try_join!(
-        async {
-            brand_token
-                .total_supply()
-                .call()
-                .await
-                .map_err(|e| format!("token totalSupply() failed: {e}"))
-        },
-        async {
-            treasury
-                .circulating_supply()
-                .call()
-                .await
-                .map_err(|e| format!("circulatingSupply() failed: {e}"))
-        },
-        async {
-            treasury
-                .get_price()
-                .call()
-                .await
-                .map_err(|e| format!("getPrice() failed: {e}"))
-        },
-        async {
-            brand_token
-                .decimals()
-                .call()
-                .await
-                .map_err(|e| format!("token decimals() failed: {e}"))
-        },
-    )?;
+    let (total_supply, circulating_supply, treasury_held, floor_price, token_decimals, token_symbol, current_month) =
+        tokio::try_join!(
+            async {
+                brand_token
+                    .total_supply()
+                    .call()
+                    .await
+                    .map_err(|e| format!("token totalSupply() failed: {e}"))
+            },
+            async {
+                treasury
+                    .circulating_supply()
+                    .call()
+                    .await
+                    .map_err(|e| format!("circulatingSupply() failed: {e}"))
+            },
+            async {
+                brand_token
+                    .balance_of(treasury_addr)
+                    .call()
+                    .await
+                    .map_err(|e| format!("token balanceOf(treasury) failed: {e}"))
+            },
+            async {
+                treasury
+                    .get_price()
+                    .call()
+                    .await
+                    .map_err(|e| format!("getPrice() failed: {e}"))
+            },
+            async {
+                brand_token
+                    .decimals()
+                    .call()
+                    .await
+                    .map_err(|e| format!("token decimals() failed: {e}"))
+            },
+            async {
+                brand_token
+                    .symbol()
+                    .call()
+                    .await
+                    .map_err(|e| format!("token symbol() failed: {e}"))
+            },
+            async {
+                brand_token_full
+                    .current_month()
+                    .call()
+                    .await
+                    .map_err(|e| format!("currentMonth() failed: {e}"))
+            },
+        )?;
 
     Ok(TreasuryStatus {
         treasury_balance_raw: treasury_balance.as_u128(),
@@ -480,7 +447,150 @@ pub async fn get_treasury_status(
         stable_symbol,
         total_supply_raw: total_supply.as_u128(),
         circulating_supply_raw: circulating_supply.as_u128(),
+        treasury_held_tokens_raw: treasury_held.as_u128(),
         token_decimals,
+        token_symbol,
         floor_price_raw_1e18: floor_price.as_u128(),
+        current_month: current_month.as_u64(),
     })
+}
+
+pub async fn transfer_brand_token(
+    chain_id: u64,
+    token_address: &str,
+    to: &str,
+    amount: U256,
+) -> Result<TxHash, String> {
+    let client = Arc::new(signer(chain_id)?);
+
+    let token_addr: Address = token_address
+        .parse()
+        .map_err(|e| format!("Invalid token address: {e}"))?;
+
+    let to_addr: Address = to
+        .parse()
+        .map_err(|e| format!("Invalid recipient address: {e}"))?;
+
+    let token = Erc20Contract::new(token_addr, client);
+
+    let transfer_call = token.transfer(to_addr, amount);
+    let pending = transfer_call
+        .send()
+        .await
+        .map_err(|e| format!("transfer failed: {e}"))?;
+
+    let tx_hash = pending.tx_hash();
+    pending
+        .await
+        .map_err(|e| format!("transfer receipt failed: {e}"))?;
+
+    Ok(tx_hash)
+}
+
+pub async fn deposit_stable_to_treasury(
+    chain_id: u64,
+    stable_address: &str,
+    treasury_address: &str,
+    amount: U256,
+) -> Result<TxHash, String> {
+    let client = Arc::new(signer(chain_id)?);
+
+    let stable_addr: Address = stable_address
+        .parse()
+        .map_err(|e| format!("Invalid stable token address: {e}"))?;
+
+    let treasury_addr: Address = treasury_address
+        .parse()
+        .map_err(|e| format!("Invalid treasury address: {e}"))?;
+
+    let busdt = BusdtContract::new(stable_addr, client.clone());
+
+    let deployer = deployer_address(chain_id)?;
+    busdt
+        .mint(deployer, amount)
+        .send()
+        .await
+        .map_err(|e| format!("BUSDT mint failed: {e}"))?
+        .await
+        .map_err(|e| format!("BUSDT mint receipt failed: {e}"))?;
+
+    // Transfer directly to Treasury (no deposit() function needed —
+    // Treasury reads its own balanceOf for floor price calculation)
+    let stable = Erc20Contract::new(stable_addr, client);
+    let transfer_call = stable.transfer(treasury_addr, amount);
+    let pending = transfer_call
+        .send()
+        .await
+        .map_err(|e| format!("BUSDT transfer to treasury failed: {e}"))?;
+
+    let tx_hash = pending.tx_hash();
+    pending
+        .await
+        .map_err(|e| format!("BUSDT transfer receipt failed: {e}"))?;
+
+    Ok(tx_hash)
+}
+
+/// Generate an EIP-712 signature for a token claim.
+pub fn sign_claim(
+    chain_id: u64,
+    token_address: &str,
+    token_name: &str,
+    to: &str,
+    month: u64,
+    amount: u128,
+    max_claimable: u128,
+    nonce: u64,
+    deadline: u64,
+) -> Result<Vec<u8>, String> {
+    use sha3::{Digest, Keccak256};
+
+    let wallet = deployer_wallet(chain_id)?;
+    let token_addr: Address = token_address
+        .parse()
+        .map_err(|e| format!("Invalid token address: {e}"))?;
+    let to_addr: Address = to
+        .parse()
+        .map_err(|e| format!("Invalid to address: {e}"))?;
+
+    let type_hash = Keccak256::digest(
+        b"Claim(address to,uint256 month,uint256 amount,uint256 maxClaimable,uint256 nonce,uint256 deadline)"
+    );
+
+    let struct_hash = Keccak256::digest(ethers::abi::encode(&[
+        ethers::abi::Token::FixedBytes(type_hash.to_vec()),
+        ethers::abi::Token::Address(to_addr),
+        ethers::abi::Token::Uint(U256::from(month)),
+        ethers::abi::Token::Uint(U256::from(amount)),
+        ethers::abi::Token::Uint(U256::from(max_claimable)),
+        ethers::abi::Token::Uint(U256::from(nonce)),
+        ethers::abi::Token::Uint(U256::from(deadline)),
+    ]));
+
+    let domain_type_hash = Keccak256::digest(
+        b"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+    );
+    let name_hash = Keccak256::digest(token_name.as_bytes());
+    let version_hash = Keccak256::digest(b"1");
+
+    let domain_separator = Keccak256::digest(ethers::abi::encode(&[
+        ethers::abi::Token::FixedBytes(domain_type_hash.to_vec()),
+        ethers::abi::Token::FixedBytes(name_hash.to_vec()),
+        ethers::abi::Token::FixedBytes(version_hash.to_vec()),
+        ethers::abi::Token::Uint(U256::from(chain_id)),
+        ethers::abi::Token::Address(token_addr),
+    ]));
+
+    let mut digest_input = Vec::with_capacity(66);
+    digest_input.push(0x19);
+    digest_input.push(0x01);
+    digest_input.extend_from_slice(&domain_separator);
+    digest_input.extend_from_slice(&struct_hash);
+    let digest = Keccak256::digest(&digest_input);
+
+    let signature = wallet
+        .sign_hash(H256::from_slice(&digest))
+        .map_err(|e| format!("Signing failed: {e}"))?;
+
+    Ok(signature.to_vec())
 }

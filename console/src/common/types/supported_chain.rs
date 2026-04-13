@@ -1,5 +1,16 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct StableTokenOption {
+    pub name: &'static str,
+    pub symbol: &'static str,
+    pub address: &'static str,
+    /// Whether the stable token has a public faucet `mint()` function
+    /// (e.g. BUSDT on testnets). When `true`, the console can mint
+    /// arbitrary amounts for demo/testing purposes.
+    pub mintable: bool,
+}
+
 #[derive(Debug, Clone, Copy)]
 struct ChainMetadata {
     chain_id: u64,
@@ -11,28 +22,19 @@ struct ChainMetadata {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum SupportedChain {
-    Local,
-
     KaiaKairos,
 
     Kaia,
 }
 
 impl SupportedChain {
-    const ALL: [Self; 3] = [Self::Local, Self::KaiaKairos, Self::Kaia];
+    const ALL: [Self; 2] = [Self::KaiaKairos, Self::Kaia];
 
     fn metadata(&self) -> ChainMetadata {
         match self {
-            Self::Local => ChainMetadata {
-                chain_id: 31337,
-                name: "Local",
-                explorer_url: "",
-                symbol: "ETH",
-                is_testnet: true,
-            },
             Self::KaiaKairos => ChainMetadata {
                 chain_id: 1001,
-                name: "Kaia Kairos",
+                name: "Kairos",
                 explorer_url: "https://kairos.kaiascan.io",
                 symbol: "KAIA",
                 is_testnet: true,
@@ -75,14 +77,8 @@ impl SupportedChain {
         Self::ALL.into_iter()
     }
 
-    /// Chains visible to the UI based on the current build environment.
-    /// `Local` only shows up when the binary was built with `ENV=local`.
     pub fn visible() -> impl Iterator<Item = Self> {
-        use crate::common::config::Environment;
-        let env = Environment::default();
-        Self::ALL
-            .into_iter()
-            .filter(move |c| !matches!(c, Self::Local) || env == Environment::Local)
+        Self::ALL.into_iter()
     }
 
     pub fn testnets() -> impl Iterator<Item = Self> {
@@ -107,6 +103,31 @@ impl SupportedChain {
 
     pub fn explorer_address_url(&self, address: &str) -> String {
         format!("{}/address/{}", self.explorer_url(), address)
+    }
+
+    pub fn stable_token_options(&self) -> Vec<StableTokenOption> {
+        match self {
+            Self::KaiaKairos => vec![
+                StableTokenOption {
+                    name: "BUSDT (Test Faucet)",
+                    symbol: "BUSDT",
+                    address: "0xa3B7946A9B58B0b2547086f9677c6964739bf5Cd",
+                    mintable: true,
+                },
+                StableTokenOption {
+                    name: "USDT",
+                    symbol: "USDT",
+                    address: "0xd077a400968890eacc75cdc901f0356c943e4fdb",
+                    mintable: false,
+                },
+            ],
+            Self::Kaia => vec![StableTokenOption {
+                name: "USDT",
+                symbol: "USDT",
+                address: "0xd077a400968890eacc75cdc901f0356c943e4fdb",
+                mintable: false,
+            }],
+        }
     }
 }
 
