@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 /// @title BrandToken — ERC-20 with monthly emission ceiling and signature-based claim
 /// @notice Users claim tokens via server signature. Each claim mints on demand within
@@ -12,7 +13,7 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 ///         proportionally with each claim. Claims are for past months only (month must
 ///         be < currentMonth). Server signs (month, maxClaimable) so the contract enforces
 ///         per-user per-month limits even if the signing key is compromised.
-contract BrandToken is ERC20, Ownable, EIP712 {
+contract BrandToken is ERC20, Ownable, EIP712, ERC165 {
     using ECDSA for bytes32;
 
     event Claimed(address indexed user, uint256 indexed month, uint256 amount, uint256 nonce);
@@ -181,6 +182,16 @@ contract BrandToken is ERC20, Ownable, EIP712 {
             total += distributionSlots[i].bps;
         }
         return total;
+    }
+
+    // --- KIP-7 / KIP-13 support (Kaia token standard) ---
+
+    /// @dev KIP-7 interface ID = 0x65787371, KIP-7 Metadata = 0xa219a025
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+        return
+            interfaceId == 0x65787371 || // KIP-7
+            interfaceId == 0xa219a025 || // KIP-7 Metadata (name, symbol, decimals)
+            super.supportsInterface(interfaceId);
     }
 
     // --- Owner-only configuration (via Multisig) ---
