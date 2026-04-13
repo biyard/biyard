@@ -1,9 +1,11 @@
 use crate::common::{ProjectPartition, Result};
-use crate::features::tokens::TokenResponse;
+use crate::features::tokens::{DistributionSlotEntry, TokenResponse};
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, ProjectAdminAuth};
+use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
+#[cfg(feature = "server")]
+use crate::features::projects::Project;
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
@@ -14,6 +16,12 @@ pub async fn create_token_handler(
     symbol: String,
     decimals: u8,
     description: Option<String>,
+    monthly_emission: i64,
+    decay_rate_bps: u16,
+    distribution_slots: Vec<DistributionSlotEntry>,
+    stable_token_address: Option<String>,
+    chain_id: Option<u64>,
+    start_month: Option<String>,
 ) -> Result<TokenResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
@@ -33,9 +41,23 @@ pub async fn create_token_handler(
         symbol,
         decimals,
         description,
+        monthly_emission,
+        decay_rate_bps,
+        distribution_slots,
+        stable_token_address,
+        chain_id,
+        start_month,
     );
 
-    token.create(cli).await?;
+    let project_update = Project::updater(project.pk.clone(), EntityType::Project)
+        .with_monthly_token_supply(monthly_emission)
+        .with_updated_at(crate::common::utils::time_utils::get_now());
+
+    crate::transact_write!(
+        cli,
+        token.create_transact_write_item(),
+        project_update.transact_upsert_item(),
+    )?;
 
     Ok(token.into())
 }

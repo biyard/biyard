@@ -10,7 +10,7 @@ use crate::features::tokens::{ProjectToken, TokenError};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TriggerMintResponse {
     pub tx_hash: String,
-    pub month: u64,
+    pub month: String,
 }
 
 #[post("/v1/projects/:project_id/tokens/trigger-monthly-mint", auth: ProjectAdminAuth)]
@@ -37,12 +37,28 @@ pub async fn trigger_monthly_mint_handler(
         .chain_id
         .ok_or_else(|| TokenError::DeployFailed("Chain ID not set".to_string()))?;
 
-    let tx_hash = crate::common::blockchain::trigger_monthly_mint(chain_id, multisig_addr, token_addr)
-        .await
-        .map_err(TokenError::DeployFailed)?;
+    let current_month = crate::common::utils::time_utils::timestamp_to_yyyy_mm();
+
+    if token.last_minted_month.as_deref() == Some(current_month.as_str()) {
+        return Err(
+            TokenError::MintFailed(format!("Already minted this month ({current_month})")).into(),
+        );
+    }
+
+    let tx_hash =
+        crate::common::blockchain::trigger_monthly_mint(chain_id, multisig_addr, token_addr)
+            .await
+            .map_err(TokenError::DeployFailed)?;
+
+    let now = crate::common::utils::time_utils::get_now();
+    ProjectToken::updater(token.pk, token.sk)
+        .with_last_minted_month(current_month.clone())
+        .with_updated_at(now)
+        .execute(cli)
+        .await?;
 
     Ok(TriggerMintResponse {
         tx_hash: format!("{tx_hash:?}"),
-        month: 0,
+        month: current_month,
     })
 }

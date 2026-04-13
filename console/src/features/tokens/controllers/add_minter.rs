@@ -7,7 +7,7 @@ use crate::common::ProjectAdminAuth;
 #[cfg(feature = "server")]
 use crate::features::tokens::TokenError;
 
-#[post("/v1/projects/:project_id/tokens/minters", auth: ProjectAdminAuth)]
+#[post("/v1/projects/:project_id/tokens/minters", _auth: ProjectAdminAuth)]
 pub async fn add_minter_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     #[allow(unused_variables)] wallet_address: String,

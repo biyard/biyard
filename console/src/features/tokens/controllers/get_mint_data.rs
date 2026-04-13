@@ -7,7 +7,7 @@ use crate::common::ProjectAdminAuth;
 #[cfg(feature = "server")]
 use crate::features::tokens::TokenError;
 
-#[get("/v1/projects/:project_id/tokens/mint-data?to&amount", auth: ProjectAdminAuth)]
+#[get("/v1/projects/:project_id/tokens/mint-data?to&amount", _auth: ProjectAdminAuth)]
 pub async fn get_mint_data_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     #[allow(unused_variables)] to: String,

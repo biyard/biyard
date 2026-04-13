@@ -22,7 +22,7 @@ pub struct SetDistributionSlotsResponse {
     pub tx_hash: String,
 }
 
-#[post("/v1/projects/:project_id/tokens/distribution-slots", auth: ProjectAdminAuth)]
+#[post("/v1/projects/:project_id/tokens/distribution-slots", _auth: ProjectAdminAuth)]
 pub async fn set_distribution_slots_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     slots: Vec<DistributionSlotInput>,
@@ -96,8 +96,8 @@ pub async fn set_distribution_slots_handler(
         .await
         .map_err(|e| TokenError::DeployFailed(format!("approve receipt failed: {e}")))?;
 
-    let pending = ms
-        .execute(proposal_count)
+    let execute_call = ms.execute(proposal_count);
+    let pending = execute_call
         .send()
         .await
         .map_err(|e| TokenError::DeployFailed(format!("execute failed: {e}")))?;

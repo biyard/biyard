@@ -28,4 +28,7 @@ pub enum TokenError {
 
     #[error("Token not deployed on-chain")]
     NotDeployed,
+
+    #[error("Treasury deposit failed: {0}")]
+    DepositFailed(String),
 }
