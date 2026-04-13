@@ -6,8 +6,9 @@ pub mod types;
 pub mod models;
 
 pub use dto::{
-    MonthlyPointAggregationResponse, PointBalanceResponse, PointBalancesResponse,
-    PointTransactionResponse, TransactPointsRequest, TransactPointsResponse, Transaction,
+    MonthlySummariesResponse, MonthlySummaryItem, MonthlyPointAggregationResponse,
+    PointBalanceResponse, PointBalancesResponse, PointTransactionResponse,
+    TransactPointsRequest, TransactPointsResponse, Transaction,
 };
 #[cfg(feature = "server")]
 pub use models::{MonthlyPointAggregation, PointBalance, PointTransaction};

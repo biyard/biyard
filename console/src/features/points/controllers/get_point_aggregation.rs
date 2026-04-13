@@ -13,18 +13,18 @@ use crate::features::points::MonthlyPointAggregation;
 /// brand with zero point activity), the response is a zero-filled
 /// aggregation rather than a 404, so the client can render "No activity
 /// this month" cleanly without log noise.
-#[get("/v1/projects/:project_id/points?date", auth: ProjectViewerAuth)]
+#[get("/v1/projects/:project_id/points?month", auth: ProjectViewerAuth)]
 pub async fn get_point_aggregation_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
-    date: String,
+    month: String,
 ) -> Result<MonthlyPointAggregationResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
 
-    let (pk, sk) = MonthlyPointAggregation::keys(auth.project.pk, date.clone());
+    let (pk, sk) = MonthlyPointAggregation::keys(auth.project.pk, month.clone());
     let res = MonthlyPointAggregation::get(cli, &pk, Some(sk)).await?;
 
     Ok(res
         .map(Into::into)
-        .unwrap_or_else(|| MonthlyPointAggregationResponse::empty(date)))
+        .unwrap_or_else(|| MonthlyPointAggregationResponse::empty(month)))
 }

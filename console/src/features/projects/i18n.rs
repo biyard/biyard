@@ -189,7 +189,7 @@ translate! {
     },
     circulating_supply: {
         en: "Circulating Supply",
-        ko: "유통 공급량",
+        ko: "공급 예정량",
     },
     supplied_points: {
         en: "Supplied Points",
@@ -509,7 +509,7 @@ translate! {
     },
     treasury_onchain_circulating: {
         en: "Circulating Supply",
-        ko: "유통 공급량",
+        ko: "공급 예정량",
     },
     treasury_onchain_total_supply: {
         en: "Total Supply",

@@ -241,6 +241,39 @@ pub fn FloorPriceSimulatorDialog(
         sales_growth_pct.set(10);
         supply_decrease_pct.set(5);
         horizon_months.set(12);
+        treasury_overrides.set(Default::default());
+
+        #[cfg(not(feature = "server"))]
+        {
+            let rows = build_rows(
+                12,
+                0.0,
+                10_000_000.0,
+                (initial_reserve_rate).clamp(0.0, 1.0),
+                0.1,
+                monthly_token_supply as f64,
+                -0.05,
+            );
+            let labels_reset = ChartLabels {
+                treasury: t.simulator_chart_treasury,
+                supply: t.simulator_chart_supply,
+                floor: t.simulator_chart_floor,
+                x: t.simulator_chart_x,
+                y_left: t.simulator_chart_y_left,
+                y_right: t.simulator_chart_y_right,
+                month_suffix: t.simulator_chart_month_suffix,
+            };
+            let payload = ChartPayload {
+                labels: rows.iter().map(|r| r.month).collect(),
+                treasury: rows.iter().map(|r| r.treasury.round()).collect(),
+                supply: rows.iter().map(|r| r.supply.round()).collect(),
+                floor: rows.iter().map(|r| r.floor).collect(),
+                t: labels_reset,
+            };
+            if let Ok(json) = serde_json::to_string(&payload) {
+                render_chart(CANVAS_ID, &json);
+            }
+        }
     };
 
     rsx! {
