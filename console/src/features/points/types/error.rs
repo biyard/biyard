@@ -16,4 +16,7 @@ pub enum PointError {
 
     #[error("Point aggregation not found")]
     PointAggregationNotFound,
+
+    #[error("Invalid transaction: {0}")]
+    InvalidTransaction(String),
 }
