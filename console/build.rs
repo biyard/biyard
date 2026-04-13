@@ -13,8 +13,9 @@ fn main() {
     // server-side deploy paths in `console/src/common/blockchain/evm.rs`.
     if std::env::var_os("CARGO_FEATURE_SERVER").is_none() {
         // Still emit empty stubs so `include_str!` compiles.
-        write_stub_bytecode("BIYARD_TOKEN_BYTECODE");
-        write_stub_bytecode("FLOOR_PRICE_TREASURY_BYTECODE");
+        write_stub_bytecode("BRAND_TOKEN_BYTECODE");
+        write_stub_bytecode("TREASURY_BYTECODE");
+        write_stub_bytecode("MULTISIG_BYTECODE");
         return;
     }
 
@@ -41,15 +42,21 @@ fn main() {
 
     extract_bytecode(
         &contracts_dir,
-        "BiyardToken.sol",
-        "BiyardToken",
-        "BIYARD_TOKEN_BYTECODE",
+        "BrandToken.sol",
+        "BrandToken",
+        "BRAND_TOKEN_BYTECODE",
     );
     extract_bytecode(
         &contracts_dir,
-        "FloorPriceTreasury.sol",
-        "FloorPriceTreasury",
-        "FLOOR_PRICE_TREASURY_BYTECODE",
+        "Treasury.sol",
+        "Treasury",
+        "TREASURY_BYTECODE",
+    );
+    extract_bytecode(
+        &contracts_dir,
+        "Multisig.sol",
+        "Multisig",
+        "MULTISIG_BYTECODE",
     );
 }
 

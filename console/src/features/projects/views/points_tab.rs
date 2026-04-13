@@ -2,15 +2,21 @@ use dioxus::prelude::*;
 use dioxus_translate::use_translate;
 
 use crate::common::ProjectPartition;
+use crate::common::components::dialog::*;
 use crate::common::hooks::use_infinite_query;
 use crate::common::ui::*;
+use crate::features::accounts::context::use_account_context;
 use crate::features::projects::i18n::ProjectsTranslate;
 
 #[component]
 pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let t: ProjectsTranslate = use_translate();
+    let account_ctx = use_account_context();
+    let can_write = account_ctx().can_write();
 
     let mut newest_first = use_signal(|| true);
+    let mut show_award = use_signal(|| false);
+    let mut award_message = use_signal(|| None::<(AlertVariant, String)>);
 
     let mut query = use_infinite_query(move |bookmark| async move {
         crate::features::points::controllers::list_transactions_handler(
@@ -27,6 +33,10 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
     let has_items = !items.is_empty();
 
     rsx! {
+        if let Some((variant, msg)) = award_message() {
+            AlertMessage { variant, "{msg}" }
+        }
+
         SectionCard {
             div { class: "mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between",
                 div {
@@ -35,25 +45,32 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                         {t.transactions_subtitle}
                     }
                 }
-                // Sort toggle is meaningless on an empty list — only render
-                // it once there is something to sort.
-                if has_items {
-                    SortToggle {
-                        newest_first: newest_first(),
-                        newest_label: t.sort_newest_first,
-                        oldest_label: t.sort_oldest_first,
-                        on_change: move |next_newest_first: bool| {
-                            if newest_first() != next_newest_first {
-                                newest_first.set(next_newest_first);
-                                query.restart();
-                                #[cfg(not(feature = "server"))]
-                                {
-                                    document::eval(
-                                        "window.scrollTo({ top: 0, behavior: 'instant' });",
-                                    );
+                div { class: "flex items-center gap-2",
+                    if has_items {
+                        SortToggle {
+                            newest_first: newest_first(),
+                            newest_label: t.sort_newest_first,
+                            oldest_label: t.sort_oldest_first,
+                            on_change: move |next_newest_first: bool| {
+                                if newest_first() != next_newest_first {
+                                    newest_first.set(next_newest_first);
+                                    query.restart();
+                                    #[cfg(not(feature = "server"))]
+                                    {
+                                        document::eval(
+                                            "window.scrollTo({ top: 0, behavior: 'instant' });",
+                                        );
+                                    }
                                 }
-                            }
-                        },
+                            },
+                        }
+                    }
+                    if can_write {
+                        Btn {
+                            variant: BtnVariant::Primary,
+                            onclick: move |_| show_award.set(true),
+                            {t.award_points_btn}
+                        }
                     }
                 }
             }
@@ -132,6 +149,131 @@ pub fn PointsTab(project_id: ReadSignal<ProjectPartition>) -> Element {
                     }
                 }
                 {more_element}
+            }
+        }
+
+        AwardPointsDialog {
+            open: show_award(),
+            project_id,
+            on_close: move |_| show_award.set(false),
+            on_success: move |msg: String| {
+                award_message.set(Some((AlertVariant::Success, msg)));
+                query.restart();
+            },
+            on_error: move |msg: String| {
+                award_message.set(Some((AlertVariant::Error, msg)));
+            },
+        }
+    }
+}
+
+#[component]
+fn AwardPointsDialog(
+    open: bool,
+    project_id: ReadSignal<ProjectPartition>,
+    on_close: EventHandler,
+    on_success: EventHandler<String>,
+    on_error: EventHandler<String>,
+) -> Element {
+    let t: ProjectsTranslate = use_translate();
+    let mut user_id = use_signal(String::new);
+    let mut amount = use_signal(String::new);
+    let mut month = use_signal(|| chrono::Utc::now().format("%Y-%m").to_string());
+    let mut description = use_signal(String::new);
+    let mut submitting = use_signal(|| false);
+
+    let on_submit = move |_| {
+        let uid = user_id();
+        let amt_str = amount();
+        let month_val = month();
+        let desc = description();
+        let pid = project_id();
+        spawn(async move {
+            submitting.set(true);
+            let amt: i64 = match amt_str.parse() {
+                Ok(v) if v > 0 => v,
+                _ => {
+                    on_error.call(t.award_failure.to_string() + "invalid amount");
+                    submitting.set(false);
+                    return;
+                }
+            };
+            let req = vec![crate::features::points::TransactPointsRequest {
+                month: month_val,
+                description: if desc.is_empty() { None } else { Some(desc) },
+                tx: crate::features::points::Transaction::Award {
+                    to: uid,
+                    amount: amt,
+                },
+            }];
+            match crate::features::points::controllers::transact_points_handler(pid, req).await {
+                Ok(_) => {
+                    on_close.call(());
+                    user_id.set(String::new());
+                    amount.set(String::new());
+                    description.set(String::new());
+                    on_success.call(t.award_success.to_string());
+                }
+                Err(e) => on_error.call(format!("{}{e}", t.award_failure)),
+            }
+            submitting.set(false);
+        });
+    };
+
+    rsx! {
+        DialogRoot {
+            open,
+            on_open_change: move |v: bool| {
+                if !v {
+                    on_close.call(());
+                }
+            },
+            DialogContent {
+                DialogTitle { {t.award_points_title} }
+                DialogDescription { {t.award_points_desc} }
+                div { class: "mt-4 space-y-4",
+                    FormField {
+                        label: t.award_user_id,
+                        r#type: "text",
+                        value: user_id(),
+                        oninput: move |e: FormEvent| user_id.set(e.value()),
+                        placeholder: t.award_user_id_placeholder.to_string(),
+                    }
+                    FormField {
+                        label: t.award_amount,
+                        r#type: "number",
+                        value: amount(),
+                        oninput: move |e: FormEvent| amount.set(e.value()),
+                        placeholder: t.award_amount_placeholder.to_string(),
+                        min: "1",
+                    }
+                    FormField {
+                        label: t.award_month,
+                        r#type: "month",
+                        value: month(),
+                        oninput: move |e: FormEvent| month.set(e.value()),
+                    }
+                    FormField {
+                        label: t.description,
+                        r#type: "text",
+                        value: description(),
+                        oninput: move |e: FormEvent| description.set(e.value()),
+                        placeholder: t.award_description_placeholder.to_string(),
+                    }
+                }
+                DialogActions {
+                    Btn {
+                        variant: BtnVariant::Secondary,
+                        onclick: move |_| on_close.call(()),
+                        {t.cancel}
+                    }
+                    Btn {
+                        variant: BtnVariant::Primary,
+                        disabled: submitting() || user_id().is_empty() || amount().is_empty(),
+                        onclick: on_submit,
+                        if submitting() { {t.awarding} } else { {t.award_submit} }
+                    }
+                }
             }
         }
     }

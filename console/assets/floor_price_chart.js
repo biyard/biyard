@@ -66,8 +66,16 @@
     var dragging = false;
     var dragIndex = -1;
     var TREASURY_DS = 1; // dataset index for Treasury
+    var SUPPLY_DS = 0; // dataset index for Supply (bar)
+    var FLOOR_DS = 2; // dataset index for Floor Price
 
     canvas.style.touchAction = "none";
+
+    function recalcFloor(idx, treasuryVal) {
+      var supply = chart.data.datasets[SUPPLY_DS].data[idx];
+      var floor = supply > 0 ? treasuryVal / supply : 0;
+      chart.data.datasets[FLOOR_DS].data[idx] = floor;
+    }
 
     function getCanvasPos(e) {
       var rect = canvas.getBoundingClientRect();
@@ -120,6 +128,7 @@
       var pos = getCanvasPos(e);
       var newVal = Math.max(0, Math.round(yPixelToValue(pos.y)));
       chart.data.datasets[TREASURY_DS].data[dragIndex] = newVal;
+      recalcFloor(dragIndex, newVal);
       chart.update("none");
     });
 
@@ -130,6 +139,7 @@
       var pos = getCanvasPos(e);
       var newVal = Math.max(0, Math.round(yPixelToValue(pos.y)));
       chart.data.datasets[TREASURY_DS].data[dragIndex] = newVal;
+      recalcFloor(dragIndex, newVal);
       chart.update("none");
       if (onTreasuryDrag && labels[dragIndex] != null) {
         onTreasuryDrag(labels[dragIndex], newVal);

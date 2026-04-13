@@ -134,9 +134,9 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 PointError::PointBalanceNotFound
                 | PointError::MetaUserNotFound
                 | PointError::PointAggregationNotFound => StatusCode::NOT_FOUND,
-                PointError::InsufficientPoints | PointError::InvalidPointAmount => {
-                    StatusCode::BAD_REQUEST
-                }
+                PointError::InsufficientPoints
+                | PointError::InvalidPointAmount
+                | PointError::InvalidTransaction(_) => StatusCode::BAD_REQUEST,
             },
             Error::Token(e) => match e {
                 TokenError::TokenNotFound
@@ -146,7 +146,9 @@ impl dioxus::fullstack::AsStatusCode for Error {
                 | TokenError::InvalidTokenAmount
                 | TokenError::TokenAlreadyExists
                 | TokenError::AlreadyDeployed => StatusCode::BAD_REQUEST,
-                TokenError::DeployFailed(_) | TokenError::MintFailed(_) => {
+                TokenError::DeployFailed(_)
+                | TokenError::MintFailed(_)
+                | TokenError::DepositFailed(_) => {
                     StatusCode::INTERNAL_SERVER_ERROR
                 }
             },

@@ -1,5 +1,5 @@
 use crate::common::{ProjectPartition, Result};
-use crate::features::tokens::TokenResponse;
+use crate::features::tokens::{DistributionSlotEntry, TokenResponse};
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
@@ -14,6 +14,11 @@ pub async fn update_token_handler(
     symbol: Option<String>,
     decimals: Option<u8>,
     description: Option<String>,
+    monthly_emission: Option<i64>,
+    decay_rate_bps: Option<u16>,
+    distribution_slots: Option<Vec<DistributionSlotEntry>>,
+    stable_token_address: Option<String>,
+    chain_id: Option<u64>,
 ) -> Result<TokenResponse> {
     let config = CommonConfig::default();
     let cli = config.dynamodb();
@@ -41,6 +46,21 @@ pub async fn update_token_handler(
     }
     if let Some(description) = description {
         updater = updater.with_description(description);
+    }
+    if let Some(monthly_emission) = monthly_emission {
+        updater = updater.with_monthly_emission(monthly_emission);
+    }
+    if let Some(decay_rate_bps) = decay_rate_bps {
+        updater = updater.with_decay_rate_bps(decay_rate_bps);
+    }
+    if let Some(distribution_slots) = distribution_slots {
+        updater = updater.with_distribution_slots(distribution_slots);
+    }
+    if let Some(stable_token_address) = stable_token_address {
+        updater = updater.with_stable_token_address(stable_token_address);
+    }
+    if let Some(chain_id) = chain_id {
+        updater = updater.with_chain_id(chain_id);
     }
 
     updater = updater.with_updated_at(now);

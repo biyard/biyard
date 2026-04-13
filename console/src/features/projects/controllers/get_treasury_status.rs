@@ -3,7 +3,7 @@ use crate::features::projects::TreasuryStatusResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType, ProjectViewerAuth};
+use crate::common::{CommonConfig, EntityType, ProjectViewerAuth, SupportedChain};
 #[cfg(feature = "server")]
 use crate::features::tokens::ProjectToken;
 
@@ -42,6 +42,20 @@ pub async fn get_treasury_status_handler(
     .await
     .map_err(crate::common::Error::InternalServerError)?;
 
+    let stable_mintable = token
+        .stable_token_address
+        .as_deref()
+        .and_then(|addr| {
+            SupportedChain::from_chain_id(chain_id).and_then(|chain| {
+                chain
+                    .stable_token_options()
+                    .into_iter()
+                    .find(|opt| opt.address.eq_ignore_ascii_case(addr))
+                    .map(|opt| opt.mintable)
+            })
+        })
+        .unwrap_or(false);
+
     Ok(TreasuryStatusResponse {
         deployed: true,
         chain_id: Some(chain_id),
@@ -50,9 +64,13 @@ pub async fn get_treasury_status_handler(
         treasury_balance_raw: status.treasury_balance_raw.to_string(),
         stable_decimals: status.stable_decimals,
         stable_symbol: status.stable_symbol,
+        stable_mintable,
         total_supply_raw: status.total_supply_raw.to_string(),
         circulating_supply_raw: status.circulating_supply_raw.to_string(),
+        treasury_held_tokens_raw: status.treasury_held_tokens_raw.to_string(),
         token_decimals: status.token_decimals,
+        token_symbol: status.token_symbol,
         floor_price_raw_1e18: status.floor_price_raw_1e18.to_string(),
+        current_month: status.current_month,
     })
 }

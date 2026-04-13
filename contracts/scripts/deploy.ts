@@ -1,102 +1,62 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("Starting deployment...\n");
-
-  // Get deployer account
   const [deployer] = await ethers.getSigners();
-  console.log("Deploying contracts with account:", deployer.address);
-  console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
-  console.log();
+  console.log("Deployer:", deployer.address);
 
-  // Deploy BiyardToken
-  console.log("Deploying BiyardToken...");
-  const tokenName = "Biyard Token";
-  const tokenSymbol = "BIYARD";
-  const initialSupply = ethers.parseEther("1000000"); // 1 million tokens
-  const maxSupply = ethers.parseEther("10000000"); // 10 million tokens max
+  const stableTokenAddress = process.env.STABLE_TOKEN_ADDRESS;
+  if (!stableTokenAddress) throw new Error("Set STABLE_TOKEN_ADDRESS env var");
 
-  const BiyardToken = await ethers.getContractFactory("BiyardToken");
-  const token = await BiyardToken.deploy(tokenName, tokenSymbol, initialSupply, maxSupply);
+  const claimSignerAddress = process.env.CLAIM_SIGNER_ADDRESS;
+  if (!claimSignerAddress) throw new Error("Set CLAIM_SIGNER_ADDRESS env var");
+
+  const monthlyEmission = ethers.parseEther(process.env.MONTHLY_EMISSION || "1000000");
+  const decayBps = parseInt(process.env.DECAY_BPS || "500");
+  const tokenName = process.env.TOKEN_NAME || "BrandToken";
+  const tokenSymbol = process.env.TOKEN_SYMBOL || "BRAND";
+
+  // Default: start from the 1st of last month so month 0 is already claimable.
+  const now = new Date();
+  const lastMonth1st = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
+  const startTimestamp = parseInt(process.env.START_TIMESTAMP || String(Math.floor(lastMonth1st.getTime() / 1000)));
+
+  const Multisig = await ethers.getContractFactory("Multisig");
+  const ms = await Multisig.deploy([deployer.address], 1);
+  await ms.waitForDeployment();
+  console.log("Multisig:", await ms.getAddress());
+
+  const BrandToken = await ethers.getContractFactory("BrandToken");
+  const token = await BrandToken.deploy(
+    tokenName, tokenSymbol, monthlyEmission, decayBps,
+    claimSignerAddress, deployer.address, startTimestamp
+  );
   await token.waitForDeployment();
+  console.log("BrandToken:", await token.getAddress());
 
-  const tokenAddress = await token.getAddress();
-  console.log("BiyardToken deployed to:", tokenAddress);
-  console.log("Initial supply:", ethers.formatEther(initialSupply), tokenSymbol);
-  console.log("Max supply:", ethers.formatEther(maxSupply), tokenSymbol);
-  console.log();
-
-  // Deploy DAOTreasury
-  console.log("Deploying DAOTreasury...");
-  const proposalThreshold = ethers.parseEther("100"); // 100 tokens to create proposal
-  const votingPeriod = 3 * 24 * 60 * 60; // 3 days in seconds
-  const quorumPercentage = 10; // 10% quorum
-
-  const DAOTreasury = await ethers.getContractFactory("DAOTreasury");
-  const treasury = await DAOTreasury.deploy(
-    tokenAddress,
-    proposalThreshold,
-    votingPeriod,
-    quorumPercentage
+  const Treasury = await ethers.getContractFactory("Treasury");
+  const treasury = await Treasury.deploy(
+    stableTokenAddress, await token.getAddress(), await ms.getAddress()
   );
   await treasury.waitForDeployment();
+  console.log("Treasury:", await treasury.getAddress());
 
-  const treasuryAddress = await treasury.getAddress();
-  console.log("DAOTreasury deployed to:", treasuryAddress);
-  console.log("Proposal threshold:", ethers.formatEther(proposalThreshold), tokenSymbol);
-  console.log("Voting period:", votingPeriod / (24 * 60 * 60), "days");
-  console.log("Quorum percentage:", quorumPercentage + "%");
-  console.log();
+  await token.setTreasury(await treasury.getAddress());
+  await token.transferOwnership(await ms.getAddress());
+  console.log("BrandToken ownership transferred to Multisig");
 
-  // Transfer some tokens to treasury for testing
-  console.log("Transferring tokens to treasury...");
-  const treasuryAmount = ethers.parseEther("100000"); // 100k tokens
-  const transferTx = await token.transfer(treasuryAddress, treasuryAmount);
-  await transferTx.wait();
-  console.log("Transferred", ethers.formatEther(treasuryAmount), tokenSymbol, "to treasury");
-  console.log();
-
-  // Summary
-  console.log("=".repeat(60));
-  console.log("Deployment Summary:");
-  console.log("=".repeat(60));
-  console.log("BiyardToken:", tokenAddress);
-  console.log("DAOTreasury:", treasuryAddress);
-  console.log("Deployer:", deployer.address);
-  console.log("=".repeat(60));
-  console.log();
-
-  // Save deployment info to file
-  const deploymentInfo = {
-    network: (await ethers.provider.getNetwork()).name,
-    chainId: (await ethers.provider.getNetwork()).chainId.toString(),
-    deployer: deployer.address,
-    contracts: {
-      BiyardToken: {
-        address: tokenAddress,
-        name: tokenName,
-        symbol: tokenSymbol,
-        initialSupply: initialSupply.toString(),
-        maxSupply: maxSupply.toString(),
-      },
-      DAOTreasury: {
-        address: treasuryAddress,
-        governanceToken: tokenAddress,
-        proposalThreshold: proposalThreshold.toString(),
-        votingPeriod: votingPeriod,
-        quorumPercentage: quorumPercentage,
-      },
-    },
-    timestamp: new Date().toISOString(),
-  };
-
-  console.log("Deployment info:");
-  console.log(JSON.stringify(deploymentInfo, null, 2));
+  console.log(JSON.stringify({
+    multisig: await ms.getAddress(),
+    brandToken: await token.getAddress(),
+    treasury: await treasury.getAddress(),
+    stableToken: stableTokenAddress,
+    claimSigner: claimSignerAddress,
+    monthlyEmission: monthlyEmission.toString(),
+    decayBps,
+    startTimestamp,
+  }, null, 2));
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((err) => {
+  console.error(err);
+  process.exitCode = 1;
+});
