@@ -5,9 +5,15 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
+interface IBrandToken is IERC20 {
+    function cumulativeEmission() external view returns (uint256);
+}
+
 /// @title Treasury — USDT vault with floor-price buyback
-/// @notice Price = stableToken balance / circulating BrandToken supply.
-///         Buyback sends tokens to Treasury (not burned), reducing circulating supply.
+/// @notice Price = stableToken balance / effective circulating supply.
+///         Effective circulating supply includes tokens already minted to users
+///         PLUS the current month's remaining emission (not yet claimed but expected).
+///         This ensures the floor price is consistent regardless of claim timing.
 contract Treasury is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -17,7 +23,7 @@ contract Treasury is ReentrancyGuard {
     event TokenWithdrawn(address indexed token, address indexed to, uint256 amount);
 
     IERC20 public immutable stableToken;
-    IERC20 public immutable brandToken;
+    IBrandToken public immutable brandToken;
     address public immutable multisig;
 
     modifier onlyMultisig() {
@@ -30,23 +36,23 @@ contract Treasury is ReentrancyGuard {
         require(_brandToken != address(0), "Treasury: zero brandToken");
         require(_multisig != address(0), "Treasury: zero multisig");
         stableToken = IERC20(_stableToken);
-        brandToken = IERC20(_brandToken);
+        brandToken = IBrandToken(_brandToken);
         multisig = _multisig;
     }
 
-    function deposit(uint256 amount) external {
-        require(amount > 0, "Treasury: zero amount");
-        stableToken.safeTransferFrom(msg.sender, address(this), amount);
-        emit Deposited(msg.sender, amount);
-    }
-
+    /// Effective circulating supply for floor price calculation.
+    /// = cumulativeEmission - treasuryHeld
+    ///
+    /// - cumulativeEmission: sum of monthlyCeiling(0..currentMonth), the total
+    ///   tokens that *should* exist regardless of whether users have claimed.
+    ///   This makes floor price independent of claim timing.
+    /// - treasuryHeld: tokens bought back into treasury (out of circulation)
     function circulatingSupply() public view returns (uint256) {
-        uint256 total = brandToken.totalSupply();
-        uint256 inContract = brandToken.balanceOf(address(brandToken));
+        uint256 cumulative = brandToken.cumulativeEmission();
         uint256 inTreasury = brandToken.balanceOf(address(this));
-        uint256 locked = inContract + inTreasury;
-        if (locked >= total) return 0;
-        return total - locked;
+
+        if (inTreasury >= cumulative) return 0;
+        return cumulative - inTreasury;
     }
 
     function getPrice() public view returns (uint256) {
@@ -65,7 +71,7 @@ contract Treasury is ReentrancyGuard {
         require(stableOut > 0, "Treasury: output is zero");
         require(stableToken.balanceOf(address(this)) >= stableOut, "Treasury: insufficient stable");
 
-        brandToken.safeTransferFrom(msg.sender, address(this), tokenAmount);
+        IERC20(address(brandToken)).safeTransferFrom(msg.sender, address(this), tokenAmount);
         stableToken.safeTransfer(msg.sender, stableOut);
         emit Buyback(msg.sender, tokenAmount, stableOut);
     }
