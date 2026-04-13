@@ -9,11 +9,11 @@ translate! {
     },
     description: {
         en: "Manage API keys for accessing Biyard services",
-        ko: "Biyard 서비스 접근용 API 키를 관리합니다",
+        ko: "Biyard 서비스에 접근하기 위한 API 키를 관리합니다",
     },
     subtitle_in: {
         en: "Manage API keys for {enterprise}.",
-        ko: "{enterprise} 의 API 키를 관리합니다.",
+        ko: "{enterprise}의 API 키를 관리합니다.",
     },
     create_new: {
         en: "Create New API Key",
@@ -81,6 +81,6 @@ translate! {
     },
     key_generated_warning: {
         en: "Please copy this key now. You won't be able to see it again!",
-        ko: "지금 이 키를 복사하세요. 다시 볼 수 없습니다!",
+        ko: "이 키는 지금 복사해 두세요. 다시는 확인할 수 없습니다.",
     },
 }
