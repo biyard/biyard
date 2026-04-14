@@ -14,6 +14,7 @@ pub use enterprise_auth::{EnterpriseContextAuth, SystemAdminAuth};
 pub use project_auth::{ProjectAdminAuth, ProjectAuth, ProjectViewerAuth};
 
 pub(crate) use account_auth::{authenticate_by_session, authenticate_by_session_from_parts};
+pub(crate) use credential_auth::authenticate_by_credential;
 
 pub(super) fn extract_bearer_token(parts: &Parts) -> Option<String> {
     use dioxus::fullstack::axum::http::header::AUTHORIZATION;
