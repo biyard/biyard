@@ -13,6 +13,9 @@ pub mod utils;
 pub mod components;
 pub mod ui;
 
+#[cfg(feature = "web")]
+pub mod rpc;
+
 #[cfg(feature = "server")]
 pub mod blockchain;
 #[cfg(feature = "server")]
