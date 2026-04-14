@@ -25,17 +25,41 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
     let project_loader_result = use_loader(move || async move {
         crate::features::projects::controllers::get_project_handler(project_id()).await
     });
-    let status_loader_result = use_loader(move || async move {
-        crate::features::projects::controllers::get_treasury_status_handler(project_id()).await
-    });
+    let mut treasury_resource: Resource<Option<TreasuryStatusResponse>> =
+        use_resource(move || async move {
+            let tok = crate::features::tokens::controllers::get_token_handler(project_id())
+                .await
+                .ok()
+                .flatten();
+            let tok = tok?;
+            let treasury_addr = tok.treasury_contract_address.as_deref()?;
+            let token_addr = tok.contract_address.as_deref()?;
+            let chain_id = tok.chain_id?;
+
+            #[cfg(feature = "web")]
+            {
+                let wasm = crate::common::rpc::fetch_treasury_status(
+                    chain_id,
+                    treasury_addr,
+                    token_addr,
+                )
+                .await
+                .ok()?;
+                Some(TreasuryStatusResponse::from_wasm(&wasm, &tok))
+            }
+            #[cfg(not(feature = "web"))]
+            {
+                let _ = (chain_id, treasury_addr, token_addr);
+                None
+            }
+        });
     let mut show_simulator = use_signal(|| false);
     let mut show_sales_log = use_signal(|| false);
     let mut deposit_message = use_signal(|| None::<String>);
 
     let project_loader = project_loader_result?;
     let project: ProjectResponse = project_loader();
-    let mut status_loader = status_loader_result?;
-    let status: TreasuryStatusResponse = status_loader();
+    let status: Option<TreasuryStatusResponse> = treasury_resource.read().clone().flatten();
 
     let reserve_rate_pct = (project.treasury_reserve_rate * 100.0).round();
     let initial_reserve_rate = project.treasury_reserve_rate;
@@ -77,7 +101,7 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
                 AlertMessage { variant: AlertVariant::Info, "{msg}" }
             }
 
-            if status.deployed {
+            if let Some(ref status) = status {
                 TreasuryOnChainPanel { status: status.clone() }
 
                 if can_write && status.stable_mintable {
@@ -88,7 +112,7 @@ pub fn ProjectTreasury(project_id: ReadSignal<ProjectPartition>) -> Element {
                             spawn(async move {
                                 #[cfg(feature = "web")]
                                 gloo_timers::future::TimeoutFuture::new(2_000).await;
-                                status_loader.restart();
+                                treasury_resource.restart();
                             });
                         },
                         on_error: move |msg: String| {

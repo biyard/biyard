@@ -4,6 +4,7 @@ use dioxus_translate::use_translate;
 use crate::common::ProjectPartition;
 use crate::common::ui::*;
 use crate::features::projects::ProjectResponse;
+use crate::features::projects::TreasuryStatusResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
 
 #[component]
@@ -14,9 +15,34 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
         crate::features::tokens::controllers::get_token_handler(project_id()).await
     });
 
-    let treasury_result = use_loader(move || async move {
-        crate::features::projects::controllers::get_treasury_status_handler(project_id()).await
-    });
+    let treasury_resource: Resource<Option<TreasuryStatusResponse>> =
+        use_resource(move || async move {
+            let tok = crate::features::tokens::controllers::get_token_handler(project_id())
+                .await
+                .ok()
+                .flatten();
+            let tok = tok?;
+            let treasury_addr = tok.treasury_contract_address.as_deref()?;
+            let token_addr = tok.contract_address.as_deref()?;
+            let chain_id = tok.chain_id?;
+
+            #[cfg(feature = "web")]
+            {
+                let wasm = crate::common::rpc::fetch_treasury_status(
+                    chain_id,
+                    treasury_addr,
+                    token_addr,
+                )
+                .await
+                .ok()?;
+                Some(TreasuryStatusResponse::from_wasm(&wasm, &tok))
+            }
+            #[cfg(not(feature = "web"))]
+            {
+                let _ = (chain_id, treasury_addr, token_addr);
+                None
+            }
+        });
 
     let aggregation_result = use_loader(move || async move {
         let tok =
@@ -39,29 +65,25 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
             .await
     });
 
-    // Suspend after all hooks are registered (hook call order rule).
     let token = token_result?;
-    let treasury = treasury_result?;
     let aggregation = aggregation_result?;
 
     let tok = token();
-    let treasury_status = treasury();
+    let treasury_status = treasury_resource.read().clone().flatten();
     let agg = aggregation();
 
-    let (total_supply_display, circulating_display) = if treasury_status.deployed {
-        (
-            format_token_amount(&treasury_status.total_supply_raw, treasury_status.token_decimals),
-            format_token_amount(
-                &treasury_status.circulating_supply_raw,
-                treasury_status.token_decimals,
-            ),
-        )
-    } else {
-        (
-            "0".to_string(),
-            format_number(tok.as_ref().map(|t| t.circulating_supply).unwrap_or(0)),
-        )
-    };
+    let (total_supply_display, circulating_display) =
+        if let Some(ref ts) = treasury_status {
+            (
+                format_token_amount(&ts.total_supply_raw, ts.token_decimals),
+                format_token_amount(&ts.circulating_supply_raw, ts.token_decimals),
+            )
+        } else {
+            (
+                "0".to_string(),
+                format_number(tok.as_ref().map(|t| t.circulating_supply).unwrap_or(0)),
+            )
+        };
 
     rsx! {
         div { class: "flex flex-col gap-6",
