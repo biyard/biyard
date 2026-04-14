@@ -8,8 +8,8 @@ pub mod views;
 pub mod models;
 
 pub use dto::{
-    CreateProjectRequest, ExchangeRequest, ExchangeResponse, ExchangeType, ProjectResponse,
-    SalesLogResponse, TreasuryStatusResponse, UpdateProjectRequest,
+    CreateProjectRequest, ProjectResponse, SalesLogResponse, TreasuryStatusResponse,
+    UpdateProjectRequest,
 };
 #[cfg(feature = "server")]
 pub use models::{Project, ProjectQueryOption, SalesLog};
