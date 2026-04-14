@@ -1,6 +1,15 @@
+mod formatting;
+mod js_interop;
+mod types;
+
+use formatting::{
+    build_rows, format_compact, format_floor_display, format_with_commas, parse_commas,
+    reformat_commas,
+};
+use types::{ChartLabels, ChartPayload};
+
 use dioxus::prelude::*;
 use dioxus_translate::use_translate;
-use serde::Serialize;
 
 use crate::common::components::dialog::{
     DialogActions, DialogContent, DialogDescription, DialogRoot, DialogTitle,
@@ -8,79 +17,7 @@ use crate::common::components::dialog::{
 use crate::common::ui::*;
 use crate::features::projects::i18n::ProjectsTranslate;
 
-#[cfg(not(feature = "server"))]
-use wasm_bindgen::prelude::*;
-
-#[cfg(not(feature = "server"))]
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = eval)]
-    fn js_eval(script: &str) -> wasm_bindgen::JsValue;
-}
-
-#[cfg(not(feature = "server"))]
-fn get_simulator_ns() -> Option<js_sys::Object> {
-    let window = web_sys::window()?;
-    let biyard = js_sys::Reflect::get(&window, &"biyard".into())
-        .ok()
-        .filter(|v| !v.is_undefined() && !v.is_null())?;
-    js_sys::Reflect::get(&biyard, &"simulator".into())
-        .ok()
-        .filter(|v| !v.is_undefined() && !v.is_null())
-        .map(|v| v.unchecked_into())
-}
-
-#[cfg(not(feature = "server"))]
-fn render_chart(canvas_id: &str, payload_json: &str) {
-    use wasm_bindgen::JsCast;
-    let Some(simulator) = get_simulator_ns() else {
-        return;
-    };
-    let Ok(func) = js_sys::Reflect::get(&simulator, &"render_chart".into()) else {
-        return;
-    };
-    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
-        return;
-    };
-    let _ = func.call2(&simulator, &canvas_id.into(), &payload_json.into());
-}
-
-#[cfg(not(feature = "server"))]
-fn set_on_treasury_drag(cb: &Closure<dyn FnMut(i32, f64)>) {
-    use wasm_bindgen::JsCast;
-    let Some(simulator) = get_simulator_ns() else {
-        return;
-    };
-    let Ok(func) = js_sys::Reflect::get(&simulator, &"set_on_treasury_drag".into()) else {
-        return;
-    };
-    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
-        return;
-    };
-    let _ = func.call1(&simulator, cb.as_ref().unchecked_ref());
-}
-
-#[cfg(not(feature = "server"))]
-fn destroy_chart(canvas_id: &str) {
-    use wasm_bindgen::JsCast;
-    let Some(simulator) = get_simulator_ns() else {
-        return;
-    };
-    let Ok(func) = js_sys::Reflect::get(&simulator, &"destroy_chart".into()) else {
-        return;
-    };
-    let Ok(func) = func.dyn_into::<js_sys::Function>() else {
-        return;
-    };
-    let _ = func.call1(&simulator, &canvas_id.into());
-}
-
 const CANVAS_ID: &str = "floor-price-simulator-chart";
-
-/// Hardcoded KRW→USDT rate used for converting sales/treasury amounts
-/// throughout the simulator. Not user-configurable by design (the goal
-/// is a stable reference point for the what-if tool).
-const KRW_PER_USDT: f64 = 1500.0;
 
 /// What-if floor price simulator.
 ///
@@ -192,7 +129,7 @@ pub fn FloorPriceSimulatorDialog(
             let cb = Closure::<dyn FnMut(i32, f64)>::new(move |month: i32, value: f64| {
                 treasury_overrides.write().insert(month as i64, value);
             });
-            set_on_treasury_drag(&cb);
+            js_interop::set_on_treasury_drag(&cb);
             cb.forget();
         }
         #[cfg(feature = "server")]
@@ -207,9 +144,9 @@ pub fn FloorPriceSimulatorDialog(
         #[cfg(not(feature = "server"))]
         {
             if is_open {
-                render_chart(CANVAS_ID, &json);
+                js_interop::render_chart(CANVAS_ID, &json);
             } else {
-                destroy_chart(CANVAS_ID);
+                js_interop::destroy_chart(CANVAS_ID);
             }
         }
         #[cfg(feature = "server")]
@@ -271,7 +208,7 @@ pub fn FloorPriceSimulatorDialog(
                 t: labels_reset,
             };
             if let Ok(json) = serde_json::to_string(&payload) {
-                render_chart(CANVAS_ID, &json);
+                js_interop::render_chart(CANVAS_ID, &json);
             }
         }
     };
@@ -463,142 +400,5 @@ pub fn FloorPriceSimulatorDialog(
                 }
             }
         }
-    }
-}
-
-#[derive(Clone, PartialEq)]
-struct MonthRow {
-    month: i64,
-    treasury: f64,
-    supply: f64,
-    floor: f64,
-}
-
-#[derive(Serialize)]
-struct ChartPayload {
-    labels: Vec<i64>,
-    treasury: Vec<f64>,
-    supply: Vec<f64>,
-    floor: Vec<f64>,
-    t: ChartLabels,
-}
-
-#[derive(Serialize, Clone, Copy)]
-struct ChartLabels {
-    treasury: &'static str,
-    supply: &'static str,
-    floor: &'static str,
-    x: &'static str,
-    y_left: &'static str,
-    y_right: &'static str,
-    month_suffix: &'static str,
-}
-
-fn build_rows(
-    months: i64,
-    initial_treasury_usdt: f64,
-    monthly_sales_krw: f64,
-    rate: f64,
-    sales_growth: f64,
-    monthly_supply: f64,
-    supply_growth: f64,
-) -> Vec<MonthRow> {
-    let mut rows = Vec::with_capacity(months as usize);
-    // Treasury is in USDT end-to-end (initial value, accumulation,
-    // chart, table, Floor Price). Only sales come in as KRW from the
-    // UI and are converted to USDT once when added to the treasury.
-    let mut treasury = initial_treasury_usdt;
-    let mut supply = 0.0_f64;
-    let mut sales_m = monthly_sales_krw;
-    let mut supply_m = monthly_supply;
-
-    for m in 1..=months {
-        treasury += (sales_m * rate) / KRW_PER_USDT;
-        supply += supply_m;
-
-        let floor = if supply > 0.0 { treasury / supply } else { 0.0 };
-        rows.push(MonthRow {
-            month: m,
-            treasury,
-            supply,
-            floor,
-        });
-
-        sales_m *= 1.0 + sales_growth;
-        supply_m *= 1.0 + supply_growth;
-        if sales_m < 0.0 {
-            sales_m = 0.0;
-        }
-        if supply_m < 0.0 {
-            supply_m = 0.0;
-        }
-    }
-    rows
-}
-
-fn format_floor_display(value: f64) -> String {
-    if value == 0.0 {
-        "0".to_string()
-    } else if value >= 100.0 {
-        format!("{:.0}", value)
-    } else if value >= 1.0 {
-        format!("{:.2}", value)
-    } else {
-        format!("{:.4}", value)
-    }
-}
-
-fn format_with_commas(value: i64) -> String {
-    let s = value.abs().to_string();
-    let mut out = String::new();
-    for (i, ch) in s.chars().rev().enumerate() {
-        if i > 0 && i % 3 == 0 {
-            out.push(',');
-        }
-        out.push(ch);
-    }
-    let mut result: String = out.chars().rev().collect();
-    if value < 0 {
-        result.insert(0, '-');
-    }
-    result
-}
-
-fn parse_commas(s: &str) -> f64 {
-    s.trim().replace(',', "").parse::<f64>().unwrap_or(0.0)
-}
-
-fn reformat_commas(input: &str) -> String {
-    let digits: String = input.chars().filter(|c| c.is_ascii_digit()).collect();
-    if digits.is_empty() {
-        return String::new();
-    }
-    let trimmed = digits.trim_start_matches('0');
-    let normalized = if trimmed.is_empty() { "0" } else { trimmed };
-    match normalized.parse::<i64>() {
-        Ok(n) => format_with_commas(n),
-        Err(_) => normalized.to_string(),
-    }
-}
-
-fn format_compact(value: f64) -> String {
-    let abs = value.abs();
-    let (scaled, suffix) = if abs >= 1e12 {
-        (value / 1e12, "T")
-    } else if abs >= 1e9 {
-        (value / 1e9, "B")
-    } else if abs >= 1e6 {
-        (value / 1e6, "M")
-    } else if abs >= 1e3 {
-        (value / 1e3, "K")
-    } else {
-        return format_number(value.round() as i64);
-    };
-    if scaled.abs() >= 100.0 {
-        format!("{:.0}{suffix}", scaled)
-    } else if scaled.abs() >= 10.0 {
-        format!("{:.1}{suffix}", scaled)
-    } else {
-        format!("{:.2}{suffix}", scaled)
     }
 }
