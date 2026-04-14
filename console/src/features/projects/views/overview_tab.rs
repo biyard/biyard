@@ -117,7 +117,6 @@ pub fn OverviewTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             div { class: "grid gap-4 sm:grid-cols-2",
                                 StatCard { color: StatColor::Gray, label: t.treasury_onchain_total_supply.to_string(), value: total_supply_display.clone() }
                                 StatCard { color: StatColor::Gray, label: t.circulating_supply.to_string(), value: circulating_display.clone() }
-                                StatCard { color: StatColor::Gray, label: t.decimals.to_string(), value: tok.decimals.to_string() }
                             }
                         }
                     },

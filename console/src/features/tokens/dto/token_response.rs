@@ -6,7 +6,6 @@ pub struct TokenResponse {
     pub pk: Partition,
     pub name: String,
     pub symbol: String,
-    pub decimals: u8,
     pub circulating_supply: i64,
     pub description: Option<String>,
     pub contract_address: Option<String>,

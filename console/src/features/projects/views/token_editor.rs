@@ -641,8 +641,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                     return;
                                 }
 
-                                let decimals_val: u8 = 18;
-
                                 spawn(async move {
                                     loading.set(true);
                                     message.set(None);
@@ -653,7 +651,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                                     pid.clone(),
                                                     name_val,
                                                     symbol_val,
-                                                    decimals_val,
                                                     desc_val,
                                                     emission_val,
                                                     decay_val,
@@ -674,7 +671,6 @@ pub fn TokenEditorCard(project_id: ReadSignal<ProjectPartition>, mode: TokenEdit
                                                     pid.clone(),
                                                     Some(name_val),
                                                     Some(symbol_val),
-                                                    Some(decimals_val),
                                                     desc_val,
                                                     Some(emission_val),
                                                     Some(decay_val),

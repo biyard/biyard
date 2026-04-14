@@ -30,7 +30,7 @@ pub async fn mint_token_handler(
         .ok_or(TokenError::MintFailed("Token not deployed".to_string()))?;
 
     let amount_u256 = ethers::types::U256::from(amount as u64)
-        * ethers::types::U256::exp10(token.decimals as usize);
+        * ethers::types::U256::exp10(18);
 
     let tx_hash = crate::common::blockchain::evm::transfer_brand_token(
         chain_id,
