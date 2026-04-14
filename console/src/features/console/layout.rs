@@ -35,7 +35,14 @@ pub fn Layout() -> Element {
                     div { class: "absolute bottom-[-10rem] left-[22rem] h-96 w-96 rounded-full bg-info-soft opacity-60 blur-3xl" }
                 }
 
-                ConsoleSidebar {}
+                SuspenseBoundary {
+                    fallback: move |_| rsx! {
+                        SidebarShellFallback {
+                            collapsed: collapsed().0,
+                        }
+                    },
+                    ConsoleSidebar {}
+                }
 
                 div { class: "relative min-h-screen pl-0 {lg_padding_class} transition-[padding] duration-150",
                     MobileTopBar { on_open: move |_| sidebar_open.set(SidebarOpen(true)) }
@@ -162,6 +169,55 @@ fn MobileTopBar(on_open: EventHandler<MouseEvent>) -> Element {
                 p { class: "truncate font-display text-sm font-bold tracking-tight text-foreground",
                     "{enterprise_name}"
                 }
+            }
+        }
+    }
+}
+
+#[component]
+fn SidebarShellFallback(collapsed: bool) -> Element {
+    let lg_width = if collapsed {
+        "lg:w-16"
+    } else {
+        "lg:w-[17rem]"
+    };
+    let lg_padding = if collapsed {
+        "lg:py-4 lg:px-0"
+    } else {
+        "lg:px-4 lg:py-5"
+    };
+    let aside_class = format!(
+        "fixed inset-y-0 left-0 z-40 hidden w-[17rem] flex-col border-r border-sidebar-border bg-sidebar px-4 py-5 text-sidebar-foreground lg:flex lg:translate-x-0 lg:transition-[width,padding] {lg_width} {lg_padding}"
+    );
+
+    rsx! {
+        aside { class: "{aside_class}",
+            if collapsed {
+                div { class: "flex flex-col items-center gap-3 px-2",
+                    div { class: "h-10 w-10 animate-pulse rounded-xl bg-white/10" }
+                    div { class: "h-9 w-9 animate-pulse rounded-xl bg-white/6" }
+                }
+            } else {
+                div { class: "mb-6 flex items-center justify-between gap-2 px-1",
+                    div { class: "flex min-w-0 items-center gap-3",
+                        div { class: "h-10 w-10 shrink-0 animate-pulse rounded-xl bg-white/10" }
+                        div { class: "min-w-0 flex-1 space-y-2",
+                            div { class: "h-4 w-28 animate-pulse rounded bg-white/10" }
+                            div { class: "h-3 w-20 animate-pulse rounded bg-white/6" }
+                        }
+                    }
+                    div { class: "h-8 w-8 shrink-0 animate-pulse rounded-lg bg-white/6" }
+                }
+            }
+
+            div { class: if collapsed { "mt-4 flex-1 space-y-3 px-2" } else { "flex-1 space-y-3" },
+                for _ in 0..6 {
+                    div { class: "h-10 animate-pulse rounded-2xl bg-white/6" }
+                }
+            }
+
+            div { class: if collapsed { "px-2 pt-4" } else { "pt-4" },
+                div { class: "h-12 animate-pulse rounded-2xl bg-white/8" }
             }
         }
     }

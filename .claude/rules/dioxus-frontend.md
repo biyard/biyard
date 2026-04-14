@@ -258,6 +258,36 @@ if !account_ctx().is_logged_in() {
 }
 ```
 
+### Understanding `cannot reclaim ElementId(N)`
+
+`arena.rs` is Dioxus's mounted element-id arena, not its hook store.
+Hooks are tracked separately in `scope_context.rs` using `hook_index`.
+
+So `cannot reclaim ElementId(N)` should be read as:
+
+- Dioxus tried to reclaim/unmount the same mounted node twice
+- which means mount bookkeeping or fallback ownership got out of sync
+- the numeric `ElementId(N)` is not stable across runs and can be reused
+  over time, so the number itself is usually not the useful clue
+
+Hook-order bugs are one common way to get there, but not the only way.
+Another important case to inspect is **nested suspense boundary
+interaction**:
+
+- which boundary owns the persistent shell
+- which boundary owns the route body
+- whether both can suspend during the same navigation
+
+In this repo, inspect shared chrome (`sidebar`, `topbar`, root
+providers/layout wrappers) for `use_loader(...)?` and compare that with
+nested route-level `SuspenseBoundary` usage.
+
+Practical debugging checklist:
+
+- check shell components for suspending loaders
+- check route bodies for nested suspense during the same transition
+- check for hooks registered after `?` or after an early `return`
+
 **Rule of thumb:** every `use_*` call belongs in the top section of the
 component, above any `?`, any `return`, any `if` that early-returns,
 and any `let Some(...) = ... else { return ... }`.
