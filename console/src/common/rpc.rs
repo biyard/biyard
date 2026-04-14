@@ -138,11 +138,9 @@ mod web_rpc {
             "id": 1
         });
 
-        let mut opts = RequestInit::new();
-        opts.method("POST");
-        opts.body(Some(
-            &wasm_bindgen::JsValue::from_str(&body.to_string()),
-        ));
+        let opts = RequestInit::new();
+        opts.set_method("POST");
+        opts.set_body(&wasm_bindgen::JsValue::from_str(&body.to_string()));
 
         let request =
             Request::new_with_str_and_init(rpc_url, &opts).map_err(|e| format!("{e:?}"))?;
