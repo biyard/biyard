@@ -83,10 +83,18 @@ pub fn ProjectDetailLayout(project_id: ReadSignal<ProjectPartition>) -> Element 
                                     "{desc}"
                                 }
                             }
-                            code {
-                                class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
-                                title: "{project_data.id}",
-                                "{shorten_id(&project_data.id)}"
+                            div { class: "flex flex-wrap items-center gap-2",
+                                code {
+                                    class: "inline-flex rounded-full border border-border bg-panel-muted px-3 py-1 text-xs font-medium text-foreground-muted",
+                                    title: "{project_data.id}",
+                                    "{shorten_id(&project_data.id)}"
+                                }
+                                Link {
+                                    to: Route::ApiDocs {},
+                                    class: "inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground-muted transition-colors hover:border-brand/40 hover:text-brand",
+                                    IconBookOpen { class: "h-3.5 w-3.5" }
+                                    {t.api_integration_guide}
+                                }
                             }
                         }
                     }

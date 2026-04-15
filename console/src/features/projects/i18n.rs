@@ -1289,5 +1289,9 @@ translate! {
         en: "User scenario test",
         ko: "User 시나리오 테스트",
     },
+    api_integration_guide: {
+        en: "API Integration Guide",
+        ko: "API 연동 가이드",
+    },
 
 }

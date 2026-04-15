@@ -7,7 +7,7 @@ use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
-#[api_doc_macros::api_doc(group = "Tokens", summary = "Mint tokens to user")]
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Mint tokens to user", summary_ko = "유저에게 토큰 발행")]
 #[put("/v1/projects/:project_id/tokens/:meta_user_id", auth: ProjectAdminAuth)]
 pub async fn mint_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

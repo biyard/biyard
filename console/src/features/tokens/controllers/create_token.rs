@@ -9,7 +9,7 @@ use crate::features::projects::Project;
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
-#[api_doc_macros::api_doc(group = "Tokens", summary = "Create token")]
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Create token", summary_ko = "토큰 생성")]
 #[post("/v1/projects/:project_id/tokens", auth: ProjectAdminAuth)]
 pub async fn create_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

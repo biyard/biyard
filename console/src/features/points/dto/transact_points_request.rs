@@ -1,19 +1,24 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(api_doc_macros::ApiDocSchema)]
 #[cfg_attr(feature = "server", derive(schemars::JsonSchema))]
 pub struct TransactPointsRequest {
     /// Target month in YYYY-MM format. Defaults to current month if omitted.
+    #[field_doc(en = "Target month in YYYY-MM format. Defaults to current month.", ko = "대상 월 (YYYY-MM 형식). 미입력 시 현재 월.")]
     #[serde(default = "default_month")]
     pub month: String,
     /// Human-readable memo for the transaction.
+    #[field_doc(en = "Human-readable memo for the transaction.", ko = "트랜잭션에 대한 메모.")]
     pub description: Option<String>,
     /// Transaction details. Use `tx_type` to select Award, Deduct, Transfer, or Exchange.
+    #[field_doc(en = "Transaction type and details. Set tx_type to Award, Deduct, Transfer, or Exchange.", ko = "트랜잭션 유형 및 상세. tx_type을 Award, Deduct, Transfer, Exchange 중 선택.")]
     #[serde(flatten)]
     pub tx: Transaction,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(api_doc_macros::ApiDocSchema)]
 #[cfg_attr(feature = "server", derive(schemars::JsonSchema))]
 #[serde(tag = "tx_type")]
 pub enum Transaction {

@@ -9,7 +9,7 @@ use crate::features::tokens::{ProjectToken, TokenError};
 #[cfg(feature = "server")]
 use ethers::prelude::*;
 
-#[api_doc_macros::api_doc(group = "Tokens", summary = "Deploy token to blockchain")]
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Deploy token to blockchain", summary_ko = "토큰 블록체인 배포")]
 #[post("/v1/projects/:project_id/tokens/deploy", auth: ProjectAdminAuth)]
 pub async fn deploy_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

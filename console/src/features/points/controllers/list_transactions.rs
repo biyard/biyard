@@ -7,7 +7,7 @@ use crate::common::{CommonConfig, ProjectViewerAuth};
 #[cfg(feature = "server")]
 use crate::features::points::PointTransaction;
 
-#[api_doc_macros::api_doc(group = "Points", summary = "List all transactions")]
+#[api_doc_macros::api_doc(group = "Points", summary = "List all transactions", summary_ko = "전체 트랜잭션 목록")]
 #[get(
     "/v1/projects/:project_id/points/transactions?limit&bookmark&newest_first",
     auth: ProjectViewerAuth
