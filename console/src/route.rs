@@ -1,10 +1,10 @@
 use crate::common::ProjectPartition;
-use crate::features::accounts::views::{InviteAccept, SignIn, SignUp};
+use crate::features::accounts::pages::{InviteAccept, SignIn, SignUp};
 use crate::features::console::layout::Layout as ConsoleLayout;
-use crate::features::console::views::{Dashboard, Settings};
-use crate::features::credentials::views::Credentials;
-use crate::features::enterprises::views::{EnterpriseGeneralPage, MembersPage};
-use crate::features::projects::views::{
+use crate::features::console::pages::{Dashboard, Settings};
+use crate::features::credentials::pages::Credentials;
+use crate::features::enterprises::pages::{EnterpriseGeneralPage, MembersPage};
+use crate::features::projects::pages::{
     ProjectCreate, ProjectDetail, ProjectDetailLayout, ProjectEdit, ProjectPoints, ProjectSettings,
     ProjectToken, ProjectTreasury, Projects, TokenCreate, TokenEdit,
 };

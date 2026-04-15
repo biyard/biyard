@@ -1212,6 +1212,7 @@ dependencies = [
  "reqwest 0.12.24",
  "schemars 1.2.1",
  "serde",
+ "serde-wasm-bindgen",
  "serde_dynamo",
  "serde_json",
  "serde_repr",

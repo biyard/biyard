@@ -6,8 +6,8 @@ pub mod types;
 pub mod models;
 
 pub use dto::{
-    AddMinterResponse, ClaimResponse, CreateTokenRequest, DepositResponse, MintDataResponse,
-    MintTokenRequest, TokenBalanceResponse, TokenResponse, TransferTokenRequest,
+    CreateTokenRequest, DepositResponse, MintTokenRequest, TokenBalanceResponse, TokenResponse,
+    TransferTokenRequest,
 };
 #[cfg(feature = "server")]
 pub use models::{MonthlyTokenDistribution, ProjectToken, TokenBalance, TxClaim};

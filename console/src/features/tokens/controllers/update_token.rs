@@ -12,7 +12,6 @@ pub async fn update_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     name: Option<String>,
     symbol: Option<String>,
-    decimals: Option<u8>,
     description: Option<String>,
     monthly_emission: Option<i64>,
     decay_rate_bps: Option<u16>,
@@ -40,9 +39,6 @@ pub async fn update_token_handler(
     }
     if let Some(symbol) = symbol {
         updater = updater.with_symbol(symbol);
-    }
-    if let Some(decimals) = decimals {
-        updater = updater.with_decimals(decimals);
     }
     if let Some(description) = description {
         updater = updater.with_description(description);

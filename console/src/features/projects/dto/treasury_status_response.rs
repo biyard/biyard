@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
 
+use crate::common::rpc::WasmTreasuryStatus;
+use crate::features::tokens::TokenResponse;
+
 /// Live on-chain snapshot of a brand project's treasury.
 ///
 /// All values come from an RPC read against the treasury and brand
@@ -53,4 +56,43 @@ pub struct TreasuryStatusResponse {
     /// Includes `monthOffset` from `advanceMonth()` calls.
     #[serde(default)]
     pub current_month: u64,
+}
+
+impl TreasuryStatusResponse {
+    pub fn from_wasm(wasm: &WasmTreasuryStatus, token: &TokenResponse) -> Self {
+        let stable_mintable = token
+            .stable_token_address
+            .as_deref()
+            .and_then(|addr| {
+                use crate::common::SupportedChain;
+                token.chain_id.and_then(|cid| {
+                    SupportedChain::from_chain_id(cid).and_then(|chain| {
+                        chain
+                            .stable_token_options()
+                            .into_iter()
+                            .find(|opt| opt.address.eq_ignore_ascii_case(addr))
+                            .map(|opt| opt.mintable)
+                    })
+                })
+            })
+            .unwrap_or(false);
+
+        Self {
+            deployed: true,
+            chain_id: token.chain_id,
+            treasury_contract_address: token.treasury_contract_address.clone(),
+            brand_token_address: token.contract_address.clone(),
+            treasury_balance_raw: wasm.treasury_balance_raw.clone(),
+            stable_decimals: wasm.stable_decimals,
+            stable_symbol: wasm.stable_symbol.clone(),
+            stable_mintable,
+            total_supply_raw: wasm.total_supply_raw.clone(),
+            circulating_supply_raw: wasm.circulating_supply_raw.clone(),
+            treasury_held_tokens_raw: wasm.treasury_held_tokens_raw.clone(),
+            token_decimals: wasm.token_decimals,
+            token_symbol: wasm.token_symbol.clone(),
+            floor_price_raw_1e18: wasm.floor_price_raw_1e18.clone(),
+            current_month: wasm.current_month,
+        }
+    }
 }
