@@ -1,16 +1,8 @@
 mod overview;
 mod points;
-mod settings;
-mod token;
-pub mod token_editor;
-mod treasury;
 
 pub use overview::ProjectDetail;
 pub use points::ProjectPoints;
-pub use settings::ProjectSettings;
-pub use token::ProjectToken;
-pub use token_editor::{TokenCreate, TokenEdit};
-pub use treasury::ProjectTreasury;
 
 use dioxus::prelude::*;
 use dioxus_translate::use_translate;

@@ -8,7 +8,7 @@ use crate::common::ui::*;
 use crate::features::accounts::context::use_account_context;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
-use crate::features::projects::pages::project_editor::{ProjectEditorCard, ProjectEditorMode};
+use crate::features::projects::pages::editor_card::{ProjectEditorCard, ProjectEditorMode};
 
 /// Brand settings tab. Renders the editable brand profile inline (name,
 /// description, logo, monthly token supply, treasury reserve rate) plus a
@@ -77,10 +77,7 @@ pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
     if !can_write {
         return rsx! {
             div { class: "space-y-6",
-                AlertMessage {
-                    variant: AlertVariant::Info,
-                    {t.viewer_readonly_notice}
-                }
+                AlertMessage { variant: AlertVariant::Info, {t.viewer_readonly_notice} }
                 SectionCard {
                     SectionTitle { {t.brand_profile} }
                     div { class: "grid gap-4 sm:grid-cols-2",
@@ -88,7 +85,9 @@ pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             p { class: "text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground-muted",
                                 {t.name}
                             }
-                            p { class: "mt-1 text-sm font-semibold text-foreground", {project.name.clone()} }
+                            p { class: "mt-1 text-sm font-semibold text-foreground",
+                                {project.name.clone()}
+                            }
                         }
                         if let Some(desc) = project.description.clone() {
                             div {
@@ -166,9 +165,7 @@ pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                     DialogDescription { {t.delete_brand_warning} }
 
                     div { class: "mt-2 space-y-3",
-                        p { class: "text-sm text-foreground-soft",
-                            {t.delete_brand_confirm_prompt}
-                        }
+                        p { class: "text-sm text-foreground-soft", {t.delete_brand_confirm_prompt} }
                         p { class: "rounded-2xl border border-border bg-panel-muted px-3 py-2 font-mono text-sm font-semibold text-foreground",
                             "{brand_name}"
                         }
@@ -202,7 +199,11 @@ pub fn SettingsTab(project_id: ReadSignal<ProjectPartition>, project: ProjectRes
                             variant: BtnVariant::Danger,
                             disabled: !name_matches || deleting(),
                             onclick: on_confirm_delete,
-                            if deleting() { {t.deleting} } else { {t.delete_brand_button} }
+                            if deleting() {
+                                {t.deleting}
+                            } else {
+                                {t.delete_brand_button}
+                            }
                         }
                     }
                 }
