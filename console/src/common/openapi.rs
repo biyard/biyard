@@ -1,25 +1,11 @@
 use dioxus::fullstack::axum::{
     Json, Router,
-    response::{Html, IntoResponse},
+    response::IntoResponse,
     routing::get,
 };
 
-const EXCHANGE_HTML: &str = include_str!("../../dapp/exchange.html");
-const BUYBACK_HTML: &str = include_str!("../../dapp/buyback.html");
-
 pub fn router() -> Router {
-    Router::new()
-        .route("/dapp/exchange", get(serve_exchange))
-        .route("/dapp/buyback", get(serve_buyback))
-        .route("/docs/api.json", get(serve_api_docs_json))
-}
-
-async fn serve_exchange() -> impl IntoResponse {
-    Html(EXCHANGE_HTML)
-}
-
-async fn serve_buyback() -> impl IntoResponse {
-    Html(BUYBACK_HTML)
+    Router::new().route("/docs/api.json", get(serve_api_docs_json))
 }
 
 async fn serve_api_docs_json() -> impl IntoResponse {
@@ -31,6 +17,7 @@ async fn serve_api_docs_json() -> impl IntoResponse {
 fn build_openapi_spec(
     endpoints: &[&crate::common::types::api_doc_meta::ApiEndpointMeta],
 ) -> serde_json::Value {
+    use crate::common::types::api_doc_meta;
     use serde_json::json;
 
     let mut paths = serde_json::Map::new();
@@ -73,6 +60,9 @@ fn build_openapi_spec(
             }));
         }
 
+        let response_schema = api_doc_meta::schema_for_type(ep.response_type)
+            .unwrap_or_else(|| json!({ "type": "object", "description": ep.response_type }));
+
         let mut operation = json!({
             "summary": ep.summary,
             "tags": [ep.group],
@@ -81,7 +71,7 @@ fn build_openapi_spec(
                     "description": "Success",
                     "content": {
                         "application/json": {
-                            "schema": { "type": "object", "description": ep.response_type }
+                            "schema": response_schema
                         }
                     }
                 }
@@ -101,33 +91,36 @@ fn build_openapi_spec(
         }
 
         if !ep.body_params.is_empty() {
-            let mut properties = serde_json::Map::new();
-            let mut required = Vec::new();
-            for (name, ty) in ep.body_params {
-                properties.insert(
-                    name.to_string(),
-                    json!({ "type": rust_type_to_openapi_type(ty) }),
-                );
-                required.push(json!(name));
-            }
+            let body_type = ep.body_params.first().map(|(_, t)| *t).unwrap_or_default();
+            let body_schema = api_doc_meta::schema_for_type(body_type).unwrap_or_else(|| {
+                let mut properties = serde_json::Map::new();
+                let mut required = Vec::new();
+                for (name, ty) in ep.body_params {
+                    properties.insert(
+                        name.to_string(),
+                        json!({ "type": rust_type_to_openapi_type(ty) }),
+                    );
+                    required.push(json!(name));
+                }
+                json!({
+                    "type": "object",
+                    "properties": properties,
+                    "required": required,
+                })
+            });
+
             operation["requestBody"] = json!({
                 "required": true,
                 "content": {
                     "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": properties,
-                            "required": required,
-                        }
+                        "schema": body_schema
                     }
                 }
             });
         }
 
         let method = ep.method.to_lowercase();
-        let path_entry = paths
-            .entry(openapi_path)
-            .or_insert_with(|| json!({}));
+        let path_entry = paths.entry(openapi_path).or_insert_with(|| json!({}));
         path_entry[method] = operation;
     }
 

@@ -19,6 +19,7 @@ serde_with = { workspace = true }
 serde_repr = "0.1.20"
 by-macros = { workspace = true }
 api-doc-macros = { workspace = true }
+api-doc-types = { path = "../packages/api-doc-types" }
 inventory = { workspace = true }
 dioxus-translate = { workspace = true }
 tracing = { workspace = true }

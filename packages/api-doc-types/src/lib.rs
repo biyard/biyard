@@ -16,23 +16,49 @@ pub struct ApiEndpointMeta {
 
 inventory::collect!(ApiEndpointMeta);
 
-/// Field metadata tuple: (name, type_str, required, en_description, ko_description)
-pub type FieldMeta = &'static [(&'static str, &'static str, bool, &'static str, &'static str)];
+/// i18n field docs: (field_name, en_description, ko_description)
+pub type FieldDocs = &'static [(&'static str, &'static str, &'static str)];
 
 /// Schema entry for a DTO type, registered by the `ApiDocSchema` derive macro.
 pub struct ApiSchemaEntry {
     pub type_name: &'static str,
-    pub field_meta: fn() -> FieldMeta,
+    pub field_docs: fn() -> FieldDocs,
+    pub schema_fn: Option<fn() -> serde_json::Value>,
 }
 
 inventory::collect!(ApiSchemaEntry);
 
-/// Look up field metadata for a given type name.
-///
-/// Strips wrapper types like `Vec<Foo>` and `Option<Foo>` to find the
-/// inner type name registered by `#[derive(ApiDocSchema)]`.
-pub fn field_meta_for_type(type_name: &str) -> Option<FieldMeta> {
-    let inner = type_name
+/// Look up i18n field docs for a given type name.
+pub fn field_docs_for_type(type_name: &str) -> Option<FieldDocs> {
+    let inner = strip_wrappers(type_name);
+    inventory::iter::<ApiSchemaEntry>
+        .into_iter()
+        .find(|e| e.type_name == inner)
+        .map(|e| (e.field_docs)())
+}
+
+/// Look up JSON Schema for a given type name (server-only, via schemars).
+pub fn schema_for_type(type_name: &str) -> Option<serde_json::Value> {
+    let inner = strip_wrappers(type_name);
+    inventory::iter::<ApiSchemaEntry>
+        .into_iter()
+        .find(|e| e.type_name == inner)
+        .and_then(|e| e.schema_fn.map(|f| f()))
+}
+
+/// Look up JSON Schema + i18n docs merged for a given type name.
+pub fn schema_with_i18n(type_name: &str) -> Option<(serde_json::Value, FieldDocs)> {
+    let inner = strip_wrappers(type_name);
+    let entry = inventory::iter::<ApiSchemaEntry>
+        .into_iter()
+        .find(|e| e.type_name == inner)?;
+    let schema = (entry.schema_fn?)(  );
+    let docs = (entry.field_docs)();
+    Some((schema, docs))
+}
+
+fn strip_wrappers(type_name: &str) -> &str {
+    type_name
         .strip_prefix("Vec<")
         .and_then(|s| s.strip_suffix('>'))
         .or_else(|| {
@@ -40,12 +66,7 @@ pub fn field_meta_for_type(type_name: &str) -> Option<FieldMeta> {
                 .strip_prefix("Option<")
                 .and_then(|s| s.strip_suffix('>'))
         })
-        .unwrap_or(type_name);
-
-    inventory::iter::<ApiSchemaEntry>
-        .into_iter()
-        .find(|e| e.type_name == inner)
-        .map(|e| (e.field_meta)())
+        .unwrap_or(type_name)
 }
 
 /// Collect all registered API endpoint metadata.
