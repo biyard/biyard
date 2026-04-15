@@ -11,6 +11,7 @@ use crate::features::points::{MonthlyPointAggregation, PointBalance};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
+#[api_doc_macros::api_doc(group = "Points", summary = "Get monthly summaries")]
 #[get("/v1/projects/:project_id/points/:meta_user_id/monthly-summaries", auth: ProjectViewerAuth)]
 pub async fn get_monthly_summaries_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

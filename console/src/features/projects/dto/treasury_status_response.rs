@@ -10,6 +10,7 @@ use crate::features::tokens::TokenResponse;
 /// zero / empty and the frontend should treat the whole payload as
 /// unavailable (the brand still needs to deploy its contracts).
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
+#[cfg_attr(feature = "server", derive(schemars::JsonSchema))]
 pub struct TreasuryStatusResponse {
     /// Whether the treasury + brand token contracts have been deployed
     /// for this project.

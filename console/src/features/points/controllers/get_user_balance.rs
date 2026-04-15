@@ -9,6 +9,7 @@ use crate::features::points::{MonthlyPointAggregation, PointBalance};
 #[cfg(feature = "server")]
 use crate::features::tokens::ProjectToken;
 
+#[api_doc_macros::api_doc(group = "Points", summary = "Get user point balance")]
 #[get("/v1/projects/:project_id/points/:meta_user_id?month", auth: ProjectViewerAuth)]
 pub async fn get_user_balance_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

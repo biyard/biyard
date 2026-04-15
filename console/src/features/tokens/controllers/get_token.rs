@@ -11,6 +11,7 @@ use crate::features::tokens::{ProjectToken, TokenBalance, TokenError};
 /// has not yet defined a token. Returning `Ok(None)` instead of a 404
 /// keeps "no token yet" out of the browser console error log and lets the
 /// frontend distinguish "loading", "empty", and "error" states cleanly.
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Get token")]
 #[get("/v1/projects/:project_id/tokens", auth: ProjectViewerAuth)]
 pub async fn get_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

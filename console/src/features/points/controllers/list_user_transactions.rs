@@ -7,6 +7,7 @@ use crate::common::{CommonConfig, CompositePartition, Partition, ProjectViewerAu
 #[cfg(feature = "server")]
 use crate::features::points::PointTransaction;
 
+#[api_doc_macros::api_doc(group = "Points", summary = "List user transactions")]
 #[get("/v1/projects/:project_id/points/:meta_user_id/transactions?limit&bookmark&month", auth: ProjectViewerAuth)]
 pub async fn list_user_transactions_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

@@ -1,3 +1,4 @@
+pub mod api_doc_meta;
 mod composite_partition;
 mod entity_type;
 mod error;
