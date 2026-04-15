@@ -8,7 +8,7 @@ use crate::common::ui::*;
 use crate::features::accounts::context::use_account_context;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
-use crate::features::projects::views::project_editor::{ProjectEditorCard, ProjectEditorMode};
+use crate::features::projects::pages::project_editor::{ProjectEditorCard, ProjectEditorMode};
 
 /// Brand settings tab. Renders the editable brand profile inline (name,
 /// description, logo, monthly token supply, treasury reserve rate) plus a

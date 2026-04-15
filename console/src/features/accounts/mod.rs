@@ -4,7 +4,7 @@ pub mod dto;
 pub mod i18n;
 pub mod types;
 pub mod utils;
-pub mod views;
+pub mod pages;
 
 #[cfg(feature = "server")]
 pub mod models;

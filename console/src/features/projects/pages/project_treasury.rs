@@ -5,7 +5,7 @@ use crate::common::{ProjectPartition, SupportedChain};
 use crate::common::ui::*;
 use crate::features::accounts::context::use_account_context;
 use crate::features::projects::i18n::ProjectsTranslate;
-use crate::features::projects::views::{FloorPriceSimulatorDialog, SalesLogDialog};
+use crate::features::projects::pages::{FloorPriceSimulatorDialog, SalesLogDialog};
 use crate::features::projects::{ProjectResponse, TreasuryStatusResponse};
 
 /// `/projects/:project_id/treasury` — brand treasury page.

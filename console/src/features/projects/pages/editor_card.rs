@@ -5,8 +5,6 @@ use crate::Route;
 use crate::common::ProjectPartition;
 use crate::common::components::file_uploader::FileUploader;
 use crate::common::ui::*;
-use crate::features::accounts::context::use_account_context;
-use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::projects::ProjectResponse;
 use crate::features::projects::i18n::ProjectsTranslate;
 
@@ -17,72 +15,6 @@ pub enum ProjectEditorMode {
         project_id: ProjectPartition,
         project: ProjectResponse,
     },
-}
-
-#[component]
-pub fn ProjectCreate() -> Element {
-    let t: ProjectsTranslate = use_translate();
-    let console_t: ConsoleTranslate = use_translate();
-    let nav = use_navigator();
-    let account_ctx = use_account_context();
-    let enterprise_name = account_ctx()
-        .enterprise_name()
-        .unwrap_or_else(|| "Default enterprise".to_string());
-
-    // Viewers cannot create brands — bounce them back to the list. The
-    // redirect runs in an effect (not inline) so every hook above is
-    // still registered on every render.
-    let can_write = account_ctx().can_write();
-    use_effect(move || {
-        if !can_write {
-            nav.replace(Route::Projects {});
-        }
-    });
-    if !can_write {
-        return rsx! {};
-    }
-
-    rsx! {
-        div { class: "space-y-8",
-            PageHeader {
-                title: t.create_project.to_string(),
-                subtitle: t.create_brand_subtitle_in.replace("{enterprise}", &enterprise_name),
-                scope: PageScope::Workspace,
-                // Page is about creating a Brand — show "BRANDS" in the
-                // breadcrumb tag, not "ENTERPRISE".
-                workspace_label: t.brands_breadcrumb.to_string(),
-                brand_label: console_t.brand_scope_label.to_string(),
-                actions: rsx! {
-                    Btn {
-                        variant: BtnVariant::Secondary,
-                        onclick: move |_| {
-                            nav.push(Route::Projects {});
-                        },
-                        {t.back_to_projects}
-                    }
-                },
-            }
-
-            ProjectEditorCard {
-                mode: ProjectEditorMode::Create,
-            }
-        }
-    }
-}
-
-/// Legacy `/projects/:project_id/edit` URL.
-///
-/// Brand editing now lives inline in the Settings tab. Anyone who lands
-/// on `/edit` (bookmarks, old links) is redirected to the new location.
-#[component]
-pub fn ProjectEdit(project_id: ReadSignal<ProjectPartition>) -> Element {
-    let nav = use_navigator();
-    use_effect(move || {
-        nav.replace(Route::ProjectSettings {
-            project_id: project_id(),
-        });
-    });
-    rsx! {}
 }
 
 #[component]
@@ -134,9 +66,6 @@ pub fn ProjectEditorCard(
         t.brand_edit_helper
     };
 
-    // `preview_*_is_placeholder` flags let the live preview render
-    // empty-state values in a muted/italic style so the user does not
-    // mistake them for actual input.
     let preview_name_is_placeholder = name().trim().is_empty();
     let preview_name = if preview_name_is_placeholder {
         t.brand.to_string()
@@ -234,9 +163,6 @@ pub fn ProjectEditorCard(
                                 placeholder: t.description_placeholder.to_string(),
                             }
                         }
-
-                        // monthly_supply and treasury_reserve_rate are hardcoded
-                        // (1,000,000 and 5%) — will be refactored later.
                     }
 
                     div { class: "flex flex-col gap-3 pt-2 sm:flex-row sm:justify-end",
@@ -287,11 +213,6 @@ pub fn ProjectEditorCard(
                                             .await
                                             {
                                                 Ok(project) => {
-                                                    // Brand creation flows straight into token creation
-                                                    // so the user can finish the "brand + token" setup
-                                                    // in one pass. Hard navigation (full page load) so
-                                                    // the sidebar's `brands_loader` re-fetches and the
-                                                    // brand switcher reflects the brand-new project.
                                                     #[cfg(not(feature = "server"))]
                                                     {
                                                         let target = format!(

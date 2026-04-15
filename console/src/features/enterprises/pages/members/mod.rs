@@ -9,7 +9,8 @@ use crate::features::console::i18n::ConsoleTranslate;
 use crate::features::enterprises::EnterpriseTranslate;
 use crate::features::enterprises::MemberResponse;
 
-use super::invite_modal::InviteModal;
+mod invite_modal;
+use invite_modal::InviteModal;
 
 /// Owner / Admin / Viewer view of all current members + pending invites.
 /// Mutation actions (invite, change role, remove) are gated by role
