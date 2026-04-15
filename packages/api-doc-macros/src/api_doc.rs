@@ -9,14 +9,18 @@ use syn::{
 struct ApiDocArgs {
     group: LitStr,
     summary: LitStr,
+    summary_ko: Option<LitStr>,
     description: Option<LitStr>,
+    description_ko: Option<LitStr>,
 }
 
 impl Parse for ApiDocArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let mut group = None;
         let mut summary = None;
+        let mut summary_ko = None;
         let mut description = None;
+        let mut description_ko = None;
 
         let pairs = Punctuated::<syn::MetaNameValue, Token![,]>::parse_terminated(input)?;
         for pair in pairs {
@@ -42,7 +46,9 @@ impl Parse for ApiDocArgs {
             match key.as_str() {
                 "group" => group = Some(value),
                 "summary" => summary = Some(value),
+                "summary_ko" => summary_ko = Some(value),
                 "description" => description = Some(value),
+                "description_ko" => description_ko = Some(value),
                 other => {
                     return Err(syn::Error::new_spanned(
                         &pair.path,
@@ -55,7 +61,9 @@ impl Parse for ApiDocArgs {
         Ok(ApiDocArgs {
             group: group.ok_or_else(|| input.error("missing `group` attribute"))?,
             summary: summary.ok_or_else(|| input.error("missing `summary` attribute"))?,
+            summary_ko,
             description,
+            description_ko,
         })
     }
 }
@@ -230,11 +238,21 @@ pub fn api_doc_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let group = &args.group;
     let summary = &args.summary;
+    let summary_ko = args
+        .summary_ko
+        .as_ref()
+        .map(|s| s.value())
+        .unwrap_or_default();
     let description = args
         .description
         .as_ref()
         .map(|d| d.value())
         .unwrap_or_else(|| extract_doc_comments(&function));
+    let description_ko = args
+        .description_ko
+        .as_ref()
+        .map(|d| d.value())
+        .unwrap_or_default();
     let method = &route_info.method;
     let path = &route_info.path;
     let auth = route_info.auth.as_deref().unwrap_or("");
@@ -272,12 +290,14 @@ pub fn api_doc_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
     let output = quote! {
         #[cfg(feature = "server")]
         inventory::submit! {
-            crate::common::types::api_doc_meta::ApiEndpointMeta {
+            api_doc_types::ApiEndpointMeta {
                 method: #method,
                 path: #path,
                 group: #group,
                 summary: #summary,
                 description: #description,
+                summary_ko: #summary_ko,
+                description_ko: #description_ko,
                 auth: #auth,
                 path_params: &[#(#path_param_entries),*],
                 query_params: &[#(#query_param_entries),*],
