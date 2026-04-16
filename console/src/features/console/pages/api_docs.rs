@@ -1104,24 +1104,13 @@ fn SubFields(fields: Vec<SchemaField>, ko: bool, is_response: bool) -> Element {
 
 #[component]
 fn LanguageSwitcher() -> Element {
-    let lang = dioxus_translate::use_language();
-    let current = lang();
-    let (current_label, next_label) = match current {
+    let mut lang = dioxus_translate::use_language();
+    let (current_label, next_label) = match lang() {
         dioxus_translate::Language::Ko => ("한국어", "EN"),
         _ => ("English", "KO"),
     };
 
-    let on_toggle = move |_| {
-        let new_lang = match lang() {
-            dioxus_translate::Language::Ko => "en",
-            _ => "ko",
-        };
-        document::eval(&format!(
-            r#"localStorage.setItem("language", "{new_lang}");
-            document.cookie = "language={new_lang}; path=/; max-age=31536000; samesite=lax";
-            window.location.reload();"#
-        ));
-    };
+    let on_toggle = move |_| lang.set(lang().switch());
 
     rsx! {
         button {
