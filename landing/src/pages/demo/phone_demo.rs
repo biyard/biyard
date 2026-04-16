@@ -150,17 +150,17 @@ pub(super) fn PhoneDemo() -> Element {
 
                 // Step controller
                 div { class: "step-controller",
-                    for idx in 0..ALL_STEPS.len() {
+                    for (idx, step) in ALL_STEPS.iter().copied().enumerate() {
                         {
-                            let step = ALL_STEPS[idx];
-                            let active = *current.read() == step;
+                            let step_click = step;
+                            let active = current() == step;
                             let lm_class = if step.is_biyard() { "" } else { "lm-step " };
                             let active_class = if active { "active" } else { "" };
                             rsx! {
                                 button {
                                     key: "{idx}",
                                     class: "step-btn {lm_class}{active_class}",
-                                    onclick: move |_| current.set(ALL_STEPS[idx]),
+                                    onclick: move |_| { current.set(step_click); },
                                     "{step.label()}"
                                 }
                             }
@@ -177,7 +177,7 @@ pub(super) fn PhoneDemo() -> Element {
                             div { class: "phone-notch" }
                             div { class: "phone-screen",
                                 {
-                                    match *current.read() {
+                                    match current() {
                                         Step::LmHome => rsx! { LmHomeScreen {} },
                                         Step::LmProduct => rsx! { LmProductScreen {} },
                                         Step::LmCheckout => rsx! { LmCheckoutScreen {} },
@@ -194,7 +194,7 @@ pub(super) fn PhoneDemo() -> Element {
 
                     // Annotation panel
                     {
-                        let step = *current.read();
+                        let step = current();
                         let info = step.info();
                         let is_by = step.is_biyard();
                         let owner_color = if is_by { "#00dfc0" } else { "#D4C5B0" };
@@ -244,7 +244,7 @@ pub(super) fn PhoneDemo() -> Element {
                                     button {
                                         style: "flex: 1; padding: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #94a3b8; font-size: 12px; cursor: pointer;",
                                         onclick: move |_| {
-                                            let cur = *current.read();
+                                            let cur = current();
                                             let idx = ALL_STEPS.iter().position(|s| *s == cur).unwrap_or(0);
                                             if idx > 0 {
                                                 current.set(ALL_STEPS[idx - 1]);
@@ -255,7 +255,7 @@ pub(super) fn PhoneDemo() -> Element {
                                     button {
                                         style: "flex: 1; padding: 10px; background: #00dfc0; color: #020408; border: none; border-radius: 8px; font-size: 12px; font-weight: 900; cursor: pointer;",
                                         onclick: move |_| {
-                                            let cur = *current.read();
+                                            let cur = current();
                                             let idx = ALL_STEPS.iter().position(|s| *s == cur).unwrap_or(0);
                                             if idx < ALL_STEPS.len() - 1 {
                                                 current.set(ALL_STEPS[idx + 1]);
