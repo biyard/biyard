@@ -4,8 +4,8 @@ use dioxus::fullstack::axum::{
     routing::get,
 };
 
-const EXCHANGE_HTML: &str = include_str!("../../dapp/exchange.html");
-const BUYBACK_HTML: &str = include_str!("../../dapp/buyback.html");
+const EXCHANGE_HTML: &str = include_str!("../../../dapp/exchange.html");
+const BUYBACK_HTML: &str = include_str!("../../../dapp/buyback.html");
 
 pub fn router() -> Router {
     Router::new()

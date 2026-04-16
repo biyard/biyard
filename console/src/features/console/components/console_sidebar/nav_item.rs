@@ -2,8 +2,8 @@ use dioxus::prelude::*;
 
 use crate::Route;
 use crate::common::ui::{
-    IconBuilding, IconCredentials, IconDashboard, IconFolderOpen, IconLock, IconMembers,
-    IconSettings, IconStar, IconToken,
+    IconBookOpen, IconBuilding, IconCredentials, IconDashboard, IconFolderOpen, IconLock,
+    IconMembers, IconSettings, IconStar, IconToken,
 };
 
 use super::SidebarOpen;
@@ -19,6 +19,7 @@ pub(super) enum NavIcon {
     Points,
     Treasury,
     Settings,
+    ApiDocs,
 }
 
 #[component]
@@ -85,6 +86,9 @@ pub(super) fn NavIconView(icon: NavIcon) -> Element {
         },
         NavIcon::Settings => rsx! {
             IconSettings { class: "h-5 w-5" }
+        },
+        NavIcon::ApiDocs => rsx! {
+            IconBookOpen { class: "h-5 w-5" }
         },
     }
 }

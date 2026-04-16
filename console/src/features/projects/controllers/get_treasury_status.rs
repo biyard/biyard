@@ -7,6 +7,7 @@ use crate::common::{CommonConfig, EntityType, ProjectViewerAuth, SupportedChain}
 #[cfg(feature = "server")]
 use crate::features::tokens::ProjectToken;
 
+#[api_doc_macros::api_doc(group = "Projects", summary = "Get treasury status", summary_ko = "트레저리 상태 조회")]
 #[get("/v1/projects/:project_id/treasury/status", auth: ProjectViewerAuth)]
 pub async fn get_treasury_status_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

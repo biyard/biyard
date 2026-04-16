@@ -7,6 +7,7 @@ use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Update token", summary_ko = "토큰 수정")]
 #[put("/v1/projects/:project_id/tokens", auth: ProjectAdminAuth)]
 pub async fn update_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

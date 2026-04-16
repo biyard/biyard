@@ -89,6 +89,8 @@ Storage key: `dioxus_translate::STORAGE_KEY`
 
 ## File Organization
 
+**Always place `translate!` macro definitions in a dedicated `i18n.rs` file.** Never inline `translate!` blocks in page or component files.
+
 Each feature module has its own `i18n.rs`:
 
 ```

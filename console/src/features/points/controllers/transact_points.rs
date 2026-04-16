@@ -13,6 +13,7 @@ use crate::features::projects::Project;
 #[cfg(feature = "server")]
 use aws_sdk_dynamodb::types::TransactWriteItem;
 
+#[api_doc_macros::api_doc(group = "Points", summary = "Transact points", summary_ko = "포인트 트랜잭션")]
 #[post("/v1/projects/:project_id/points", auth: ProjectAuth)]
 pub async fn transact_points_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,

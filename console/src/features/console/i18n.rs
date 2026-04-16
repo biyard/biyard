@@ -63,6 +63,10 @@ translate! {
         en: "Treasury",
         ko: "트레저리",
     },
+    nav_api_docs: {
+        en: "API Docs",
+        ko: "API 문서",
+    },
     open_sidebar: {
         en: "Open navigation",
         ko: "사이드바 열기",
@@ -271,4 +275,32 @@ translate! {
         en: "Light",
         ko: "라이트",
     },
+}
+
+translate! {
+    ApiDocsTranslate;
+
+    api_docs_title: { en: "API Reference", ko: "API 레퍼런스" },
+    api_docs_hero_desc: {
+        en: "Manage points and tokens for your project on blockchain. Award points, mint tokens, and query balances programmatically via REST.",
+        ko: "블록체인 위에서 프로젝트의 포인트와 토큰을 관리하세요. REST API를 통해 포인트 지급, 토큰 발행, 잔액 조회를 프로그래밍 방식으로 수행할 수 있습니다.",
+    },
+    api_docs_base_url_label: { en: "Base URL", ko: "기본 URL" },
+    api_docs_auth_title: { en: "Authentication", ko: "인증" },
+    api_docs_auth_desc: {
+        en: "All API requests require a Bearer token. Create an API key from Enterprise > Settings > API Keys.",
+        ko: "모든 API 요청에는 Bearer 토큰이 필요합니다. Enterprise > 설정 > API 키에서 생성하세요.",
+    },
+    api_docs_parameters: { en: "Parameters", ko: "파라미터" },
+    api_docs_body_fields: { en: "Body fields", ko: "요청 본문 필드" },
+    api_docs_returns: { en: "Returns", ko: "응답" },
+    api_docs_request_label: { en: "Request", ko: "요청 예시" },
+    api_docs_response_label: { en: "Response", ko: "응답 예시" },
+    api_docs_required_label: { en: "REQUIRED", ko: "필수" },
+    api_docs_optional_label: { en: "optional", ko: "선택" },
+    api_docs_in_path: { en: "In path", ko: "경로 파라미터" },
+    api_docs_in_query: { en: "In query", ko: "쿼리 파라미터" },
+    api_docs_endpoints_count: { en: "endpoints", ko: "개 엔드포인트" },
+    api_docs_path_params: { en: "Path parameters", ko: "경로 파라미터" },
+    api_docs_query_params: { en: "Query parameters", ko: "쿼리 파라미터" },
 }

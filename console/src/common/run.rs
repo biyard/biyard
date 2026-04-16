@@ -32,9 +32,11 @@ fn serve(app: fn() -> Element) {
     );
 
     let dioxus_router = dioxus::server::router(app);
-    let dapp_router = crate::common::dapp::router();
+    let dapp_router = crate::common::blockchain::dapp::router();
+    let openapi_router = crate::common::openapi::router();
     let app = dioxus_router
         .merge(dapp_router)
+        .merge(openapi_router)
         .layer(api_domain_filter)
         .layer(account_auth_layer)
         .layer(session_layer);

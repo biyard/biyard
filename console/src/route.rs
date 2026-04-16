@@ -1,7 +1,7 @@
 use crate::common::ProjectPartition;
 use crate::features::accounts::pages::{InviteAccept, SignIn, SignUp};
 use crate::features::console::layout::Layout as ConsoleLayout;
-use crate::features::console::pages::{Dashboard, Settings};
+use crate::features::console::pages::{ApiDocs, Dashboard, Settings};
 use crate::features::credentials::pages::Credentials;
 use crate::features::enterprises::pages::{EnterpriseGeneralPage, MembersPage};
 use crate::features::projects::pages::{
@@ -21,6 +21,10 @@ use dioxus::prelude::*;
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 pub enum Route {
+    // Public pages (no sidebar, no auth)
+    #[route("/docs/api")]
+    ApiDocs {},
+
     // Auth (no sidebar, public)
     #[route("/signin")]
     SignIn {},

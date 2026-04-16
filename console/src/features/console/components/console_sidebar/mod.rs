@@ -377,6 +377,13 @@ pub fn ConsoleSidebar() -> Element {
                         icon: NavIcon::Credentials,
                         collapsed,
                     }
+                    NavItem {
+                        label: t.nav_api_docs.to_string(),
+                        to: Route::ApiDocs {},
+                        is_active: matches!(route, Route::ApiDocs {}),
+                        icon: NavIcon::ApiDocs,
+                        collapsed,
+                    }
                 }
             }
 

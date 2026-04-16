@@ -18,7 +18,7 @@ pub mod rpc;
 #[cfg(feature = "server")]
 pub mod blockchain;
 #[cfg(feature = "server")]
-pub mod dapp;
+pub mod openapi;
 #[cfg(feature = "server")]
 pub mod middlewares;
 #[cfg(feature = "server")]
