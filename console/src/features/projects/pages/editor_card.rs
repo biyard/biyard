@@ -213,21 +213,9 @@ pub fn ProjectEditorCard(
                                             .await
                                             {
                                                 Ok(project) => {
-                                                    #[cfg(not(feature = "server"))]
-                                                    {
-                                                        let target = format!(
-                                                            "/projects/{}/token/new",
-                                                            project.id,
-                                                        );
-                                                        let _ = web_sys::window()
-                                                            .and_then(|w| w.location().assign(&target).ok());
-                                                    }
-                                                    #[cfg(feature = "server")]
-                                                    {
-                                                        nav.push(Route::TokenCreate {
-                                                            project_id: ProjectPartition::from(project.id),
-                                                        });
-                                                    }
+                                                    nav.replace(Route::TokenCreate {
+                                                        project_id: ProjectPartition::from(project.id),
+                                                    });
                                                 }
                                                 Err(error) => {
                                                     message.set(Some((AlertVariant::Error, error.to_string())));
