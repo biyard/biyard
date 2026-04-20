@@ -1,4 +1,5 @@
 import {
+  CfnOutput,
   Duration,
   Stack,
   StackProps,
@@ -244,5 +245,54 @@ export class AppClusterStack extends Stack {
         ),
       });
     }
+
+    // --- CloudMap A-record service for VPC-internal callers ---------------
+    // Same default VPC services (e.g. ratel app-shell Lambda) reach the
+    // console API directly by its private DNS — no IGW, no NAT, no
+    // PrivateLink, no extra ALB. The same Fargate tasks back both the
+    // public `api.<host>` route and this internal endpoint, so external
+    // users are unaffected.
+    //
+    // The pre-existing CloudMap registration on `fargateService.cloudMapOptions`
+    // uses an SRV record (consumed by API Gateway's
+    // `HttpServiceDiscoveryIntegration`). SRV records carry port info and
+    // are not resolvable by ordinary HTTP clients, so we register the same
+    // tasks under a *second* CloudMap service that emits plain A records.
+    //
+    // Tasks are registered/deregistered automatically by ECS as part of
+    // its task lifecycle, so deploys and autoscaling stay correct.
+    const internalApiService = new sd.Service(this, "InternalApiService", {
+      namespace,
+      // Final FQDN = `api.<namespace.namespaceName>`
+      // (e.g. `api.biyard-dev-svc.local`). Short TTL so failed deploys
+      // drain quickly from caller-side resolvers.
+      name: "api",
+      dnsRecordType: sd.DnsRecordType.A,
+      dnsTtl: Duration.seconds(30),
+      // Lifecycle is owned by ECS; no Route53 health check needed because
+      // task IPs come and go atomically with task start/stop.
+      customHealthCheck: { failureThreshold: 1 },
+    });
+
+    fargateService.associateCloudMapService({
+      service: internalApiService,
+      containerPort,
+    });
+
+    // Surface the FQDN so downstream services (ratel CI workflow) can pick
+    // it up as `BIYARD_API_URL=http://<dns>:<port>`. Tagged with the stack
+    // name so dev and prod outputs don't collide when both stacks coexist.
+    const internalApiDns = `${internalApiService.serviceName}.${namespace.namespaceName}`;
+    new CfnOutput(this, "InternalApiDnsName", {
+      value: internalApiDns,
+      exportName: `${this.stackName}-InternalApiDnsName`,
+      description:
+        "Private CloudMap DNS for in-VPC consumers of the console API (e.g. ratel)",
+    });
+    new CfnOutput(this, "InternalApiPort", {
+      value: String(containerPort),
+      exportName: `${this.stackName}-InternalApiPort`,
+      description: "Container port to use with InternalApiDnsName",
+    });
   }
 }
