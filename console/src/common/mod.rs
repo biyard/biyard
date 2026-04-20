@@ -18,6 +18,8 @@ pub mod rpc;
 #[cfg(feature = "server")]
 pub mod blockchain;
 #[cfg(feature = "server")]
+pub mod health;
+#[cfg(feature = "server")]
 pub mod openapi;
 #[cfg(feature = "server")]
 pub mod middlewares;

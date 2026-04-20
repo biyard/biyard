@@ -5,6 +5,7 @@ import {
   StackProps,
   aws_ec2 as ec2,
   aws_ecs as ecs,
+  aws_elasticloadbalancingv2 as elbv2,
   aws_apigatewayv2 as apigw,
   aws_route53 as route53,
   aws_certificatemanager as acm,
@@ -15,7 +16,7 @@ import {
 import { Construct } from "constructs";
 import { Repository } from "aws-cdk-lib/aws-ecr";
 import * as r53Targets from "aws-cdk-lib/aws-route53-targets";
-import { HttpServiceDiscoveryIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
+import { HttpAlbIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export interface AppClusterStackProps extends StackProps {
   appDomain: string;
@@ -65,15 +66,31 @@ export class AppClusterStack extends Stack {
       repoName,
     );
 
+    const albSg = new ec2.SecurityGroup(this, "AlbSG", {
+      vpc,
+      description: "Internal ALB security group",
+      allowAllOutbound: true,
+    });
+    albSg.addIngressRule(
+      ec2.Peer.ipv4(vpc.vpcCidrBlock),
+      ec2.Port.tcp(80),
+      "Internal HTTP from VPC",
+    );
+
     const sg = new ec2.SecurityGroup(this, "AppSG", {
       vpc,
       description: "Console ECS security group",
       allowAllOutbound: true,
     });
     sg.addIngressRule(
+      albSg,
+      ec2.Port.tcp(containerPort),
+      "From internal ALB",
+    );
+    sg.addIngressRule(
       ec2.Peer.ipv4(vpc.vpcCidrBlock),
       ec2.Port.tcp(containerPort),
-      "Console HTTP",
+      "Direct from VPC (CloudMap A record callers)",
     );
 
     const taskExecutionRole = new iam.Role(this, "TaskExecutionRole", {
@@ -121,9 +138,13 @@ export class AppClusterStack extends Stack {
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       securityGroups: [sg],
       cloudMapOptions: {
-        name: "console",
+        name: "api",
         cloudMapNamespace: namespace,
-        dnsRecordType: sd.DnsRecordType.SRV,
+        // A record (MULTIVALUE by default) — callable as
+        // `http://api.biyard-<stage>-svc.local:<containerPort>` from
+        // same-VPC clients (e.g. ratel app-shell Lambda). API Gateway
+        // reaches the service via ALB, not this DNS entry.
+        dnsRecordType: sd.DnsRecordType.A,
         container,
         containerPort,
       },
@@ -140,32 +161,81 @@ export class AppClusterStack extends Stack {
       scaleOutCooldown: Duration.seconds(60),
     });
 
-    // --- VPC Link + API Gateway Integration ---
+    // --- Internal ALB in front of Fargate ---
+    // Shared by:
+    //   - API Gateway HTTP API (public `api.<host>`) via HttpAlbIntegration
+    //   - (optional) direct in-VPC callers that want load balancing +
+    //     health checks instead of DNS-based MULTIVALUE.
     const supportedSubnets = vpc.publicSubnets.filter(
       (s) => s.availabilityZone !== "ap-northeast-2d",
     );
 
+    // NOTE: this VPC only has public subnets, so we place the ALB in public
+    // subnets. `internetFacing: true` is required for public-subnet ALBs;
+    // actual access is restricted to the VPC CIDR via `albSg` ingress rules,
+    // so the ALB is effectively internal-only.
+    const alb = new elbv2.ApplicationLoadBalancer(this, "InternalAlb", {
+      vpc,
+      internetFacing: true,
+      vpcSubnets: { subnets: supportedSubnets },
+      securityGroup: albSg,
+    });
+
+    const listener = alb.addListener("HttpListener", {
+      port: 80,
+      protocol: elbv2.ApplicationProtocol.HTTP,
+    });
+
+    listener.addTargets("FargateTg", {
+      port: containerPort,
+      protocol: elbv2.ApplicationProtocol.HTTP,
+      targets: [fargateService],
+      deregistrationDelay: Duration.seconds(20),
+      healthCheck: {
+        path: "/v1/health",
+        healthyHttpCodes: "200",
+        interval: Duration.seconds(15),
+        healthyThresholdCount: 2,
+        unhealthyThresholdCount: 3,
+      },
+    });
+
+    // --- API Gateway integration via ALB ---
+    // Explicit VpcLink: auto-created VpcLinks default to private subnets,
+    // which this VPC does not have.
     const vpcLink = new apigw.VpcLink(this, "VpcLink", {
       vpc,
       subnets: { subnets: supportedSubnets },
-      securityGroups: [sg],
+      securityGroups: [albSg],
     });
 
-    const ecsIntegration = new HttpServiceDiscoveryIntegration(
-      "EcsIntegration",
-      fargateService.cloudMapService!,
+    const albIntegration = new HttpAlbIntegration(
+      "EcsAlbIntegration",
+      listener,
       { vpcLink },
     );
 
     httpApi.addRoutes({
       path: "/{proxy+}",
       methods: [apigw.HttpMethod.ANY],
-      integration: ecsIntegration,
+      integration: albIntegration,
     });
     httpApi.addRoutes({
       path: "/",
       methods: [apigw.HttpMethod.ANY],
-      integration: ecsIntegration,
+      integration: albIntegration,
+    });
+
+    new CfnOutput(this, "InternalApiDnsName", {
+      value: `api.${namespace.namespaceName}`,
+      exportName: `${this.stackName}-InternalApiDnsName`,
+      description:
+        "Private CloudMap DNS for in-VPC consumers (e.g. ratel app-shell Lambda)",
+    });
+    new CfnOutput(this, "InternalApiPort", {
+      value: String(containerPort),
+      exportName: `${this.stackName}-InternalApiPort`,
+      description: "Container port to use with InternalApiDnsName",
     });
 
     // --- Custom Domain + Route53 ---
@@ -246,53 +316,5 @@ export class AppClusterStack extends Stack {
       });
     }
 
-    // --- CloudMap A-record service for VPC-internal callers ---------------
-    // Same default VPC services (e.g. ratel app-shell Lambda) reach the
-    // console API directly by its private DNS — no IGW, no NAT, no
-    // PrivateLink, no extra ALB. The same Fargate tasks back both the
-    // public `api.<host>` route and this internal endpoint, so external
-    // users are unaffected.
-    //
-    // The pre-existing CloudMap registration on `fargateService.cloudMapOptions`
-    // uses an SRV record (consumed by API Gateway's
-    // `HttpServiceDiscoveryIntegration`). SRV records carry port info and
-    // are not resolvable by ordinary HTTP clients, so we register the same
-    // tasks under a *second* CloudMap service that emits plain A records.
-    //
-    // Tasks are registered/deregistered automatically by ECS as part of
-    // its task lifecycle, so deploys and autoscaling stay correct.
-    const internalApiService = new sd.Service(this, "InternalApiService", {
-      namespace,
-      // Final FQDN = `api.<namespace.namespaceName>`
-      // (e.g. `api.biyard-dev-svc.local`). Short TTL so failed deploys
-      // drain quickly from caller-side resolvers.
-      name: "api",
-      dnsRecordType: sd.DnsRecordType.A,
-      dnsTtl: Duration.seconds(30),
-      // Lifecycle is owned by ECS; no Route53 health check needed because
-      // task IPs come and go atomically with task start/stop.
-      customHealthCheck: { failureThreshold: 1 },
-    });
-
-    fargateService.associateCloudMapService({
-      service: internalApiService,
-      containerPort,
-    });
-
-    // Surface the FQDN so downstream services (ratel CI workflow) can pick
-    // it up as `BIYARD_API_URL=http://<dns>:<port>`. Tagged with the stack
-    // name so dev and prod outputs don't collide when both stacks coexist.
-    const internalApiDns = `${internalApiService.serviceName}.${namespace.namespaceName}`;
-    new CfnOutput(this, "InternalApiDnsName", {
-      value: internalApiDns,
-      exportName: `${this.stackName}-InternalApiDnsName`,
-      description:
-        "Private CloudMap DNS for in-VPC consumers of the console API (e.g. ratel)",
-    });
-    new CfnOutput(this, "InternalApiPort", {
-      value: String(containerPort),
-      exportName: `${this.stackName}-InternalApiPort`,
-      description: "Container port to use with InternalApiDnsName",
-    });
   }
 }
