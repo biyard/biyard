@@ -172,6 +172,18 @@ make <target>
 - For `use_effect` that depends on a loader value, capture it as `Option<Loader<T>>` (it is `Copy`) so the effect is registered unconditionally and no-ops while pending.
 - See [.claude/rules/dioxus-frontend.md](.claude/rules/dioxus-frontend.md) "Hook Call Order" for the canonical patterns.
 
+#### Understanding `cannot reclaim ElementId(N)`
+- `arena.rs` is **not** Dioxus's hook store. It manages the lifetime of mounted `ElementId`s. Hooks are tracked separately in `scope_context.rs` via `hook_index`.
+- `cannot reclaim ElementId(N)` means Dioxus tried to reclaim/unmount the same mounted node twice. Treat it as a **duplicate-remove symptom**, not as an automatic proof that hooks are wrong.
+- The numeric `ElementId(N)` itself is **not stable diagnostic data**. Allocation order changes between runs and IDs are reused over time, so focus on the surrounding render/suspense transition, not on the specific number.
+- Hook-order violations are one common cause because they corrupt scope/mount bookkeeping, but they are not the only cause.
+- When this error appears, inspect the **suspense structure** around the failing navigation:
+  - which boundary owns the persistent shell
+  - which boundary owns the route body
+  - whether both sides can suspend during the same transition
+- In this repo especially, check shared chrome (`sidebar`, `topbar`, root providers/layout wrappers) for `use_loader(...)?` and compare that against nested route-level `SuspenseBoundary` usage.
+- Also inspect any component that conditionally changes hook order (`use_loader(...)?` before later hooks, hooks after early `return`, hooks under conditional branches).
+
 ### Keep RSX Thin — Hoist Handler Bodies
 - **Do not inline non-trivial handler logic inside `rsx!`.** `onclick` / `onsubmit` / `oninput` closures with `spawn(async move { ... })`, `match` arms, multi-step state updates, or error handling must be defined as `let on_xxx = move |_| { ... };` *above* the `rsx!` block and referenced by name in the markup.
 - **Allowed exceptions:** one-line trivial closures that just toggle a signal (`onclick: move |_| open.set(true)`) and pure-display formatting bound directly to an attribute.

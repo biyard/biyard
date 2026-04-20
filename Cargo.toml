@@ -34,3 +34,6 @@ aws-sdk-dynamodb = "1"
 aws-sdk-s3 = "1"
 serde_dynamo = { version = "4.3", features = ["aws-sdk-dynamodb+1"] }
 ethers = { version = "2", features = ["abigen", "ws"] }
+serde-wasm-bindgen = "0.6"
+inventory = "0.3"
+api-doc-macros = { path = "packages/api-doc-macros" }

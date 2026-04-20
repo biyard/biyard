@@ -67,14 +67,6 @@ translate! {
         en: "Enter token symbol (e.g., BTC, ETH)",
         ko: "토큰 심볼 입력 (예: BTC, ETH)",
     },
-    decimals: {
-        en: "Decimals",
-        ko: "소수점",
-    },
-    decimals_placeholder: {
-        en: "Enter decimals (0-18, default: 0)",
-        ko: "소수점 입력 (0-18, 기본값: 0)",
-    },
     status: {
         en: "Status",
         ko: "상태",
@@ -355,10 +347,6 @@ translate! {
         en: "Token Symbol",
         ko: "토큰 심볼",
     },
-    token_decimals: {
-        en: "Token Decimals",
-        ko: "토큰 소수점",
-    },
     token_name: {
         en: "Token Name",
         ko: "토큰 이름",
@@ -396,8 +384,8 @@ translate! {
         ko: "이 작업은 되돌릴 수 없습니다",
     },
     deploy_confirm_irreversible_body: {
-        en: "Once deployed, the token name, symbol, decimals, and initial supply are locked on-chain.",
-        ko: "한 번 배포되면 토큰 이름, 심볼, 소수점 자릿수, 초기 공급량은 온체인에 고정됩니다.",
+        en: "Once deployed, the token name, symbol, and initial supply are locked on-chain.",
+        ko: "한 번 배포되면 토큰 이름, 심볼, 초기 공급량은 온체인에 고정됩니다.",
     },
     deploy_confirm_acknowledge: {
         en: "I understand this deploys to the blockchain and cannot be undone.",
@@ -1050,8 +1038,8 @@ translate! {
         ko: "토큰이 저장되었습니다.",
     },
     token_required_fields: {
-        en: "Please fill in token name, symbol, decimals, and initial supply.",
-        ko: "토큰 이름, 심볼, 소수점 자릿수, 초기 발행량을 모두 입력해 주세요.",
+        en: "Please fill in token name, symbol, and initial supply.",
+        ko: "토큰 이름, 심볼, 초기 발행량을 모두 입력해 주세요.",
     },
     create_project_subtitle: {
         en: "Define the brand identity and treasury defaults. You can configure the token in the next step.",
@@ -1300,6 +1288,10 @@ translate! {
     test_dapp_desc: {
         en: "User scenario test",
         ko: "User 시나리오 테스트",
+    },
+    api_integration_guide: {
+        en: "API Integration Guide",
+        ko: "API 연동 가이드",
     },
 
 }

@@ -13,10 +13,14 @@ pub mod utils;
 pub mod components;
 pub mod ui;
 
+pub mod rpc;
+
 #[cfg(feature = "server")]
 pub mod blockchain;
 #[cfg(feature = "server")]
-pub mod dapp;
+pub mod health;
+#[cfg(feature = "server")]
+pub mod openapi;
 #[cfg(feature = "server")]
 pub mod middlewares;
 #[cfg(feature = "server")]

@@ -18,6 +18,9 @@ serde_json = { workspace = true }
 serde_with = { workspace = true }
 serde_repr = "0.1.20"
 by-macros = { workspace = true }
+api-doc-macros = { workspace = true }
+api-doc-types = { path = "../packages/api-doc-types" }
+inventory = { workspace = true }
 dioxus-translate = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }
@@ -48,6 +51,7 @@ ethers = { workspace = true, optional = true }
 # Web-only dependencies
 gloo-timers = { version = "0.3", features = ["futures"], optional = true }
 getrandom = { version = "0.4", features = ["wasm_js"], optional = true }
+serde-wasm-bindgen = { workspace = true, optional = true }
 
 # Shared
 tracing-subscriber = { workspace = true }
@@ -76,7 +80,7 @@ dioxus-cli-config.workspace = true
 [features]
 default = ["full"]
 full = []
-web = ["dioxus/web", "getrandom", "gloo-timers"]
+web = ["dioxus/web", "getrandom", "gloo-timers", "serde-wasm-bindgen"]
 server = [
     "aws-config",
     "aws-credential-types",

@@ -9,6 +9,7 @@ use crate::features::tokens::{ProjectToken, TokenError};
 #[cfg(feature = "server")]
 use ethers::prelude::*;
 
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Deploy token to blockchain", summary_ko = "토큰 블록체인 배포")]
 #[post("/v1/projects/:project_id/tokens/deploy", auth: ProjectAdminAuth)]
 pub async fn deploy_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
@@ -40,10 +41,9 @@ pub async fn deploy_token_handler(
     if monthly_emission_raw == 0 {
         return Err(TokenError::DeployFailed("Monthly emission not configured".to_string()).into());
     }
-    // Scale by 10^decimals so the on-chain value matches ERC-20 units.
+    // Scale by 10^18 so the on-chain value matches ERC-20 units.
     // BrandToken inherits OpenZeppelin ERC20 default decimals = 18.
-    let decimals_scale = 10u128.pow(token.decimals as u32);
-    let monthly_emission = monthly_emission_raw as u128 * decimals_scale;
+    let monthly_emission = monthly_emission_raw as u128 * 10u128.pow(18);
 
     let stable_addr_str = token
         .stable_token_address

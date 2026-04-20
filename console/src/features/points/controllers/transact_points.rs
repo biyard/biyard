@@ -13,6 +13,7 @@ use crate::features::projects::Project;
 #[cfg(feature = "server")]
 use aws_sdk_dynamodb::types::TransactWriteItem;
 
+#[api_doc_macros::api_doc(group = "Points", summary = "Transact points", summary_ko = "포인트 트랜잭션")]
 #[post("/v1/projects/:project_id/points", auth: ProjectAuth)]
 pub async fn transact_points_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
@@ -247,58 +248,5 @@ fn transfer_points(
                 amount,
             },
         ],
-    )
-}
-
-#[cfg(feature = "server")]
-#[allow(dead_code)]
-fn exchange_points(
-    project: &Project,
-    from: String,
-    amount: i64,
-    month: String,
-    description: Option<String>,
-) -> (Vec<TransactWriteItem>, Vec<TransactPointsResponse>) {
-    let now = crate::common::utils::time_utils::get_now();
-    let (bal_pk, bal_sk) = PointBalance::keys(project.pk.clone(), from.clone(), month.clone());
-
-    let point_balance = PointBalance::updater(bal_pk, bal_sk)
-        .with_project_id(project.pk.clone())
-        .with_meta_user_id(from.clone())
-        .with_month(month.clone())
-        .with_total_earned(0)
-        .decrease_balance(amount)
-        .increase_total_spent(amount)
-        .with_updated_at(now);
-
-    let transaction = PointTransaction::new(
-        project.pk.clone(),
-        from.clone(),
-        month.clone(),
-        TransactionType::Exchange,
-        amount,
-        None,
-        description,
-    );
-    let transaction_id = transaction.sk.to_string();
-
-    let (pk, sk) = MonthlyPointAggregation::keys(project.pk.clone(), month.clone());
-    let aggregation = MonthlyPointAggregation::updater(pk, sk)
-        .increase_exchanged_points(amount)
-        .with_updated_at(now);
-
-    (
-        vec![
-            point_balance.transact_upsert_item(),
-            transaction.create_transact_write_item(),
-            aggregation.transact_upsert_item(),
-        ],
-        vec![TransactPointsResponse {
-            transaction_id,
-            month,
-            meta_user_id: from,
-            transaction_type: "Exchange".to_string(),
-            amount,
-        }],
     )
 }

@@ -93,11 +93,11 @@ rsx! {
 
 Components are the building blocks of apps
 
-* Component are functions annotated with the `#[component]` macro.
-* The function name must start with a capital letter or contain an underscore.
-* A component re-renders only under two conditions:
-	1.  Its props change (as determined by `PartialEq`).
-	2.  An internal reactive state it depends on is updated.
+- Component are functions annotated with the `#[component]` macro.
+- The function name must start with a capital letter or contain an underscore.
+- A component re-renders only under two conditions:
+  1.  Its props change (as determined by `PartialEq`).
+  2.  An internal reactive state it depends on is updated.
 
 ```rust
 #[component]
@@ -120,9 +120,9 @@ fn Input(mut value: Signal<String>) -> Element {
 
 Each component accepts function arguments (props)
 
-* Props must be owned values, not references. Use `String` and `Vec<T>` instead of `&str` or `&[T]`.
-* Props must implement `PartialEq` and `Clone`.
-* To make props reactive and copy, you can wrap the type in `ReadOnlySignal`. Any reactive state like memos and resources that read `ReadOnlySignal` props will automatically re-run when the prop changes.
+- Props must be owned values, not references. Use `String` and `Vec<T>` instead of `&str` or `&[T]`.
+- Props must implement `PartialEq` and `Clone`.
+- To make props reactive and copy, you can wrap the type in `ReadSignal`. Any reactive state like memos and resources that read `ReadSignal` props will automatically re-run when the prop changes.
 
 # State
 
@@ -182,8 +182,9 @@ fn Child() -> Element {
 
 For state that depends on an asynchronous operation (like a network request), Dioxus provides a hook called `use_resource`. This hook manages the lifecycle of the async task and provides the result to your component.
 
-* The `use_resource` hook takes an `async` closure. It re-runs this closure whenever any signals it depends on (reads) are updated
-* The `Resource` object returned can be in several states when read:
+- The `use_resource` hook takes an `async` closure. It re-runs this closure whenever any signals it depends on (reads) are updated
+- The `Resource` object returned can be in several states when read:
+
 1. `None` if the resource is still loading
 2. `Some(value)` if the resource has successfully loaded
 
@@ -259,7 +260,8 @@ async fn double_server(number: i32, path: String, query: i32) -> Result<i32, Ser
 Hydration is the process of making a server-rendered HTML page interactive on the client. The server sends the initial HTML, and then the client-side runs, attaches event listeners, and takes control of future rendering.
 
 ### Errors
+
 The initial UI rendered by the component on the client must be identical to the UI rendered on the server.
 
-* Use the `use_server_future` hook instead of `use_resource`. It runs the future on the server, serializes the result, and sends it to the client, ensuring the client has the data immediately for its first render.
-* Any code that relies on browser-specific APIs (like accessing `localStorage`) must be run *after* hydration. Place this code inside a `use_effect` hook.
+- Use the `use_server_future` hook instead of `use_resource`. It runs the future on the server, serializes the result, and sends it to the client, ensuring the client has the data immediately for its first render.
+- Any code that relies on browser-specific APIs (like accessing `localStorage`) must be run _after_ hydration. Place this code inside a `use_effect` hook.

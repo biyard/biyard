@@ -8,7 +8,6 @@ pub struct ProjectToken {
 
     pub name: String,
     pub symbol: String,
-    pub decimals: u8,
     pub circulating_supply: i64,
     pub description: Option<String>,
 
@@ -55,7 +54,6 @@ impl ProjectToken {
         project_id: Partition,
         name: String,
         symbol: String,
-        decimals: u8,
         description: Option<String>,
         monthly_emission: i64,
         decay_rate_bps: u16,
@@ -71,7 +69,6 @@ impl ProjectToken {
             sk: EntityType::Token,
             name,
             symbol,
-            decimals,
             circulating_supply: 0,
             description,
             contract_address: None,
@@ -119,7 +116,6 @@ impl From<ProjectToken> for crate::features::tokens::TokenResponse {
             pk: token.pk,
             name: token.name,
             symbol: token.symbol,
-            decimals: token.decimals,
             circulating_supply: token.circulating_supply,
             description: token.description,
             contract_address: token.contract_address,

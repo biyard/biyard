@@ -7,12 +7,12 @@ use crate::common::{CommonConfig, EntityType, ProjectAdminAuth};
 #[cfg(feature = "server")]
 use crate::features::tokens::{ProjectToken, TokenError};
 
+#[api_doc_macros::api_doc(group = "Tokens", summary = "Update token", summary_ko = "토큰 수정")]
 #[put("/v1/projects/:project_id/tokens", auth: ProjectAdminAuth)]
 pub async fn update_token_handler(
     #[allow(unused_variables)] project_id: ProjectPartition,
     name: Option<String>,
     symbol: Option<String>,
-    decimals: Option<u8>,
     description: Option<String>,
     monthly_emission: Option<i64>,
     decay_rate_bps: Option<u16>,
@@ -40,9 +40,6 @@ pub async fn update_token_handler(
     }
     if let Some(symbol) = symbol {
         updater = updater.with_symbol(symbol);
-    }
-    if let Some(decimals) = decimals {
-        updater = updater.with_decimals(decimals);
     }
     if let Some(description) = description {
         updater = updater.with_description(description);
