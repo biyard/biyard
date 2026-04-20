@@ -170,35 +170,66 @@ export class AppClusterStack extends Stack {
       (s) => s.availabilityZone !== "ap-northeast-2d",
     );
 
-    // NOTE: this VPC only has public subnets, so we place the ALB in public
-    // subnets. `internetFacing: true` is required for public-subnet ALBs;
-    // actual access is restricted to the VPC CIDR via `albSg` ingress rules,
-    // so the ALB is effectively internal-only.
-    const alb = new elbv2.ApplicationLoadBalancer(this, "InternalAlb", {
-      vpc,
-      internetFacing: true,
-      vpcSubnets: { subnets: supportedSubnets },
-      securityGroup: albSg,
+    // NOTE: this VPC only has public subnets. We still want an *internal*
+    // scheme ALB (API Gateway VpcLink v2 rejects `internet-facing` ALBs),
+    // so we build ALB + Listener + TargetGroup via CloudFormation L1
+    // constructs to force `Scheme: internal` while placing it in public
+    // subnets. The ALB is reachable only via VPC-internal callers because
+    // `albSg` restricts ingress to the VPC CIDR.
+    const cfnAlb = new elbv2.CfnLoadBalancer(this, "InternalAlbResource", {
+      type: "application",
+      scheme: "internal",
+      subnets: supportedSubnets.map((s) => s.subnetId),
+      securityGroups: [albSg.securityGroupId],
+      ipAddressType: "ipv4",
     });
 
-    const listener = alb.addListener("HttpListener", {
-      port: 80,
-      protocol: elbv2.ApplicationProtocol.HTTP,
-    });
-
-    listener.addTargets("FargateTg", {
+    const cfnTg = new elbv2.CfnTargetGroup(this, "FargateTgResource", {
+      targetType: "ip",
       port: containerPort,
-      protocol: elbv2.ApplicationProtocol.HTTP,
-      targets: [fargateService],
-      deregistrationDelay: Duration.seconds(20),
-      healthCheck: {
-        path: "/v1/health",
-        healthyHttpCodes: "200",
-        interval: Duration.seconds(15),
-        healthyThresholdCount: 2,
-        unhealthyThresholdCount: 3,
-      },
+      protocol: "HTTP",
+      vpcId: vpc.vpcId,
+      healthCheckPath: "/v1/health",
+      healthCheckProtocol: "HTTP",
+      healthCheckIntervalSeconds: 15,
+      healthyThresholdCount: 2,
+      unhealthyThresholdCount: 3,
+      matcher: { httpCode: "200" },
+      targetGroupAttributes: [
+        { key: "deregistration_delay.timeout_seconds", value: "20" },
+      ],
     });
+
+    const cfnListener = new elbv2.CfnListener(this, "HttpListenerResource", {
+      loadBalancerArn: cfnAlb.ref,
+      port: 80,
+      protocol: "HTTP",
+      defaultActions: [
+        { type: "forward", targetGroupArn: cfnTg.ref },
+      ],
+    });
+
+    // Bridge: attach CfnTargetGroup to the L2 FargateService via escape hatch.
+    const cfnService = fargateService.node.defaultChild as ecs.CfnService;
+    cfnService.loadBalancers = [
+      {
+        containerName: container.containerName,
+        containerPort,
+        targetGroupArn: cfnTg.ref,
+      },
+    ];
+    cfnService.healthCheckGracePeriodSeconds = 60;
+    cfnService.addDependency(cfnListener);
+
+    // L2 wrapper for HttpAlbIntegration below.
+    const listener = elbv2.ApplicationListener.fromApplicationListenerAttributes(
+      this,
+      "HttpListener",
+      {
+        listenerArn: cfnListener.ref,
+        securityGroup: albSg,
+      },
+    );
 
     // --- API Gateway integration via ALB ---
     // Explicit VpcLink: auto-created VpcLinks default to private subnets,
