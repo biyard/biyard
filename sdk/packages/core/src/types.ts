@@ -60,6 +60,65 @@ export interface ClaimSignatureRequestBody {
 }
 
 /**
+ * Point balance for a user (optionally scoped to a specific month).
+ * Mirrors Biyard `GET /v1/projects/:project_id/points/:meta_user_id?month=`.
+ */
+export interface UserBalance {
+  meta_user_id: string;
+  month: string;
+  balance: number;
+  total_earned: number;
+  total_spent: number;
+  /** Total points awarded across all users in this project/month. */
+  project_total_points: number;
+  /** Token supply minted for this month (raw integer, not ERC-20 units). */
+  monthly_token_supply: number;
+  updated_at: number;
+}
+
+export interface MonthlySummary {
+  month: string;
+  total_earned: number;
+  total_spent: number;
+  balance: number;
+  project_total_points: number;
+  monthly_token_supply: number;
+  /** Whether this month has already been exchanged for tokens (claimed out). */
+  exchanged: boolean;
+}
+
+export interface MonthlySummariesResponse {
+  months: MonthlySummary[];
+}
+
+/**
+ * Transaction type as returned by Biyard. Note: returned as upper case.
+ */
+export type TransactionType = "AWARD" | "DEDUCT" | "TRANSFER" | "EXCHANGE";
+
+export interface PointTransaction {
+  month: string;
+  transaction_type: TransactionType;
+  amount: number;
+  /** Counterparty for Transfer/Exchange. Null for Award/Deduct. */
+  target_user_id: string | null;
+  description: string | null;
+  created_at: number;
+}
+
+export interface TransactionsResponse {
+  items: PointTransaction[];
+  /** Opaque cursor for the next page. Null when there are no more results. */
+  bookmark: string | null;
+}
+
+export interface ListTransactionsOptions {
+  limit?: number;
+  bookmark?: string | null;
+  month?: string;
+}
+
+/**
  * On-chain submit result.
  */
 export interface ClaimSubmitResult {

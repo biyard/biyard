@@ -52,6 +52,39 @@ export async function fetchClaimable(metaUserId: string) {
   );
 }
 
+export async function fetchUserBalance(metaUserId: string, month?: string) {
+  const projectId = env("BIYARD_PROJECT_ID");
+  const q = month ? `?month=${encodeURIComponent(month)}` : "";
+  return biyardFetch<unknown>(
+    `/v1/projects/${projectId}/points/${encodeURIComponent(metaUserId)}${q}`,
+    { method: "GET" },
+  );
+}
+
+export async function fetchMonthlySummaries(metaUserId: string) {
+  const projectId = env("BIYARD_PROJECT_ID");
+  return biyardFetch<unknown>(
+    `/v1/projects/${projectId}/points/${encodeURIComponent(metaUserId)}/monthly-summaries`,
+    { method: "GET" },
+  );
+}
+
+export async function fetchTransactions(
+  metaUserId: string,
+  opts: { limit?: number; bookmark?: string | null; month?: string } = {},
+) {
+  const projectId = env("BIYARD_PROJECT_ID");
+  const params = new URLSearchParams();
+  if (opts.limit != null) params.set("limit", String(opts.limit));
+  if (opts.bookmark) params.set("bookmark", opts.bookmark);
+  if (opts.month) params.set("month", opts.month);
+  const q = params.toString();
+  return biyardFetch<unknown>(
+    `/v1/projects/${projectId}/points/${encodeURIComponent(metaUserId)}/transactions${q ? `?${q}` : ""}`,
+    { method: "GET" },
+  );
+}
+
 export async function fetchClaimSignature(
   metaUserId: string,
   month: string,
@@ -69,4 +102,34 @@ export async function fetchClaimSignature(
       }),
     },
   );
+}
+
+/**
+ * Award points to a user. Used by the example's `/api/dev/refill-points`
+ * endpoint so that we can keep clicking "Claim" during demos without
+ * manually re-running curl every time the balance hits zero.
+ *
+ * Not part of the SDK contract — partners don't need this in production.
+ */
+export async function awardPoints(
+  metaUserId: string,
+  month: string,
+  amount: number,
+  description?: string,
+) {
+  const projectId = env("BIYARD_PROJECT_ID");
+  return biyardFetch<unknown>(`/v1/projects/${projectId}/points`, {
+    method: "POST",
+    body: JSON.stringify({
+      transactions: [
+        {
+          month,
+          description: description ?? "SDK demo refill",
+          tx_type: "Award",
+          to: metaUserId,
+          amount,
+        },
+      ],
+    }),
+  });
 }

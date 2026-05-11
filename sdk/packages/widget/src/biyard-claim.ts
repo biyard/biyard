@@ -459,8 +459,19 @@ export class BiyardClaimElement extends HTMLElement {
       );
     }
     if (contract) {
+      const explorerUrl = explorerLinkFor(chainId, contract);
+      // We render the truncated address for a compact row (the full hex
+      // doesn't fit on a 420px card), but expose the full value two ways:
+      //   - `title` attribute → desktop tooltip on hover
+      //   - clickable link → opens the explorer with the full address
+      //     (also doubles as the mobile affordance, since hover is unreliable
+      //     on touch devices).
+      const short = shortHex(contract, 6, 4);
+      const cell = explorerUrl
+        ? `<a class="contract-link" href="${escapeHtml(explorerUrl)}" target="_blank" rel="noopener" title="${escapeHtml(contract)}">${escapeHtml(short)} ↗</a>`
+        : `<span title="${escapeHtml(contract)}">${escapeHtml(short)}</span>`;
       rows.push(
-        `<div class="review-row"><span class="k">${escapeHtml(t.reviewContract)}</span><span class="v">${escapeHtml(shortHex(contract, 6, 4))}</span></div>`,
+        `<div class="review-row"><span class="k">${escapeHtml(t.reviewContract)}</span><span class="v">${cell}</span></div>`,
       );
     }
     if (rows.length === 0) return "";
@@ -534,6 +545,19 @@ function chainLabel(id: number): string {
       return "Kaia";
     default:
       return `Chain ${id}`;
+  }
+}
+
+function explorerLinkFor(chainId: number, contractAddress: string): string | null {
+  switch (chainId) {
+    case 1:
+      return `https://etherscan.io/address/${contractAddress}`;
+    case 1001:
+      return `https://kairos.kaiascan.io/account/${contractAddress}`;
+    case 8217:
+      return `https://kaiascan.io/account/${contractAddress}`;
+    default:
+      return null;
   }
 }
 

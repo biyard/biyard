@@ -1,20 +1,28 @@
 # `@biyard/widget`
 
-Drop-in `<biyard-claim>` Web Component for embedding the Biyard token-claim flow in any web page.
+Drop-in Biyard Web Components. Framework-agnostic — works in vanilla HTML, Vue, Svelte, server-rendered pages, or any host where a `<script type="module">` runs.
 
-The widget is designed to feel like a part of the partner's product. Default theme follows the partner's surrounding colors and font; the only Biyard mark is a single 11px footer link ("Secured by Biyard ↗") that can be set to `minimal` or hidden entirely.
+## Components
+
+| Tag | Purpose |
+|---|---|
+| `<biyard-claim>` | Wallet connect + on-chain claim flow (modal or inline). |
+| `<biyard-balance>` | Point balance + on-chain token balance card. |
+| `<biyard-transactions>` | Paginated point activity list. |
+| `<biyard-monthly-summary>` | Per-month earned / spent / balance summary. |
 
 ## Quick start (CDN)
 
 ```html
 <script type="module" src="https://cdn.biyard.io/widget.js"></script>
 
-<biyard-claim
-  base-url="/api/biyard"
-  chain-id="1001"
-  month="2026-01"
-></biyard-claim>
+<biyard-balance base-url="/api/biyard" month="2026-01"></biyard-balance>
+<biyard-monthly-summary base-url="/api/biyard"></biyard-monthly-summary>
+<biyard-transactions base-url="/api/biyard" limit="10"></biyard-transactions>
+<biyard-claim base-url="/api/biyard" month="2026-01"></biyard-claim>
 ```
+
+The CDN entry auto-registers every tag.
 
 ## Quick start (npm)
 
@@ -23,37 +31,38 @@ pnpm add @biyard/widget @biyard/sdk ethers
 ```
 
 ```ts
-import { defineBiyardClaim } from "@biyard/widget";
+import { defineBiyardWidgets } from "@biyard/widget";
+defineBiyardWidgets();
+```
+
+Or import + register individually:
+
+```ts
+import { defineBiyardBalance, defineBiyardClaim } from "@biyard/widget";
+defineBiyardBalance();
 defineBiyardClaim();
 ```
 
-```html
-<biyard-claim base-url="/api/biyard" chain-id="1001" month="2026-01"></biyard-claim>
-```
+## Shared attributes
 
-## Attributes
+These work on every Biyard widget:
 
 | Attribute | Default | Description |
 |---|---|---|
 | `base-url` | required | Partner proxy base URL. |
-| `chain-id` | required | EVM chain id (e.g. `1001` Kaia Kairos, `8217` Kaia mainnet). |
-| `month` | required | Month to claim, e.g. `"2026-01"`. |
-| `mode` | `modal` | `modal` (button → centered dialog) or `inline` (renders the card directly). |
-| `theme` | `auto` | `auto` (follow OS), `light`, or `dark`. |
-| `branding` | `default` | `default` (Secured by Biyard ↗), `minimal` (via Biyard), or `none`. |
-| `label` | `Claim` | Trigger button label (modal mode only). |
-| `title` | `Claim tokens` | Title shown inside the card. |
-| `subtitle` | — | Optional subtitle line under the title. |
-| `amount` | (auto) | Raw uint256 amount override. If omitted, widget fetches from `${baseUrl}/claimable`. |
-| `symbol` | (auto) | Token symbol override. Auto-fetched from `${baseUrl}/token` if omitted. |
-| `decimals` | `18` | Decimals for amount display. |
+| `theme` | `auto` | `auto` / `light` / `dark`. |
+| `lang` | (auto-detect) | `en` / `ko`. Falls back to `<html lang>` / `navigator.language`. |
+| `branding` | `default` | `default` / `minimal` / `none` — controls the 11px footer attribution. |
+| `title` | (per-widget i18n) | Override the card title. |
+
+Plus per-widget attributes documented in the source.
 
 ## Theming
 
-Set any of these CSS custom properties on the host element. They're the entire theming surface:
+Set any of these CSS custom properties on the host element:
 
 ```css
-biyard-claim {
+biyard-balance, biyard-claim, biyard-transactions, biyard-monthly-summary {
   --biyard-color-accent: #6366f1;
   --biyard-color-accent-foreground: #ffffff;
   --biyard-color-bg: #ffffff;
@@ -69,25 +78,21 @@ biyard-claim {
 }
 ```
 
-`--biyard-font-family` defaults to `inherit`, so the widget picks up the host page's typeface automatically.
-
-## Events
-
-The widget dispatches:
-
-| Event | Detail |
-|---|---|
-| `biyard-claim-success` | `{ tx_hash: string }` |
-| `biyard-claim-error` | `{ error: Error }` |
-| `biyard-open` / `biyard-close` | — (modal mode) |
-
-```js
-document.querySelector("biyard-claim").addEventListener(
-  "biyard-claim-success",
-  (e) => console.log("tx:", e.detail.tx_hash),
-);
-```
+`--biyard-font-family` defaults to `inherit`.
 
 ## Phishing protection
 
-Before invoking the wallet's signature prompt, the widget renders the on-chain `verifyingContract` address (truncated) and chain name in the review panel. Users should verify these match what their wallet shows in the EIP-712 prompt.
+`<biyard-claim>` renders the on-chain `verifyingContract` address (truncated, with hover-tooltip + clickable link to the chain explorer) before invoking the wallet's signature prompt. Users should verify it matches what their wallet shows in the EIP-712 dialog.
+
+## Where the data comes from
+
+The widgets call the partner's proxy endpoints under `base-url`:
+
+| Widget | Endpoints called |
+|---|---|
+| `<biyard-claim>` | `/token`, `/claimable`, `/claim-signature`, and the wallet RPC for `Claimed` events. |
+| `<biyard-balance>` | `/token`, `/balance`, wallet RPC `balanceOf`. |
+| `<biyard-transactions>` | `/transactions` (with `?limit` + `?bookmark` pagination). |
+| `<biyard-monthly-summary>` | `/monthly-summaries`. |
+
+See [`docs/integration.md`](../../docs/integration.md) for the partner-proxy contract.

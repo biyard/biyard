@@ -1,12 +1,20 @@
 import { ProxyRequestError } from "./errors";
 import { submitClaim } from "./claim";
-import { getClaimHistory, type OnChainClaimEvent } from "./history";
+import {
+  getClaimHistory,
+  getOnChainTokenBalance,
+  type OnChainClaimEvent,
+} from "./history";
 import { connectWallet, getWalletAddress } from "./wallet";
 import type {
   ClaimSignatureResponse,
   ClaimSubmitResult,
   ClaimableResponse,
+  ListTransactionsOptions,
+  MonthlySummariesResponse,
   TokenInfo,
+  TransactionsResponse,
+  UserBalance,
 } from "./types";
 
 /**
@@ -151,6 +159,55 @@ export class BiyardClaim {
    */
   getWalletAddress(): Promise<string | null> {
     return getWalletAddress();
+  }
+
+  /**
+   * On-chain ERC-20 `balanceOf(wallet)` against the BrandToken contract.
+   * Goes through the wallet's injected RPC (no CORS issues, no extra deps).
+   * Returns the raw uint256 as a string to avoid JS precision loss.
+   */
+  async getOnChainTokenBalance(
+    walletAddress: string,
+    contractAddress: string,
+  ): Promise<string> {
+    return getOnChainTokenBalance(walletAddress, contractAddress, this.chainId);
+  }
+
+  /**
+   * GET `${baseUrl}/balance?month=` — point balance for the current user.
+   * Without `month`, Biyard returns the current month.
+   */
+  async getUserBalance(month?: string): Promise<UserBalance> {
+    const q = month ? `?month=${encodeURIComponent(month)}` : "";
+    return this.request<UserBalance>(`/balance${q}`, { method: "GET" });
+  }
+
+  /**
+   * GET `${baseUrl}/monthly-summaries` — list of per-month point summaries
+   * for the current user.
+   */
+  async getMonthlySummaries(): Promise<MonthlySummariesResponse> {
+    return this.request<MonthlySummariesResponse>("/monthly-summaries", {
+      method: "GET",
+    });
+  }
+
+  /**
+   * GET `${baseUrl}/transactions?limit=&bookmark=&month=` — paginated point
+   * transactions for the current user.
+   */
+  async getTransactions(
+    opts: ListTransactionsOptions = {},
+  ): Promise<TransactionsResponse> {
+    const params = new URLSearchParams();
+    if (opts.limit != null) params.set("limit", String(opts.limit));
+    if (opts.bookmark) params.set("bookmark", opts.bookmark);
+    if (opts.month) params.set("month", opts.month);
+    const q = params.toString();
+    return this.request<TransactionsResponse>(
+      `/transactions${q ? `?${q}` : ""}`,
+      { method: "GET" },
+    );
   }
 
   private async request<T>(path: string, init: RequestInit): Promise<T> {

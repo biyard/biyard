@@ -62,11 +62,113 @@ export default function Page() {
           <TokenSummary biyard={biyard} />
           <Wallet biyard={biyard} />
           <Claimable biyard={biyard} />
+          <AwardPoints />
         </>
       ) : (
         <p style={{ color: "#888" }}>Initializing…</p>
       )}
     </main>
+  );
+}
+
+const AWARD_AMOUNTS: { value: number; label: string }[] = [
+  { value: 100_000, label: "100,000" },
+  { value: 1_000_000, label: "1,000,000" },
+  { value: 10_000_000, label: "10,000,000" },
+];
+
+function AwardPoints() {
+  const [month, setMonth] = useState("2026-01");
+  const [amount, setAmount] = useState(AWARD_AMOUNTS[1]!.value);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const award = useCallback(async () => {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const r = await fetch("/api/biyard/award", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ month, amount }),
+      });
+      if (!r.ok) {
+        const err = await r.text();
+        setMsg(`Error ${r.status}: ${err}`);
+        return;
+      }
+      setMsg(`Awarded ${amount.toLocaleString()} points for ${month}.`);
+      setTimeout(() => location.reload(), 600);
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  }, [month, amount]);
+
+  return (
+    <section style={{ marginTop: 32 }}>
+      <h2>Award points</h2>
+      <p style={{ color: "#6b7280", fontSize: 13, margin: "4px 0 12px" }}>
+        In production the partner backend awards points from its own business
+        events. Here we expose the same proxy endpoint as a button so the demo
+        balance can be topped up for repeated claim testing.
+      </p>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <label style={{ fontSize: 13, color: "#374151" }}>
+          Month{" "}
+          <input
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            style={{
+              padding: "6px 8px",
+              border: "1px solid #d1d5db",
+              borderRadius: 6,
+              width: 110,
+              fontSize: 13,
+            }}
+          />
+        </label>
+        <label style={{ fontSize: 13, color: "#374151" }}>
+          Amount{" "}
+          <select
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            style={{
+              padding: "6px 8px",
+              border: "1px solid #d1d5db",
+              borderRadius: 6,
+              fontSize: 13,
+            }}
+          >
+            {AWARD_AMOUNTS.map((a) => (
+              <option key={a.value} value={a.value}>
+                {a.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          onClick={award}
+          disabled={busy}
+          style={{
+            padding: "6px 14px",
+            borderRadius: 6,
+            border: "1px solid #111",
+            background: "#111",
+            color: "white",
+            cursor: busy ? "not-allowed" : "pointer",
+            fontSize: 13,
+          }}
+        >
+          {busy ? "Awarding…" : "Award points"}
+        </button>
+      </div>
+      {msg && (
+        <p style={{ marginTop: 10, fontSize: 13, color: "#374151" }}>{msg}</p>
+      )}
+    </section>
   );
 }
 

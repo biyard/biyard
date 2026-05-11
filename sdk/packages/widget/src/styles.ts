@@ -216,6 +216,15 @@ export const WIDGET_STYLES = /* css */ `
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
   }
+  .contract-link {
+    color: var(--biyard-color-text);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--biyard-color-border);
+  }
+  .contract-link:hover {
+    color: var(--biyard-color-accent);
+    border-bottom-color: var(--biyard-color-accent);
+  }
 
   .cta {
     width: 100%;
@@ -337,6 +346,191 @@ export const WIDGET_STYLES = /* css */ `
     color: var(--biyard-color-muted);
     font-size: 11.5px;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  /* ── Balance widget ─────────────────────────────────────────────────── */
+  .balance-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+  .month-pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--biyard-color-muted);
+    background: var(--biyard-color-surface);
+    border: 1px solid var(--biyard-color-border);
+    padding: 3px 8px;
+    border-radius: 999px;
+  }
+  .balance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .balance-cell {
+    background: var(--biyard-color-surface);
+    border: 1px solid var(--biyard-color-border);
+    border-radius: calc(var(--biyard-radius) - 4px);
+    padding: 14px;
+    min-width: 0;
+  }
+  .balance-cell-label {
+    color: var(--biyard-color-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .balance-cell-value {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    word-break: break-all;
+  }
+  .balance-cell-symbol {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--biyard-color-muted);
+  }
+  .balance-cell-hint {
+    color: var(--biyard-color-muted);
+    font-size: 11px;
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  /* ── Transactions widget ────────────────────────────────────────────── */
+  .tx-list {
+    display: flex;
+    flex-direction: column;
+    margin: 4px 0 0;
+  }
+  .tx-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--biyard-color-border);
+    gap: 12px;
+  }
+  .tx-row:last-of-type { border-bottom: none; }
+  .tx-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .tx-type {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--biyard-color-text);
+  }
+  .tx-meta {
+    color: var(--biyard-color-muted);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 220px;
+  }
+  .tx-amount {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .tx-amount.pos { color: var(--biyard-color-success); }
+  .tx-amount.neg { color: var(--biyard-color-danger); }
+  .tx-amount.neutral { color: var(--biyard-color-text); }
+
+  .load-more {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--biyard-color-border);
+    background: var(--biyard-color-surface);
+    color: var(--biyard-color-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+  }
+  .load-more:hover:not([disabled]) {
+    background: var(--biyard-color-bg);
+  }
+  .load-more[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+  /* ── Monthly summary widget ─────────────────────────────────────────── */
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .summary-row {
+    background: var(--biyard-color-surface);
+    border: 1px solid var(--biyard-color-border);
+    border-radius: calc(var(--biyard-radius) - 4px);
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+    align-items: baseline;
+  }
+  .summary-month {
+    grid-row: 1 / 3;
+    grid-column: 1;
+    font-weight: 700;
+    font-size: 15px;
+    align-self: center;
+  }
+  .summary-stats {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .summary-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .summary-stat-label {
+    color: var(--biyard-color-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .summary-stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .summary-claimed-pill {
+    grid-row: 2;
+    grid-column: 1;
+    justify-self: start;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--biyard-color-success);
+    background: color-mix(in srgb, var(--biyard-color-success) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--biyard-color-success) 30%, transparent);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--biyard-color-muted);
+    font-size: 13px;
+    padding: 12px 0;
   }
 
   /* ── Attribution footer ─────────────────────────────────────────────── */

@@ -2,7 +2,7 @@ export { BiyardClaim } from "./client";
 export type { BiyardClaimOptions, BiyardFetcher } from "./client";
 
 export { submitClaim } from "./claim";
-export { getClaimHistory } from "./history";
+export { getClaimHistory, getOnChainTokenBalance } from "./history";
 export type { OnChainClaimEvent } from "./history";
 export { connectWallet, getWalletAddress } from "./wallet";
 export { KNOWN_CHAINS } from "./chains";
@@ -14,7 +14,14 @@ export type {
   ClaimSignatureRequestBody,
   ClaimSignatureResponse,
   ClaimSubmitResult,
+  ListTransactionsOptions,
+  MonthlySummariesResponse,
+  MonthlySummary,
+  PointTransaction,
   TokenInfo,
+  TransactionType,
+  TransactionsResponse,
+  UserBalance,
 } from "./types";
 
 export {

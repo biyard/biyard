@@ -18,6 +18,12 @@ const CLAIMED_ABI = [
   "event Claimed(address indexed user, uint256 indexed month, uint256 amount, uint256 nonce)",
 ] as const;
 
+const ERC20_BALANCE_ABI = [
+  "function balanceOf(address) view returns (uint256)",
+] as const;
+
+type BalanceOfFn = (addr: string) => Promise<bigint>;
+
 export interface OnChainClaimEvent {
   /** 0-indexed month within the token's lifecycle (matches `month_index` from the signature). */
   month_index: string;
@@ -86,6 +92,26 @@ export async function getClaimHistory(
       block_number: log.blockNumber,
     };
   });
+}
+
+/**
+ * Read on-chain ERC-20 balance for the given wallet against the BrandToken
+ * contract. Returns the raw uint256 as a string to avoid JS precision loss.
+ *
+ * Like `getClaimHistory`, this prefers the wallet-injected provider so that
+ * browsers don't hit CORS on public RPC endpoints.
+ */
+export async function getOnChainTokenBalance(
+  walletAddress: string,
+  contractAddress: string,
+  chainId: number,
+  opts: { provider?: AbstractProvider } = {},
+): Promise<string> {
+  const provider = opts.provider ?? defaultProviderFor(chainId);
+  const contract = new Contract(contractAddress, ERC20_BALANCE_ABI, provider);
+  const balanceOf = contract.getFunction("balanceOf") as unknown as BalanceOfFn;
+  const raw = await balanceOf(walletAddress);
+  return raw.toString();
 }
 
 function defaultProviderFor(chainId: number): AbstractProvider {
