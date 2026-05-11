@@ -69,6 +69,11 @@ clippy:
 	cargo clippy --features server
 	cargo clippy --features web --target wasm32-unknown-unknown
 
+test: DYNAMO_TABLE_PREFIX = biyard-test
+test: DYNAMO_ENDPOINT = http://localhost:4566
+test: AWS_ACCESS_KEY_ID = test
+test: AWS_SECRET_ACCESS_KEY = test
+test: AWS_REGION = us-east-1
 test:
 	mkdir -p ./test-build-target/debug/deps/public
 	npx @tailwindcss/cli -i tailwind.css -o ./assets/tailwind.css
