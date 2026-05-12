@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STO 상세 · Biyard</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=26" />
+  </head>
+  <body>
+    <main class="page" id="mainContainer">
+      <!-- STO 상세는 JS 렌더링 -->
+    </main>
+
+    <script src="data-dart-backfill.js?v=2"></script>
+    <script src="data-artipio.js?v=1"></script>
+    <script src="data-musicow.js?v=1"></script>
+    <script src="data.js?v=27"></script>
+    <script src="app.js?v=26"></script>
+    <script>
+      const U = window.STO_UI;
+      U.mountChrome("assets");
+
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const s = D.STOS.find((x) => x.id === id);
+
+      if (!s) {
+        $("#mainContainer").innerHTML = `
+          <div class="panel" style="padding: 40px; text-align: center;">
+            <h2>STO를 찾을 수 없습니다</h2>
+            <p class="muted">요청하신 ID가 등재되지 않았거나 잘못된 링크입니다.</p>
+            <a href="assets.html" class="primary" style="display: inline-block; margin-top: 16px; padding: 10px 24px; background: var(--brand); color: var(--bg); border-radius: 8px; text-decoration: none; font-weight: 600;">STO 자산 맵으로 돌아가기 →</a>
+          </div>
+        `;
+        throw new Error("STO not found");
+      }
+
+      const cat = U.categoryOf(s.category);
+      const issuer = D.findIssuer(s.issuerId);
+      const isKR = s.region === "KR";
+      const isGlobal = s.region === "GLOBAL";
+
+      // Same-category counterparts (다른 region의 같은 카테고리 STO)
+      const sameCatCounterparts = D.STOS.filter(
+        (x) => x.category === s.category && x.id !== s.id && x.region !== s.region,
+      );
+      const sameIssuerStos = D.STOS.filter(
+        (x) => x.issuerId === s.issuerId && x.id !== s.id,
+      );
+      const counterpartLabel = isKR ? "🌍 같은 카테고리 글로벌 STO" : "🇰🇷 같은 카테고리 한국 STO";
+
+      $("#mainContainer").innerHTML = `
+        <!-- Breadcrumb -->
+        <nav style="margin-bottom: 16px; font-size: 13px; color: var(--muted);">
+          <a href="index.html" style="color: var(--muted);">홈</a>
+          <span style="margin: 0 8px;">›</span>
+          <a href="assets.html" style="color: var(--muted);">STO 자산 맵</a>
+          <span style="margin: 0 8px;">›</span>
+          <a href="assets.html?cat=${s.category}" style="color: var(--muted);">${cat.icon} ${cat.label}</a>
+          <span style="margin: 0 8px;">›</span>
+          <span style="color: var(--text);">${s.name}</span>
+        </nav>
+
+        <!-- HEADER (자산 자체가 주인공) -->
+        <section class="panel" style="margin-bottom: 18px; padding: 28px;">
+          <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <div style="font-size: 64px; flex-shrink: 0;">${s.icon}</div>
+            <div style="flex: 1;">
+              <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
+                <span class="cat-tag">${cat.icon} ${cat.label}</span>
+                <span class="cat-tag">${s.country || (isKR ? "🇰🇷 한국" : "")}</span>
+                ${s.securityType ? `<span class="cat-tag">${s.securityType}</span>` : ""}
+              </div>
+              <h1 style="margin: 0 0 10px 0; font-size: 28px; line-height: 1.3;">${s.name}</h1>
+              <p class="muted" style="margin: 0; font-size: 15px; line-height: 1.5;">${s.description || ""}</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 하이라이트 (있는 경우) -->
+        ${
+          s.narrative?.highlights?.length
+            ? `
+          <section class="panel highlight-panel" style="margin-bottom: 18px;">
+            <ul class="highlight-list">
+              ${s.narrative.highlights.map((h) => `<li>${h}</li>`).join("")}
+            </ul>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 자산 정보 (카테고리별 조건부 렌더링) -->
+        ${(() => {
+          const offerAmount =
+            s.offering?.amount &&
+            `${(s.offering.amount).toLocaleString("ko-KR")} ${s.offering.currency || ""}`;
+
+          // 공통 행
+          const common = [
+            ["기초자산", s.underlying],
+            ["증권 종류", s.securityType],
+            ["발행 시기", s.issuedAt],
+            ["현재 상태", s.status],
+            ["모집 총액", offerAmount],
+          ];
+
+          // 카테고리별 행
+          const catRows = (() => {
+            const c = s.category;
+            if (c === "real_estate") {
+              const re = s.realEstate || {};
+              const propertyTypeLabel = {
+                office: "오피스",
+                retail: "리테일",
+                logistics: "물류",
+                hotel: "호텔",
+                residential: "주거",
+                mixed: "복합용도",
+              }[re.propertyType] || re.propertyType;
+              return [
+                ["건물명", re.propertyName],
+                ["주소", re.address],
+                ["용도", propertyTypeLabel],
+                ["완공 연도", re.completionYear],
+                ["층수", re.floorsAbove ? `지상 ${re.floorsAbove}층${re.floorsBelow ? ` / 지하 ${re.floorsBelow}층` : ""}` : null],
+                ["임대 상태", re.occupancyAtIssuance],
+                ["가까운 역", re.nearestStation],
+              ];
+            }
+            if (c === "livestock") {
+              const lv = s.livestock || {};
+              return [
+                ["농장", lv.farmName],
+                ["품종", lv.breed],
+                ["사육 두수", lv.cattleCount ? `${lv.cattleCount}두` : null],
+                ["사육 기간", lv.feedingPeriodDays ? `${lv.feedingPeriodDays}일` : null],
+                ["사육 방식", lv.feedingMethod],
+              ];
+            }
+            if (c === "art") {
+              const ar = s.art || {};
+              return [
+                ["작가", ar.artistName],
+                ["작품명", ar.artworkTitle],
+                ["제작 연도", ar.creationYear],
+                ["매체", ar.medium],
+                ["크기", ar.dimensions],
+                ["취득가", ar.acquisitionPrice ? `${ar.acquisitionPrice.toLocaleString("ko-KR")} ${ar.acquisitionCurrency || "KRW"}${ar.acquisitionVenue ? ` <span class="muted" style="font-size:11px;">(${ar.acquisitionVenue})</span>` : ""}` : null],
+              ];
+            }
+            if (c === "music") {
+              const mu = s.music || {};
+              return [
+                ["곡명", mu.songTitle],
+                ["아티스트", mu.artistName],
+                ["발매 연도", mu.releaseYear],
+                ["장르", mu.genre],
+                ["권리 종류", mu.rightTypeLabel || mu.rightType],
+              ];
+            }
+            if (c === "luxury") {
+              const lx = s.luxury || {};
+              return [
+                ["품목", lx.itemCategory],
+                ["브랜드", lx.brand],
+                ["모델", lx.model],
+                ["생산 연도", lx.productionYear],
+              ];
+            }
+            return [];
+          })();
+
+          const rows = [...common, ...catRows].filter(([_, v]) => v != null && v !== "");
+          return `
+            <section class="panel" style="margin-bottom: 18px;">
+              <h2 style="margin: 0 0 16px 0; font-size: 18px;">자산 정보</h2>
+              <div class="detail-grid">
+                ${rows
+                  .map(
+                    ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                  )
+                  .join("")}
+              </div>
+            </section>
+          `;
+        })()}
+
+        <!-- 작가 약력 (미술품 한정) -->
+        ${
+          s.category === "art" && (s.art?.artistBio || s.art?.artistHighlights?.length)
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 12px 0; font-size: 18px;">작가</h2>
+            ${s.art.artistBio ? `<p style="margin: 0 0 12px; font-size: 14px; line-height: 1.7; color: var(--ink-soft);">${s.art.artistBio}</p>` : ""}
+            ${s.art.artistHighlights?.length ? `<ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.8; color: var(--ink-soft);">${s.art.artistHighlights.map((h) => `<li>${h}</li>`).join("")}</ul>` : ""}
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 작품 시리즈 컨텍스트 -->
+        ${
+          s.category === "art" && s.art?.seriesContext
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 12px 0; font-size: 18px;">작품 시리즈</h2>
+            <p style="margin: 0; font-size: 14px; line-height: 1.7; color: var(--ink-soft);">${s.art.seriesContext}</p>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 동일 작가 경매 낙찰 이력 -->
+        ${
+          s.category === "art" && s.art?.relatedAuctions?.length
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 12px 0; font-size: 18px;">동일 작가의 경매 낙찰 이력</h2>
+            <div style="overflow-x:auto;">
+              <table class="auction-table">
+                <thead>
+                  <tr><th>작품</th><th>연도</th><th>경매</th><th>낙찰가</th><th>비고</th></tr>
+                </thead>
+                <tbody>
+                  ${s.art.relatedAuctions.map((a) => {
+                    const price = a.priceUsd ? `USD ${a.priceUsd.toLocaleString("en-US")}` :
+                                  a.priceHkd ? `HKD ${a.priceHkd.toLocaleString("en-US")}` :
+                                  a.priceKrw ? `${a.priceKrw.toLocaleString("ko-KR")} 원` : "—";
+                    return `<tr>
+                      <td>${a.work || "—"}</td>
+                      <td>${a.year || "—"}</td>
+                      <td>${a.house || "—"}</td>
+                      <td style="font-family: var(--font-mono); font-weight: 600;">${price}</td>
+                      <td class="muted" style="font-size: 11px;">${a.note || ""}</td>
+                    </tr>`;
+                  }).join("")}
+                </tbody>
+              </table>
+            </div>
+            ${s.art.relatedAuctionsNote ? `<p class="muted" style="margin: 12px 0 0; font-size: 11px; line-height: 1.6;">${s.art.relatedAuctionsNote}</p>` : ""}
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 옥션 결과 (음악 한정) -->
+        ${
+          s.category === "music" && s.music?.auctionResult
+            ? (() => {
+                const ar = s.music.auctionResult;
+                const change = ar.endPrice && ar.startPrice
+                  ? `+${(((ar.endPrice - ar.startPrice) / ar.startPrice) * 100).toFixed(1)}%`
+                  : null;
+                return `
+                  <section class="panel" style="margin-bottom: 18px;">
+                    <h2 style="margin: 0 0 16px 0; font-size: 18px;">옥션 결과</h2>
+                    <div class="detail-grid">
+                      ${[
+                        ["옥션 일자", ar.auctionDate],
+                        ["시작가", ar.startPrice ? `${ar.startPrice.toLocaleString("ko-KR")} 원` : null],
+                        ["종가", ar.endPrice ? `${ar.endPrice.toLocaleString("ko-KR")} 원${change ? ` <span class="muted" style="font-size:11px;">(${change})</span>` : ""}` : null],
+                        ["완판 시간", ar.soldOutMinutes ? `${ar.soldOutMinutes}분` : null],
+                      ]
+                        .filter(([_, v]) => v != null && v !== "")
+                        .map(
+                          ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                        )
+                        .join("")}
+                    </div>
+                  </section>
+                `;
+              })()
+            : ""
+        }
+
+        <!-- 운용 계획 / 위험 요소 (있는 경우만) -->
+        ${
+          s.narrative && (s.narrative.operationPlan || s.narrative.exitPlan || s.narrative.riskFactors?.length)
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 16px 0; font-size: 18px;">운영·위험</h2>
+            ${
+              s.narrative.operationPlan
+                ? `<div style="margin-bottom: 14px;">
+                    <div class="detail-key" style="margin-bottom: 6px;">운용 계획</div>
+                    <p style="margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-soft);">${s.narrative.operationPlan}</p>
+                  </div>`
+                : ""
+            }
+            ${
+              s.narrative.exitPlan
+                ? `<div style="margin-bottom: 14px;">
+                    <div class="detail-key" style="margin-bottom: 6px;">매각·청산 계획</div>
+                    <p style="margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-soft);">${s.narrative.exitPlan}</p>
+                  </div>`
+                : ""
+            }
+            ${
+              s.narrative.riskFactors?.length
+                ? `<div>
+                    <div class="detail-key" style="margin-bottom: 6px;">위험 요소</div>
+                    <ul style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.8; color: var(--ink-soft);">
+                      ${s.narrative.riskFactors.map((r) => `<li>${r}</li>`).join("")}
+                    </ul>
+                  </div>`
+                : ""
+            }
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 발행 구조 (위탁자·수탁자·인수인·실명계좌·자금관리·감사) -->
+        ${(() => {
+          const st = s.issuanceStructure || {};
+          const trusteeFromCat = s.realEstate?.trustee || s.music?.trustee || null;
+          const issuerFromIssuer = issuer && issuer.name;
+
+          const withRole = (name, role) =>
+            name ? `${name}${role ? ` <span class="muted" style="font-size:11px;">(${role})</span>` : ""}` : null;
+          const rows = [
+            ["발행자 (위탁자)", st.issuer || issuerFromIssuer],
+            ["대표이사", st.issuerCeo],
+            ["본점 소재지", st.issuerAddress],
+            ["수탁자 (신탁사)", st.trustee || trusteeFromCat],
+            ["인수인·모집주선", withRole(st.underwriter, st.underwriterRole)],
+            ["실명계좌 개설사", withRole(st.accountBank, st.accountBankRole)],
+            ["자금관리은행", withRole(st.fundCustodian, st.fundCustodianRole)],
+            ["투자자보호기금 운영", withRole(st.protectionFundManager, st.protectionFundRole)],
+            ["감사인", st.auditor],
+            ["법무대리인", st.legalCounsel],
+            ["수익 분배", st.revenueShareNote],
+          ].filter(([_, v]) => v != null && v !== "");
+          if (!rows.length) return "";
+          return `
+            <section class="panel" style="margin-bottom: 18px;">
+              <h2 style="margin: 0 0 16px 0; font-size: 18px;">발행 구조</h2>
+              <div class="detail-grid">
+                ${rows
+                  .map(
+                    ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                  )
+                  .join("")}
+              </div>
+            </section>
+          `;
+        })()}
+
+        <!-- 발행 가액·수수료 -->
+        ${
+          (s.offering && (s.offering.unitPrice || s.offering.businessCost || s.offering.unusedAmount)) || s.fees
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 16px 0; font-size: 18px;">발행 가액·수수료</h2>
+            <div class="detail-grid">
+              ${[
+                ["1주(좌)당 발행가", s.offering?.unitPrice ? `${s.offering.unitPrice.toLocaleString("ko-KR")} ${s.offering.currency || "KRW"}` : null],
+                ["총 발행 수량", s.offering?.totalUnits ? `${s.offering.totalUnits.toLocaleString("ko-KR")} 주` : null],
+                ["총 사업 소요금액", s.offering?.businessCost ? `${s.offering.businessCost.toLocaleString("ko-KR")} ${s.offering.currency || "KRW"}` : null],
+                ["미사용금액", s.offering?.unusedAmount ? `${s.offering.unusedAmount.toLocaleString("ko-KR")} ${s.offering.currency || "KRW"}` : null],
+                ["매각수수료", s.fees?.saleFee ? `${s.fees.saleFee.toLocaleString("ko-KR")} 원${s.fees.saleFeeNote ? ` <span class='muted' style='font-size:11px;'>(${s.fees.saleFeeNote})</span>` : ""}` : null],
+                ["청산수수료", s.fees?.liquidationFee ? `${s.fees.liquidationFee.toLocaleString("ko-KR")} 원${s.fees.liquidationFeeNote ? ` <span class='muted' style='font-size:11px;'>(${s.fees.liquidationFeeNote})</span>` : ""}` : null],
+              ]
+                .filter(([_, v]) => v != null && v !== "")
+                .map(
+                  ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                )
+                .join("")}
+            </div>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 투자자 보호 체계 -->
+        ${
+          s.investorProtection
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <h2 style="margin: 0 0 16px 0; font-size: 18px;">투자자 보호 체계</h2>
+            <div class="detail-grid">
+              ${[
+                ["제1의 투자자보호기금", s.investorProtection.fund1RatePercent ? `발행 모집액의 ${s.investorProtection.fund1RatePercent}%${s.investorProtection.fund1Note ? `<br/><span class='muted' style='font-size:12px;'>${s.investorProtection.fund1Note}</span>` : ""}` : null],
+                ["제2의 투자자보호기금", s.investorProtection.fund2Note],
+                ["보상 적용 범위", s.investorProtection.coverageScope],
+              ]
+                .filter(([_, v]) => v != null && v !== "")
+                .map(
+                  ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                )
+                .join("")}
+            </div>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 청산·분배 결과 (있는 경우) -->
+        ${(() => {
+          const liq = s.liquidation;
+          if (!liq) return "";
+          const rows = [
+            ["청산일", liq.liquidatedAt],
+            ["매각가", liq.salePrice ? `${liq.salePrice.toLocaleString("ko-KR")} ${liq.currency || "KRW"}` : null],
+            ["매각순액", liq.netSalePrice ? `${liq.netSalePrice.toLocaleString("ko-KR")} ${liq.currency || "KRW"}` : null],
+            ["총수익률", liq.reportedYieldPercent != null ? `${liq.reportedYieldPercent}%` : null],
+            ["연환산수익률", liq.annualizedYieldPercent != null ? `${liq.annualizedYieldPercent}%` : null],
+            ["수익률 출처", liq.reportedYieldSource],
+          ].filter(([_, v]) => v != null && v !== "");
+          if (!rows.length) return "";
+          return `
+            <section class="panel" style="margin-bottom: 18px;">
+              <h2 style="margin: 0 0 16px 0; font-size: 18px;">청산·분배 결과</h2>
+              <div class="detail-grid">
+                ${rows
+                  .map(
+                    ([k, v]) => `<div class="detail-row"><div class="detail-key">${k}</div><div class="detail-val">${v}</div></div>`,
+                  )
+                  .join("")}
+              </div>
+            </section>
+          `;
+        })()}
+
+        <!-- 같은 카테고리 청산 결과 — 비교 -->
+        ${(() => {
+          const stats = U.categoryLiquidationStats(s.category);
+          if (!stats || stats.count === 0) return "";
+          const similar = U.similarLiquidatedStos(s, 6);
+          if (!similar.length) return "";
+          const isCurrentLiquidated = !!s.liquidation;
+          const labelHeader = isCurrentLiquidated
+            ? "같은 카테고리의 다른 청산 사례"
+            : "같은 카테고리 청산 사례 — 참고";
+          return `
+            <section class="panel" style="margin-bottom: 18px;">
+              <div class="section-head">
+                <div>
+                  <h2>${labelHeader}</h2>
+                  <p>${cat.icon} ${cat.label} 카테고리의 청산 완료 ${stats.count}건 평균</p>
+                </div>
+              </div>
+              <div class="liq-stats-row">
+                <div class="liq-stat">
+                  <div class="label">평균 총수익률</div>
+                  <div class="value">${stats.avgYield.toFixed(1)}%</div>
+                  <div class="sub">최저 ${stats.minYield.toFixed(1)}% · 최고 ${stats.maxYield.toFixed(1)}%</div>
+                </div>
+                ${stats.avgAnnualized != null ? `
+                  <div class="liq-stat">
+                    <div class="label">평균 연환산</div>
+                    <div class="value">${stats.avgAnnualized.toFixed(1)}%</div>
+                    <div class="sub">${stats.count}건 평균</div>
+                  </div>
+                ` : ""}
+                ${stats.avgDays != null ? `
+                  <div class="liq-stat">
+                    <div class="label">평균 운용 기간</div>
+                    <div class="value">${stats.avgDays}일</div>
+                    <div class="sub">약 ${(stats.avgDays / 30).toFixed(1)}개월</div>
+                  </div>
+                ` : ""}
+                <div class="liq-stat">
+                  <div class="label">청산 건수</div>
+                  <div class="value">${stats.count}<span class="muted" style="font-size:14px;">건</span></div>
+                  <div class="sub">DART 정산보고서 기준</div>
+                </div>
+              </div>
+              <div style="overflow-x: auto; margin-top: 14px;">
+                <table class="auction-table">
+                  <thead>
+                    <tr>
+                      <th>STO</th>
+                      <th>발행</th>
+                      <th>청산</th>
+                      <th>운용</th>
+                      <th>총수익률</th>
+                      <th>연환산</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${similar.map((x) => {
+                      const xl = x.liquidation;
+                      return `
+                        <tr onclick="location.href='detail.html?id=${x.id}'" style="cursor: pointer;">
+                          <td>${x.name}</td>
+                          <td class="muted">${x.issuedAt || "—"}</td>
+                          <td class="muted">${xl.liquidatedAt || "—"}</td>
+                          <td class="muted">${x.livestock?.feedingPeriodDays ? `${x.livestock.feedingPeriodDays}일` : "—"}</td>
+                          <td style="font-family: var(--font-mono); font-weight: 600;">${xl.reportedYieldPercent}%</td>
+                          <td style="font-family: var(--font-mono);">${xl.annualizedYieldPercent != null ? `${xl.annualizedYieldPercent}%` : "—"}</td>
+                        </tr>
+                      `;
+                    }).join("")}
+                  </tbody>
+                </table>
+              </div>
+              <p class="muted" style="margin: 12px 0 0; font-size: 11px; line-height: 1.6;">
+                통계는 단순 평균. 산식: Σ수익률 / 건수. 출처: DART 정산보고서 (각 STO 상세 참조).
+                과거 결과가 미래를 보장하지 않으며, 본 통계는 참고 자료입니다.
+              </p>
+            </section>
+          `;
+        })()}
+
+        <!-- 발행사 정보 (보조) -->
+        ${
+          issuer
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <div class="section-head">
+              <div>
+                <h2>발행사·플랫폼</h2>
+                <p>이 STO를 발행한 사업자에 대한 보조 정보</p>
+              </div>
+            </div>
+            <div class="grid-2" style="gap: 18px;">
+              <div>
+                ${U.issuerCard(issuer)}
+              </div>
+              <div style="font-size: 13px; line-height: 1.7;">
+                <div style="margin-bottom: 8px;"><strong style="color: var(--muted);">인가·샌드박스</strong><br/>${issuer.sandbox || "—"}</div>
+                <div style="margin-bottom: 8px;"><strong style="color: var(--muted);">사용 체인</strong><br/>${issuer.chain || "—"}</div>
+                <div><strong style="color: var(--muted);">현재 상태</strong><br/>${issuer.status || "—"}</div>
+              </div>
+            </div>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 같은 발행사의 다른 STO -->
+        ${
+          sameIssuerStos.length
+            ? `
+          <section class="panel" style="margin-bottom: 18px;">
+            <div class="section-head">
+              <div>
+                <h2>같은 발행사의 다른 STO</h2>
+                <p>${issuer ? issuer.name : ""}이(가) 발행한 다른 자산</p>
+              </div>
+            </div>
+            <div class="grid-dense">${sameIssuerStos.slice(0, 3).map(U.stoCard).join("")}</div>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 한국 매핑 시사점 (글로벌 STO에만) -->
+        ${
+          isGlobal && s.krMappingNote
+            ? `
+          <section class="panel" style="margin-bottom: 18px; border-left: 4px solid var(--brand); background: rgba(0, 229, 160, 0.04);">
+            <h2 style="margin: 0 0 12px 0; font-size: 18px;">🇰🇷 한국 매핑 시사점</h2>
+            <p style="margin: 0; font-size: 14px; line-height: 1.7;">${s.krMappingNote}</p>
+          </section>
+        `
+            : ""
+        }
+
+        <!-- 같은 카테고리 다른 region STO -->
+        <section class="panel" style="margin-bottom: 18px;">
+          <div class="section-head">
+            <div>
+              <h2>${counterpartLabel}</h2>
+              <p>${cat.icon} ${cat.label} 카테고리의 ${isKR ? "글로벌" : "한국"} 발행 STO</p>
+            </div>
+            <a class="section-link" href="assets.html?cat=${s.category}">전체 보기 →</a>
+          </div>
+          ${
+            sameCatCounterparts.length
+              ? `<div class="grid-dense">${sameCatCounterparts.slice(0, 3).map(U.stoCard).join("")}</div>`
+              : `<div class="empty" style="padding: 40px; text-align: center; color: var(--muted);">
+                  ${isKR ? "이 카테고리의 글로벌 등재 STO가 아직 없습니다." : "이 카테고리에 한국 STO가 등재되어 있지 않습니다. <strong>발굴 후보 영역</strong>입니다."}
+                </div>`
+          }
+        </section>
+
+        <!-- 출처 · 원문 (페이지 마지막 — 검증 보조 도구) -->
+        <section class="panel" style="margin-bottom: 18px;">
+          <h2 style="margin: 0 0 16px 0; font-size: 18px;">출처 · 원문</h2>
+          ${
+            s.dartRcptNo || s.prospectusUrl || (s.sources || []).some((x) => x.src === "DART")
+              ? `<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+                ${
+                  s.prospectusUrl
+                    ? `<a class="ext-link dart" href="${s.prospectusUrl}" target="_blank" rel="noopener">📄 DART 신고서 원문${s.dartRcptNo ? ` (${s.dartRcptNo})` : ""} ↗</a>`
+                    : s.dartRcptNo
+                      ? `<a class="ext-link dart" href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${s.dartRcptNo}" target="_blank" rel="noopener">📄 DART 신고서 원문 (${s.dartRcptNo}) ↗</a>`
+                      : ""
+                }
+                ${
+                  issuer && issuer.id
+                    ? (() => {
+                        const corpCode = {
+                          kasa: "01353945",
+                          yeolmae: "01645448",
+                          stockeeper: "01760118",
+                          seoulauctionblue: "01296534",
+                          togetherart: "01721933",
+                          tessa: "01995848",
+                          musicow: "01560095",
+                        }[issuer.id];
+                        return corpCode
+                          ? `<a class="ext-link" href="https://dart.fss.or.kr/dsab001/main.do?corp_code=${corpCode}" target="_blank" rel="noopener">🔍 DART ${issuer.name} 발행공시 ↗</a>`
+                          : "";
+                      })()
+                    : ""
+                }
+                ${
+                  issuer && issuer.websiteUrl
+                    ? `<a class="ext-link" href="${issuer.websiteUrl}" target="_blank" rel="noopener">🏢 ${issuer.name} 공식 ↗</a>`
+                    : ""
+                }
+              </div>`
+              : ""
+          }
+          ${U.sourceList(s.sources)}
+        </section>
+
+        <!-- BACK -->
+        <div class="detail-nav">
+          <a class="detail-nav-btn" href="assets.html?cat=${s.category}">${cat.icon} ${cat.label} 더 보기</a>
+          <a class="detail-nav-btn primary" href="assets.html">STO 시장 전체 →</a>
+        </div>
+      `;
+    </script>
+  </body>
+</html>

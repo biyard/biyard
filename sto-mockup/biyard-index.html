@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Biyard Index · STO 표준 평가 지표</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=28" />
+    <style>
+      /* ===== Hero ===== */
+      .lp-hero {
+        position: relative;
+        padding: 80px 40px 72px;
+        background: linear-gradient(135deg, rgba(0, 229, 160, 0.10), rgba(94, 176, 255, 0.06));
+        border: 1px solid var(--brand-line);
+        border-radius: var(--radius);
+        margin-bottom: 32px;
+        overflow: hidden;
+      }
+      .lp-hero::before {
+        content: "";
+        position: absolute;
+        top: -160px;
+        right: -160px;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 229, 160, 0.14), transparent 70%);
+      }
+      .lp-hero .eyebrow {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--brand);
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+      }
+      .lp-hero h1 {
+        margin: 0 0 18px;
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        max-width: 760px;
+      }
+      .lp-hero .sub {
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        max-width: 640px;
+        margin: 0 0 28px;
+      }
+      .lp-hero .cta-row {
+        display: flex;
+        gap: 10px;
+        position: relative;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #000;
+        font-weight: 700;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 13px;
+        border: 1px solid var(--line);
+      }
+
+      /* ===== Section heading ===== */
+      .sec-head {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+      .sec-head .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--brand);
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+      .sec-head h2 {
+        margin: 0 0 10px;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      .sec-head p {
+        margin: 0 auto;
+        max-width: 580px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* ===== Trust 3-card ===== */
+      .trust-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 72px;
+      }
+      @media (max-width: 900px) {
+        .trust-cards { grid-template-columns: 1fr; }
+      }
+      .trust-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 26px 22px;
+      }
+      .trust-card .ico {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+      .trust-card h3 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .trust-card p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* ===== Coverage ===== */
+      .coverage-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 72px;
+      }
+      @media (max-width: 900px) {
+        .coverage-grid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 500px) {
+        .coverage-grid { grid-template-columns: 1fr; }
+      }
+      .cov-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 22px 18px;
+        text-align: center;
+      }
+      .cov-card .cov-ico {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+      .cov-card h4 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .cov-card p {
+        margin: 0;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ===== Methodology preview ===== */
+      .method-block {
+        background: var(--panel);
+        border: 1px solid var(--brand-line);
+        border-radius: var(--radius);
+        padding: 40px 32px;
+        margin-bottom: 72px;
+      }
+      .method-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        align-items: center;
+      }
+      @media (max-width: 900px) {
+        .method-grid { grid-template-columns: 1fr; }
+      }
+      .method-left .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--brand);
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+      .method-left h2 {
+        margin: 0 0 14px;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+      .method-left p {
+        margin: 0 0 18px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .axis-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .axis-chip {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+      .axis-chip .num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--brand);
+        margin-right: 6px;
+      }
+      .axis-chip .name {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* ===== Sample score visualization (right column) ===== */
+      .score-viz {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 28px 24px;
+        text-align: center;
+      }
+      .score-circle {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: conic-gradient(var(--brand) 0% 78%, var(--panel) 78% 100%);
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .score-circle::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        background: var(--panel-2);
+        border-radius: 50%;
+      }
+      .score-circle .score-inner {
+        position: relative;
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 36px;
+        color: var(--ink);
+      }
+      .score-circle .score-inner small {
+        display: block;
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+      .score-viz .grade-letter {
+        font-size: 48px;
+        font-weight: 900;
+        color: var(--brand);
+        font-family: var(--font-mono);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .score-viz .grade-cap {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .score-viz .preview-tag {
+        display: inline-block;
+        font-size: 10px;
+        background: var(--panel);
+        color: var(--muted);
+        padding: 3px 9px;
+        border-radius: 3px;
+        letter-spacing: 0.5px;
+      }
+
+      /* ===== Integration ===== */
+      .integ-block {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 40px 32px;
+        text-align: center;
+        margin-bottom: 72px;
+      }
+      .integ-block h2 {
+        margin: 0 0 10px;
+        font-size: 24px;
+        font-weight: 800;
+      }
+      .integ-block p {
+        margin: 0 auto 22px;
+        max-width: 560px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .integ-partners {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .partner-chip {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-size: 12px;
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+
+      /* ===== CTA Apply ===== */
+      .apply-cta {
+        background: linear-gradient(135deg, rgba(0, 229, 160, 0.08), transparent);
+        border: 1px solid var(--brand-line);
+        border-radius: var(--radius);
+        padding: 48px 36px;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .apply-cta h2 {
+        margin: 0 0 12px;
+        font-size: 26px;
+        font-weight: 800;
+      }
+      .apply-cta p {
+        margin: 0 auto 22px;
+        max-width: 540px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* ===== Disclaimer ===== */
+      .disclaimer-strip {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 14px 18px;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <!-- ============ HERO ============ -->
+      <section class="lp-hero">
+        <div class="eyebrow">BIYARD INDEX</div>
+        <h1>토큰증권 시대의<br />Web3 기반 평가 지표.</h1>
+        <p class="sub">
+          Biyard Index 는 분산원장 위 토큰증권을 평가하기 위해 설계된 Web3 전용 지표입니다.
+          온체인 데이터·스마트컨트랙트 보안·지갑 분포·거버넌스 등 기존 신용평가가 다루지 못하는 영역을 6개 축으로 환산해 등급을 부여합니다.
+        </p>
+        <div class="cta-row">
+          <a class="btn-primary" href="#apply">평가 신청하기 →</a>
+          <a class="btn-ghost" href="index-whitepaper.html">백서 보기</a>
+        </div>
+      </section>
+
+      <!-- ============ Trust 3-card ============ -->
+      <div class="sec-head">
+        <div class="eyebrow">WHY BIYARD INDEX</div>
+        <h2>기존 평가는 Web3 를 못 본다</h2>
+        <p>재무제표·공시 중심의 기존 신용평가는 온체인 발행 구조·컨트랙트 보안·지갑 분포를 평가하지 못합니다. 그 빈 자리를 채우는 지표입니다.</p>
+      </div>
+      <section class="trust-cards">
+        <div class="trust-card">
+          <div class="ico">🔗</div>
+          <h3>온체인 우선 평가</h3>
+          <p>분산원장에 기록된 발행 수량·소유 이전·소각 이력 등 검증 가능한 온체인 사실을 주 입력값으로 사용합니다. 공시는 보조 자료입니다.</p>
+        </div>
+        <div class="trust-card">
+          <div class="ico">🛡</div>
+          <h3>스마트컨트랙트 분석</h3>
+          <p>토큰 컨트랙트 감사 결과·업그레이드 권한 구조·키 관리 방식까지 평가에 반영합니다. 코드 레벨에서 평가합니다.</p>
+        </div>
+        <div class="trust-card">
+          <div class="ico">📡</div>
+          <h3>실시간 모니터링</h3>
+          <p>발행 후에도 온체인 변화·거래소 시장 신호를 지속적으로 추적해 등급에 반영합니다. 한 번 산출하고 끝이 아닙니다.</p>
+        </div>
+      </section>
+
+      <!-- ============ Coverage ============ -->
+      <div class="sec-head">
+        <div class="eyebrow">COVERAGE</div>
+        <h2>평가 대상</h2>
+        <p>토큰증권 (2027.01 시행~) 이 주 대상이며, 시행 전 과도기 발행물에는 제한적 평가를 적용합니다.</p>
+      </div>
+      <section class="coverage-grid">
+        <div class="cov-card">
+          <div class="cov-ico">🪙</div>
+          <h4>토큰증권 (2027~)</h4>
+          <p>분산원장 기반 발행물 — 전 축 평가 가동</p>
+        </div>
+        <div class="cov-card">
+          <div class="cov-ico">🏢</div>
+          <h4>신탁수익증권</h4>
+          <p>과도기 발행물 — 거버넌스·신뢰성 축만 제한 평가</p>
+        </div>
+        <div class="cov-card">
+          <div class="cov-ico">📜</div>
+          <h4>투자계약증권</h4>
+          <p>과도기 발행물 — 거버넌스·신뢰성 축만 제한 평가</p>
+        </div>
+        <div class="cov-card">
+          <div class="cov-ico">🌐</div>
+          <h4>해외 토큰증권</h4>
+          <p>Ethereum / Polygon / Avalanche 기반 발행물</p>
+        </div>
+      </section>
+
+      <!-- ============ Methodology Preview ============ -->
+      <section class="method-block">
+        <div class="method-grid">
+          <div class="method-left">
+            <div class="eyebrow">METHODOLOGY</div>
+            <h2>Web3 6개 축, 산출식 전면 공개</h2>
+            <p>
+              온체인 데이터를 중심으로 6개 축이 독립적으로 산출되며, 카테고리별 가중치를 적용해 종합 등급 (S/A/B/C/D) 으로 환산합니다.
+              상세 산출식·신호 정의·검증 절차는 백서에 정리되어 있습니다.
+            </p>
+            <div class="axis-list">
+              <div class="axis-chip"><span class="num">01</span><span class="name">컨트랙트 보안</span></div>
+              <div class="axis-chip"><span class="num">02</span><span class="name">온체인 발행 무결성</span></div>
+              <div class="axis-chip"><span class="num">03</span><span class="name">지갑 분포·집중도</span></div>
+              <div class="axis-chip"><span class="num">04</span><span class="name">유통 신뢰성</span></div>
+              <div class="axis-chip"><span class="num">05</span><span class="name">거버넌스</span></div>
+              <div class="axis-chip"><span class="num">06</span><span class="name">정보 신뢰성</span></div>
+            </div>
+            <div style="margin-top: 22px;">
+              <a class="btn-primary" href="index-whitepaper.html">백서 자세히 보기 →</a>
+            </div>
+          </div>
+          <div>
+            <div class="score-viz">
+              <div class="score-circle">
+                <div class="score-inner">78<small>/ 100</small></div>
+              </div>
+              <div class="grade-letter">A</div>
+              <div class="grade-cap">토큰증권 부문 · 상위 18%</div>
+              <span class="preview-tag">PREVIEW · 실제 산출 아님</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Integration ============ -->
+      <section class="integ-block">
+        <div class="sec-head" style="margin-bottom: 12px;">
+          <div class="eyebrow">INTEGRATION</div>
+          <h2>온체인 · 거래소 · 공시까지 통합</h2>
+        </div>
+        <p>
+          이더리움·폴리곤 등 주요 체인의 온체인 데이터, KRX·NXT 디지털증권시장의 거래 데이터, 그리고 보조 자료로 DART·SEC EDGAR 까지 통합해 평가합니다.
+          API 로 발행사·증권사·정보 플랫폼 어디서든 등급을 가져갈 수 있습니다.
+        </p>
+        <div class="integ-partners">
+          <span class="partner-chip">Ethereum</span>
+          <span class="partner-chip">Polygon</span>
+          <span class="partner-chip">KRX 디지털증권시장</span>
+          <span class="partner-chip">NXT 컨소시엄</span>
+          <span class="partner-chip">Biyard Launchpad</span>
+          <span class="partner-chip">DART · EDGAR (보조)</span>
+        </div>
+      </section>
+
+      <!-- ============ Apply CTA ============ -->
+      <section class="apply-cta" id="apply">
+        <h2>이 평가를 받고 싶다면, 먼저 신청해주세요</h2>
+        <p>
+          정식 산출 시작 시점에 신청 순으로 우선 적용합니다.
+          발행사·증권사·신탁사 모두 신청 가능합니다.
+        </p>
+        <div class="cta-row" style="justify-content: center; display: flex; gap: 10px; flex-wrap: wrap;">
+          <a class="btn-primary" href="mailto:hi@biyard.co?subject=Biyard Index 평가 신청">평가 신청하기 →</a>
+          <a class="btn-ghost" href="index-whitepaper.html">백서 다운로드</a>
+        </div>
+      </section>
+
+      <!-- ============ Disclaimer ============ -->
+      <div class="disclaimer-strip">
+        ※ Biyard Index 는 공시 자료 기반 정보 제공 서비스이며, 자본시장법상 신용평가업·투자자문업·금융투자업이 아닙니다. 본 지표의 등급·점수는 정보 제공 목적이며, 투자 권유·자문이 아닙니다. 투자 결정은 사용자 본인의 책임입니다.
+      </div>
+    </main>
+
+    <script src="app.js?v=28"></script>
+    <script>
+      window.STO_UI.mountChrome("index");
+    </script>
+  </body>
+</html>
