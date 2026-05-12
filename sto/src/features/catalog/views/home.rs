@@ -75,6 +75,7 @@ pub fn Topbar(active: String) -> Element {
 
 #[component]
 pub fn Panel(title: String, more_href: Option<String>, children: Element) -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
         section { class: "bg-panel border border-border rounded-2xl p-5 mb-5",
             div { class: "flex justify-between items-center mb-3 pb-2 border-b border-border",
@@ -82,7 +83,7 @@ pub fn Panel(title: String, more_href: Option<String>, children: Element) -> Ele
                 if let Some(href) = more_href {
                     a { href: "{href}",
                         class: "text-xs px-3 py-1.5 rounded-sm font-semibold text-brand bg-brand-soft border border-brand hover:bg-brand-soft",
-                        "전체 보기 →"
+                        "{t.section_more}"
                     }
                 }
             }
@@ -93,19 +94,20 @@ pub fn Panel(title: String, more_href: Option<String>, children: Element) -> Ele
 
 #[component]
 pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
         div { class: "overflow-x-auto",
             table { class: "w-full text-sm",
                 thead {
                     tr { class: "text-left text-[11px] text-foreground-muted uppercase tracking-wide",
                         th { class: "px-3 py-2 bg-panel-muted border-b border-border", "" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "자산명" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "카테고리" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "발행사" }
+                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_asset}" }
+                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_category}" }
+                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_issuer}" }
                         if show_status {
-                            th { class: "px-3 py-2 bg-panel-muted border-b border-border", "상태" }
+                            th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_status}" }
                         }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border text-right", "발행일" }
+                        th { class: "px-3 py-2 bg-panel-muted border-b border-border text-right", "{t.th_issued_at}" }
                     }
                 }
                 tbody {
@@ -140,12 +142,12 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
 
 #[component]
 fn HeroOfferings() -> Element {
-    // Mock 의 "공모 진행·예정" 광고 슬롯 — 가상 발행사로 정적 예시
+    let t: CatalogTranslate = use_translate();
     rsx! {
         section { class: "bg-panel border border-border rounded-2xl p-5 mb-5",
             div { class: "flex justify-between items-center mb-3",
-                h2 { class: "text-base font-bold", "공모 진행·예정" }
-                span { class: "text-xs text-foreground-muted bg-panel-muted px-2 py-1 rounded", "증권사 제공 정보 · 예시" }
+                h2 { class: "text-base font-bold", "{t.section_offerings}" }
+                span { class: "text-xs text-foreground-muted bg-panel-muted px-2 py-1 rounded", "{t.offerings_label}" }
             }
             div { class: "grid grid-cols-1 md:grid-cols-3 gap-3",
                 OfferingCard {
@@ -174,7 +176,7 @@ fn HeroOfferings() -> Element {
                 }
             }
             div { class: "mt-3 text-[11px] text-foreground-muted",
-                "※ 위 카드는 데모용 예시 데이터입니다. 실제 서비스에서는 발행사·증권사가 직접 제공한 공모 정보를 표시하며, Biyard 는 추천·평가하지 않습니다."
+                "※ {t.offerings_disclaimer}"
             }
         }
     }

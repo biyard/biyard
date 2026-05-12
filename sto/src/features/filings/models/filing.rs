@@ -2,6 +2,7 @@ use crate::common::*;
 use crate::features::catalog::{FilingAttachmentDto, FilingSummary};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, Default)]
+#[dynamo(table = "sto")]
 pub struct Filing {
     pub pk: Partition,
     pub sk: EntityType,

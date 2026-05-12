@@ -25,6 +25,7 @@ translate! {
     },
     section_recent: { en: "Recently issued", ko: "최근 발행 STO" },
     section_offerings: { en: "Open / upcoming offerings", ko: "공모 진행·예정" },
+    section_more: { en: "View all →", ko: "전체 보기 →" },
     section_category_scale: { en: "Issuance by category", ko: "카테고리별 발행 건수" },
     offerings_label: { en: "Sponsored · Example", ko: "증권사 제공 정보 · 예시" },
     offerings_disclaimer: {

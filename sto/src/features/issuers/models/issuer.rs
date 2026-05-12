@@ -1,6 +1,7 @@
 use crate::common::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, Default)]
+#[dynamo(table = "sto")]
 pub struct Issuer {
     pub pk: Partition,
     pub sk: EntityType,

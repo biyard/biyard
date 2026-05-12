@@ -7,9 +7,7 @@ use crate::common::{CommonConfig, EntityType, Result};
 #[cfg(feature = "server")]
 use crate::features::catalog::models::Sto;
 
-/// GET /api/stos
-///   - GSI1 (STATUS) 으로 모든 상태 카테고리를 차례로 쿼리해 합산.
-///   - 1차 구현: 페이지네이션 없이 전부.
+/// GET /api/stos — 모든 STO 메타 (현재는 scan 기반, GSI 도입은 후속).
 #[server(endpoint = "list_stos")]
 pub async fn list_stos() -> std::result::Result<ListResponse<StoSummary>, ServerFnError> {
     let result: Result<ListResponse<StoSummary>> = async {
@@ -17,7 +15,9 @@ pub async fn list_stos() -> std::result::Result<ListResponse<StoSummary>, Server
         let cli = cfg.dynamodb();
 
         let mut items: Vec<StoSummary> = Vec::new();
-        let mut last_key: Option<std::collections::HashMap<String, aws_sdk_dynamodb::types::AttributeValue>> = None;
+        let mut last_key: Option<
+            std::collections::HashMap<String, aws_sdk_dynamodb::types::AttributeValue>,
+        > = None;
 
         loop {
             let mut req = cli
@@ -26,9 +26,7 @@ pub async fn list_stos() -> std::result::Result<ListResponse<StoSummary>, Server
                 .filter_expression("sk = :sk")
                 .expression_attribute_values(
                     ":sk",
-                    aws_sdk_dynamodb::types::AttributeValue::S(
-                        EntityType::Sto.to_string(),
-                    ),
+                    aws_sdk_dynamodb::types::AttributeValue::S(EntityType::Sto.to_string()),
                 );
             if let Some(start) = last_key.take() {
                 req = req.set_exclusive_start_key(Some(start));

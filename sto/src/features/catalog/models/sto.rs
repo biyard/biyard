@@ -4,6 +4,7 @@ use crate::features::catalog::{
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, Default)]
+#[dynamo(table = "sto")]
 pub struct Sto {
     pub pk: Partition,
     pub sk: EntityType,
@@ -36,6 +37,7 @@ pub struct Sto {
     pub issued_at: String,
 
     #[dynamo(index = "gsi2", pk, prefix = "CAT", name = "find_by_region_category")]
+    #[serde(default)]
     pub region_category: String,
 
     pub origin: String,
