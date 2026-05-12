@@ -1,0 +1,13906 @@
+// Musicow 카탈로그 — 곡 메타 + 공통 발행 구조 + 5건 디테일 (PDF 파싱)
+// 시장 데이터(가격·수익률·거래량) 일체 제외
+// 자동 생성 · 2026-05-12 · 472 곡 (5건 PDF 디테일 보유)
+
+const MUSICOW_STOS = [
+  {
+    "id": "musicow-2422",
+    "name": "True",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "러니 (RUNY)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2422",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1985",
+    "name": "사랑이란 멜로는 없어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "전상근",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1985",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1202",
+    "name": "연애 같은 걸 하니까",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소란 (SORAN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1202",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-3981",
+    "name": "사랑은 언제나 목마르다 (N번째 연애 X 이해리 (다비치))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이해리 (다비치)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/3981",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-915",
+    "name": "오빠만 믿어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박현빈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/915",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-464",
+    "name": "톡톡 (Tok Tok) (Feat. SOYA)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "마이티 마우스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/464",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1076",
+    "name": "하늘색 풍선",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1076",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-835",
+    "name": "당신의 눈물",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "태진아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/835",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-108",
+    "name": "너에게 닿기를 (I Wish)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "우주소녀",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/108",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-965",
+    "name": "그여자",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백지영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/965",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-908",
+    "name": "죄 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "루그 ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/908",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-158",
+    "name": "I'm In Love",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "시크릿",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/158",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-936",
+    "name": "너 없인 안된다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비투비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/936",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-461",
+    "name": "U＆I",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에일리(Ailee)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/461",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11937",
+    "name": "퇴근버스",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이준호",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11937",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2700",
+    "name": "Me You (Feat. 백예린 Of 15＆)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "San E (산이)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2700",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1087",
+    "name": "위로",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김범수",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1087",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-178",
+    "name": "Simple Love (Feat. 나비)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/178",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2052",
+    "name": "그리워하지도 말고, 찾아오지도 마",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "신예영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2052",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-513",
+    "name": "사랑할래",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "별",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/513",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-630",
+    "name": "눈 내리는 마을 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "애프터스쿨, 브라운아이드걸스, 케이윌, 간미연, 테이, 숙희, 안영민",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/630",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-7415",
+    "name": "빙글뱅글 (Bingle Bangle)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AOA",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/7415",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-679",
+    "name": "Let Me Dance",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "렉시",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/679",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-544",
+    "name": "봄에 오면 괴롭힐 거예요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "앤씨아,육성재 (비투비)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/544",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-613",
+    "name": "두바둡 (only u)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "라붐 (LABOUM)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/613",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-961",
+    "name": "술 한잔 해요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "지아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/961",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2523",
+    "name": "고백직전",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소란 (SORAN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2523",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11525",
+    "name": "그댄 달라요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "한예슬",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11525",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-97",
+    "name": "거북이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "다비치",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/97",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-483",
+    "name": "Running & Running",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "엠블랙",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/483",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2496",
+    "name": "그날처럼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "장덕철",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2496",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-755",
+    "name": "나랑 사귈래",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "DIA (다이아)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/755",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1077",
+    "name": "꿈을 꾸다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1077",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-603",
+    "name": "여름여름해 (Sunny Summer)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "여자친구 (GFRIEND) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/603",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1104",
+    "name": "백설공주를 사랑한 난장이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "더 크로스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1104",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-133",
+    "name": "사람냄새",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정인, 개리",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/133",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1023",
+    "name": "있다 없으니까 (Gone Not Around Any Longer)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨스타19",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1023",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13246",
+    "name": "사랑..그 놈",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "바비 킴",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13246",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-920",
+    "name": "퇴근버스",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이준호",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/920",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1048",
+    "name": "편한 사람이 생겼어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "일락",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1048",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2432",
+    "name": "둘만의 세상으로 가",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Crush (크러쉬)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2432",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-505",
+    "name": "그렇게 사랑하고 그렇게 웃었습니다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "버블 시스터즈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/505",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12307",
+    "name": "어이 (Uh-ee)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "크레용팝",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12307",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13004",
+    "name": "사랑아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "KCM",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13004",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-507",
+    "name": "나 이런 여자예요 (With 예지, 체스카 Of 피에스타)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "지아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/507",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-723",
+    "name": "겨울이야기",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "조관우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/723",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13017",
+    "name": "첫 눈",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정준일",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13017",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13244",
+    "name": "숙녀 (淑女)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유빈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13244",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1013",
+    "name": "울어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "V.O.S (브이오에스)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1013",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2183",
+    "name": "0%",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2183",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13254",
+    "name": "붕붕 (Feat. 식케이) (Prod. GroovyRoom)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김하온 (HAON)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13254",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12998",
+    "name": "내 눈물이 하는 말 (웹툰 '연애의 발견' X 황치열)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "황치열",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12998",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12990",
+    "name": "사랑의 시작은 고백에서부터 (Romance) (웹툰 '연애의 발견' X 전상근)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "전상근",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12990",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12971",
+    "name": "꼰대라떼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "영탁",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12971",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2492",
+    "name": "이 밤을 빌려 말해요 (바른연애 길잡이 X 10CM)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "10CM (십센치)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2492",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13000",
+    "name": "After",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송이한",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13000",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1067",
+    "name": "아름답고도 아프구나",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비투비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1067",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-646",
+    "name": "L4L (Lookin' For Luv) (Feat. Dok2 & The Quiett)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BOBBY (FEAT. DOK2, THE QUIETT)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/646",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2394",
+    "name": "해후",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "최성수",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2394",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1112",
+    "name": "오직 그대만",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "바비 킴",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1112",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-715",
+    "name": "약속",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김범수",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/715",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2260",
+    "name": "장난감 병정",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박강성",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2260",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1655",
+    "name": "무한지애(無恨之愛)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김정민",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1655",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13212",
+    "name": "동반자",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "태진아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13212",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-99",
+    "name": "Something",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/99",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-649",
+    "name": "공중도덕 (Air DoTheQ)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "The Quiett, 수퍼비, myunDo, 플로우식 (Flowsik), Dok2",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/649",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11371",
+    "name": "지친 하루",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "윤종신, 곽진언, 김필",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11371",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2098",
+    "name": "기다리지 말아요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "혜령",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2098",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-963",
+    "name": "그남자",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "현빈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/963",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2381",
+    "name": "말 없이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브레이브걸스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2381",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ],
+    "disclosure": {
+      "noticeId": "755",
+      "title": "말 없이 음악 수익증권 발행 안내",
+      "publishedAt": "2023-09-19",
+      "trustNo": "인접권-161",
+      "noticePageUrl": "https://www.musicow.com/song/notice/755",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/f244304d.pdf",
+          "name": "수익증권 안내문(인접권-161호).pdf",
+          "size": 389335
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/5ec74660.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(인접권-161호).pdf",
+          "size": 1210686
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/da422e9b.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_인접권.pdf",
+          "size": 2710364
+        }
+      ],
+      "fetchedAt": "2026-05-12",
+      "pdfDetails": {
+        "trustContractNo": "161",
+        "trustName": null,
+        "issueDate": "2023.9.19",
+        "trustPeriod": "2023.4.5.~2082.12.31",
+        "rightsType": "저작인접권",
+        "royaltyShare": null
+      }
+    },
+    "offering": {
+      "amount": 28000000,
+      "currency": "KRW",
+      "unitPrice": 28000,
+      "totalUnits": 1000
+    }
+  },
+  {
+    "id": "musicow-13245",
+    "name": "나 같은 애 (A Girl Like Me)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "구구단 (gugudan)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13245",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1754",
+    "name": "Dry Flower",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SURL (설)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1754",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1428",
+    "name": "Sad",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "손승연",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1428",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2152",
+    "name": "오늘같이 좋은 날",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송가인",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2152",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2506",
+    "name": "살만찌고",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "4minute (포미닛)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2506",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1388",
+    "name": "서울",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "쏜애플 (THORNAPPLE) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1388",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-558",
+    "name": "덜덜덜",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "EXID",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/558",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1999",
+    "name": "미쳤나봐 (With 권정열 Of 10cm)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소란 (SORAN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1999",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-671",
+    "name": "와줘..",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SE7EN ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/671",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-869",
+    "name": "그대가 내 안에 박혔다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "황치열",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/869",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-581",
+    "name": "비련 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비비",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/581",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1919",
+    "name": "You Are",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GOT7 (갓세븐) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1919",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2273",
+    "name": "사랑은 지날수록 더욱 선명하게 남아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "전상근",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2273",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1927",
+    "name": "누구보다 널 사랑해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비쥬",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1927",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1976",
+    "name": "분홍립스틱",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송윤아",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1976",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-580",
+    "name": "하늘땅 별땅 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비비",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/580",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11407",
+    "name": "좋아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "민서 (MINSEO), 윤종신",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11407",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-849",
+    "name": "아파 (Slow)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/849",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2239",
+    "name": "다 줄거야 (Acoustic Ver.)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "조규만",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2239",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-967",
+    "name": "봄 (feat. 산다라박)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박봄 (Park Bom)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/967",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1646",
+    "name": "내 사랑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "태사비애",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1646",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2233",
+    "name": "You",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "멜로망스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2233",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-871",
+    "name": "얼음꽃",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에일리(Ailee)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/871",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2699",
+    "name": "한여름밤의 꿀",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "San E (산이), 레이나 (Raina)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2699",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1058",
+    "name": "난말야",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "UNI.T",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1058",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1997",
+    "name": "여름안에서",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "서연",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1997",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1812",
+    "name": "나를 슬프게 하는 사람들",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김경호",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1812",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-576",
+    "name": "어젯밤 이야기 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소방차",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/576",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1685",
+    "name": "안녕, 오늘의 그대에게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "임한별",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1685",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2474",
+    "name": "Whatever",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브레이브걸스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2474",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2219",
+    "name": "풍요속의 빈곤",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김부용",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2219",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2386",
+    "name": "악몽 (Feat. 박수진)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "배치기",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2386",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-956",
+    "name": "이름이 뭐예요?",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "4minute (포미닛)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/956",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1102",
+    "name": "Don't Cry",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "더 크로스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1102",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1071",
+    "name": "사랑비",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1071",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-951",
+    "name": "Ice Cream (Feat. Maboos)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "현아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/951",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-743",
+    "name": "사랑합니다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이재훈 (쿨)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/743",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1912",
+    "name": "나 항상 그대를",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이선희",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1912",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-987",
+    "name": "미쳤어 (Feat. 에릭)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "손담비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/987",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1420",
+    "name": "My Way",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이수 (엠씨더맥스)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1420",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1157",
+    "name": "보라빛 향기",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "강수지",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1157",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ],
+    "disclosure": {
+      "noticeId": "475",
+      "title": "보라빛 향기 음악 수익증권 발행 안내",
+      "publishedAt": "2023-09-19",
+      "trustNo": "재산권-580",
+      "noticePageUrl": "https://www.musicow.com/song/notice/475",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/6b6015d4.pdf",
+          "name": "수익증권 안내문(재산권-580호).pdf",
+          "size": 447845
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/5721ef23.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-580호).pdf",
+          "size": 1557524
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/deb0b7ab.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "fetchedAt": "2026-05-12",
+      "pdfDetails": {
+        "trustContractNo": "580",
+        "trustName": "키움 보라빛향기 강수지 신탁",
+        "issueDate": "2023.9.19",
+        "trustPeriod": null,
+        "rightsType": "저작재산권",
+        "royaltyShare": {
+          "lyrics_pct": 0.0,
+          "music_pct": 20.84,
+          "arrangement_pct": 8.34,
+          "total_pct": 29.18
+        }
+      }
+    },
+    "offering": {
+      "amount": 87000000,
+      "currency": "KRW",
+      "unitPrice": 29000,
+      "totalUnits": 3000
+    }
+  },
+  {
+    "id": "musicow-2423",
+    "name": "골목길",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김현식",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2423",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-110",
+    "name": "미치겠어 (Feat. M.A.C)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/110",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2269",
+    "name": "우린 어쩌다 헤어진 걸까",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "허각",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2269",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1045",
+    "name": "썸데이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "The One (더원) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1045",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-990",
+    "name": "사랑합니다...",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "팀",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/990",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-582",
+    "name": "Insomnia (불면증) ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "휘성 (Realslow)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/582",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12962",
+    "name": "몇 번의 이별",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정효빈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12962",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1091",
+    "name": "연",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "빅마마",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1091",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2108",
+    "name": "난 원래 이랬어요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이예린",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2108",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-970",
+    "name": "정신이 나갔었나봐",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이승기",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/970",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1346",
+    "name": "부끄럼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "멜로망스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1346",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ],
+    "disclosure": {
+      "noticeId": "266",
+      "title": "부끄럼 음악 수익증권 발행 안내",
+      "publishedAt": "2023-09-19",
+      "trustNo": "인접권-277",
+      "noticePageUrl": "https://www.musicow.com/song/notice/266",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/bc1cd486.pdf",
+          "name": "수익증권 안내문(인접권-277호).pdf",
+          "size": 397186
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/9e31d9cd.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(인접권-277호).pdf",
+          "size": 1198739
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/878e89b2.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_인접권.pdf",
+          "size": 2710364
+        }
+      ],
+      "fetchedAt": "2026-05-12",
+      "pdfDetails": {
+        "trustContractNo": "277",
+        "trustName": null,
+        "issueDate": "2023.9.19",
+        "trustPeriod": "2023.7.6.~2085.12.31",
+        "rightsType": "저작인접권",
+        "royaltyShare": null
+      }
+    },
+    "offering": {
+      "amount": 137500000,
+      "currency": "KRW",
+      "unitPrice": 25000,
+      "totalUnits": 5500
+    }
+  },
+  {
+    "id": "musicow-2089",
+    "name": "취기를 빌려 (취향저격 그녀 X 산들)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "산들",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2089",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-4078",
+    "name": "그대 손 놓아요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이선희",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/4078",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2346",
+    "name": "지켜줄게 (Just as usual)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "EXO (엑소)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2346",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ],
+    "disclosure": {
+      "noticeId": "727",
+      "title": "지켜줄게 음악 수익증권 발행 안내",
+      "publishedAt": "2023-09-19",
+      "trustNo": "재산권-678",
+      "noticePageUrl": "https://www.musicow.com/song/notice/727",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/4251e95c.pdf",
+          "name": "수익증권 안내문(재산권-678호).pdf",
+          "size": 415304
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/28e87fd2.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-678호).pdf",
+          "size": 1283961
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/35e3ac3a.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "fetchedAt": "2026-05-12",
+      "pdfDetails": {
+        "trustContractNo": "678",
+        "trustName": "키움 지켜줄게 엑소 신탁",
+        "issueDate": "2023.9.19",
+        "trustPeriod": null,
+        "rightsType": "저작재산권",
+        "royaltyShare": {
+          "lyrics_pct": 10.0,
+          "music_pct": 10.0,
+          "arrangement_pct": 0.0,
+          "total_pct": 20.0
+        }
+      }
+    },
+    "offering": {
+      "amount": 53950000,
+      "currency": "KRW",
+      "unitPrice": 41500,
+      "totalUnits": 1300
+    }
+  },
+  {
+    "id": "musicow-1001",
+    "name": "인기 (Feat. 송가인, 챈슬러)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1001",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ],
+    "disclosure": {
+      "noticeId": "580",
+      "title": "인기 음악 수익증권 발행 안내",
+      "publishedAt": "2023-09-19",
+      "trustNo": "재산권-929",
+      "noticePageUrl": "https://www.musicow.com/song/notice/580",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/63472f38.pdf",
+          "name": "수익증권 안내문(재산권-929호).pdf",
+          "size": 418509
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/85de4470.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-929호).pdf",
+          "size": 1272277
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/c3aaba35.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "fetchedAt": "2026-05-12",
+      "pdfDetails": {
+        "trustContractNo": "929",
+        "trustName": "키움 인기 엠씨몽 신탁",
+        "issueDate": "2023.9.19",
+        "trustPeriod": null,
+        "rightsType": "저작재산권",
+        "royaltyShare": {
+          "lyrics_pct": 15.79845,
+          "music_pct": 13.54595,
+          "arrangement_pct": 0.0,
+          "total_pct": 29.3444
+        }
+      }
+    },
+    "offering": {
+      "amount": 61824500,
+      "currency": "KRW",
+      "unitPrice": 26500,
+      "totalUnits": 2333
+    }
+  },
+  {
+    "id": "musicow-890",
+    "name": "꽃잎점 (하트시그널 삽입곡)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "PERC%NT",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/890",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1977",
+    "name": "비가 내리는 날에는",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "윤하 (YOUNHA)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1977",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2242",
+    "name": "니가 있어야 할곳",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2242",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2025",
+    "name": "Spotlight",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "원더나인 (1THE9)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2025",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2234",
+    "name": "너의 뒤에서 (리메이크)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "팀",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2234",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1043",
+    "name": "Diva",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "애프터스쿨",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1043",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-853",
+    "name": "In The Club",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/853",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2141",
+    "name": "속삭여(Blah)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "원더나인 (1THE9)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2141",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1080",
+    "name": "오랜 날 오랜 밤",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AKMU (악뮤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1080",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-863",
+    "name": "Stay Together",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/863",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12986",
+    "name": "아모르 파티",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이홍기 (FT아일랜드)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12986",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12999",
+    "name": "서툰 이별을 하려해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "문별 (마마무)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12999",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1904",
+    "name": "죄와벌 (Remix)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SG 워너비",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1904",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1968",
+    "name": "음 (Mmmh)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "카이 (KAI) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1968",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1350",
+    "name": "우리 사랑했잖아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "다비치, 티아라",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1350",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-107",
+    "name": "TIAMO",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "티아라 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/107",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1633",
+    "name": "좋은 사람 Ver.1",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "티아라",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1633",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1351",
+    "name": "영원한 사랑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨야, 다비치, 티아라 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1351",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1095",
+    "name": "잘할게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SE7EN",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1095",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-760",
+    "name": "난 예술이야",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "헬로비너스 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/760",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-719",
+    "name": "내게 남은 사랑을 드릴께요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "장혜리",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/719",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-577",
+    "name": "화려한 날은 가고 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유열",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/577",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12302",
+    "name": "너의 번호를 누르고 (Prod. 영화처럼)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "#안녕",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12302",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2575",
+    "name": "기억의 빈자리",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "나얼",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2575",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1882",
+    "name": "다시는 사랑하지 않고, 이별에 아파하기 싫어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백지영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1882",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2268",
+    "name": "재회 (再會)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김세정",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2268",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1981",
+    "name": "바보",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "혜령",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1981",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1107",
+    "name": "나의 모든 날",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "세정",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1107",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-493",
+    "name": "Stay With Me",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "찬열 (CHANYEOL), 펀치 (Punch)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/493",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2053",
+    "name": "술 한잔 해요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "경서 (경서예지), MJ (써니사이드)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2053",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1032",
+    "name": "내 마음의 사진",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송가인",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1032",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1759",
+    "name": "이것도 사랑이니",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이동은 (라이어밴드)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1759",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1989",
+    "name": "Goodbye",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "웬디 (WENDY)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1989",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-909",
+    "name": "아미가르 레스토랑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "쎄쎄쎄 ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/909",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1700",
+    "name": "하고싶은 말",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1700",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-819",
+    "name": "ANYMORE",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "서인영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/819",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-571",
+    "name": "그대와 둘이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브라운 아이드 소울",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/571",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-993",
+    "name": "반짝반짝",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/993",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-474",
+    "name": "Beautiful",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Wanna One (워너원) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/474",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2049",
+    "name": "내 마음이 움찔했던 순간 (취향저격 그녀 X 규현)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "규현 (KYUHYUN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2049",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2396",
+    "name": "HOT BOY (핫보이)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "빅스타",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2396",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-836",
+    "name": "그대 내 친구여",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "패티김",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/836",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1906",
+    "name": "그댈 새겨두어요 (바른연애 길잡이 X 린)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "린",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1906",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2543",
+    "name": "하이힐 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브레이브걸스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2543",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-53",
+    "name": "때려박는 랩 (Bonus Track) (Battlecry)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "매드클라운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/53",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1130",
+    "name": "퍼즐 (Puzzle)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "용주 (YONGZOO)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1130",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2065",
+    "name": "향수 (You Are My...) ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "셀린(Celine)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2065",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2302",
+    "name": "또 (Song by 줍에이) (feat. 가현)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SOUND PALETTE",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2302",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-136",
+    "name": "러브119 (Feat. MC몽)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "케이윌",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/136",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1902",
+    "name": "Bungee",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백현 (BAEKHYUN) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1902",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-523",
+    "name": "OOH-AHH하게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "TWICE (트와이스) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/523",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-555",
+    "name": "SHAKE IT",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨스타",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/555",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-678",
+    "name": "발작 (發作)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "원티드",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/678",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2240",
+    "name": "동행",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "최성수",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2240",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-684",
+    "name": "오늘... 그녀가",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "루그",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/684",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2236",
+    "name": "이름만 들어도 (Rap Feat. 길미)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "강현주",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2236",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2066",
+    "name": "Sweet Love (취향저격 그녀 X Crush)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Crush (크러쉬)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2066",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1145",
+    "name": "OPEN YOUR EYES",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "IZ*ONE (아이즈원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1145",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1068",
+    "name": "내가 그리웠니 (Feat. 진실 Of Mad Soul Child)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1068",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2073",
+    "name": "너의 하루 (바른연애 길잡이 X 로꼬)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "로꼬",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2073",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-118",
+    "name": "죽을 만큼 아파서 (Feat. 멜로우)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/118",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1017",
+    "name": "행복해 (Feat. 키겐 of 팬텀)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "애즈원",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1017",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1014",
+    "name": "EVERYDAY I LOVE YOU (Feat. 하슬)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이달의소녀 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1014",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2001",
+    "name": "너에게 못했던 내 마지막 말은",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "다비치",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2001",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2417",
+    "name": "올림포스 가디언 주제곡",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2417",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-782",
+    "name": "I Don't Care",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/782",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12992",
+    "name": "나를 잊지 말아요 (웹툰 '연애의 발견' X 길구봉구)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "길구봉구",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12992",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-846",
+    "name": "박수쳐",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/846",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2311",
+    "name": "Friday Night",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2311",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2261",
+    "name": "거짓말",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2261",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-973",
+    "name": "거짓말",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BIGBANG (빅뱅)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/973",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-911",
+    "name": "저기요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하성운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/911",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-855",
+    "name": "Lonely",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/855",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12984",
+    "name": "Endless",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "허각",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12984",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-789",
+    "name": "No Make Up",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Zion.T (자이언티)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/789",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1542",
+    "name": "시퍼런 봄",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "쏜애플 (THORNAPPLE)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1542",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2461",
+    "name": "아름다운 색",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "IZ*ONE (아이즈원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2461",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1039",
+    "name": "Starry Night",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "모모랜드 (MOMOLAND)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1039",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-106",
+    "name": "별의 별",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Apink (에이핑크)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/106",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-61",
+    "name": "링마벨 (Ring My Bell)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/61",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-560",
+    "name": "Twilight",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Wanna One (워너원) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/560",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-757",
+    "name": "그 끝에 그대",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "청하 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/757",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1545",
+    "name": "다시는 사랑하지 않고, 이별에 아파하기 싫어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백지영",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1545",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-117",
+    "name": "너나 잘해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에일리(Ailee)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/117",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-68",
+    "name": "White Day",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/68",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2205",
+    "name": "우리 왜 헤어져야 해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "신예영",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2205",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1156",
+    "name": "가려진 시간 사이로",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "윤상",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1156",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-78",
+    "name": "두근두근",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "벤",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/78",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-974",
+    "name": "라밤바",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정미애 (미스트롯)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/974",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1165",
+    "name": "행복해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송하예",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1165",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-752",
+    "name": "나혼자 (Alone)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨스타",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/752",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1918",
+    "name": "벌써일년",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "반하나, MJ (써니사이드)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1918",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2345",
+    "name": "트로트가 나는 좋아요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송가인",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2345",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2414",
+    "name": "미아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이유",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2414",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1016",
+    "name": "Boo",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이유",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1016",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1007",
+    "name": "넌 is 뭔들",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "마마무 (Mamamoo) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1007",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-845",
+    "name": "니가 뭔데 (Who You?)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "G-DRAGON (지드래곤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/845",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-899",
+    "name": "Upgrader",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김예림 (Lim Kim)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/899",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2151",
+    "name": "일주년",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "진민호",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2151",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-898",
+    "name": "먼저 말해 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김예림 (Lim Kim)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/898",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-950",
+    "name": "심쿵해 (Heart Attack)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AOA ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/950",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-725",
+    "name": "MaMa",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "바비 킴 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/725",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-460",
+    "name": "NoNoNo",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Apink (에이핑크)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/460",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-655",
+    "name": "바다 끝",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "최백호",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/655",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1101",
+    "name": "밤 끝없는 밤",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AKMU (악뮤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1101",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-42",
+    "name": "안녕",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박혜경",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/42",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1024",
+    "name": "뛰뛰빵빵",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비투비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1024",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-509",
+    "name": "너만 생각나",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "장나라",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/509",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1917",
+    "name": "언젠가 설명이 필요한 밤 (바니와 오빠들 X 승희 (오마이걸))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "승희 (오마이걸)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1917",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-489",
+    "name": "미리 메리 크리스마스 (Feat. 천둥 Of MBLAQ)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이유",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/489",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1962",
+    "name": "LOVE DAY (2021) (바른연애 길잡이 X 양요섭, 정은지)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "양요섭, 정은지",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1962",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1012",
+    "name": "짧은 치마 (Miniskirt)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AOA",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1012",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1438",
+    "name": "카페에 앉아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "원 모어 찬스 (one more chance) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1438",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13205",
+    "name": "그 중에 그대를 만나",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이선희",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13205",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1103",
+    "name": "떠나가요, 떠나지마요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "더 크로스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1103",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1905",
+    "name": "끌림 (바니와 오빠들 X 에릭남 (Eric Nam), 이나은 (에이프릴))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에릭남 (Eric Nam), 이나은 (에이프릴)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1905",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-79",
+    "name": "소주 한 잔",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "임창정",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/79",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-101",
+    "name": "내 생애 가장 행복한 시간 (Feat. 허각)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/101",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1761",
+    "name": "모든 밤 너에게 (연애혁명 X 민현 (뉴이스트))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "민현 (뉴이스트)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1761",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-607",
+    "name": "까르보나라",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김나희 (미스트롯)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/607",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1074",
+    "name": "빗물이 내려서",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1074",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-164",
+    "name": "So Fresh (Feat. 김태우) (위대한 캣츠비 OST 삽입곡)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/164",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2092",
+    "name": "식사부터 하세요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "더 자두",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2092",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-818",
+    "name": "Hello (Feat. 다라)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "G-DRAGON (지드래곤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/818",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12972",
+    "name": "시절인연 (時節因緣)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이찬원",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12972",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-64",
+    "name": "심상치 않아 (Feat. 주영)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "키썸 (Kisum)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/64",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1909",
+    "name": "오늘 술 한잔해요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "지아",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1909",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-492",
+    "name": "Beautiful",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Crush (크러쉬)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/492",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1367",
+    "name": "들었다 놨다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "데이브레이크 (DAYBREAK) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1367",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-637",
+    "name": "1llusion",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Dok2 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/637",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-771",
+    "name": "갈 수가 없어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "벤",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/771",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2459",
+    "name": "미인 (美人)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이기찬",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2459",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1379",
+    "name": "삐뚤어졌어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "선우정아",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1379",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-910",
+    "name": "오.꼭.말",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하성운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/910",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1035",
+    "name": "오늘 뭐해?!",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하성운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1035",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1924",
+    "name": "가라지",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "진해성",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1924",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1082",
+    "name": "I Love You",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "AKMU (악뮤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1082",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-864",
+    "name": "악몽",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "G-DRAGON (지드래곤)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/864",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2235",
+    "name": "우리가 이별할 때 (Duet 백지영)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소울스타 (SOULSTAR) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2235",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-654",
+    "name": "Nothing Better",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브라운 아이드 소울",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/654",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13214",
+    "name": "자기야",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박주희",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13214",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-591",
+    "name": "희나리 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "구창모 ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/591",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-46",
+    "name": "서울사람들",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "버스커 버스커",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/46",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2300",
+    "name": "백치",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "쏜애플 (THORNAPPLE)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2300",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-893",
+    "name": "너를 사랑하진 않아 (Feat. 케이시)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "자이언트핑크",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/893",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2130",
+    "name": "나의 사랑 천상(天上)에서도",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김경호",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2130",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1618",
+    "name": "Fake Rock Star (Feat. NO:EL)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "스윙스, 한요한",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1618",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-624",
+    "name": "얼쑤",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "윙크",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/624",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-813",
+    "name": "BABY DON'T CRY",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "대성 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/813",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1368",
+    "name": "A Fool Moon Night",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "칵스 (THE KOXX)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1368",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2154",
+    "name": "안 돼요 안 돼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "재하",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2154",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2251",
+    "name": "Where is Love (Feat. 정준일)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "노리플라이 (no reply)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2251",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2491",
+    "name": "BEASTMODE",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "몬스타엑스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2491",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-155",
+    "name": "목소리 (Feat. 개리 Of 리쌍)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백지영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/155",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2415",
+    "name": "널 미워하고 있어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "도도",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2415",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-705",
+    "name": "한번만... ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "혜령",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/705",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1961",
+    "name": "고마웠다고...",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "팀",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1961",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2097",
+    "name": "추억의 책장을 넘기면 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이선희",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2097",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-486",
+    "name": "Fiction",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비스트",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/486",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13218",
+    "name": "착한 사랑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김민종",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13218",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2271",
+    "name": " I Love You",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "차태현",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2271",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2299",
+    "name": "봄날",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2299",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1422",
+    "name": "꿈처럼 내린",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "다비치",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1422",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-948",
+    "name": "그리워하다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "비투비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/948",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2119",
+    "name": "너에게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정준일",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2119",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2181",
+    "name": "모르죠",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2181",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1447",
+    "name": "고장 난 벽시계",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "신미래",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1447",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1621",
+    "name": "창피해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박봄 (Park Bom)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1621",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2132",
+    "name": "너로 물든다 (바른연애 길잡이 X 신용재 (2F))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "신용재 (2F)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2132",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12979",
+    "name": "어제처럼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "폴킴",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12979",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-163",
+    "name": "권태중독 (Feat. 선우정아)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/163",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1270",
+    "name": "걸작품",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "멜로망스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1270",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-874",
+    "name": "사랑했다 미워했다 (I Loved You)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "황치열",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/874",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-783",
+    "name": "MY STAR",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이하이",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/783",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13247",
+    "name": "남과 여 (Feat.김범수)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박선주 (Pak Sun Zoo)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13247",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11927",
+    "name": "마리오네트",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "스텔라",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11927",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13253",
+    "name": "이별 뒷면",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "권진아",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13253",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1978",
+    "name": "넘쳐흘러",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "엠씨더맥스 (M.C the MAX) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1978",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-839",
+    "name": "온도 (Feat. 수란)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/839",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-93",
+    "name": "널 너무 사랑해서 (Feat. 정은지 of 에이핑크)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/93",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-631",
+    "name": "너에게 약속하는 7가지 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "테이, 간미연",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/631",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1987",
+    "name": "집에만 있었지 (바니와 오빠들 X 백아연)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백아연",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1987",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1176",
+    "name": "키친 OST",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Various Artists",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1176",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2222",
+    "name": "고백 (바른연애 길잡이 X 허각)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "허각",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2222",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1208",
+    "name": "너를 보네 (Feat. 권정열 Of 10cm)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소란 (SORAN) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1208",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2150",
+    "name": "넘어와 (바니와 오빠들 X 유승우, SOLE (쏠))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유승우, SOLE (쏠)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2150",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1980",
+    "name": "거문고야",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송가인",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1980",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2054",
+    "name": "지켜줄게 (바니와 오빠들 X 노을)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "노을",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2054",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1659",
+    "name": "4시 44분 (Feat. 휘인 of 마마무)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박봄 (Park Bom)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1659",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1903",
+    "name": "꿈(夢)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송가인",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1903",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1166",
+    "name": "UN Village",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백현 (BAEKHYUN) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1166",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1127",
+    "name": "나도 모르는 노래 (Hallelujah)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김필 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1127",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1684",
+    "name": "내가 많이 사랑해요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이승철",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1684",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1660",
+    "name": "빗물이 내려서",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1660",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-625",
+    "name": "Tears ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소찬휘",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/625",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1117",
+    "name": "사랑 바보",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "양수경",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1117",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2293",
+    "name": "Love Song",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "조장혁",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2293",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1108",
+    "name": "눈이 내린다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1108",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-702",
+    "name": "Perhaps Love (사랑인가요) (Prod.By 박근태)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에릭남 (Eric Nam), CHEEZE (치즈)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/702",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2558",
+    "name": "봄 안녕 봄",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이유",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2558",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2288",
+    "name": "관찰",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2288",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-991",
+    "name": "추억속의 그대",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이승기",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/991",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2390",
+    "name": "끝나지않은노래",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "노리플라이 (no reply)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2390",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1733",
+    "name": "그대 고운 내사랑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "어반자카파",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1733",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-926",
+    "name": "홀로 된다는 것",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "변진섭",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/926",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-878",
+    "name": "별, 그대 (The Only Star)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "황치열",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/878",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2486",
+    "name": "모든 순간에 (바니와 오빠들 X 김재환)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김재환",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2486",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-30",
+    "name": "오랜만이죠 (Feat. 신지수)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "라디 (Ra. D)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/30",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-955",
+    "name": "어쩌다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브라운아이드걸스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/955",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-82",
+    "name": "나를 잊지 말아요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "허각",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/82",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1348",
+    "name": "여성시대",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨야, 다비치, 티아라",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1348",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-717",
+    "name": "늪",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "조관우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/717",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2466",
+    "name": "왜 몰랐을까",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "로이킴",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2466",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1437",
+    "name": "내 생에 아름다운",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "케이윌",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1437",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-114",
+    "name": "반창고",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽, 허각",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/114",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-218",
+    "name": "사랑 앞에서",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정은지",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/218",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2107",
+    "name": "Timeless (Live ver.)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SG 워너비",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2107",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-12993",
+    "name": "눈 떠보니 이별이더라",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "빅마마",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/12993",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-938",
+    "name": "Love Rain (Feat. 수란)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유주 (여자친구)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/938",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-189",
+    "name": "Good Boy (Feat. 용준형 Of 비스트)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "백지영",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/189",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1442",
+    "name": "나한테 집중해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "슈가볼 (Sugarbowl)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1442",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-734",
+    "name": "행복하지 말아요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "엠씨더맥스 (M.C the MAX) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/734",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2148",
+    "name": "별이 뜬 곳에 (바니와 오빠들 X 양다일)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "양다일",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2148",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-698",
+    "name": "어른병 (I Lost Me)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "황치열",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/698",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-857",
+    "name": "Don't Stop The Music",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "2NE1 (투애니원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/857",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2498",
+    "name": "그대만이",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "장덕철",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2498",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-976",
+    "name": "헤어졌다 만났다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "다비치",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/976",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13216",
+    "name": "흰눈",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이루",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13216",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-711",
+    "name": "라이딩 (Riding) (Feat. 개코)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하성운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/711",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1973",
+    "name": "먹구름",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "윤하 (YOUNHA)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1973",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1539",
+    "name": "날 보러와요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "오유진",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1539",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-838",
+    "name": "샤넬 (Feat. 박봄)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/838",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1511",
+    "name": "쉽지않아 (Missing)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "틴탑",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1511",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-590",
+    "name": "너를 사랑하고도 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "전유나 ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/590",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-923",
+    "name": "오늘 모해 (#WYD)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "IKON ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/923",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1064",
+    "name": "롤린 (Rollin')",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브레이브걸스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1064",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-770",
+    "name": "FOR YOU ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "플라워",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/770",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-983",
+    "name": "봄 같던 그녀가 춥대 (Feat. 페노메코)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "MC몽, 김재환",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/983",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-123",
+    "name": "Beautiful Target",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "B1A4",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/123",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-964",
+    "name": "바보에게... 바보가",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박명수",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/964",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1318",
+    "name": "열기구",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SURL (설)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1318",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-996",
+    "name": "나를 잊지마요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/996",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-740",
+    "name": "사랑의 시(時)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "엠씨더맥스 (M.C the MAX) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/740",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-13219",
+    "name": "바램",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정준일",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/13219",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1653",
+    "name": "해바라기",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "IZ*ONE (아이즈원)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1653",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-498",
+    "name": "Hello Bubble",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/498",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-858",
+    "name": "지못미",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "iKON ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/858",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1604",
+    "name": "왜 (Why)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유노윤호 (U-KNOW) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1604",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-565",
+    "name": "Never Ever",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GOT7 (갓세븐)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/565",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2388",
+    "name": "잘 헤어진 거야",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "한동근",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2388",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1381",
+    "name": "View",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "적재",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1381",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-768",
+    "name": "Please ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "플라워",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/768",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1507",
+    "name": "I LUV U",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "헨리 (HENRY) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1507",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1622",
+    "name": "삼각형",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "러블리즈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1622",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2455",
+    "name": "Good Night",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "오왠 (O.WHEN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2455",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1020",
+    "name": "Angel Song",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "에이프릴 (APRIL)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1020",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-817",
+    "name": "No Woman No Cry",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "스토니 스컹크",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/817",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1634",
+    "name": "Hey You",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "씨스타",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1634",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2380",
+    "name": "비가 내리면",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "브레이브걸스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2380",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-639",
+    "name": "가",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BOBBY",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/639",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-868",
+    "name": "아름다워 (Beautiful) (Feat. 지코 (ZICO)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "C JAMM ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/868",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-55",
+    "name": "Tic Toc",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "매드클라운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/55",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-982",
+    "name": "응급실",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "izi",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/982",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-543",
+    "name": "넌 살아있다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "버즈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/543",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-749",
+    "name": "겨울나기",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이루",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/749",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1657",
+    "name": "키스해줄래",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "지나",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1657",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2071",
+    "name": "골목길 (응답하라 1988 삽입곡)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "신촌블루스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2071",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1758",
+    "name": "Something",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "죠지, 강혜인",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1758",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2428",
+    "name": "Ma Boy 2 (Feat. 효린)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "일렉트로보이즈",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2428",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-905",
+    "name": "날 봐, 귀순",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "대성",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/905",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-866",
+    "name": "노래",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Zion.T (자이언티)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/866",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-238",
+    "name": "보고싶어",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "걸스데이 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/238",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-706",
+    "name": "기억속의 먼 그대에게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박효신",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/706",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2009",
+    "name": "왜 사랑은 언제나 쉽지 않을까? (바른연애 길잡이 X 조이 (JOY))",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "조이 (JOY) ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2009",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1193",
+    "name": "모두 잠든 후에",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김원준",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1193",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-903",
+    "name": "우리의 얘기를 쓰겠소",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SG 워너비",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/903",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2556",
+    "name": "반지",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "파이브 (F-IV)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2556",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2395",
+    "name": "누군가의 빛나던",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "위수 (WISUE)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2395",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-595",
+    "name": "맨발의 청춘",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "벅",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/595",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1764",
+    "name": "STAY THE NIGHT (Feat. DeVita)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GRAY (그레이)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1764",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1158",
+    "name": "일주일 (247) (Feat. Zion.T, Crush, DEAN)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정기고",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1158",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1698",
+    "name": "Wing",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박지훈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1698",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-274",
+    "name": "낯선 길",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "성유진 (더 씨야)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/274",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-709",
+    "name": "이 별",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "길구봉구",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/709",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-179",
+    "name": "유리 심장 (Feat. 용준형 Of 비스트)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "린",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/179",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-472",
+    "name": "사랑해 (Feat. 윤은혜)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "마이티 마우스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/472",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-700",
+    "name": "Young 20 (Prod. 이대휘)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박지훈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/700",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1027",
+    "name": "빙글빙글",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유키스",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1027",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2472",
+    "name": "SILLY",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "데이브레이크 (DAYBREAK)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2472",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1625",
+    "name": "꽃길만 걷게 해줄게",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "데이브레이크 (DAYBREAK)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1625",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-547",
+    "name": "마주치지 말자 (Let's Not...)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "SUPER JUNIOR (슈퍼주니어) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/547",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-135",
+    "name": "나도 여자예요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "민아 (걸스데이)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/135",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1566",
+    "name": "태양처럼",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하현우 (국카스텐)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1566",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-557",
+    "name": "FIVE",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Apink (에이핑크)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/557",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-504",
+    "name": "가시리",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "버블 시스터즈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/504",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-586",
+    "name": "통화중",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소방차 ",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/586",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1182",
+    "name": "너를 지워야만 나 사는데",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "더 크로스",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1182",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2000",
+    "name": "애인(愛人)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김정민",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2000",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-708",
+    "name": "내가 먼저",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "도겸 (SEVENTEEN)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/708",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1609",
+    "name": "Rainbow Falling",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "차은우 (ASTRO)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1609",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2480",
+    "name": "해피송",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "노라조",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2480",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-714",
+    "name": "너에게로 또 다시",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "변진섭",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/714",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-131",
+    "name": "Good Morning Baby",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Apink (에이핑크)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/131",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1122",
+    "name": "미안해요, 고마워요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "변진섭",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1122",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-697",
+    "name": "D-Day",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정기고 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/697",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-831",
+    "name": "Zzz",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김재환",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/831",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2247",
+    "name": "너는 내 운명",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "하하",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2247",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-800",
+    "name": "바람났어 (Feat. 박봄)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GG (박명수 & G-Dragon)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/800",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1070",
+    "name": "WE LIKE 2 PARTY",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BIGBANG (빅뱅)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1070",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-865",
+    "name": "착한 사람",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BIGBANG (빅뱅)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/865",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2171",
+    "name": "니가 필요해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2171",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1124",
+    "name": "La La (PROD. 이단옆차기)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "정세운",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1124",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-62",
+    "name": "예쁜 나이 25살",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "송지은",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/62",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-659",
+    "name": "뒷모습이 참 예뻤구나 (At close)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "규현 (KYUHYUN)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/659",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-668",
+    "name": "With Me",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "휘성 (Realslow) ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/668",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-142",
+    "name": "하지마 (Stop it)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "B.A.P",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/142",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-153",
+    "name": "똑 똑 똑",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "아이오아이 (I.O.I)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/153",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-861",
+    "name": "Make Love (Feat. Kush)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "태양 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/861",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2216",
+    "name": "안아줘요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "10CM (십센치)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2216",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-606",
+    "name": "축가",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "전우성 (노을)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/606",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1383",
+    "name": "양화대교",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Zion.T (자이언티)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1383",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1008",
+    "name": "창피해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박봄 (Park Bom)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1008",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2218",
+    "name": "바람이라도 좋아",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유미",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2218",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1729",
+    "name": "Look",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GOT7 (갓세븐)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1729",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-80",
+    "name": "나와 같다면",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김장훈",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/80",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1038",
+    "name": "여기요",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "홍자 (미스트롯)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1038",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-851",
+    "name": "취향저격",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "iKON ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/851",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1072",
+    "name": "내가 야! 하면 넌 예! (Duet With LYN)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "김태우",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1072",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1423",
+    "name": "농담 반 진담 반",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "슈가볼 (Sugarbowl)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1423",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-850",
+    "name": "나만 바라봐",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "태양 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/850",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-820",
+    "name": "Baby Good Night",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "GD&TOP",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/820",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2484",
+    "name": "사랑해 그리고 기억해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "god",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2484",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2070",
+    "name": "How Was Your Day",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "슈가볼 (Sugarbowl)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2070",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-962",
+    "name": "사랑은 언제나 목마르다",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "유미",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/962",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2296",
+    "name": "빗물",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "오유진",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2296",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-237",
+    "name": "갖고놀래 (Feat. 다이나믹 듀오)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "범키",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/237",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1380",
+    "name": "이별자리",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "이우",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1380",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-2211",
+    "name": "되돌릴 수 없는 돌아갈 수 없는 돌아갈 곳 없는",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "박봄 (Park Bom)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/2211",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1062",
+    "name": "마지막 인사",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "BIGBANG (빅뱅)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1062",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1654",
+    "name": "너를 공부해",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "소란 (SORAN)",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1654",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-638",
+    "name": "내가 (Feat. Beenzino & The Quiett)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "Dok2 ",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/638",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1889",
+    "name": "흑백사진 (2021) (바른연애 길잡이 X KCM)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "KCM",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1889",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-979",
+    "name": "Very Good",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "원투",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/979",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-11529",
+    "name": "처음보는 나",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "봉태규",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/11529",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-657",
+    "name": "그게 좋은거야 (Time with you)",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "규현 (KYUHYUN)",
+    "rightsCategory": "저작재산권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/657",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  },
+  {
+    "id": "musicow-1000",
+    "name": "반지하나 ",
+    "issuerId": "musicow",
+    "category": "music",
+    "region": "KR",
+    "country": "🇰🇷 한국",
+    "securityType": "음악 수익증권 (신탁수익증권)",
+    "classification": "혁신금융서비스 기반 음악 IP 수익증권",
+    "artist": "혜령",
+    "rightsCategory": "저작인접권",
+    "issuanceStructure": {
+      "issuer": "㈜뮤직카우인베스트",
+      "issuerRole": "혁신금융사업자",
+      "trustee": "키움증권㈜",
+      "trusteeRole": "보관기관"
+    },
+    "externalUrl": "https://www.musicow.com/song/1000",
+    "sources": [
+      {
+        "src": "OFFICIAL",
+        "label": "뮤직카우 (musicow.com)"
+      },
+      {
+        "src": "FSC",
+        "label": "혁신금융서비스 지정"
+      }
+    ]
+  }
+];
+
+if (typeof window !== 'undefined') { window.MUSICOW_STOS = MUSICOW_STOS; }

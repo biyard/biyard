@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-05-12",
+  "source": "수익증권 안내문 PDF 5건 (cdn.musicow.com)",
+  "method": "pypdf 텍스트 추출 + 정규식 파싱",
+  "details": {
+    "1001": {
+      "song_id": "1001",
+      "trustContractNo": "929",
+      "trustName": "키움 인기 엠씨몽 신탁",
+      "underlying": "인기 음원",
+      "rightsType": "저작재산권",
+      "unitPrice": 26500,
+      "totalUnits": 2333,
+      "totalAmount": 61824500,
+      "issueDate": "2023.9.19",
+      "royaltyShare": {
+        "lyrics_pct": 15.79845,
+        "music_pct": 13.54595,
+        "arrangement_pct": 0.0,
+        "total_pct": 29.3444
+      },
+      "track_section_excerpt": "No 저작물코드"
+    },
+    "1157": {
+      "song_id": "1157",
+      "trustContractNo": "580",
+      "trustName": "키움 보라빛향기 강수지 신탁",
+      "underlying": "보라빛향기 음원",
+      "rightsType": "저작재산권",
+      "unitPrice": 29000,
+      "totalUnits": 3000,
+      "totalAmount": 87000000,
+      "issueDate": "2023.9.19",
+      "royaltyShare": {
+        "lyrics_pct": 0.0,
+        "music_pct": 20.84,
+        "arrangement_pct": 8.34,
+        "total_pct": 29.18
+      },
+      "track_section_excerpt": "No 저 작 물 코 드 주 1) 음원명 가수 작사 작곡 편곡 공표일 계약 \n지역주2) \n지분율주3) \n작사 작곡 편곡주4) 합계 \n1 001000022786 보라빛향기 강수지 강수지 윤상 윤상 1990-04-01 국내&국외 0.00000% 20.84000% 8.34000% 29.18000% \n2 001001072436 내사랑싸가지/보라빛향기 클릭B 강수지 윤상 조병석 2003-12-01 국내&국외 0.00000% 20.84000% 0.00000% 20.84000% \n3 001001072447 내사랑싸가지/보라빛향기MEDIUM 버젼 무   윤상 강화성 2004-01-01 국내&국외 0.00000% 41.67000% 0.00000% 41.67000% \n4 001001072426 내사랑싸가지/보라빛향기SAD 버젼 무   윤상 강화성 2004-01-01 국내&국외 0.00000% 41.67000% 0.00000% 41.67000% \n5 001001072117 보라빛향기 라이너스의담요   윤"
+    },
+    "1346": {
+      "song_id": "1346",
+      "trustContractNo": "277",
+      "underlying": "부끄럼 음원",
+      "rightsType": "저작인접권",
+      "unitPrice": 25000,
+      "totalUnits": 5500,
+      "totalAmount": 137500000,
+      "trustPeriod": "2023.7.6.~2085.12.31",
+      "issueDate": "2023.9.19",
+      "track_section_excerpt": "No. 저작물코드 주 1) 음원명 가수 공표일 지분율 주 2) 비고주 3) \n1 A203408197 \nA208643070 부끄럼 멜로망스(MeloMance) 2015-10-07 50.0000%  C002603976"
+    },
+    "2346": {
+      "song_id": "2346",
+      "trustContractNo": "678",
+      "trustName": "키움 지켜줄게 엑소 신탁",
+      "underlying": "지켜줄게 음원",
+      "rightsType": "저작재산권",
+      "unitPrice": 41500,
+      "totalUnits": 1300,
+      "totalAmount": 53950000,
+      "issueDate": "2023.9.19",
+      "royaltyShare": {
+        "lyrics_pct": 10.0,
+        "music_pct": 10.0,
+        "arrangement_pct": 0.0,
+        "total_pct": 20.0
+      },
+      "track_section_excerpt": "No 저 작 물 코 드 주 1) 음원명 가수 작사 작곡 편곡 공표일 계약 \n지역주2) \n지분율주3) \n작사 작곡 편곡주4) 합계 \n1 100003613181 지켜줄게(JUST AS USUAL) EXO,엑소 \nVENDORS(SAN), THAMA, \nVENDORS(ZENUR), \nVENDORS(FASCINADOR), \nRAYES SHAQUILLE \nVENDORS(SAN), \nVENDORS(ZENUR), \nVENDORS(FASCINADOR), \nRAYES SHAQUILLE \n  2021-06-07 국내&국외 10.00000% 10.00000% 0.00000% 20.00000%"
+    },
+    "2381": {
+      "song_id": "2381",
+      "trustContractNo": "161",
+      "underlying": "말 없이 음원",
+      "rightsType": "저작인접권",
+      "unitPrice": 28000,
+      "totalUnits": 1000,
+      "totalAmount": 28000000,
+      "trustPeriod": "2023.4.5.~2082.12.31",
+      "issueDate": "2023.9.19",
+      "track_section_excerpt": "No. 저작물코드"
+    }
+  }
+}

@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Biyard · STO 시장 정보</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=26" />
+    <style>
+      /* News grid (full-width 3 columns) */
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 1000px) {
+        .news-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 600px) {
+        .news-grid { grid-template-columns: 1fr; }
+      }
+      .news-card {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        transition: border-color 0.15s;
+      }
+      .news-card:hover { border-color: var(--brand-line); }
+      .news-card .meta {
+        display: flex;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .news-card .src {
+        background: var(--panel-2);
+        color: var(--ink-soft);
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+      .news-card .src.official {
+        background: rgba(94, 176, 255, 0.15);
+        color: #5eb0ff;
+      }
+      .news-card .title {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+
+      /* Section heads */
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+      .panel-head h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .panel-head .more {
+        font-size: 12px;
+        color: var(--brand);
+      }
+      .panel-head .more-btn {
+        display: inline-block;
+        background: var(--brand-soft);
+        color: var(--brand);
+        border: 1px solid var(--brand-line);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background 0.15s;
+      }
+      .panel-head .more-btn:hover {
+        background: rgba(0, 229, 160, 0.20);
+      }
+      .panel-head .tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .panel-tab {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .panel-tab.active {
+        background: var(--brand-soft);
+        color: var(--brand);
+        border-color: var(--brand-line);
+      }
+
+      /* STO list table (compact) */
+      .dash-sto-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .dash-sto-table th {
+        text-align: left;
+        padding: 10px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        border-bottom: 1px solid var(--line);
+        background: var(--panel-2);
+        white-space: nowrap;
+      }
+      .dash-sto-table td {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+      .dash-sto-table td.allow-wrap,
+      .dash-sto-table th.allow-wrap {
+        white-space: normal;
+      }
+      .dash-sto-table tr {
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .dash-sto-table tr:hover td {
+        background: var(--panel-2);
+      }
+      .dash-sto-table .col-flag {
+        width: 28px;
+      }
+      .dash-sto-table .col-icon {
+        width: 28px;
+        font-size: 16px;
+      }
+      .dash-sto-table .col-cat {
+        width: 110px;
+      }
+      .dash-sto-table .col-issuer {
+        width: 150px;
+        color: var(--ink-soft);
+        font-size: 12px;
+      }
+      .dash-sto-table .col-date {
+        width: 90px;
+        color: var(--muted);
+        font-size: 12px;
+        font-family: var(--font-mono);
+        text-align: right;
+      }
+      .dash-sto-table .col-status {
+        width: 110px;
+        font-size: 11px;
+      }
+      .dash-sto-table .name-main {
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .dash-sto-table .name-under {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .dash-sto-table .cat-pill {
+        background: var(--panel-2);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        color: var(--ink-soft);
+        white-space: nowrap;
+      }
+      .status-active {
+        color: var(--brand);
+      }
+      .status-paused {
+        color: var(--warn);
+      }
+
+      /* Hot bar */
+      .hot-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 800px) {
+        .hot-bar {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .hot-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+      }
+      .hot-card .hot-label {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
+      }
+      .hot-card .hot-value {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .hot-card .hot-sub {
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .hot-card .hot-sub.up {
+        color: var(--brand);
+      }
+
+      /* Sidebar (news + categories) */
+      .side-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .news-mini {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .news-mini li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .news-mini li:last-child {
+        border-bottom: 0;
+      }
+      .news-mini a {
+        display: block;
+      }
+      .news-mini .meta {
+        display: flex;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .news-mini .src {
+        background: var(--panel-2);
+        color: var(--ink-soft);
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-weight: 600;
+      }
+      .news-mini .src.official {
+        background: rgba(94, 176, 255, 0.15);
+        color: #5eb0ff;
+      }
+      .news-mini .title {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: var(--ink);
+      }
+      .news-mini a:hover .title {
+        color: var(--brand);
+      }
+
+      /* Category strip */
+      .cat-strip {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .cat-strip a {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--ink-soft);
+      }
+      .cat-strip a:hover {
+        border-color: var(--brand-line);
+        color: var(--brand);
+      }
+      .cat-strip a strong {
+        color: var(--muted);
+        margin-left: 4px;
+        font-weight: 500;
+      }
+
+      /* Search bar */
+      .search-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .search-row input {
+        flex: 1;
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+        padding: 11px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+      }
+      .search-row input:focus {
+        outline: none;
+        border-color: var(--brand-line);
+      }
+
+      /* Mini stat */
+      .side-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 12px;
+        border-bottom: 1px dashed var(--line);
+      }
+      .side-stat:last-child {
+        border-bottom: 0;
+      }
+      .side-stat span:first-child {
+        color: var(--ink-soft);
+      }
+      .side-stat span:last-child {
+        color: var(--ink);
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
+
+      /* 공모 진행/예정 히어로 (증권사 제공) */
+      .hero-offerings {
+        margin-bottom: 16px;
+      }
+      .hero-offerings .hero-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .hero-offerings .hero-head h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .hero-offerings .sponsor-label {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--panel-2);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      .offer-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 1000px) {
+        .offer-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      @media (max-width: 600px) {
+        .offer-grid { grid-template-columns: 1fr; }
+      }
+      .offer-card {
+        background: var(--panel);
+        border: 1px solid var(--brand-line);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .offer-card::before {
+        content: "AD";
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        background: var(--panel-2);
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+      .offer-card .cat-pill {
+        display: inline-block;
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--panel-2);
+        color: var(--ink-soft);
+        margin-bottom: 8px;
+      }
+      .offer-card .title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 4px;
+        line-height: 1.4;
+      }
+      .offer-card .issuer-row {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .offer-card .issuer-row strong {
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+      .offer-card .meta-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--muted);
+        padding-top: 8px;
+        border-top: 1px dashed var(--line);
+      }
+      .offer-card .meta-row .val {
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+
+      /* 정체성 진입 배너 (평가지표 / 런치패드) */
+      .identity-banners {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      @media (max-width: 700px) {
+        .identity-banners { grid-template-columns: 1fr; }
+      }
+      .identity-card {
+        background: var(--panel);
+        border: 1px solid var(--brand-line);
+        border-radius: var(--radius-sm);
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .identity-card .tag {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--brand);
+        letter-spacing: 0.5px;
+      }
+      .identity-card .title {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .identity-card .desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .identity-card .cta {
+        margin-top: 6px;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--brand);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <!-- 공모 진행/예정 (증권사 제공 영역) -->
+      <section class="panel hero-offerings">
+        <div class="hero-head">
+          <h2>공모 진행·예정</h2>
+          <span class="sponsor-label">증권사 제공 정보 · 예시</span>
+        </div>
+        <div class="offer-grid">
+          <div class="offer-card">
+            <span class="cat-pill">🎨 미술</span>
+            <div class="title">유영국 — Work (1984)</div>
+            <div class="issuer-row">발행 <strong>투게더아트</strong> · 인수 <strong>가람증권</strong></div>
+            <div class="meta-row">
+              <span>청약 <span class="val">~ 05.18</span></span>
+              <span>모집 <span class="val">6.6억</span></span>
+            </div>
+          </div>
+          <div class="offer-card">
+            <span class="cat-pill">🐂 한우</span>
+            <div class="title">뱅카우 한우 제2-1호</div>
+            <div class="issuer-row">발행 <strong>스탁키퍼</strong> · 계좌관리 <strong>해솔투자증권</strong></div>
+            <div class="meta-row">
+              <span>청약 <span class="val">~ 05.22</span></span>
+              <span>모집 <span class="val">4.8억</span></span>
+            </div>
+          </div>
+          <div class="offer-card">
+            <span class="cat-pill">🎵 음악</span>
+            <div class="title">NCT DREAM — ANL 후속</div>
+            <div class="issuer-row">발행 <strong>뮤직카우</strong> · 중개 <strong>다온증권</strong></div>
+            <div class="meta-row">
+              <span>청약 <span class="val">~ 05.25</span></span>
+              <span>모집 <span class="val">3.2억</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="muted" style="font-size: 11px; margin-top: 10px;">
+          ※ 위 카드는 데모용 예시 데이터입니다. 실제 서비스에서는 발행사·증권사가 직접 제공한 공모 정보를 표시하며, Biyard 는 추천·평가하지 않습니다.
+        </div>
+      </section>
+
+      <!-- 최근 발행 STO (중요도 ↑) -->
+      <section class="panel" style="margin-bottom: 16px;">
+        <div class="panel-head">
+          <h2>최근 발행 STO</h2>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="tabs">
+              <button class="panel-tab active" data-stoview="all">전체</button>
+              <button class="panel-tab" data-stoview="KR">🇰🇷 한국</button>
+              <button class="panel-tab" data-stoview="GLOBAL">🌍 해외</button>
+            </div>
+            <a class="more-btn" href="assets.html">전체 보기 →</a>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="dash-sto-table">
+            <thead>
+              <tr>
+                <th class="col-flag"></th>
+                <th class="col-icon"></th>
+                <th>자산명 / 기초자산</th>
+                <th class="col-cat">카테고리</th>
+                <th class="col-issuer">발행사</th>
+                <th class="col-status">상태</th>
+                <th class="col-date">발행</th>
+              </tr>
+            </thead>
+            <tbody id="stoListBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 최근 청산·분배 완료 -->
+      <section class="panel" style="margin-bottom: 16px;">
+        <div class="panel-head">
+          <h2>최근 청산·분배 완료</h2>
+          <a class="more-btn" href="assets.html?status=liquidated">전체 보기 →</a>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="dash-sto-table">
+            <thead>
+              <tr>
+                <th class="col-flag"></th>
+                <th class="col-icon"></th>
+                <th>자산명</th>
+                <th class="col-cat">카테고리</th>
+                <th class="col-issuer">발행사</th>
+                <th class="col-date">청산일</th>
+                <th>매각가</th>
+                <th>수익률</th>
+              </tr>
+            </thead>
+            <tbody id="liquidatedBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 카테고리별 투자 규모 -->
+      <section class="panel" style="margin-bottom: 16px;">
+        <div class="panel-head">
+          <h2>카테고리별 투자 규모</h2>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="tabs">
+              <button class="panel-tab active" data-scaleview="all">전체</button>
+              <button class="panel-tab" data-scaleview="KR">🇰🇷 한국</button>
+              <button class="panel-tab" data-scaleview="GLOBAL">🌍 해외</button>
+            </div>
+          </div>
+        </div>
+        <div id="categoryScale"></div>
+        <div class="muted" style="font-size: 11px; margin-top: 12px; line-height: 1.6;">
+          누적 모집액 기준 (DART/SEC 공시 발행가). 외화는 정적 환율로 KRW 환산 (USD 1,380 / EUR 1,480 / SGD 1,020 / CHF 1,550). 모집액 미공시 STO 는 건수에는 포함되나 합산에서는 제외됨.
+        </div>
+      </section>
+
+      <!-- 정체성 진입 배너: 평가지표 · 런치패드 -->
+      <section class="identity-banners">
+        <a class="identity-card" href="biyard-index.html">
+          <span class="tag">BIYARD INDEX</span>
+          <div class="title">Web3 기반 STO 평가지표</div>
+          <div class="desc">온체인 발행 무결성·컨트랙트 보안·지갑 분포·거버넌스 등 기존 신용평가가 다루지 못하는 Web3 신뢰 신호를 6개 축으로 환산해 등급을 부여합니다.</div>
+          <span class="cta">백서 보기 →</span>
+        </a>
+        <a class="identity-card" href="launchpad.html">
+          <span class="tag">BIYARD LAUNCHPAD</span>
+          <div class="title">브랜드 토큰 PaaS</div>
+          <div class="desc">STO 와 결합 가능한 유틸리티 토큰 발행 인프라. 발행사·증권사가 자체 브랜드 토큰을 운영할 수 있는 PaaS 서비스를 제공합니다.</div>
+          <span class="cta">자세히 보기 →</span>
+        </a>
+      </section>
+
+      <!-- 시장 헤드라인 (full-width) -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2>시장 헤드라인</h2>
+          <a class="more-btn" href="news.html">전체 뉴스 →</a>
+        </div>
+        <div class="news-grid" id="newsGrid"></div>
+      </section>
+    </main>
+
+    <script src="data-dart-backfill.js?v=2"></script>
+    <script src="data-artipio.js?v=1"></script>
+    <script src="data-musicow.js?v=1"></script>
+    <script src="data.js?v=27"></script>
+    <script src="news.js?v=5"></script>
+    <script src="app.js?v=26"></script>
+    <script>
+      const U = window.STO_UI;
+      const N = window.STO_NEWS;
+      U.mountChrome("dashboard");
+
+      // === Sort STOs by issuedAt descending (latest first) ===
+      function parseIssuedDate(s) {
+        if (!s) return 0;
+        const m = s.match(/(\d{4})[.\-/]?(\d{2})?[.\-/]?(\d{2})?/);
+        if (!m) return 0;
+        const y = parseInt(m[1]);
+        const mo = parseInt(m[2] || "01");
+        const d = parseInt(m[3] || "01");
+        return y * 10000 + mo * 100 + d;
+      }
+      const stosSorted = [...D.STOS].sort(
+        (a, b) => parseIssuedDate(b.issuedAt) - parseIssuedDate(a.issuedAt),
+      );
+
+      // === 최근 청산·분배 완료 (liquidation 있는 STO, 최신 청산순 8개) ===
+      const liquidated = D.STOS
+        .filter((s) => s.liquidation && s.liquidation.liquidatedAt)
+        .sort((a, b) => (b.liquidation.liquidatedAt || "").localeCompare(a.liquidation.liquidatedAt || ""))
+        .slice(0, 8);
+      const liqBody = document.getElementById("liquidatedBody");
+      if (!liquidated.length) {
+        liqBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--muted);">아직 청산 데이터가 없습니다.</td></tr>`;
+      } else {
+        liqBody.innerHTML = liquidated.map((s) => {
+          const cat = U.categoryOf(s.category);
+          const issuer = D.findIssuer(s.issuerId);
+          const flag = s.region === "KR" ? "🇰🇷" : "🌍";
+          const sale = s.liquidation.salePrice
+            ? `${s.liquidation.salePrice.toLocaleString("ko-KR")} ${s.liquidation.currency || "KRW"}`
+            : "—";
+          const yld =
+            s.liquidation.reportedYieldPercent != null
+              ? `<span class="yield-pill">${s.liquidation.reportedYieldPercent}%</span>`
+              : "—";
+          return `
+            <tr onclick="location.href='detail.html?id=${s.id}'">
+              <td class="col-flag">${flag}</td>
+              <td class="col-icon">${s.icon || "·"}</td>
+              <td><div class="name-main">${s.name}</div></td>
+              <td class="col-cat"><span class="cat-pill">${cat.icon} ${cat.label}</span></td>
+              <td class="col-issuer">${issuer ? issuer.name : "—"}</td>
+              <td class="col-date">${s.liquidation.liquidatedAt}</td>
+              <td style="font-size:12px;">${sale}</td>
+              <td>${yld}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // === STO 리스트 (최신순, 10개, 탭 필터링) ===
+      let stoView = "all";
+      function renderStoList() {
+        const body = document.getElementById("stoListBody");
+        let list = stosSorted;
+        if (stoView !== "all") list = list.filter((s) => s.region === stoView);
+        list = list.slice(0, 10);
+        body.innerHTML = list.map((s) => {
+          const cat = U.categoryOf(s.category);
+          const issuer = D.findIssuer(s.issuerId);
+          const flag = s.region === "KR" ? "🇰🇷" : "🌍";
+          const statusCls = (s.status || "").includes("중지") || (s.status || "").includes("위축")
+            ? "status-paused"
+            : "status-active";
+          return `
+            <tr onclick="location.href='detail.html?id=${s.id}'">
+              <td class="col-flag">${flag}</td>
+              <td class="col-icon">${s.icon || "·"}</td>
+              <td>
+                <div class="name-main">${s.name}</div>
+                <div class="name-under">${s.underlying || ""}</div>
+              </td>
+              <td class="col-cat"><span class="cat-pill">${cat.icon} ${cat.label}</span></td>
+              <td class="col-issuer">${issuer ? issuer.name : "—"}</td>
+              <td class="col-status ${statusCls}">${s.status || "—"}</td>
+              <td class="col-date">${s.issuedAt || "—"}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+      renderStoList();
+      document.querySelectorAll("[data-stoview]").forEach((b) => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("[data-stoview]").forEach((x) =>
+            x.classList.remove("active"),
+          );
+          b.classList.add("active");
+          stoView = b.dataset.stoview;
+          renderStoList();
+        });
+      });
+
+      // === 카테고리별 투자 규모 ===
+      let scaleView = "all";
+      function renderCategoryScale() {
+        const rows = U.categoryScale(D.STOS, scaleView);
+        document.getElementById("categoryScale").innerHTML = U.categoryScaleBar(rows);
+      }
+      renderCategoryScale();
+      document.querySelectorAll("[data-scaleview]").forEach((b) => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("[data-scaleview]").forEach((x) =>
+            x.classList.remove("active"),
+          );
+          b.classList.add("active");
+          scaleView = b.dataset.scaleview;
+          renderCategoryScale();
+        });
+      });
+
+      // === 시장 헤드라인 (full-width 9개 카드 그리드) ===
+      const sortedNews = [...N.NEWS_ITEMS].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 9);
+      document.getElementById("newsGrid").innerHTML = sortedNews.map((n) => {
+        const src = N.NEWS_SOURCES[n.source] || { name: n.source, official: false };
+        return `
+          <a class="news-card" href="news.html">
+            <div class="meta">
+              <span class="src ${src.official ? "official" : ""}">${src.name}</span>
+              <span>${n.date}</span>
+            </div>
+            <div class="title">${n.title}</div>
+          </a>
+        `;
+      }).join("");
+    </script>
+  </body>
+</html>

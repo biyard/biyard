@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DART 백필 데이터 뷰어 · Biyard 내부 검토용</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", system-ui, sans-serif;
+        background: #0a0a0c;
+        color: #e6e6e9;
+        padding: 24px 32px 80px;
+      }
+      h1 { margin: 0 0 4px; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+      .sub { font-size: 12px; color: #888; margin-bottom: 24px; }
+      .badge {
+        display: inline-block;
+        background: rgba(0,229,160,0.14);
+        color: #00e5a0;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-weight: 700;
+        font-size: 10px;
+        letter-spacing: 1px;
+        margin-right: 6px;
+      }
+
+      .summary-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 800px) { .summary-bar { grid-template-columns: 1fr 1fr; } }
+      .sum-card {
+        background: #14141a;
+        border: 1px solid #25252e;
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .sum-card .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+      .sum-card .value { font-size: 24px; font-weight: 800; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+      .sum-card .sub2 { font-size: 11px; color: #888; margin-top: 2px; }
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #25252e;
+      }
+      .tab-btn {
+        background: transparent;
+        border: none;
+        color: #888;
+        padding: 10px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .tab-btn.active { color: #00e5a0; border-bottom-color: #00e5a0; }
+      .tab-pane { display: none; }
+      .tab-pane.active { display: block; }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        text-align: left;
+        padding: 10px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: #14141a;
+        border-bottom: 1px solid #25252e;
+        position: sticky;
+        top: 0;
+      }
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #1c1c24;
+        vertical-align: top;
+      }
+      tr:hover td { background: rgba(0,229,160,0.04); }
+      .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: #b0b0b8; }
+      .num { font-family: ui-monospace, "SF Mono", Menlo, monospace; text-align: right; }
+      .pill {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      .pill-done { background: rgba(0,229,160,0.18); color: #00e5a0; }
+      .pill-filed { background: rgba(255,193,7,0.16); color: #ffc107; }
+      .pill-withdraw { background: rgba(255,107,107,0.16); color: #ff6b6b; }
+      a { color: #5eb0ff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      details {
+        background: #14141a;
+        border: 1px solid #25252e;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+      }
+      details summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      details[open] { padding-bottom: 14px; }
+
+      .issuer-card {
+        background: #14141a;
+        border: 1px solid #25252e;
+        border-radius: 8px;
+        padding: 16px 18px;
+        margin-bottom: 10px;
+      }
+      .issuer-card h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .issuer-card .row {
+        display: flex;
+        gap: 14px;
+        font-size: 12px;
+        color: #b0b0b8;
+        flex-wrap: wrap;
+      }
+      .issuer-card .row span strong { color: #e6e6e9; font-weight: 700; }
+
+      .bar {
+        height: 8px;
+        background: #1c1c24;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 6px;
+      }
+      .bar > div { height: 100%; background: linear-gradient(90deg, #00e5a0, #5eb0ff); }
+
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .filter-row input, .filter-row select {
+        background: #14141a;
+        border: 1px solid #25252e;
+        color: #e6e6e9;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-family: inherit;
+      }
+      .filter-row input { min-width: 200px; }
+
+      .loader { text-align: center; padding: 60px; color: #888; }
+      .empty { text-align: center; padding: 40px; color: #555; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div>
+      <span class="badge">INTERNAL</span>
+      <span class="badge" style="background: rgba(94,176,255,0.18); color: #5eb0ff;">DART OpenAPI</span>
+      <span class="badge" style="background: rgba(255,193,7,0.18); color: #ffc107;">STRATEGY A · 정식 증권만</span>
+    </div>
+    <h1>DART 백필 데이터 뷰어</h1>
+    <div class="sub" id="sub">로딩 중...</div>
+
+    <div class="summary-bar" id="summaryBar"></div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="issuers">DART 발행사 요약</button>
+      <button class="tab-btn" data-tab="issues">DART 발행 사이클</button>
+      <button class="tab-btn" data-tab="filings">DART 원본 공시</button>
+      <button class="tab-btn" data-tab="musicow">뮤직카우 카탈로그</button>
+    </div>
+
+    <div class="tab-pane active" id="pane-issuers"><div class="loader">데이터 로딩 중...</div></div>
+    <div class="tab-pane" id="pane-issues"><div class="loader">데이터 로딩 중...</div></div>
+    <div class="tab-pane" id="pane-filings"><div class="loader">데이터 로딩 중...</div></div>
+    <div class="tab-pane" id="pane-musicow"><div class="loader">데이터 로딩 중...</div></div>
+
+    <script>
+      const fmtAmt = (n) => n ? (n >= 1e8 ? (n/1e8).toFixed(2) + "억" : (n/1e4).toFixed(0) + "만") : "—";
+      const fmtNum = (n) => n ? n.toLocaleString("ko-KR") : "—";
+      const fmtDate = (s) => s ? `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}` : "—";
+      const statusPill = (s) => {
+        if (s === "발행완료") return `<span class="pill pill-done">발행완료</span>`;
+        if (s === "철회") return `<span class="pill pill-withdraw">철회</span>`;
+        return `<span class="pill pill-filed">신고중</span>`;
+      };
+
+      fetch("dart-viewer-data.json")
+        .then((r) => r.json())
+        .then((data) => render(data))
+        .catch((e) => {
+          document.getElementById("sub").textContent = "❌ 로딩 실패: " + e.message;
+        });
+
+      function render(data) {
+        document.getElementById("sub").textContent =
+          `생성: ${data.generated_at} · /tmp/dart-cache 기반 (DART 재호출 없음)`;
+
+        // Summary bar
+        const s = data.summary;
+        // 뮤직카우 카탈로그 카운트 가져오기 (별도 파일이라 비동기)
+        fetch("musicow-catalog.json").then(r => r.json()).then(mc => {
+          const mcCard = document.getElementById("mc-summary-card");
+          if (mcCard) mcCard.querySelector(".value").textContent = mc.total || "—";
+        }).catch(() => {});
+
+        document.getElementById("summaryBar").innerHTML = `
+          <div class="sum-card">
+            <div class="label">DART 발행사</div>
+            <div class="value">${s.total_issuers}</div>
+            <div class="sub2">정식 투자계약증권</div>
+          </div>
+          <div class="sum-card">
+            <div class="label">DART 사이클</div>
+            <div class="value">${s.total_cycles}</div>
+            <div class="sub2">증권신고서 묶음 기준</div>
+          </div>
+          <div class="sum-card">
+            <div class="label">DART 원본 공시</div>
+            <div class="value">${s.total_filings}</div>
+            <div class="sub2">정식 증권만 카운트</div>
+          </div>
+          <div class="sum-card" id="mc-summary-card">
+            <div class="label">뮤직카우 카탈로그</div>
+            <div class="value">…</div>
+            <div class="sub2">메타 정보만, 시장 데이터 X</div>
+          </div>
+        `;
+
+        // === Tab 1: 발행사별 ===
+        const maxRaised = Math.max(...data.issuer_stats.map(x => x.total_raised || 1));
+        const issuerHtml = data.issuer_stats
+          .sort((a,b) => b.total_raised - a.total_raised)
+          .map(st => `
+            <div class="issuer-card">
+              <h3>${st.issuer}</h3>
+              <div class="row">
+                <span><strong>${st.cycles}</strong> 회차</span>
+                <span>발행완료 <strong>${st.completed}</strong></span>
+                <span>신고중 <strong>${st.filed_only}</strong></span>
+                <span>철회 <strong>${st.withdrawn}</strong></span>
+                <span>공시 <strong>${st.all_filings}</strong>건</span>
+                <span>누적 모집 <strong>${fmtAmt(st.total_raised)}</strong></span>
+              </div>
+              <div class="bar"><div style="width: ${(st.total_raised/maxRaised*100).toFixed(1)}%"></div></div>
+            </div>
+          `).join("");
+        document.getElementById("pane-issuers").innerHTML = issuerHtml;
+
+        // === Tab 2: 회차 정제 ===
+        const issuesHtml = `
+          <div class="filter-row">
+            <input id="issuesSearch" type="search" placeholder="발행사 / 자산명 / 작가 검색..." />
+            <select id="issuesIssuer">
+              <option value="">모든 발행사</option>
+              ${[...new Set(data.cycles.map(x => x.issuer))].map(i => `<option>${i}</option>`).join("")}
+            </select>
+            <select id="issuesStatus">
+              <option value="">모든 상태</option>
+              <option>발행완료</option>
+              <option>신고중</option>
+              <option>철회</option>
+            </select>
+          </div>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>발행사</th>
+                  <th>사이클</th>
+                  <th>자산명</th>
+                  <th class="num">모집액</th>
+                  <th class="num">제작연도</th>
+                  <th class="num">발행 수량</th>
+                  <th>최초 신고일</th>
+                  <th>상태</th>
+                  <th class="num">공시</th>
+                  <th>DART</th>
+                </tr>
+              </thead>
+              <tbody id="issuesTbody"></tbody>
+            </table>
+          </div>
+        `;
+        document.getElementById("pane-issues").innerHTML = issuesHtml;
+        const renderIssues = () => {
+          const q = (document.getElementById("issuesSearch").value || "").toLowerCase();
+          const iss = document.getElementById("issuesIssuer").value;
+          const stf = document.getElementById("issuesStatus").value;
+          const rows = data.cycles
+            .filter(r => {
+              if (iss && r.issuer !== iss) return false;
+              if (stf && r.status !== stf) return false;
+              if (q) {
+                const hay = (r.issuer + " " + (r.asset_name||"") + " " + (r.artist||"")).toLowerCase();
+                if (!hay.includes(q)) return false;
+              }
+              return true;
+            })
+            .sort((a,b) => (b.initial_filing_date||"").localeCompare(a.initial_filing_date||""));
+          document.getElementById("issuesTbody").innerHTML = rows.length === 0
+            ? `<tr><td colspan="10" class="empty">조건에 맞는 회차가 없습니다.</td></tr>`
+            : rows.map(r => `
+              <tr>
+                <td>${r.issuer}</td>
+                <td class="mono">#${r.cycle_no}</td>
+                <td>${r.asset_name || "<span style='color:#555'>—</span>"}</td>
+                <td class="num">${fmtAmt(r.amount)}</td>
+                <td class="num">${r.year || "—"}</td>
+                <td class="num">${fmtNum(r.units)}</td>
+                <td class="mono">${fmtDate(r.initial_filing_date)}</td>
+                <td>${statusPill(r.status)}</td>
+                <td class="num">${r.filings_count}</td>
+                <td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${r.initial_rcept_no}" target="_blank">열기 ↗</a></td>
+              </tr>
+            `).join("");
+        };
+        renderIssues();
+        document.getElementById("issuesSearch").addEventListener("input", renderIssues);
+        document.getElementById("issuesIssuer").addEventListener("change", renderIssues);
+        document.getElementById("issuesStatus").addEventListener("change", renderIssues);
+
+        // === Tab 3: 원본 공시 ===
+        const filingsHtml = `
+          <div class="filter-row">
+            <input id="filingsSearch" type="search" placeholder="제목 / 발행사 검색..." />
+            <select id="filingsIssuer">
+              <option value="">모든 발행사</option>
+              ${[...new Set(data.filings_raw.map(x => x._issuer))].map(i => `<option>${i}</option>`).join("")}
+            </select>
+            <select id="filingsType">
+              <option value="">모든 보고서 유형</option>
+              <option value="증권신고서">증권신고서</option>
+              <option value="정정">정정신고서</option>
+              <option value="실적">증권발행실적보고서</option>
+              <option value="투자설명서">투자설명서</option>
+              <option value="철회">철회신고서</option>
+              <option value="감사">감사보고서</option>
+            </select>
+          </div>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>접수일</th>
+                  <th>발행사</th>
+                  <th>보고서명</th>
+                  <th>접수번호</th>
+                  <th>제출인</th>
+                  <th>DART</th>
+                </tr>
+              </thead>
+              <tbody id="filingsTbody"></tbody>
+            </table>
+          </div>
+          <div class="sub" style="margin-top: 12px;">
+            총 <span id="filingsCount">${data.filings_raw.length}</span>건 (5개 발행사 + 아티피오)
+          </div>
+        `;
+        document.getElementById("pane-filings").innerHTML = filingsHtml;
+        const renderFilings = () => {
+          const q = (document.getElementById("filingsSearch").value || "").toLowerCase();
+          const iss = document.getElementById("filingsIssuer").value;
+          const ty = document.getElementById("filingsType").value;
+          const rows = data.filings_raw
+            .filter(r => {
+              if (iss && r._issuer !== iss) return false;
+              if (ty && !r.report_nm.includes(ty)) return false;
+              if (q) {
+                const hay = (r._issuer + " " + r.report_nm).toLowerCase();
+                if (!hay.includes(q)) return false;
+              }
+              return true;
+            })
+            .sort((a,b) => b.rcept_dt.localeCompare(a.rcept_dt));
+          document.getElementById("filingsCount").textContent = rows.length;
+          document.getElementById("filingsTbody").innerHTML = rows.length === 0
+            ? `<tr><td colspan="6" class="empty">조건에 맞는 공시가 없습니다.</td></tr>`
+            : rows.map(r => `
+              <tr>
+                <td class="mono">${fmtDate(r.rcept_dt)}</td>
+                <td>${r._issuer}</td>
+                <td>${r.report_nm}</td>
+                <td class="mono">${r.rcept_no}</td>
+                <td class="mono" style="color:#888">${r.flr_nm || "—"}</td>
+                <td><a href="https://dart.fss.or.kr/dsaf001/main.do?rcpNo=${r.rcept_no}" target="_blank">열기 ↗</a></td>
+              </tr>
+            `).join("");
+        };
+        renderFilings();
+        document.getElementById("filingsSearch").addEventListener("input", renderFilings);
+        document.getElementById("filingsIssuer").addEventListener("change", renderFilings);
+        document.getElementById("filingsType").addEventListener("change", renderFilings);
+
+        // === Tab 4: 뮤직카우 카탈로그 ===
+        fetch("musicow-catalog.json")
+          .then((r) => r.json())
+          .then((mc) => renderMusicow(mc))
+          .catch((e) => {
+            document.getElementById("pane-musicow").innerHTML =
+              `<div class="empty">뮤직카우 카탈로그 로드 실패: ${e.message}</div>`;
+          });
+      }
+
+      function renderMusicow(mc) {
+        const songs = mc.songs || [];
+        const byCat = {};
+        songs.forEach(s => { byCat[s.rightsCategory] = (byCat[s.rightsCategory]||0)+1; });
+        const catSummary = Object.entries(byCat).map(([k,v]) =>
+          `<span class="pill" style="background:rgba(94,176,255,0.15); color:#5eb0ff; margin-right:8px;">${k} <strong>${v}</strong></span>`
+        ).join("");
+
+        const vis = mc.verified_issuance_structure;
+        const visHtml = vis ? `
+          <div style="margin-top:12px; padding:12px 14px; background:#0a0a0c; border:1px solid #25252e; border-radius:6px;">
+            <div style="font-size:11px; color:#00e5a0; font-weight:700; letter-spacing:1px; margin-bottom:6px;">✓ 공통 발행 구조 (5건 샘플 확인)</div>
+            <div style="font-size:13px; color:#e6e6e9; line-height:1.7;">
+              발행사 <strong style="color:#00e5a0;">${vis.issuer}</strong><br/>
+              신탁/보관 <strong style="color:#00e5a0;">${vis.trustee}</strong><br/>
+              <span style="font-size:11px; color:#666;">확인 샘플: ${(vis.verified_samples||[]).join(", ")} · ${vis.verification_date}</span>
+            </div>
+          </div>` : "";
+
+        const html = `
+          <div style="margin-bottom: 16px; padding: 14px 18px; background: #14141a; border: 1px solid #25252e; border-radius: 8px;">
+            <div style="font-size:11px; color:#888; margin-bottom:6px; letter-spacing:1px;">SOURCE</div>
+            <div style="font-size:13px; color:#e6e6e9; margin-bottom:8px;">
+              ${mc.source || "뮤직카우 시장 데이터 피드 (order.json)"}
+            </div>
+            <div style="font-size:12px; color:#888; margin-bottom:10px;">
+              <strong style="color:#ffc107;">정책:</strong> ${mc.policy || "STO 식별 정보만 (가격·수익률·시장 데이터 일체 제외)"}
+            </div>
+            <div>${catSummary}</div>
+            ${visHtml}
+          </div>
+          <div class="filter-row">
+            <input id="mcSearch" type="search" placeholder="곡명 / 아티스트 검색..." />
+            <select id="mcCat">
+              <option value="">모든 권리 카테고리</option>
+              <option>저작재산권</option>
+              <option>저작인접권</option>
+            </select>
+            <span style="font-size:12px; color:#888; align-self:center;">총 <strong style="color:#e6e6e9;" id="mcCount">${songs.length}</strong> 곡</span>
+          </div>
+          <div style="overflow-x:auto; max-height: 600px; overflow-y: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 70px;">곡 ID</th>
+                  <th>곡명</th>
+                  <th>아티스트</th>
+                  <th>권리 카테고리</th>
+                  <th style="width: 110px;">신탁번호</th>
+                  <th style="width: 100px;">공시일</th>
+                  <th>공시·PDF</th>
+                  <th>외부</th>
+                </tr>
+              </thead>
+              <tbody id="mcTbody"></tbody>
+            </table>
+          </div>
+        `;
+        document.getElementById("pane-musicow").innerHTML = html;
+
+        const cov = mc.disclosure_coverage;
+        if (cov) {
+          const covBadge = document.createElement("div");
+          covBadge.style.cssText = "margin-bottom:12px; padding:10px 14px; background:rgba(0,229,160,0.08); border:1px solid rgba(0,229,160,0.3); border-radius:6px; font-size:12px; color:#00e5a0;";
+          covBadge.innerHTML = `📄 <strong>공시 디테일 ${cov.fetched}건 / ${cov.total}곡</strong> · ${cov.method}`;
+          document.getElementById("pane-musicow").insertBefore(covBadge, document.querySelector("#pane-musicow .filter-row"));
+        }
+
+        const renderRow = (s) => {
+          const sid = s.id.replace("musicow-","");
+          const d = s.disclosure;
+          let discCell;
+          if (d) {
+            const pd = d.pdfDetails;
+            const offer = s.offering;
+            const pdfBlock = pd ? `
+              <div style="font-size:11px; color:#b0b0b8; margin-top:4px; padding:6px 8px; background:#0a0a0c; border-radius:4px;">
+                ${offer?.totalUnits ? `<div>📐 ${offer.totalUnits.toLocaleString()}좌 × ${offer.unitPrice.toLocaleString()}원 = <strong style="color:#00e5a0;">${(offer.amount/1e4).toLocaleString()}만원</strong></div>` : ""}
+                ${pd.trustContractNo ? `<div>🔖 신탁 ${pd.trustContractNo}호 · ${pd.rightsType}</div>` : ""}
+                ${pd.royaltyShare ? `<div>📊 지분 작사 ${pd.royaltyShare.lyrics_pct}% / 작곡 ${pd.royaltyShare.music_pct}% / 편곡 ${pd.royaltyShare.arrangement_pct}%</div>` : ""}
+                ${pd.trustPeriod ? `<div>📅 신탁기간 ${pd.trustPeriod}</div>` : ""}
+              </div>` : "";
+            const pdfList = (d.files || []).map(f =>
+              `<a href="${f.url}" target="_blank" style="display:block; font-size:10px; margin-top:2px; color:#888;">📄 ${f.name.replace('.pdf','').slice(0, 50)}</a>`
+            ).join("");
+            discCell = `
+              <div style="font-size:12px; margin-bottom:4px;">
+                <a href="${d.noticePageUrl}" target="_blank" style="color:#00e5a0;">${d.title}</a>
+              </div>
+              ${pdfBlock}
+              ${pdfList}
+            `;
+          } else {
+            discCell = `<span style="color:#555; font-size:11px;">미수집</span>`;
+          }
+          return `
+            <tr>
+              <td class="mono">${sid}</td>
+              <td>${s.name}</td>
+              <td style="color:#b0b0b8;">${s.artist}</td>
+              <td><span class="pill" style="background:rgba(94,176,255,0.15); color:#5eb0ff;">${s.rightsCategory}</span></td>
+              <td class="mono" style="font-size:11px;">${d?.trustNo || '<span style="color:#555;">—</span>'}</td>
+              <td class="mono" style="font-size:11px;">${d?.publishedAt || '<span style="color:#555;">—</span>'}</td>
+              <td>${discCell}</td>
+              <td><a href="${s.externalUrl}" target="_blank">musicow ↗</a></td>
+            </tr>
+          `;
+        };
+
+        const render = () => {
+          const q = (document.getElementById("mcSearch").value || "").toLowerCase();
+          const cat = document.getElementById("mcCat").value;
+          let rows = songs.filter(s => {
+            if (cat && s.rightsCategory !== cat) return false;
+            if (q) {
+              const hay = (s.name + " " + s.artist).toLowerCase();
+              if (!hay.includes(q)) return false;
+            }
+            return true;
+          });
+          // 디테일 있는 곡 먼저
+          rows.sort((a,b) => (b.disclosure ? 1 : 0) - (a.disclosure ? 1 : 0));
+          document.getElementById("mcCount").textContent = rows.length;
+          document.getElementById("mcTbody").innerHTML = rows.length === 0
+            ? `<tr><td colspan="8" class="empty">조건에 맞는 곡이 없습니다.</td></tr>`
+            : rows.map(renderRow).join("");
+        };
+        render();
+        document.getElementById("mcSearch").addEventListener("input", render);
+        document.getElementById("mcCat").addEventListener("change", render);
+      }
+
+      // Tab switching
+      document.querySelectorAll(".tab-btn").forEach(b => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll(".tab-btn").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll(".tab-pane").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          document.getElementById("pane-" + b.dataset.tab).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
