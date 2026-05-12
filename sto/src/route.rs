@@ -20,10 +20,10 @@ pub enum Route {
 #[component]
 fn PageNotFound(rest: Vec<String>) -> Element {
     rsx! {
-        div { class: "min-h-screen flex items-center justify-center text-ink-soft",
+        div { class: "min-h-screen flex items-center justify-center text-foreground-soft",
             div { class: "text-center",
                 h1 { class: "text-2xl font-bold mb-2", "404" }
-                p { class: "text-sm text-muted", "Page not found: /{rest.join(\"/\")}" }
+                p { class: "text-sm text-foreground-muted", "Page not found: /{rest.join(\"/\")}" }
                 a { href: "/", class: "text-brand text-sm mt-4 inline-block", "← 홈으로" }
             }
         }

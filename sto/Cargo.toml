@@ -39,6 +39,9 @@ serde-wasm-bindgen = { workspace = true, optional = true }
 tracing-subscriber = { workspace = true }
 tracing-wasm = "0.2.1"
 wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Window", "Document", "Element", "Location", "Navigator"] }
+js-sys = "0.3"
 dioxus-cli-config.workspace = true
 
 [features]

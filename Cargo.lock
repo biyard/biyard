@@ -6307,6 +6307,7 @@ dependencies = [
  "dioxus-translate",
  "getrandom 0.4.2",
  "gloo-timers 0.3.0",
+ "js-sys",
  "percent-encoding",
  "schemars 1.2.1",
  "serde",
@@ -6321,6 +6322,8 @@ dependencies = [
  "tracing-wasm",
  "uuid 1.18.1",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

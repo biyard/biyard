@@ -24,7 +24,7 @@ pub fn DetailView(sto_id: String) -> Element {
                     a { href: "/assets", class: "text-brand text-sm mt-2 inline-block", "← 시장으로" }
                 },
                 None => rsx! {
-                    div { class: "text-muted", "로딩 중..." }
+                    div { class: "text-foreground-muted", "로딩 중..." }
                 },
             }
         }
@@ -34,26 +34,26 @@ pub fn DetailView(sto_id: String) -> Element {
 #[component]
 fn DetailBody(sto: StoDetailResponse) -> Element {
     rsx! {
-        div { class: "flex items-center gap-2 text-xs text-muted mb-2",
+        div { class: "flex items-center gap-2 text-xs text-foreground-muted mb-2",
             a { href: "/", class: "hover:text-brand", "홈" }
             span { "/" }
             a { href: "/assets", class: "hover:text-brand", "STO 시장" }
             span { "/" }
-            span { class: "text-ink-soft", "{sto.name}" }
+            span { class: "text-foreground-soft", "{sto.name}" }
         }
         h1 { class: "text-2xl font-bold mb-2", "{sto.name}" }
         div { class: "flex gap-2 items-center mb-6 flex-wrap",
-            span { class: "text-xs px-2 py-1 rounded bg-panel-2 text-ink-soft",
+            span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-soft",
                 { category_label(&sto.category) }
             }
-            span { class: "text-xs px-2 py-1 rounded bg-panel-2 text-ink-soft",
+            span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-soft",
                 "{sto.country}"
             }
             span { class: "text-xs px-2 py-1 rounded bg-brand-soft text-brand font-bold",
                 "{sto.status}"
             }
             if let Some(c) = &sto.classification {
-                span { class: "text-xs px-2 py-1 rounded bg-panel-2 text-muted", "{c}" }
+                span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-muted", "{c}" }
             }
         }
 
@@ -110,9 +110,9 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
                                 class: "block text-sm text-brand hover:underline break-all",
                                 "원본 페이지 ↗"
                             }
-                            div { class: "text-xs text-muted truncate", "{url}" }
+                            div { class: "text-xs text-foreground-muted truncate", "{url}" }
                         } else {
-                            div { class: "text-xs text-muted", "외부 링크 없음" }
+                            div { class: "text-xs text-foreground-muted", "외부 링크 없음" }
                         }
                     }
                 }
@@ -122,8 +122,8 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
                         div { class: "space-y-1.5",
                             for s in sto.sources.iter() {
                                 div { class: "flex gap-2 items-start text-xs",
-                                    span { class: "px-1.5 py-0.5 rounded bg-panel-2 text-ink-soft font-mono shrink-0", "{s.src}" }
-                                    span { class: "text-muted", "{s.label}" }
+                                    span { class: "px-1.5 py-0.5 rounded bg-panel-muted text-foreground-soft font-mono shrink-0", "{s.src}" }
+                                    span { class: "text-foreground-muted", "{s.label}" }
                                 }
                             }
                         }
@@ -140,7 +140,7 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
 
         if !sto.filings.is_empty() {
             section {
-                h2 { class: "text-base font-bold mb-3 pb-2 border-b border-line",
+                h2 { class: "text-base font-bold mb-3 pb-2 border-b border-border",
                     "공시 자료 ({sto.filings.len()})"
                 }
                 div { class: "space-y-3",
@@ -156,8 +156,8 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
 #[component]
 fn DetailPanel(title: String, children: Element) -> Element {
     rsx! {
-        section { class: "bg-panel border border-line rounded-card p-5",
-            h2 { class: "text-sm font-bold mb-3 pb-2 border-b border-line text-ink", "{title}" }
+        section { class: "bg-panel border border-border rounded-2xl p-5",
+            h2 { class: "text-sm font-bold mb-3 pb-2 border-b border-border text-foreground", "{title}" }
             {children}
         }
     }
@@ -168,8 +168,8 @@ fn KvList(entries: Vec<(String, String)>) -> Element {
     rsx! {
         dl { class: "grid grid-cols-[140px_1fr] gap-y-2.5 text-sm",
             for (k, v) in entries.iter() {
-                dt { class: "text-muted", "{k}" }
-                dd { class: "text-ink-soft", "{v}" }
+                dt { class: "text-foreground-muted", "{k}" }
+                dd { class: "text-foreground-soft", "{v}" }
             }
         }
     }
@@ -178,29 +178,29 @@ fn KvList(entries: Vec<(String, String)>) -> Element {
 #[component]
 fn FilingCard(filing: FilingSummary) -> Element {
     rsx! {
-        article { class: "bg-panel border border-line rounded-sm p-4",
+        article { class: "bg-panel border border-border rounded-sm p-4",
             div { class: "flex items-center gap-2 mb-2 flex-wrap",
                 span { class: "text-[10px] px-2 py-0.5 rounded bg-brand-soft text-brand font-bold", "{filing.filing_source}" }
                 if let Some(t) = &filing.filing_type {
-                    span { class: "text-[10px] px-2 py-0.5 rounded bg-panel-2 text-ink-soft", "{t}" }
+                    span { class: "text-[10px] px-2 py-0.5 rounded bg-panel-muted text-foreground-soft", "{t}" }
                 }
-                span { class: "text-xs text-muted font-mono", "{filing.filed_at}" }
+                span { class: "text-xs text-foreground-muted font-mono", "{filing.filed_at}" }
             }
-            div { class: "text-sm font-semibold text-ink mb-2", "{filing.title}" }
+            div { class: "text-sm font-semibold text-foreground mb-2", "{filing.title}" }
             if let Some(url) = &filing.url {
                 a { href: "{url}", target: "_blank", class: "text-xs text-brand hover:underline",
                     "원본 공시 ↗"
                 }
             }
             if !filing.attachments.is_empty() {
-                div { class: "mt-3 pt-3 border-t border-line space-y-1.5",
+                div { class: "mt-3 pt-3 border-t border-border space-y-1.5",
                     for att in filing.attachments.iter() {
                         a {
                             href: "{att.url}", target: "_blank",
-                            class: "block text-xs text-ink-soft hover:text-brand",
+                            class: "block text-xs text-foreground-soft hover:text-brand",
                             "📄 {att.name}"
                             if let Some(sz) = att.size_bytes {
-                                span { class: "text-muted ml-2", "({format_size(sz)})" }
+                                span { class: "text-foreground-muted ml-2", "({format_size(sz)})" }
                             }
                         }
                     }

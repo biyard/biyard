@@ -22,7 +22,7 @@ pub fn CatalogView() -> Element {
             h1 { class: "text-xl font-bold mb-4", "STO 시장" }
 
             // 필터바
-            section { class: "bg-panel border border-line rounded-card p-4 mb-4 space-y-3",
+            section { class: "bg-panel border border-border rounded-2xl p-4 mb-4 space-y-3",
                 // 카테고리 (탭 형태)
                 div { class: "flex gap-2 flex-wrap",
                     for (key, label) in [
@@ -53,7 +53,7 @@ pub fn CatalogView() -> Element {
                             on_click: EventHandler::new(move |_| region.set("GLOBAL".to_string())) }
                     }
                     select {
-                        class: "bg-panel-2 border border-line rounded px-3 py-1.5 text-sm",
+                        class: "bg-panel-muted border border-border rounded px-3 py-1.5 text-sm",
                         onchange: move |e| status_filter.set(e.value()),
                         option { value: "all", "모든 상태" }
                         option { value: "발행완료", "발행 완료" }
@@ -61,7 +61,7 @@ pub fn CatalogView() -> Element {
                         option { value: "철회", "철회" }
                     }
                     select {
-                        class: "bg-panel-2 border border-line rounded px-3 py-1.5 text-sm",
+                        class: "bg-panel-muted border border-border rounded px-3 py-1.5 text-sm",
                         onchange: move |e| issuer_filter.set(e.value()),
                         option { value: "all", "모든 발행사" }
                         option { value: "stockeeper", "스탁키퍼" }
@@ -75,7 +75,7 @@ pub fn CatalogView() -> Element {
                     input {
                         r#type: "search",
                         placeholder: "자산명·아티스트 검색",
-                        class: "bg-panel-2 border border-line rounded px-3 py-1.5 text-sm flex-1 min-w-[200px]",
+                        class: "bg-panel-muted border border-border rounded px-3 py-1.5 text-sm flex-1 min-w-[200px]",
                         oninput: move |e| search_q.set(e.value()),
                     }
                 }
@@ -104,12 +104,12 @@ pub fn CatalogView() -> Element {
                     let shown: Vec<_> = filtered.into_iter().take(page_size()).collect();
                     let shown_len = shown.len();
                     rsx! {
-                        div { class: "flex justify-between items-center mb-3 text-xs text-muted",
+                        div { class: "flex justify-between items-center mb-3 text-xs text-foreground-muted",
                             span {
                                 "검색 결과 "
-                                span { class: "text-ink font-bold", "{total}" }
+                                span { class: "text-foreground font-bold", "{total}" }
                                 " 건 (표시 "
-                                span { class: "text-ink", "{shown_len}" }
+                                span { class: "text-foreground", "{shown_len}" }
                                 ")"
                             }
                             div { class: "flex gap-1",
@@ -118,9 +118,9 @@ pub fn CatalogView() -> Element {
                                         let s = *size;
                                         let active = page_size() == s;
                                         let cls = if active {
-                                            "px-2 py-0.5 rounded text-brand bg-brand-soft border border-brand-line"
+                                            "px-2 py-0.5 rounded text-brand bg-brand-soft border border-brand"
                                         } else {
-                                            "px-2 py-0.5 rounded border border-line text-muted hover:text-ink"
+                                            "px-2 py-0.5 rounded border border-border text-foreground-muted hover:text-foreground"
                                         };
                                         rsx! {
                                             button {
@@ -140,7 +140,7 @@ pub fn CatalogView() -> Element {
                     div { class: "text-danger", "데이터 로드 실패: {e}" }
                 },
                 None => rsx! {
-                    div { class: "text-muted", "로딩 중..." }
+                    div { class: "text-foreground-muted", "로딩 중..." }
                 },
             }
         }
@@ -150,9 +150,9 @@ pub fn CatalogView() -> Element {
 #[component]
 fn FilterPill(label: String, active: bool, on_click: EventHandler<MouseEvent>) -> Element {
     let cls = if active {
-        "px-3 py-1 text-xs rounded border bg-brand-soft text-brand border-brand-line font-semibold"
+        "px-3 py-1 text-xs rounded border bg-brand-soft text-brand border-brand font-semibold"
     } else {
-        "px-3 py-1 text-xs rounded border bg-transparent text-muted border-line hover:text-ink hover:border-ink-soft"
+        "px-3 py-1 text-xs rounded border bg-transparent text-foreground-muted border-border hover:text-foreground hover:border-foreground-soft"
     };
     rsx! {
         button { class: "{cls}", onclick: move |e| on_click.call(e), "{label}" }
@@ -162,9 +162,9 @@ fn FilterPill(label: String, active: bool, on_click: EventHandler<MouseEvent>) -
 #[component]
 fn SegmentBtn(label: String, active: bool, on_click: EventHandler<MouseEvent>) -> Element {
     let cls = if active {
-        "px-3 py-1.5 text-xs bg-brand-soft text-brand border border-brand-line font-semibold"
+        "px-3 py-1.5 text-xs bg-brand-soft text-brand border border-brand font-semibold"
     } else {
-        "px-3 py-1.5 text-xs bg-transparent text-muted border border-line hover:text-ink"
+        "px-3 py-1.5 text-xs bg-transparent text-foreground-muted border border-border hover:text-foreground"
     };
     rsx! {
         button { class: "{cls}", onclick: move |e| on_click.call(e), "{label}" }
