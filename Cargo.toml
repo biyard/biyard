@@ -1,5 +1,5 @@
 [workspace]
-members = ["console", "landing"]
+members = ["console", "landing", "sto"]
 resolver = "2"
 
 [workspace.package]

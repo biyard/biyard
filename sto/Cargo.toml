@@ -1,0 +1,49 @@
+[package]
+name = "sto"
+version = "0.1.0"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["fullstack", "router"] }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_with = { workspace = true }
+by-macros = { workspace = true }
+tracing = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+async-trait = { workspace = true }
+
+# Server-only
+aws-config = { version = "1", optional = true }
+aws-sdk-dynamodb = { workspace = true, optional = true }
+aws-credential-types = { version = "1.2", optional = true }
+serde_dynamo = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+uuid = { version = "1", features = ["serde", "v7"], optional = true }
+schemars = { workspace = true, optional = true }
+
+# Shared
+tracing-subscriber = { workspace = true }
+tracing-wasm = "0.2.1"
+wasm-bindgen = "0.2"
+dioxus-cli-config.workspace = true
+
+[features]
+default = ["full"]
+full = []
+web = ["dioxus/web"]
+server = [
+    "aws-config",
+    "aws-credential-types",
+    "aws-sdk-dynamodb",
+    "dioxus/server",
+    "schemars",
+    "serde_dynamo",
+    "tokio",
+    "uuid",
+]

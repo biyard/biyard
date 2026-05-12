@@ -111,6 +111,27 @@ services:
       - development
       - infra
 
+  # STO DynamoDB initialization (biyard-local-sto 테이블 + 시드)
+  sto-localstack-init:
+    image: amazonlinux:2023
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
+      AWS_DEFAULT_REGION: ${AWS_REGION:-us-east-1}
+      DYNAMO_ENDPOINT: http://localstack:4566
+    volumes:
+      - ./scripts:/scripts
+    command: ["bash", "/scripts/sto-init-entrypoint.sh"]
+    depends_on:
+      localstack:
+        condition: service_healthy
+    networks:
+      - biyard-network
+    profiles:
+      - testing
+      - development
+      - infra
+
   dynamodb-admin:
     image: aaronshaf/dynamodb-admin:latest
     restart: always
