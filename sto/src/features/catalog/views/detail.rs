@@ -21,7 +21,7 @@ pub fn DetailView(sto_id: String) -> Element {
                 Some(Ok(sto)) => rsx! { DetailBody { sto: sto.clone() } },
                 Some(Err(e)) => rsx! {
                     div { class: "text-danger", "로드 실패: {e}" }
-                    a { href: "/assets", class: "text-brand text-sm mt-2 inline-block", "← 시장으로" }
+                    a { href: "/market", class: "text-brand text-sm mt-2 inline-block", "← 시장으로" }
                 },
                 None => rsx! {
                     div { class: "text-foreground-muted", "로딩 중..." }
@@ -37,7 +37,7 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
         div { class: "flex items-center gap-2 text-xs text-foreground-muted mb-2",
             a { href: "/", class: "hover:text-brand", "홈" }
             span { "/" }
-            a { href: "/assets", class: "hover:text-brand", "STO 시장" }
+            a { href: "/market", class: "hover:text-brand", "STO 시장" }
             span { "/" }
             span { class: "text-foreground-soft", "{sto.name}" }
         }

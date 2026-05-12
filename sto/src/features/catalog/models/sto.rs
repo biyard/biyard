@@ -127,6 +127,7 @@ impl From<Sto> for StoSummary {
         Self {
             sto_id: if id.is_empty() { s.sto_id } else { id },
             name: s.name,
+            underlying: s.underlying,
             category: s.category,
             region: s.region,
             country: s.country,

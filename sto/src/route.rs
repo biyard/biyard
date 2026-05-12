@@ -12,7 +12,7 @@ pub enum Route {
     #[route("/")]
     HomeView {},
 
-    #[route("/assets")]
+    #[route("/market")]
     CatalogView {},
 
     #[route("/sto/:sto_id")]

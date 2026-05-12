@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct StoSummary {
     pub sto_id: String,
     pub name: String,
+    pub underlying: Option<String>,
     pub category: String,
     pub region: String,
     pub country: String,

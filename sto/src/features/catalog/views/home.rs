@@ -19,7 +19,7 @@ pub fn HomeView() -> Element {
             HeroOfferings {}
             match resp_ref {
                 Some(Ok(r)) => rsx! {
-                    Panel { title: t.section_recent.to_string(), more_href: Some("/assets".to_string()),
+                    Panel { title: t.section_recent.to_string(), more_href: Some("/market".to_string()),
                         StoTable {
                             items: r.items.iter().take(15).cloned().collect::<Vec<_>>(),
                             show_status: true,
@@ -44,29 +44,41 @@ pub fn Topbar(active: String) -> Element {
     let t: CatalogTranslate = use_translate();
     let item = |key: &str, label: &str, href: &str| {
         let cls = if active == key {
-            "text-foreground font-semibold"
+            "px-3.5 py-2 rounded-md text-sm font-medium bg-panel-muted text-foreground"
         } else {
-            "text-foreground-muted hover:text-foreground"
+            "px-3.5 py-2 rounded-md text-sm font-medium text-foreground-soft hover:bg-panel-muted hover:text-foreground"
         };
         rsx! {
             a { href: "{href}", class: "{cls}", "{label}" }
         }
     };
     rsx! {
-        header { class: "border-b border-border bg-panel sticky top-0 z-10",
-            div { class: "max-w-7xl mx-auto px-6 py-3 flex items-center gap-6",
-                a { href: "/", class: "flex items-center gap-2",
-                    span { class: "font-bold text-brand text-lg", "Biyard" }
-                    span { class: "text-xs text-foreground-muted font-mono", "STO" }
+        header { class: "sticky top-0 z-10 border-b border-border bg-panel/85 backdrop-blur",
+            div { class: "max-w-[1400px] mx-auto px-7 py-3.5 flex items-center gap-8",
+                a { href: "/", class: "flex items-center gap-2.5 font-bold",
+                    img {
+                        src: asset!("/assets/biyard-logo.png"),
+                        alt: "Biyard",
+                        class: "w-7 h-7 rounded-md",
+                    }
+                    span { class: "text-foreground", "Biyard" }
+                    small { class: "text-foreground-muted font-normal text-xs ml-1", "STO" }
                 }
-                nav { class: "flex gap-5 text-sm",
+                nav { class: "flex items-center gap-1 flex-1",
                     { item("home", t.nav_home, "/") }
-                    { item("assets", t.nav_market, "/assets") }
+                    { item("assets", t.nav_market, "/market") }
                     { item("issuers", t.nav_issuers, "/issuers") }
                     { item("index", t.nav_index, "/index") }
                     { item("launchpad", t.nav_launchpad, "/launchpad") }
                     { item("news", t.nav_news, "/news") }
                     { item("pricing", t.nav_pricing, "/pricing") }
+                }
+                div { class: "flex items-center gap-2.5",
+                    input {
+                        r#type: "search",
+                        placeholder: "STO 검색...",
+                        class: "w-[280px] bg-panel-muted border border-border rounded-full px-3.5 py-2 text-sm text-foreground placeholder:text-foreground-muted focus:outline-none focus:border-brand",
+                    }
                 }
             }
         }
@@ -97,46 +109,65 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
     let t: CatalogTranslate = use_translate();
     rsx! {
         div { class: "overflow-x-auto",
-            table { class: "w-full text-sm",
+            table { class: "w-full text-sm border-collapse",
                 thead {
                     tr { class: "text-left text-[11px] text-foreground-muted uppercase tracking-wide",
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_asset}" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_category}" }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_issuer}" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-7", "" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-7", "" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border", "{t.th_asset} / 기초자산" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-32", "{t.th_category}" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-36", "{t.th_issuer}" }
                         if show_status {
-                            th { class: "px-3 py-2 bg-panel-muted border-b border-border", "{t.th_status}" }
+                            th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-28", "{t.th_status}" }
                         }
-                        th { class: "px-3 py-2 bg-panel-muted border-b border-border text-right", "{t.th_issued_at}" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-28 text-right", "{t.th_issued_at}" }
                     }
                 }
                 tbody {
                     for s in items.iter() {
-                        tr { class: "border-b border-border/40 hover:bg-panel-muted transition-colors",
-                            td { class: "px-3 py-2.5 w-7 text-base", { flag_for(&s.region) } }
-                            td { class: "px-3 py-2.5",
+                        tr { class: "border-b border-border/40 hover:bg-panel-muted/60 transition-colors",
+                            td { class: "px-3 py-3 w-7 text-base align-middle", { flag_for(&s.region) } }
+                            td { class: "px-3 py-3 w-7 text-base align-middle", { category_icon(&s.category) } }
+                            td { class: "px-3 py-3",
                                 a { href: "/sto/{s.sto_id}", class: "block hover:text-brand",
-                                    div { class: "font-semibold text-foreground", {s.name.clone()} }
-                                    if let Some(artist) = &s.artist {
-                                        div { class: "text-xs text-foreground-muted", {artist.clone()} }
+                                    div { class: "font-semibold text-foreground text-sm leading-tight", {s.name.clone()} }
+                                    if let Some(underlying) = &s.underlying {
+                                        if !underlying.is_empty() && Some(underlying.as_str()) != Some(s.name.as_str()) {
+                                            div { class: "text-[11px] text-foreground-muted mt-0.5 leading-snug", {underlying.clone()} }
+                                        }
+                                    } else if let Some(artist) = &s.artist {
+                                        div { class: "text-[11px] text-foreground-muted mt-0.5 leading-snug", {artist.clone()} }
                                     }
                                 }
                             }
-                            td { class: "px-3 py-2.5 w-32",
-                                span { class: "px-2 py-0.5 text-xs rounded bg-panel-muted text-foreground-soft",
+                            td { class: "px-3 py-3 align-middle",
+                                span { class: "inline-block px-2 py-0.5 text-[11px] rounded bg-panel-muted text-foreground-soft whitespace-nowrap",
                                     { category_label(&s.category) }
                                 }
                             }
-                            td { class: "px-3 py-2.5 w-32 text-foreground-soft text-xs", {s.issuer_id.clone().unwrap_or_default()} }
+                            td { class: "px-3 py-3 text-foreground-soft text-xs align-middle", {s.issuer_id.clone().unwrap_or_default()} }
                             if show_status {
-                                td { class: "px-3 py-2.5 w-24 text-xs", { status_pill(&s.status) } }
+                                td { class: "px-3 py-3 text-xs align-middle", { status_pill(&s.status) } }
                             }
-                            td { class: "px-3 py-2.5 w-28 text-xs font-mono text-foreground-muted text-right", {s.issued_at.clone()} }
+                            td { class: "px-3 py-3 text-[11px] font-mono text-foreground-muted text-right align-middle", {s.issued_at.clone()} }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+pub fn category_icon(c: &str) -> &'static str {
+    match c {
+        "real_estate" => "🏢",
+        "art" => "🎨",
+        "music" => "🎵",
+        "livestock" => "🐂",
+        "luxury" => "💎",
+        "infra" => "⚡",
+        "content" => "🎬",
+        _ => "·",
     }
 }
 
