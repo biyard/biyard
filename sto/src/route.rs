@@ -1,6 +1,10 @@
 use dioxus::prelude::*;
 
+use crate::features::biyard_index::views::{BiyardIndexView, WhitepaperView};
 use crate::features::catalog::views::{CatalogView, DetailView, HomeView};
+use crate::features::launchpad::LaunchpadView;
+use crate::features::news::NewsView;
+use crate::features::pricing::PricingView;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 pub enum Route {
@@ -12,6 +16,21 @@ pub enum Route {
 
     #[route("/sto/:sto_id")]
     DetailView { sto_id: String },
+
+    #[route("/index")]
+    BiyardIndexView {},
+
+    #[route("/index/whitepaper")]
+    WhitepaperView {},
+
+    #[route("/launchpad")]
+    LaunchpadView {},
+
+    #[route("/news")]
+    NewsView {},
+
+    #[route("/pricing")]
+    PricingView {},
 
     #[route("/:..rest")]
     PageNotFound { rest: Vec<String> },
