@@ -13,7 +13,6 @@ pub fn run(app: fn() -> Element) {
 #[cfg(feature = "server")]
 fn serve(app: fn() -> Element) {
     let dioxus_router = dioxus::server::router(app);
-
     dioxus::serve(move || {
         let app = dioxus_router.clone();
         async move { Ok(app) }

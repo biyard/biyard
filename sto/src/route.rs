@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::features::catalog::views::HomeView;
-use crate::features::catalog::views::CatalogView;
+use crate::features::catalog::views::{CatalogView, DetailView, HomeView};
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 pub enum Route {
@@ -11,6 +10,9 @@ pub enum Route {
     #[route("/assets")]
     CatalogView {},
 
+    #[route("/sto/:sto_id")]
+    DetailView { sto_id: String },
+
     #[route("/:..rest")]
     PageNotFound { rest: Vec<String> },
 }
@@ -19,9 +21,10 @@ pub enum Route {
 fn PageNotFound(rest: Vec<String>) -> Element {
     rsx! {
         div { class: "min-h-screen flex items-center justify-center text-ink-soft",
-            div {
+            div { class: "text-center",
                 h1 { class: "text-2xl font-bold mb-2", "404" }
-                p { "Page not found: /{rest.join(\"/\")}" }
+                p { class: "text-sm text-muted", "Page not found: /{rest.join(\"/\")}" }
+                a { href: "/", class: "text-brand text-sm mt-4 inline-block", "← 홈으로" }
             }
         }
     }

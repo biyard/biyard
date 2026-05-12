@@ -13,10 +13,13 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 serde_with = { workspace = true }
 by-macros = { workspace = true }
+dioxus-translate = { workspace = true }
 tracing = { workspace = true }
 thiserror = { workspace = true }
 chrono = { workspace = true }
 async-trait = { workspace = true }
+base64 = { workspace = true }
+percent-encoding = "2"
 
 # Server-only
 aws-config = { version = "1", optional = true }
@@ -27,6 +30,11 @@ tokio = { workspace = true, optional = true }
 uuid = { version = "1", features = ["serde", "v7"], optional = true }
 schemars = { workspace = true, optional = true }
 
+# Web-only
+getrandom = { version = "0.4", features = ["wasm_js"], optional = true }
+gloo-timers = { version = "0.3", features = ["futures"], optional = true }
+serde-wasm-bindgen = { workspace = true, optional = true }
+
 # Shared
 tracing-subscriber = { workspace = true }
 tracing-wasm = "0.2.1"
@@ -36,7 +44,7 @@ dioxus-cli-config.workspace = true
 [features]
 default = ["full"]
 full = []
-web = ["dioxus/web"]
+web = ["dioxus/web", "getrandom", "gloo-timers", "serde-wasm-bindgen"]
 server = [
     "aws-config",
     "aws-credential-types",

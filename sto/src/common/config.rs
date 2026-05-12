@@ -1,42 +1,55 @@
-//! Server-only — DynamoDB 클라이언트 + 환경 설정.
+//! Server-only — Lazy<DynamoClient> + 환경 설정. console 패턴 동일.
 #![cfg(feature = "server")]
 
-use aws_sdk_dynamodb::Client as DynamoClient;
+use aws_sdk_dynamodb::{
+    Client,
+    config::{Credentials, Region},
+};
+use dioxus::fullstack::Lazy;
+
+pub static DB: Lazy<Client> = Lazy::new(|| async move {
+    let endpoint = match option_env!("DYNAMO_ENDPOINT") {
+        Some(ep) if ep.to_lowercase() == "none" || ep.is_empty() => None,
+        Some(ep) => Some(ep.to_string()),
+        None => None,
+    };
+
+    let region = option_env!("AWS_REGION").unwrap_or("us-east-1").to_string();
+
+    let mut builder = aws_sdk_dynamodb::Config::builder()
+        .region(Region::new(region))
+        .behavior_version_latest()
+        .credentials_provider(Credentials::new(
+            option_env!("AWS_ACCESS_KEY_ID").unwrap_or("test"),
+            option_env!("AWS_SECRET_ACCESS_KEY").unwrap_or("test"),
+            None,
+            None,
+            "loaded-from-env",
+        ));
+
+    if let Some(ep) = endpoint {
+        builder = builder.endpoint_url(ep);
+    }
+
+    dioxus::Ok(Client::from_conf(builder.build()))
+});
 
 pub struct CommonConfig {
     pub table: String,
-    pub endpoint: Option<String>,
-    pub region: String,
 }
 
 impl Default for CommonConfig {
     fn default() -> Self {
+        let prefix = option_env!("DYNAMO_TABLE_PREFIX").unwrap_or("biyard-local");
         Self {
-            table: std::env::var("DYNAMO_TABLE")
-                .unwrap_or_else(|_| "biyard-local-sto".to_string()),
-            endpoint: std::env::var("DYNAMO_ENDPOINT").ok(),
-            region: std::env::var("AWS_REGION").unwrap_or_else(|_| "us-east-1".to_string()),
+            table: format!("{prefix}-sto"),
         }
     }
 }
 
 impl CommonConfig {
-    pub async fn dynamodb(&self) -> DynamoClient {
-        let mut loader = aws_config::defaults(aws_config::BehaviorVersion::latest())
-            .region(aws_config::Region::new(self.region.clone()));
-
-        if let Some(ref endpoint) = self.endpoint {
-            loader = loader.endpoint_url(endpoint.clone());
-        }
-
-        // localstack 용 dummy credentials
-        if self.endpoint.is_some() {
-            loader = loader.credentials_provider(
-                aws_credential_types::Credentials::new("test", "test", None, None, "static"),
-            );
-        }
-
-        let config = loader.load().await;
-        DynamoClient::new(&config)
+    /// 동기 함수 — static Lazy 참조 반환.
+    pub fn dynamodb(&self) -> &'static Client {
+        &DB
     }
 }
