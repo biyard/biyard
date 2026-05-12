@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 
 use crate::features::biyard_index::views::{BiyardIndexView, WhitepaperView};
 use crate::features::catalog::views::{CatalogView, DetailView, HomeView};
+use crate::features::issuers::views::{IssuerDetailView, IssuerListView};
 use crate::features::launchpad::LaunchpadView;
 use crate::features::news::NewsView;
 use crate::features::pricing::PricingView;
@@ -16,6 +17,12 @@ pub enum Route {
 
     #[route("/sto/:sto_id")]
     DetailView { sto_id: String },
+
+    #[route("/issuers")]
+    IssuerListView {},
+
+    #[route("/issuers/:issuer_id")]
+    IssuerDetailView { issuer_id: String },
 
     #[route("/index")]
     BiyardIndexView {},

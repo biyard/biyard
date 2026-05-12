@@ -12,6 +12,7 @@ translate! {
     // 네비게이션
     nav_home: { en: "Home", ko: "홈" },
     nav_market: { en: "STO Market", ko: "STO 시장" },
+    nav_issuers: { en: "Issuers", ko: "발행사" },
     nav_index: { en: "Index", ko: "평가지표" },
     nav_launchpad: { en: "Launchpad", ko: "런치패드" },
     nav_news: { en: "News", ko: "뉴스" },

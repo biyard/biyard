@@ -62,6 +62,7 @@ pub fn Topbar(active: String) -> Element {
                 nav { class: "flex gap-5 text-sm",
                     { item("home", t.nav_home, "/") }
                     { item("assets", t.nav_market, "/assets") }
+                    { item("issuers", t.nav_issuers, "/issuers") }
                     { item("index", t.nav_index, "/index") }
                     { item("launchpad", t.nav_launchpad, "/launchpad") }
                     { item("news", t.nav_news, "/news") }
