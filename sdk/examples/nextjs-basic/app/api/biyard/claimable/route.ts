@@ -6,7 +6,7 @@ import { currentMetaUserId } from "@/lib/session";
 export async function GET() {
   // SECURITY: meta_user_id comes from the partner session — never from the
   // request body, query, or headers controllable by the browser.
-  const metaUserId = currentMetaUserId();
+  const metaUserId = await currentMetaUserId();
 
   try {
     const data = await fetchClaimable(metaUserId);

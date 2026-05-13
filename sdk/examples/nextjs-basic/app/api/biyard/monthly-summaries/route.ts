@@ -5,7 +5,7 @@ import { currentMetaUserId } from "@/lib/session";
 
 export async function GET() {
   // SECURITY: meta_user_id from session, never from caller.
-  const metaUserId = currentMetaUserId();
+  const metaUserId = await currentMetaUserId();
   try {
     const data = await fetchMonthlySummaries(metaUserId);
     return NextResponse.json(data);

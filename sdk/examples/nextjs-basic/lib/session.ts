@@ -15,8 +15,10 @@ import { headers } from "next/headers";
  * This stub reads an `x-demo-user` header to make the example testable
  * without wiring up real auth. Replace with real session lookup in
  * production.
+ *
+ * Async because Next 15 made `headers()` async.
  */
-export function currentMetaUserId(): string {
-  const demoUser = headers().get("x-demo-user");
+export async function currentMetaUserId(): Promise<string> {
+  const demoUser = (await headers()).get("x-demo-user");
   return demoUser ?? "1";
 }

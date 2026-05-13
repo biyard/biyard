@@ -24,7 +24,9 @@ export const WIDGET_STYLES = /* css */ `
     --biyard-spacing: 4px;
     /* ──────────────────────────────────────────────────────────────────── */
 
-    display: inline-block;
+    display: block;
+    container-type: inline-size;
+    container-name: biyard;
     font-family: var(--biyard-font-family);
     color: var(--biyard-color-text);
     line-height: 1.5;
@@ -176,13 +178,15 @@ export const WIDGET_STYLES = /* css */ `
     display: flex;
     align-items: baseline;
     gap: 8px;
+    flex-wrap: wrap;
   }
   .amount-value {
-    font-size: 30px;
+    font-size: clamp(22px, 6cqi, 30px);
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -0.02em;
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    min-width: 0;
   }
   .amount-symbol {
     font-size: 14px;
@@ -212,7 +216,7 @@ export const WIDGET_STYLES = /* css */ `
     color: var(--biyard-color-text);
     font-weight: 500;
     text-align: right;
-    word-break: break-all;
+    overflow-wrap: anywhere;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
   }
@@ -369,7 +373,7 @@ export const WIDGET_STYLES = /* css */ `
   }
   .balance-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
   }
   .balance-cell {
@@ -387,11 +391,12 @@ export const WIDGET_STYLES = /* css */ `
     margin-bottom: 4px;
   }
   .balance-cell-value {
-    font-size: 22px;
+    font-size: clamp(16px, 5cqi, 22px);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    min-width: 0;
   }
   .balance-cell-symbol {
     font-size: 12px;
@@ -418,6 +423,7 @@ export const WIDGET_STYLES = /* css */ `
     padding: 12px 0;
     border-bottom: 1px solid var(--biyard-color-border);
     gap: 12px;
+    min-width: 0;
   }
   .tx-row:last-of-type { border-bottom: none; }
   .tx-left {
@@ -425,6 +431,7 @@ export const WIDGET_STYLES = /* css */ `
     flex-direction: column;
     gap: 2px;
     min-width: 0;
+    flex: 1;
   }
   .tx-type {
     font-size: 13px;
@@ -437,7 +444,6 @@ export const WIDGET_STYLES = /* css */ `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 220px;
   }
   .tx-amount {
     font-weight: 600;
@@ -487,6 +493,7 @@ export const WIDGET_STYLES = /* css */ `
     font-weight: 700;
     font-size: 15px;
     align-self: center;
+    white-space: nowrap;
   }
   .summary-stats {
     grid-row: 1 / 3;
@@ -494,6 +501,28 @@ export const WIDGET_STYLES = /* css */ `
     display: flex;
     gap: 14px;
     align-items: baseline;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  @container biyard (max-width: 420px) {
+    .summary-row {
+      grid-template-columns: 1fr;
+    }
+    .summary-month {
+      grid-row: 1;
+      grid-column: 1;
+    }
+    .summary-stats {
+      grid-row: 2;
+      grid-column: 1;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .summary-claimed-pill {
+      grid-row: 3;
+      grid-column: 1;
+    }
   }
   .summary-stat {
     display: flex;

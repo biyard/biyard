@@ -1,0 +1,34 @@
+# Build & run the Biyard SDK Next.js demo.
+#
+#   cd sdk/examples/nextjs-basic
+#   docker compose up -d --build
+#
+# The compose file's build context is the sdk/ workspace root (../..), not
+# this folder, so the build sees pnpm-workspace.yaml and all packages.
+#
+# Runtime secrets (BIYARD_API_KEY, etc.) come from .env.local — they are
+# NOT baked into the image.
+
+services:
+  biyard-sdk-example:
+    container_name: biyard-sdk-example
+    build:
+      context: ../..
+      dockerfile: examples/nextjs-basic/Dockerfile
+    image: biyard-sdk-example:latest
+    restart: unless-stopped
+    ports:
+      # Host:Container — change the host side if 3000 is already in use locally.
+      - "3000:3000"
+    env_file:
+      - .env.local
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

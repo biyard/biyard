@@ -21,7 +21,7 @@ interface Body {
  * the request body. Same rule as /claim-signature.
  */
 export async function POST(req: Request) {
-  const metaUserId = currentMetaUserId();
+  const metaUserId = await currentMetaUserId();
 
   let body: Body;
   try {

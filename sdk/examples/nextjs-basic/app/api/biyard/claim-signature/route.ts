@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   // SECURITY: meta_user_id comes from the partner session — never from the
   // request body. Even if the browser sends `meta_user_id` in the body, we
   // ignore it.
-  const metaUserId = currentMetaUserId();
+  const metaUserId = await currentMetaUserId();
 
   let body: Body;
   try {
