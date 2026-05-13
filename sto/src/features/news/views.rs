@@ -7,10 +7,12 @@ pub fn NewsView() -> Element {
     rsx! {
         Topbar { active: "news".to_string() }
         main { class: "max-w-7xl mx-auto px-6 py-8",
-            h1 { class: "text-xl font-bold mb-4", "시장 헤드라인" }
-            p { class: "text-foreground-muted text-sm mb-6", "공시·시장 동향. (현재는 placeholder — 향후 DART 신규 공시 + 보도자료 자동 큐레이션)" }
+            h1 { class: "text-xl font-bold mb-1", "공시·뉴스" }
+            p { class: "text-foreground-muted text-sm mb-6",
+                "발행사가 새로 등록한 공시와 관련 보도를 모아 보여드립니다."
+            }
             section { class: "bg-panel border border-dashed border-border rounded-2xl p-12 text-center text-foreground-muted",
-                "뉴스 피드 준비 중. DART 공시 + 보도자료 자동 큐레이션이 들어옵니다."
+                "공시·보도 피드를 준비 중입니다. 곧 금감원 전자공시(DART)와 주요 매체 보도를 자동으로 모아 보여드릴 예정입니다."
             }
         }
     }

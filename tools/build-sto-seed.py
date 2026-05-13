@@ -18,9 +18,7 @@ ID 부여:
   - 같은 입력이면 같은 ID 가 나옴 (재실행 멱등)
 """
 import json
-import os
 import hashlib
-import uuid
 import time
 from pathlib import Path
 
@@ -113,16 +111,16 @@ ISSUER_SLUG = {
 }
 
 ISSUER_META = {
-    "stockeeper": {"name": "스탁키퍼 (뱅카우)", "category": "livestock", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "한우 가축투자계약증권 발행사. 신한투자증권 계좌 연계."},
-    "datagen": {"name": "데이터젠 (핀돈)", "category": "livestock", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "한돈 투자계약증권 발행사. 하나증권 계좌관리."},
-    "togetherart": {"name": "투게더아트", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "미술품 투자계약증권 발행사."},
-    "yeolmae": {"name": "열매컴퍼니 (아트앤가이드)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 (IPO 추진)", "description": "미술품 공동구매 / 투자계약증권 발행. 184건 공모 중 140건 매각 완료."},
-    "seoulauctionblue": {"name": "서울옥션블루 (SOTWO)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "신규 발행 중단, 재개 준비 중", "description": "서울옥션 관계사. 미술품 조각투자 플랫폼 SOTWO 운영."},
-    "artipio": {"name": "아티피오 (Artipio)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "발행 시도 중", "description": "미술품 투자계약증권 발행사. 호크니·록카쿠 등 컨템포러리."},
-    "kasa": {"name": "카사 (Kasa Korea)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 (대신증권 결합)", "description": "부동산 신탁 디지털 수익증권 (DABS) 발행. 대신프라퍼티 지분 90%."},
-    "lucentblock": {"name": "루센트블록 (소유)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "위기 (거래소 인가 탈락)", "description": "지역 상업용 부동산 신탁수익증권. 250억 자산 정리 거론."},
-    "funble": {"name": "펀블 (Funble)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "사업 종료 (연내 청산)", "description": "랜드마크 부동산 신탁수익증권. 수익증권 투자중개업 인가 미취득으로 청산 진행."},
-    "musicow": {"name": "뮤직카우 (Musicow)", "category": "music", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 (NXT 컨소시엄)", "description": "음악 IP 신탁수익증권. 누적 거래액 4,200억원. 보관기관 키움증권㈜."},
+    "stockeeper": {"name": "스탁키퍼 (뱅카우)", "category": "livestock", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "한우를 기초자산으로 한 가축투자계약증권을 발행합니다. 신한투자증권을 통해 계좌를 개설하면 청약할 수 있습니다."},
+    "datagen": {"name": "데이터젠 (핀돈)", "category": "livestock", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "한돈을 기초자산으로 하는 투자계약증권 발행사입니다. 계좌관리는 하나증권이 담당합니다."},
+    "togetherart": {"name": "투게더아트", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중", "description": "유명 작가의 미술품을 투자계약증권 형태로 공모합니다."},
+    "yeolmae": {"name": "열매컴퍼니 (아트앤가이드)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 · IPO 준비", "description": "미술품 공동구매와 투자계약증권 발행을 함께 운영합니다. 누적 184건 공모, 그중 140건은 이미 매각이 완료됐습니다."},
+    "seoulauctionblue": {"name": "서울옥션블루 (SOTWO)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "신규 발행 일시 중단", "description": "서울옥션 관계사로, 미술품 조각투자 플랫폼 ‘SOTWO’를 운영합니다. 신규 공모는 잠시 중단된 상태입니다."},
+    "artipio": {"name": "아티피오 (Artipio)", "category": "art", "region": "KR", "country": "🇰🇷 한국", "status": "공모 준비 중", "description": "호크니, 록카쿠 등 컨템포러리 작가의 작품을 기초자산으로 미술품 투자계약증권을 준비하고 있습니다."},
+    "kasa": {"name": "카사 (Kasa Korea)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 · 대신증권 협업", "description": "상업용 부동산을 디지털 수익증권(DABS)으로 발행합니다. 대신프라퍼티가 지분 90%를 보유 중입니다."},
+    "lucentblock": {"name": "루센트블록 (소유)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "거래소 인가 탈락 · 사업 재편 검토", "description": "지방·중소형 상업용 부동산을 신탁수익증권으로 공모해 왔으나, 거래소 인가에서 탈락해 약 250억 원 규모 자산 정리가 거론되고 있습니다."},
+    "funble": {"name": "펀블 (Funble)", "category": "real_estate", "region": "KR", "country": "🇰🇷 한국", "status": "사업 종료 · 연내 청산", "description": "랜드마크 상업용 부동산을 신탁수익증권으로 운영해 왔으나, 수익증권 투자중개업 인가를 취득하지 못해 연내 청산 절차에 들어갔습니다."},
+    "musicow": {"name": "뮤직카우 (Musicow)", "category": "music", "region": "KR", "country": "🇰🇷 한국", "status": "운영 중 · NXT 컨소시엄 참여", "description": "음악 저작권을 기초자산으로 한 신탁수익증권을 운영합니다. 누적 거래액 4,200억 원 이상이며, 보관기관은 키움증권㈜입니다."},
 }
 
 STATUS_NORMALIZE = {

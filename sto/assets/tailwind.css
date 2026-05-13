@@ -823,6 +823,18 @@
       color: var(--color-foreground-muted);
     }
   }
+  .first\:rounded-l-md {
+    &:first-child {
+      border-top-left-radius: var(--radius-md);
+      border-bottom-left-radius: var(--radius-md);
+    }
+  }
+  .last\:rounded-r-md {
+    &:last-child {
+      border-top-right-radius: var(--radius-md);
+      border-bottom-right-radius: var(--radius-md);
+    }
+  }
   .hover\:border-brand {
     &:hover {
       @media (hover: hover) {

@@ -114,7 +114,7 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
                     tr { class: "text-left text-[11px] text-foreground-muted uppercase tracking-wide",
                         th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-7", "" }
                         th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-7", "" }
-                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border", "{t.th_asset} / 기초자산" }
+                        th { class: "px-3 py-2.5 bg-panel-muted border-b border-border", "{t.th_asset}" }
                         th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-32", "{t.th_category}" }
                         th { class: "px-3 py-2.5 bg-panel-muted border-b border-border w-36", "{t.th_issuer}" }
                         if show_status {
@@ -147,7 +147,7 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
                             }
                             td { class: "px-3 py-3 text-foreground-soft text-xs align-middle", {s.issuer_id.clone().unwrap_or_default()} }
                             if show_status {
-                                td { class: "px-3 py-3 text-xs align-middle", { status_pill(&s.status) } }
+                                td { class: "px-3 py-3 text-xs align-middle", { status_pill(&s.status, &t) } }
                             }
                             td { class: "px-3 py-3 text-[11px] font-mono text-foreground-muted text-right align-middle", {s.issued_at.clone()} }
                         }
@@ -336,14 +336,25 @@ pub fn flag_for(region: &str) -> &'static str {
     }
 }
 
-pub fn status_pill(status: &str) -> Element {
+pub fn status_label(status: &str, t: &CatalogTranslate) -> &'static str {
+    match status {
+        "발행완료" | "발행 완료" | "청산 완료" => t.status_issued,
+        "신고중" | "증권신고서 제출" => t.status_filed,
+        "철회" => t.status_withdrawn,
+        _ => "",
+    }
+}
+
+pub fn status_pill(status: &str, t: &CatalogTranslate) -> Element {
     let (bg, fg) = match status {
         "발행완료" | "발행 완료" | "청산 완료" => ("bg-brand-soft", "text-brand"),
         "신고중" | "증권신고서 제출" => ("bg-warning/15", "text-warning"),
         "철회" => ("bg-danger/15", "text-danger"),
         _ => ("bg-panel-muted", "text-foreground-soft"),
     };
+    let label = status_label(status, t);
+    let display = if label.is_empty() { status } else { label };
     rsx! {
-        span { class: "text-[10px] px-2 py-0.5 rounded font-bold {bg} {fg}", "{status}" }
+        span { class: "text-[10px] px-2 py-0.5 rounded font-bold {bg} {fg}", "{display}" }
     }
 }

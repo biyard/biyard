@@ -34,21 +34,21 @@ pub fn IssuerDetailView(issuer_id: String) -> Element {
                     p { class: "text-foreground-soft leading-relaxed mb-8 max-w-3xl", "{r.issuer.description}" }
                     section {
                         h2 { class: "text-base font-bold mb-3 pb-2 border-b border-border",
-                            "발행 자산 (" {r.stos.len().to_string()} ")"
+                            "발행 자산 " span { class: "text-foreground-muted font-normal text-sm ml-1", "{r.stos.len()}건" }
                         }
                         if r.stos.is_empty() {
-                            div { class: "text-foreground-muted py-8 text-center", "발행 자산이 아직 없습니다." }
+                            div { class: "text-foreground-muted py-8 text-center", "아직 등록된 발행 자산이 없습니다." }
                         } else {
                             StoTable { items: r.stos.clone(), show_status: true }
                         }
                     }
                 },
                 Some(Err(e)) => rsx! {
-                    div { class: "text-danger", "로드 실패: {e}" }
-                    a { href: "/issuers", class: "text-brand text-sm inline-block mt-2", "← 발행사 목록" }
+                    div { class: "text-danger", "정보를 불러오지 못했습니다: {e}" }
+                    a { href: "/issuers", class: "text-brand text-sm inline-block mt-2", "← 발행사 목록으로" }
                 },
                 None => rsx! {
-                    div { class: "text-foreground-muted", "로딩 중..." }
+                    div { class: "text-foreground-muted", "불러오는 중" }
                 },
             }
         }
