@@ -12,7 +12,8 @@ pub struct StoSummary {
     pub security_type: Option<String>,
     pub classification: Option<String>,
     pub status: String,
-    pub issued_at: String,
+    /// Unix epoch ms — 발행/신고일.
+    pub issued_at: i64,
     pub origin: String,
     pub external_url: Option<String>,
     pub artist: Option<String>,
@@ -62,7 +63,8 @@ pub struct StoDetailResponse {
     pub security_type: Option<String>,
     pub classification: Option<String>,
     pub status: String,
-    pub issued_at: String,
+    /// Unix epoch ms — 발행/신고일.
+    pub issued_at: i64,
     pub origin: String,
     pub external_id: Option<String>,
     pub external_url: Option<String>,
@@ -89,7 +91,8 @@ pub struct FilingSummary {
     pub filing_source: String,
     pub filing_type: Option<String>,
     pub title: String,
-    pub filed_at: String,
+    /// Unix epoch ms — 공시일.
+    pub filed_at: i64,
     pub url: Option<String>,
     pub attachments: Vec<FilingAttachmentDto>,
     pub rcept_no: Option<String>,

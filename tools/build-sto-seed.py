@@ -31,6 +31,21 @@ TABLE = "biyard-local-sto"
 NOW_MS = int(time.time() * 1000)
 
 
+def date_to_ms(date_str: str) -> int:
+    """`YYYY-MM-DD` 또는 `YYYYMMDD` → UTC 자정 epoch ms. 비어있으면 0."""
+    if not date_str:
+        return 0
+    s = date_str.strip()
+    if len(s) == 8 and s.isdigit():  # YYYYMMDD
+        s = f"{s[:4]}-{s[4:6]}-{s[6:]}"
+    try:
+        import datetime
+        dt = datetime.datetime.strptime(s, "%Y-%m-%d").replace(tzinfo=datetime.timezone.utc)
+        return int(dt.timestamp() * 1000)
+    except Exception:
+        return 0
+
+
 def deterministic_id(*parts) -> str:
     """입력 튜플 기반 결정적 UUID 생성 (재실행 시 같은 ID)."""
     h = hashlib.sha256("::".join(str(p) for p in parts).encode()).hexdigest()
@@ -164,9 +179,60 @@ def add_issuer(slug):
     items.append(put_item(item))
 
 
+CATEGORY_META_KIND = {
+    "music": "Music",
+    "art": "Art",
+    "real_estate": "RealEstate",
+    "livestock": "Livestock",
+}
+
+
+def build_category_meta(sto):
+    """카테고리별 부가 메타를 `{kind, ...}` 형태로 반환. 부가 메타가 전혀 없으면 None."""
+    cat = sto["category"]
+    if cat == "music":
+        meta = {
+            "kind": "Music",
+            "artist": sto.get("artist"),
+            "rights_category": sto.get("rights_category"),
+            "trust_no": sto.get("trust_no"),
+            "year": sto.get("year"),
+        }
+    elif cat == "art":
+        meta = {
+            "kind": "Art",
+            "artwork_year": sto.get("year"),
+            "medium": sto.get("medium"),
+            "dimensions": sto.get("dimensions"),
+        }
+    elif cat == "real_estate":
+        meta = {
+            "kind": "RealEstate",
+            "address": sto.get("address"),
+            "building_type": sto.get("building_type"),
+            "floor_area": sto.get("floor_area"),
+        }
+    elif cat == "livestock":
+        meta = {
+            "kind": "Livestock",
+            "farm_name": sto.get("farm_name"),
+            "breed": sto.get("breed"),
+            "head_count": sto.get("head_count"),
+        }
+    else:
+        return None
+    # 모든 부가 필드가 비어있으면 row 만들지 않음
+    if all(meta.get(k) in (None, "") for k in meta if k != "kind"):
+        return None
+    return meta
+
+
 def add_sto(sto):
-    """sto: dict — required: name, category, region, status, issued_at, origin, external_id"""
+    """sto: dict — required: name, category, region, status, issued_at, origin, external_id.
+    `issued_at` 은 `YYYY-MM-DD` (또는 빈 문자열) 로 받고, 내부에서 epoch ms 로 변환.
+    """
     sto_id = sto["sto_id"]
+    issued_at_ms = date_to_ms(sto.get("issued_at", ""))
     item = {
         "pk": f"STO#{sto_id}",
         "sk": "STO",
@@ -180,33 +246,50 @@ def add_sto(sto):
         "security_type": sto.get("security_type"),
         "classification": sto.get("classification"),
         "status": sto["status"],
-        "issued_at": sto["issued_at"],
+        "issued_at": issued_at_ms,
         "origin": sto["origin"],
         "external_id": sto.get("external_id"),
         "external_url": sto.get("external_url"),
         "offering": sto.get("offering"),
         "issuance_structure": sto.get("issuance_structure"),
-        "artist": sto.get("artist"),
-        "rights_category": sto.get("rights_category"),
-        "trust_no": sto.get("trust_no"),
-        "year": sto.get("year"),
         "sources": sto.get("sources", []),
         "created_at": NOW_MS,
         "updated_at": NOW_MS,
         # GSI fields
         "gsi1_pk": f"STATUS#{sto['status']}",
-        "gsi1_sk": f"TS#{sto['issued_at']}#{sto_id}",
+        "gsi1_sk": f"TS#{issued_at_ms}#{sto_id}",
         "gsi2_pk": f"CAT#{sto['region']}#{sto['category']}",
-        "gsi2_sk": f"TS#{sto['issued_at']}#{sto_id}",
+        "gsi2_sk": f"TS#{issued_at_ms}#{sto_id}",
     }
     if sto.get("issuer_id"):
         item["gsi3_pk"] = f"ISSUER#{sto['issuer_id']}"
-        item["gsi3_sk"] = f"TS#{sto['issued_at']}#{sto_id}"
+        item["gsi3_sk"] = f"TS#{issued_at_ms}#{sto_id}"
     items.append(put_item(item))
+
+    meta = build_category_meta(sto)
+    if meta:
+        kind = meta["kind"]
+        meta_item = {
+            "pk": f"STO#{sto_id}",
+            "sk": f"STO_META#{CATEGORY_META_KIND_TO_SK.get(sto['category'], kind.upper())}",
+            "meta": meta,
+            "created_at": NOW_MS,
+            "updated_at": NOW_MS,
+        }
+        items.append(put_item(meta_item))
+
+
+# SK suffix 는 category 식별자(영문) 로 통일
+CATEGORY_META_KIND_TO_SK = {
+    "music": "MUSIC",
+    "art": "ART",
+    "real_estate": "REAL_ESTATE",
+    "livestock": "LIVESTOCK",
+}
 
 
 def add_filing(sto_id, filing):
-    """filing: dict — required: filing_id, filing_source, title, filed_at"""
+    """filing: dict — required: filing_id, filing_source, title, filed_at (YYYY-MM-DD)"""
     item = {
         "pk": f"STO#{sto_id}",
         "sk": f"FILING#{filing['filing_id']}",
@@ -214,7 +297,7 @@ def add_filing(sto_id, filing):
         "filing_source": filing["filing_source"],
         "filing_type": filing.get("filing_type"),
         "title": filing["title"],
-        "filed_at": filing["filed_at"],
+        "filed_at": date_to_ms(filing["filed_at"]),
         "url": filing.get("url"),
         "attachments": filing.get("attachments", []),
         "rcept_no": filing.get("rcept_no"),

@@ -3,6 +3,8 @@ use crate::features::catalog::{
     IssuanceStructureDto, OfferingDto, SourceRefDto, StoDetailResponse, StoSummary,
 };
 
+/// STO 공통 row — `pk = STO#{uuid}`, `sk = STO`.
+/// 카테고리별 부가 정보(작가, 신탁계약 번호 등)는 [`StoCategoryMeta`] 로 별도 row 에 적재.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity, Default)]
 #[dynamo(table = "sto")]
 pub struct Sto {
@@ -31,10 +33,11 @@ pub struct Sto {
     #[dynamo(index = "gsi1", pk, prefix = "STATUS", name = "find_by_status")]
     pub status: String,
 
-    #[dynamo(index = "gsi1", sk)]
-    #[dynamo(index = "gsi2", sk)]
-    #[dynamo(index = "gsi3", sk)]
-    pub issued_at: String,
+    /// 발행/신고 일시 (Unix epoch ms). GSI sort key 로도 활용.
+    #[dynamo(index = "gsi1", sk, prefix = "TS")]
+    #[dynamo(index = "gsi2", sk, prefix = "TS")]
+    #[dynamo(index = "gsi3", sk, prefix = "TS")]
+    pub issued_at: i64,
 
     #[dynamo(index = "gsi2", pk, prefix = "CAT", name = "find_by_region_category")]
     #[serde(default)]
@@ -47,18 +50,6 @@ pub struct Sto {
 
     #[serde(default)]
     pub external_url: Option<String>,
-
-    #[serde(default)]
-    pub artist: Option<String>,
-
-    #[serde(default)]
-    pub rights_category: Option<String>,
-
-    #[serde(default)]
-    pub trust_no: Option<String>,
-
-    #[serde(default)]
-    pub year: Option<String>,
 
     #[serde(default)]
     pub offering: Option<StoOffering>,
@@ -142,8 +133,8 @@ impl From<Sto> for StoSummary {
             issued_at: s.issued_at,
             origin: s.origin,
             external_url: s.external_url,
-            artist: s.artist,
-            rights_category: s.rights_category,
+            artist: None,
+            rights_category: None,
         }
     }
 }
@@ -151,9 +142,21 @@ impl From<Sto> for StoSummary {
 impl Sto {
     pub fn into_detail(
         self,
+        meta: Option<StoCategoryMeta>,
         filings: Vec<crate::features::catalog::FilingSummary>,
     ) -> StoDetailResponse {
         let id = self.id();
+        let (artist, rights_category, trust_no, year) = match meta {
+            Some(StoCategoryMeta::Music {
+                artist,
+                rights_category,
+                trust_no,
+                year,
+                ..
+            }) => (artist, rights_category, trust_no, year),
+            _ => (None, None, None, None),
+        };
+
         StoDetailResponse {
             sto_id: if id.is_empty() {
                 self.sto_id.clone()
@@ -177,10 +180,10 @@ impl Sto {
             origin: self.origin,
             external_id: self.external_id,
             external_url: self.external_url,
-            artist: self.artist,
-            rights_category: self.rights_category,
-            trust_no: self.trust_no,
-            year: self.year,
+            artist,
+            rights_category,
+            trust_no,
+            year,
             offering: self.offering.map(|o| OfferingDto {
                 amount: o.amount,
                 currency: o.currency,
@@ -207,4 +210,80 @@ impl Sto {
             filings,
         }
     }
+}
+
+/// 카테고리별 부가 메타 — 같은 `pk = STO#{uuid}` 에 `sk = STO_META#{CATEGORY}` 로 저장.
+/// Query 한 번으로 공통 row + 메타 row + filings 까지 함께 읽음.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, DynamoEntity)]
+#[dynamo(table = "sto")]
+pub struct StoMetaRow {
+    pub pk: Partition,
+    pub sk: EntityType,
+
+    pub meta: StoCategoryMeta,
+
+    pub created_at: i64,
+    pub updated_at: i64,
+}
+
+impl Default for StoMetaRow {
+    fn default() -> Self {
+        Self {
+            pk: Partition::default(),
+            sk: EntityType::default(),
+            meta: StoCategoryMeta::None,
+            created_at: 0,
+            updated_at: 0,
+        }
+    }
+}
+
+/// 카테고리별 메타 데이터. JSON 상에서는 `{ "kind": "Music", "artist": ... }` 형태로 직렬화.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
+#[serde(tag = "kind")]
+pub enum StoCategoryMeta {
+    #[default]
+    None,
+
+    /// 음악 IP 신탁수익증권 등
+    Music {
+        #[serde(default)]
+        artist: Option<String>,
+        #[serde(default)]
+        rights_category: Option<String>,
+        #[serde(default)]
+        trust_no: Option<String>,
+        #[serde(default)]
+        year: Option<String>,
+    },
+
+    /// 미술품 투자계약증권
+    Art {
+        #[serde(default)]
+        artwork_year: Option<String>,
+        #[serde(default)]
+        medium: Option<String>,
+        #[serde(default)]
+        dimensions: Option<String>,
+    },
+
+    /// 부동산 수익증권 / DABS
+    RealEstate {
+        #[serde(default)]
+        address: Option<String>,
+        #[serde(default)]
+        building_type: Option<String>,
+        #[serde(default)]
+        floor_area: Option<String>,
+    },
+
+    /// 한우 등 가축투자계약증권
+    Livestock {
+        #[serde(default)]
+        farm_name: Option<String>,
+        #[serde(default)]
+        breed: Option<String>,
+        #[serde(default)]
+        head_count: Option<i32>,
+    },
 }

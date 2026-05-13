@@ -71,7 +71,7 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
                         (t.field_asset_name.to_string(), sto.name.clone()),
                         (t.field_underlying.to_string(), sto.underlying.clone().unwrap_or_else(|| "—".to_string())),
                         (t.field_security_type.to_string(), sto.security_type.clone().unwrap_or_else(|| "—".to_string())),
-                        (t.field_issued_at.to_string(), sto.issued_at.clone()),
+                        (t.field_issued_at.to_string(), format_date_ms(sto.issued_at)),
                         (t.field_status.to_string(), {
                             let label = status_label(&sto.status, &t);
                             if label.is_empty() { sto.status.clone() } else { label.to_string() }
@@ -193,7 +193,7 @@ fn FilingCard(filing: FilingSummary) -> Element {
                 if let Some(t) = &filing.filing_type {
                     span { class: "text-[10px] px-2 py-0.5 rounded bg-panel-muted text-foreground-soft", "{t}" }
                 }
-                span { class: "text-xs text-foreground-muted font-mono", "{filing.filed_at}" }
+                span { class: "text-xs text-foreground-muted font-mono", {format_date_ms(filing.filed_at)} }
             }
             div { class: "text-sm font-semibold text-foreground mb-2", "{filing.title}" }
             if let Some(url) = &filing.url {
@@ -230,6 +230,16 @@ fn category_label(c: &str) -> &'static str {
         "content" => "🎬 콘텐츠",
         _ => "기타",
     }
+}
+
+/// epoch ms → `YYYY-MM-DD` (UTC). 표시 외 용도로는 쓰지 말 것.
+pub fn format_date_ms(epoch_ms: i64) -> String {
+    use chrono::TimeZone;
+    chrono::Utc
+        .timestamp_millis_opt(epoch_ms)
+        .single()
+        .map(|dt| dt.format("%Y-%m-%d").to_string())
+        .unwrap_or_else(|| "—".to_string())
 }
 
 fn number_format(n: i64) -> String {

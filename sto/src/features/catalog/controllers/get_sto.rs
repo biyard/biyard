@@ -6,7 +6,7 @@ use crate::common::{CommonConfig, EntityType, Partition, Result};
 #[cfg(feature = "server")]
 use crate::features::catalog::FilingSummary;
 #[cfg(feature = "server")]
-use crate::features::catalog::models::Sto;
+use crate::features::catalog::models::{Sto, StoMetaRow};
 #[cfg(feature = "server")]
 use crate::features::filings::Filing;
 
@@ -30,12 +30,15 @@ pub async fn get_sto(sto_id: String) -> std::result::Result<StoDetailResponse, S
             .await?;
 
         let mut sto: Option<Sto> = None;
+        let mut meta: Option<StoMetaRow> = None;
         let mut filings: Vec<FilingSummary> = Vec::new();
 
         for av in out.items.unwrap_or_default() {
             let sk = av.get("sk").and_then(|v| v.as_s().ok()).cloned().unwrap_or_default();
             if sk == EntityType::Sto.to_string() {
                 sto = serde_dynamo::from_item(av).ok();
+            } else if sk.starts_with("STO_META#") {
+                meta = serde_dynamo::from_item(av).ok();
             } else if sk.starts_with("Filing#") || sk.starts_with("FILING#") {
                 if let Ok(f) = serde_dynamo::from_item::<_, Filing>(av) {
                     filings.push(f.into());
@@ -46,7 +49,7 @@ pub async fn get_sto(sto_id: String) -> std::result::Result<StoDetailResponse, S
         let sto = sto.ok_or_else(|| crate::common::Error::NotFound(format!("STO: {sto_id}")))?;
         filings.sort_by(|a, b| b.filed_at.cmp(&a.filed_at));
 
-        Ok(sto.into_detail(filings))
+        Ok(sto.into_detail(meta.map(|m| m.meta), filings))
     }
     .await;
 

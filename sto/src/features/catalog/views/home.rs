@@ -149,7 +149,7 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
                             if show_status {
                                 td { class: "px-3 py-3 text-xs align-middle", { status_pill(&s.status, &t) } }
                             }
-                            td { class: "px-3 py-3 text-[11px] font-mono text-foreground-muted text-right align-middle", {s.issued_at.clone()} }
+                            td { class: "px-3 py-3 text-[11px] font-mono text-foreground-muted text-right align-middle", {crate::features::catalog::views::format_date_ms(s.issued_at)} }
                         }
                     }
                 }

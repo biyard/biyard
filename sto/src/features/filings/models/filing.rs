@@ -14,7 +14,8 @@ pub struct Filing {
     pub filing_type: Option<String>,
 
     pub title: String,
-    pub filed_at: String,
+    /// Unix epoch ms — 공시일.
+    pub filed_at: i64,
 
     #[serde(default)]
     pub url: Option<String>,
