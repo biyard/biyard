@@ -6308,6 +6308,7 @@ dependencies = [
  "getrandom 0.4.2",
  "gloo-timers 0.3.0",
  "js-sys",
+ "lambda_http",
  "percent-encoding",
  "schemars 1.2.1",
  "serde",

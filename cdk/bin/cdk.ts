@@ -4,6 +4,7 @@ import { GlobalTableStack } from "../lib/dynamodb-stack";
 import { EcsClusterStack } from "../lib/ecs-cluster-stack";
 import { AppClusterStack } from "../lib/app-cluster-stack";
 import { LandingLambdaStack } from "../lib/landing-lambda-stack";
+import { StoLambdaStack } from "../lib/sto-lambda-stack";
 
 const app = new App();
 const service = "biyard";
@@ -16,6 +17,7 @@ const host = process.env.DOMAIN || "dev.biyard.co";
 const webDomain = host;
 const consoleDomain = `console.${host}`;
 const apiDomain = `api.${host}`;
+const stoDomain = `sto.${host}`;
 const baseDomain = "biyard.co";
 const consoleRepoName = "biyard/console";
 const commit = process.env.COMMIT!;
@@ -89,4 +91,34 @@ new GlobalTableStack(app, `${stackName}-dynamodb`, {
   },
   stage: env,
   service,
+});
+
+// STO: Lambda (Dioxus SSR) with Function URL
+const stoLambdaStack = new StoLambdaStack(app, `${stackName}-sto-lambda`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "ap-northeast-2",
+  },
+  stackName: `${stackName}-sto-lambda`,
+  stage: env,
+  service,
+  commit,
+});
+
+// STO: S3+CloudFront CDN (static assets + Lambda Function URL proxy)
+new GlobalAccelStack(app, "sto", {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: "us-east-1",
+  },
+  stackName: `${stackName}-sto-cdn`,
+  stage: env,
+  commit,
+
+  webDomain: stoDomain,
+  baseDomain,
+  apiConfig: {
+    domain: stoLambdaStack.functionUrlDomain,
+    prefix: "",
+  },
 });
