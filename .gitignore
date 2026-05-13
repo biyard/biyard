@@ -26,3 +26,5 @@ contracts/coverage/
 .davia/
 
 # Generated assets
+
+*/assets/tailwind.css
