@@ -14,7 +14,9 @@ pub static DB: Lazy<Client> = Lazy::new(|| async move {
         None => None,
     };
 
-    let region = option_env!("AWS_REGION").unwrap_or("us-east-1").to_string();
+    let region = option_env!("AWS_REGION")
+        .unwrap_or("ap-northeast-2")
+        .to_string();
 
     let mut builder = aws_sdk_dynamodb::Config::builder()
         .region(Region::new(region))

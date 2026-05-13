@@ -8,10 +8,10 @@ pub struct Filing {
     pub sk: EntityType,
 
     pub filing_id: String,
-    pub filing_source: String,
+    pub filing_source: Origin,
 
     #[serde(default)]
-    pub filing_type: Option<String>,
+    pub filing_type: Option<FilingType>,
 
     pub title: String,
     /// Unix epoch ms — 공시일.

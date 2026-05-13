@@ -21,7 +21,7 @@ pub fn BiyardIndexView() -> Element {
                         class: "bg-brand text-brand-contrast font-bold px-5 py-2.5 rounded-md text-sm hover:bg-brand-strong",
                         "{t.apply_cta}"
                     }
-                    a { href: "/index/whitepaper",
+                    a { href: "/biyard-index/whitepaper",
                         class: "bg-transparent text-foreground border border-border px-5 py-2.5 rounded-md text-sm hover:bg-panel-muted",
                         "{t.whitepaper_cta}"
                     }

@@ -8,7 +8,7 @@ pub fn WhitepaperView() -> Element {
         Topbar { active: "index".to_string() }
         main { class: "max-w-5xl mx-auto px-6 py-8",
             div { class: "flex items-center gap-2 text-xs text-foreground-muted mb-2",
-                a { href: "/index", class: "hover:text-brand", "Biyard Index" }
+                a { href: "/biyard-index", class: "hover:text-brand", "Biyard Index" }
                 span { "/" }
                 span { class: "text-foreground-soft", "Whitepaper" }
             }
@@ -66,7 +66,7 @@ pub fn WhitepaperView() -> Element {
                 }
 
                 div { class: "flex gap-2 mt-10",
-                    a { href: "/index", class: "bg-brand text-brand-contrast font-bold px-4 py-2 rounded text-sm",
+                    a { href: "/biyard-index", class: "bg-brand text-brand-contrast font-bold px-4 py-2 rounded text-sm",
                         "← 제품 페이지로"
                     }
                 }

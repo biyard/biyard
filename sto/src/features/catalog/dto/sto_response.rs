@@ -1,20 +1,21 @@
 use serde::{Deserialize, Serialize};
 
+use crate::common::{Category, Country, Origin, StoStatus};
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct StoSummary {
     pub sto_id: String,
     pub name: String,
     pub underlying: Option<String>,
-    pub category: String,
-    pub region: String,
-    pub country: String,
+    pub category: Category,
+    pub country: Country,
     pub issuer_id: Option<String>,
     pub security_type: Option<String>,
     pub classification: Option<String>,
-    pub status: String,
+    pub status: StoStatus,
     /// Unix epoch ms — 발행/신고일.
     pub issued_at: i64,
-    pub origin: String,
+    pub origin: Origin,
     pub external_url: Option<String>,
     pub artist: Option<String>,
     pub rights_category: Option<String>,
@@ -56,16 +57,15 @@ pub struct StoDetailResponse {
     pub sto_id: String,
     pub name: String,
     pub underlying: Option<String>,
-    pub category: String,
-    pub region: String,
-    pub country: String,
+    pub category: Category,
+    pub country: Country,
     pub issuer_id: Option<String>,
     pub security_type: Option<String>,
     pub classification: Option<String>,
-    pub status: String,
+    pub status: StoStatus,
     /// Unix epoch ms — 발행/신고일.
     pub issued_at: i64,
-    pub origin: String,
+    pub origin: Origin,
     pub external_id: Option<String>,
     pub external_url: Option<String>,
     pub artist: Option<String>,
@@ -85,11 +85,26 @@ pub struct FilingAttachmentDto {
     pub size_bytes: Option<i64>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
+pub struct CategoryScaleResponse {
+    pub music_count: i64,
+    pub music_amount: i64,
+    pub art_count: i64,
+    pub art_amount: i64,
+    pub real_estate_count: i64,
+    pub real_estate_amount: i64,
+    pub livestock_count: i64,
+    pub livestock_amount: i64,
+    pub total_count: i64,
+    pub total_amount: i64,
+    pub updated_at: i64,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FilingSummary {
     pub filing_id: String,
-    pub filing_source: String,
-    pub filing_type: Option<String>,
+    pub filing_source: crate::common::Origin,
+    pub filing_type: Option<crate::common::FilingType>,
     pub title: String,
     /// Unix epoch ms — 공시일.
     pub filed_at: i64,

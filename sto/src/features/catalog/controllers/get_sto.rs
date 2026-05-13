@@ -2,56 +2,37 @@ use crate::features::catalog::StoDetailResponse;
 use dioxus::prelude::*;
 
 #[cfg(feature = "server")]
-use crate::common::{CommonConfig, EntityType, Partition, Result};
+use crate::common::{CommonConfig, Partition, Result};
 #[cfg(feature = "server")]
 use crate::features::catalog::FilingSummary;
 #[cfg(feature = "server")]
-use crate::features::catalog::models::{Sto, StoMetaRow};
-#[cfg(feature = "server")]
-use crate::features::filings::Filing;
+use crate::features::catalog::models::{Sto, StoMetaBundle, StoPartitionRow};
 
-/// GET /api/stos/:id — STO 메타 + 묶인 모든 공시까지 한 번에.
-#[server(endpoint = "get_sto")]
-pub async fn get_sto(sto_id: String) -> std::result::Result<StoDetailResponse, ServerFnError> {
-    let result: Result<StoDetailResponse> = async {
-        let cfg = CommonConfig::default();
-        let cli = cfg.dynamodb();
-        let pk = Partition::Sto(sto_id.clone()).to_string();
+#[get("/v1/stos/:sto_id")]
+pub async fn get_sto_handler(sto_id: String) -> Result<StoDetailResponse> {
+    let cfg = CommonConfig::default();
+    let cli = cfg.dynamodb();
+    let pk = Partition::Sto(sto_id.clone()).to_string();
 
-        let out = cli
-            .query()
-            .table_name(&cfg.table)
-            .key_condition_expression("pk = :p")
-            .expression_attribute_values(
-                ":p",
-                aws_sdk_dynamodb::types::AttributeValue::S(pk),
-            )
-            .send()
-            .await?;
+    let rows = StoPartitionRow::query(cli, pk).await?;
 
-        let mut sto: Option<Sto> = None;
-        let mut meta: Option<StoMetaRow> = None;
-        let mut filings: Vec<FilingSummary> = Vec::new();
+    let mut sto: Option<Sto> = None;
+    let mut bundle = StoMetaBundle::default();
+    let mut filings: Vec<FilingSummary> = Vec::new();
 
-        for av in out.items.unwrap_or_default() {
-            let sk = av.get("sk").and_then(|v| v.as_s().ok()).cloned().unwrap_or_default();
-            if sk == EntityType::Sto.to_string() {
-                sto = serde_dynamo::from_item(av).ok();
-            } else if sk.starts_with("STO_META#") {
-                meta = serde_dynamo::from_item(av).ok();
-            } else if sk.starts_with("Filing#") || sk.starts_with("FILING#") {
-                if let Ok(f) = serde_dynamo::from_item::<_, Filing>(av) {
-                    filings.push(f.into());
-                }
-            }
+    for row in rows {
+        match row {
+            StoPartitionRow::Sto(s) => sto = Some(s),
+            StoPartitionRow::MetaMusic(m) => bundle.music = Some(m),
+            StoPartitionRow::MetaArt(m) => bundle.art = Some(m),
+            StoPartitionRow::MetaRealEstate(m) => bundle.real_estate = Some(m),
+            StoPartitionRow::MetaLivestock(m) => bundle.livestock = Some(m),
+            StoPartitionRow::Filing(f) => filings.push(f.into()),
         }
-
-        let sto = sto.ok_or_else(|| crate::common::Error::NotFound(format!("STO: {sto_id}")))?;
-        filings.sort_by(|a, b| b.filed_at.cmp(&a.filed_at));
-
-        Ok(sto.into_detail(meta.map(|m| m.meta), filings))
     }
-    .await;
 
-    result.map_err(|e: crate::common::Error| ServerFnError::new(e.to_string()))
+    let sto = sto.ok_or_else(|| crate::common::Error::NotFound(format!("STO: {sto_id}")))?;
+    filings.sort_by(|a, b| b.filed_at.cmp(&a.filed_at));
+
+    Ok(sto.into_detail(bundle, filings))
 }

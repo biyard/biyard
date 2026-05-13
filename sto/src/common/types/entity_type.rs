@@ -22,4 +22,7 @@ pub enum EntityType {
 
     // 공시 (PDF 첨부 포함)
     Filing(String),
+
+    // 집계 row (pk = AGGREGATE, sk = AGGREGATE#{TYPE})
+    Aggregate(String),
 }

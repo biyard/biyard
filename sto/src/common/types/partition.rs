@@ -12,6 +12,9 @@ pub enum Partition {
 
     // 발행사 (slug)
     Issuer(String),
+
+    // 집계 row 의 partition. 단일 값 "AGGREGATE".
+    Aggregate,
 }
 
 /// Sto 외부 인터페이스용 newtype (REST 경로 파라미터 등)
