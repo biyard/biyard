@@ -3,7 +3,6 @@ use dioxus::prelude::*;
 use crate::features::biyard_index::views::{BiyardIndexView, WhitepaperView};
 use crate::features::catalog::views::{CatalogView, DetailView, HomeView};
 use crate::features::issuers::views::{IssuerDetailView, IssuerListView};
-use crate::features::launchpad::LaunchpadView;
 use crate::features::news::NewsView;
 use crate::features::pricing::PricingView;
 
@@ -29,9 +28,6 @@ pub enum Route {
 
     #[route("/biyard-index/whitepaper")]
     WhitepaperView {},
-
-    #[route("/launchpad")]
-    LaunchpadView {},
 
     #[route("/news")]
     NewsView {},

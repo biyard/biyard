@@ -1,36 +1,143 @@
 use dioxus::prelude::*;
+use dioxus_translate::Translate;
 
+use crate::common::{use_language, use_translate};
 use crate::features::catalog::controllers::get_sto_handler;
-use crate::features::catalog::views::{Panel, PanelHead, Topbar, category_label, country_display, status_label};
-use crate::features::catalog::{FilingSummary, StoDetailResponse};
+use crate::features::catalog::views::{Panel, PanelHead, Topbar};
+use crate::features::catalog::{
+    CatalogTranslate, FilingSummary, IssuanceField, OfferingField, OverviewField,
+    StoDetailResponse,
+};
 
 #[component]
-pub fn DetailView(sto_id: String) -> Element {
-    let id_for_fetch = sto_id.clone();
-    let data = use_loader(move || {
-        let id = id_for_fetch.clone();
-        async move { get_sto_handler(id).await }
-    })?;
+pub fn DetailView(sto_id: ReadSignal<String>) -> Element {
+    let data = use_loader(move || async move { get_sto_handler(sto_id()).await })?;
     let sto = data();
     rsx! {
         Topbar { active: "assets".to_string() }
         main { class: "mx-auto w-full max-w-[1400px] px-7 py-7",
-            DetailBody { sto: sto.clone() }
+            DetailBody { sto: sto }
         }
     }
 }
 
 #[component]
 fn DetailBody(sto: StoDetailResponse) -> Element {
+    let t: CatalogTranslate = use_translate();
+    let lang = use_language();
+    let lang_now = lang();
+    let dash = || "—".to_string();
+
+    let overview_entries: Vec<(String, String)> = vec![
+        (
+            OverviewField::AssetName.translate(&lang_now).to_string(),
+            sto.name.clone(),
+        ),
+        (
+            OverviewField::Underlying.translate(&lang_now).to_string(),
+            sto.underlying.clone().unwrap_or_else(dash),
+        ),
+        (
+            OverviewField::SecurityType.translate(&lang_now).to_string(),
+            sto.security_type.clone().unwrap_or_else(dash),
+        ),
+        (
+            OverviewField::FiledAt.translate(&lang_now).to_string(),
+            format_date_ms(sto.issued_at),
+        ),
+        (
+            OverviewField::Status.translate(&lang_now).to_string(),
+            sto.status.translate(&lang_now).to_string(),
+        ),
+        (
+            OverviewField::Artist.translate(&lang_now).to_string(),
+            sto.artist.clone().unwrap_or_else(dash),
+        ),
+        (
+            OverviewField::RightsCategory.translate(&lang_now).to_string(),
+            sto.rights_category.clone().unwrap_or_else(dash),
+        ),
+        (
+            OverviewField::TrustNo.translate(&lang_now).to_string(),
+            sto.trust_no.clone().unwrap_or_else(dash),
+        ),
+        (
+            OverviewField::Year.translate(&lang_now).to_string(),
+            sto.year.clone().unwrap_or_else(dash),
+        ),
+    ];
+
+    let offering_entries: Option<Vec<(String, String)>> = sto.offering.as_ref().map(|o| {
+        vec![
+            (
+                OfferingField::Amount.translate(&lang_now).to_string(),
+                o.amount
+                    .map(|a| format_amount(a, &o.currency, &t))
+                    .unwrap_or_else(|| "—".to_string()),
+            ),
+            (
+                OfferingField::UnitPrice.translate(&lang_now).to_string(),
+                o.unit_price
+                    .map(|p| format!("{} {}", number_format(p), t.unit_won))
+                    .unwrap_or_else(|| "—".to_string()),
+            ),
+            (
+                OfferingField::TotalUnits.translate(&lang_now).to_string(),
+                o.total_units
+                    .map(|n| format!("{} {}", number_format(n), t.unit_seat))
+                    .unwrap_or_else(|| "—".to_string()),
+            ),
+            (
+                OfferingField::Subscription.translate(&lang_now).to_string(),
+                format!(
+                    "{} ~ {}",
+                    o.subscription_start.clone().unwrap_or_else(|| "—".to_string()),
+                    o.subscription_end.clone().unwrap_or_else(|| "—".to_string())
+                ),
+            ),
+        ]
+    });
+
+    let issuance_entries: Option<Vec<(String, String)>> =
+        sto.issuance_structure.as_ref().map(|is_| {
+            vec![
+                (
+                    IssuanceField::Issuer.translate(&lang_now).to_string(),
+                    is_.issuer.clone().unwrap_or_else(|| "—".to_string()),
+                ),
+                (
+                    IssuanceField::Trustee.translate(&lang_now).to_string(),
+                    is_.trustee.clone().unwrap_or_else(|| "—".to_string()),
+                ),
+                (
+                    IssuanceField::Role.translate(&lang_now).to_string(),
+                    is_.trustee_role.clone().unwrap_or_else(|| "—".to_string()),
+                ),
+                (
+                    IssuanceField::Underwriter.translate(&lang_now).to_string(),
+                    is_.underwriter.clone().unwrap_or_else(|| "—".to_string()),
+                ),
+                (
+                    IssuanceField::Custody.translate(&lang_now).to_string(),
+                    is_.custody.clone().unwrap_or_else(|| "—".to_string()),
+                ),
+            ]
+        });
+
+    let filings_count = sto.filings.len();
+    let filings_title = t
+        .detail_filings_title_fmt
+        .replace("{n}", &filings_count.to_string());
+
     rsx! {
         section { class: "bg-panel border border-border rounded-xl p-7 mb-[18px]",
             div { class: "flex gap-2 flex-wrap mb-3",
-                CatTag { label: category_label(sto.category).to_string() }
-                CatTag { label: country_display(sto.country).to_string() }
+                CatTag { label: sto.category.translate(&lang_now).to_string() }
+                CatTag { label: sto.country.translate(&lang_now).to_string() }
                 if let Some(st) = &sto.security_type {
                     CatTag { label: st.clone() }
                 }
-                CatTag { label: status_label(sto.status).to_string() }
+                CatTag { label: sto.status.translate(&lang_now).to_string() }
             }
             h1 { class: "text-2xl font-bold tracking-tight mb-2", {sto.name.clone()} }
             if let Some(u) = &sto.underlying {
@@ -40,65 +147,40 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
 
         div { class: "grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[18px]",
             div {
-                DetailPanel { title: "발행 개요".to_string(),
-                    DetailGrid { entries: vec![
-                        ("자산명".to_string(), sto.name.clone()),
-                        ("기초자산".to_string(), sto.underlying.clone().unwrap_or_else(|| "—".to_string())),
-                        ("증권 유형".to_string(), sto.security_type.clone().unwrap_or_else(|| "—".to_string())),
-                        ("신고일".to_string(), format_date_ms(sto.issued_at)),
-                        ("모집 상태".to_string(), status_label(sto.status).to_string()),
-                        ("작가".to_string(), sto.artist.clone().unwrap_or_else(|| "—".to_string())),
-                        ("권리 유형".to_string(), sto.rights_category.clone().unwrap_or_else(|| "—".to_string())),
-                        ("신탁계약 번호".to_string(), sto.trust_no.clone().unwrap_or_else(|| "—".to_string())),
-                        ("제작연도".to_string(), sto.year.clone().unwrap_or_else(|| "—".to_string())),
-                    ] }
+                DetailPanel { title: t.detail_section_info.to_string(),
+                    DetailGrid { entries: overview_entries }
                 }
 
-                if let Some(o) = &sto.offering {
-                    DetailPanel { title: "공모 조건".to_string(),
-                        DetailGrid { entries: vec![
-                            ("공모총액".to_string(), o.amount.map(|a| format_amount(a, &o.currency)).unwrap_or_else(|| "—".to_string())),
-                            ("공모가".to_string(), o.unit_price.map(|p| format!("{} 원", number_format(p))).unwrap_or_else(|| "—".to_string())),
-                            ("발행 수량".to_string(), o.total_units.map(|n| format!("{} 좌", number_format(n))).unwrap_or_else(|| "—".to_string())),
-                            ("청약 기간".to_string(), format!(
-                                "{} ~ {}",
-                                o.subscription_start.clone().unwrap_or_else(|| "—".to_string()),
-                                o.subscription_end.clone().unwrap_or_else(|| "—".to_string())
-                            )),
-                        ] }
+                if let Some(entries) = offering_entries {
+                    DetailPanel { title: t.detail_section_offering.to_string(),
+                        DetailGrid { entries }
                     }
                 }
 
-                if let Some(is_) = &sto.issuance_structure {
-                    DetailPanel { title: "공모 구조".to_string(),
-                        DetailGrid { entries: vec![
-                            ("발행사".to_string(), is_.issuer.clone().unwrap_or_else(|| "—".to_string())),
-                            ("신탁업자".to_string(), is_.trustee.clone().unwrap_or_else(|| "—".to_string())),
-                            ("역할".to_string(), is_.trustee_role.clone().unwrap_or_else(|| "—".to_string())),
-                            ("주관 증권사".to_string(), is_.underwriter.clone().unwrap_or_else(|| "—".to_string())),
-                            ("계좌관리기관".to_string(), is_.custody.clone().unwrap_or_else(|| "—".to_string())),
-                        ] }
+                if let Some(entries) = issuance_entries {
+                    DetailPanel { title: t.detail_section_structure.to_string(),
+                        DetailGrid { entries }
                     }
                 }
             }
 
             div {
-                DetailPanel { title: "공식 페이지".to_string(),
+                DetailPanel { title: t.detail_section_links.to_string(),
                     if let Some(url) = &sto.external_url {
                         a {
                             class: "block text-brand text-sm break-all",
                             href: "{url}",
                             target: "_blank",
-                            "원문 보기 ↗"
+                            {t.detail_external_origin_arrow}
                         }
                         div { class: "text-[11px] text-foreground-muted mt-1.5 break-all", {url.clone()} }
                     } else {
-                        div { class: "text-xs text-foreground-muted", "원본 링크가 없습니다." }
+                        div { class: "text-xs text-foreground-muted", {t.detail_no_external_short} }
                     }
                 }
 
                 if !sto.sources.is_empty() {
-                    DetailPanel { title: "근거 자료".to_string(),
+                    DetailPanel { title: t.detail_section_sources.to_string(),
                         ul { class: "list-none m-0 p-0 flex flex-col gap-1.5",
                             for s in sto.sources.iter() {
                                 li { class: "flex items-center gap-2.5 text-[13px]",
@@ -111,8 +193,13 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
                 }
 
                 if let Some(iid) = &sto.issuer_id {
-                    DetailPanel { title: "발행사".to_string(),
-                        a { class: "text-brand text-sm", href: "/issuers/{iid}", "{iid} →" }
+                    DetailPanel { title: t.detail_section_issuer.to_string(),
+                        a {
+                            class: "text-brand text-sm",
+                            href: "/issuers/{iid}",
+                            { sto.issuer_name.clone().unwrap_or_else(|| iid.clone()) }
+                            " →"
+                        }
                     }
                 }
             }
@@ -120,7 +207,7 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
 
         if !sto.filings.is_empty() {
             Panel { extra_class: "mt-[18px]".to_string(),
-                PanelHead { title: format!("공시 ({})", sto.filings.len()) }
+                PanelHead { title: filings_title }
                 div { class: "flex flex-col gap-3",
                     for f in sto.filings.iter() {
                         FilingCard { filing: f.clone() }
@@ -175,13 +262,14 @@ fn DetailGrid(entries: Vec<(String, String)>) -> Element {
 
 #[component]
 fn FilingCard(filing: FilingSummary) -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
         article { class: "bg-panel-muted border border-border rounded-lg p-3.5",
             div { class: "flex gap-2 items-center flex-wrap mb-1.5",
                 SourceBadge { label: filing.filing_source.to_string() }
-                if let Some(t) = &filing.filing_type {
+                if let Some(ft) = &filing.filing_type {
                     span { class: "text-[11px] px-1.5 py-0.5 rounded bg-panel-strong text-foreground-soft",
-                        "{t}"
+                        "{ft}"
                     }
                 }
                 span { class: "text-[11px] text-foreground-muted font-mono",
@@ -190,7 +278,7 @@ fn FilingCard(filing: FilingSummary) -> Element {
             }
             div { class: "text-sm font-semibold mb-2", {filing.title.clone()} }
             if let Some(url) = &filing.url {
-                a { class: "text-brand text-xs", href: "{url}", target: "_blank", "원본 공시 ↗" }
+                a { class: "text-brand text-xs", href: "{url}", target: "_blank", {t.detail_filing_origin_arrow} }
             }
         }
     }
@@ -218,15 +306,15 @@ fn number_format(n: i64) -> String {
     out.chars().rev().collect()
 }
 
-fn format_amount(amount: i64, currency: &Option<String>) -> String {
+fn format_amount(amount: i64, currency: &Option<String>, t: &CatalogTranslate) -> String {
     let cur = currency.clone().unwrap_or_else(|| "KRW".to_string());
     if cur == "KRW" {
         if amount >= 100_000_000 {
-            format!("{:.2}억 원", amount as f64 / 1e8)
+            format!("{:.2}억 {}", amount as f64 / 1e8, t.unit_won)
         } else if amount >= 10_000 {
-            format!("{:.0}만 원", amount as f64 / 1e4)
+            format!("{:.0}만 {}", amount as f64 / 1e4, t.unit_won)
         } else {
-            format!("{} 원", number_format(amount))
+            format!("{} {}", number_format(amount), t.unit_won)
         }
     } else {
         format!("{} {}", number_format(amount), cur)

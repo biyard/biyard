@@ -19,8 +19,4 @@ translate! {
     load_failed: { en: "Failed to load.", ko: "정보를 불러오지 못했습니다" },
     back_to_list: { en: "← Back to issuers", ko: "← 발행사 목록으로" },
     loading: { en: "Loading", ko: "불러오는 중" },
-
-    status_operating: { en: "Operating", ko: "운영 중" },
-    status_wound_down: { en: "Wound down", ko: "사업 종료" },
-    status_unknown: { en: "Unknown", ko: "상태 미상" },
 }

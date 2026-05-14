@@ -26,6 +26,12 @@ pub struct Sto {
     #[serde(default)]
     pub issuer_id: String,
 
+    /// 발행사 표시명 — 시드 시점에 Issuer 메타로부터 denormalize.
+    /// 표시는 회사의 공식 표기 한 가지만 사용 (한국 회사는 한글, 외국 회사는 영문).
+    /// i18n 토글에 휘둘리지 않음.
+    #[serde(default)]
+    pub issuer_name: Option<String>,
+
     #[serde(default)]
     pub security_type: Option<String>,
 
@@ -132,6 +138,7 @@ impl From<Sto> for StoSummary {
             } else {
                 Some(s.issuer_id)
             },
+            issuer_name: s.issuer_name,
             security_type: s.security_type,
             classification: s.classification,
             status: s.status,
@@ -179,6 +186,7 @@ impl Sto {
             } else {
                 Some(self.issuer_id)
             },
+            issuer_name: self.issuer_name,
             security_type: self.security_type,
             classification: self.classification,
             status: self.status,

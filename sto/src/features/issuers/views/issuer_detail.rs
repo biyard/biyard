@@ -1,18 +1,17 @@
 use dioxus::prelude::*;
-use dioxus_translate::use_translate;
+use dioxus_translate::{Translate, use_translate};
 
-use crate::features::catalog::views::{StoTable, Topbar, country_display};
+use crate::common::use_language;
+use crate::features::catalog::views::{StoTable, Topbar};
+use crate::features::issuers::IssuersTranslate;
 use crate::features::issuers::controllers::get_issuer_handler;
-use crate::features::issuers::{IssuersTranslate, issuer_status_label};
 
 #[component]
-pub fn IssuerDetailView(issuer_id: String) -> Element {
+pub fn IssuerDetailView(issuer_id: ReadSignal<String>) -> Element {
     let t: IssuersTranslate = use_translate();
-    let id_for_fetch = issuer_id.clone();
-    let data = use_loader(move || {
-        let id = id_for_fetch.clone();
-        async move { get_issuer_handler(id).await }
-    })?;
+    let lang = use_language();
+    let lang_now = lang();
+    let data = use_loader(move || async move { get_issuer_handler(issuer_id()).await })?;
     let r = data();
 
     rsx! {
@@ -25,8 +24,8 @@ pub fn IssuerDetailView(issuer_id: String) -> Element {
             }
             h1 { class: "text-2xl font-bold mb-2", {r.issuer.name.clone()} }
             div { class: "flex gap-2 mb-4 flex-wrap",
-                span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-soft", { country_display(r.issuer.country) } }
-                span { class: "text-xs px-2 py-1 rounded bg-brand-soft text-brand", { issuer_status_label(r.issuer.status, &t) } }
+                span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-soft", { r.issuer.country.translate(&lang_now) } }
+                span { class: "text-xs px-2 py-1 rounded bg-brand-soft text-brand", { r.issuer.status.translate(&lang_now) } }
                 if let Some(note) = &r.issuer.status_note {
                     span { class: "text-xs px-2 py-1 rounded bg-panel-muted text-foreground-muted", {note.clone()} }
                 }

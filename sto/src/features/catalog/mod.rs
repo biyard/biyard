@@ -7,6 +7,8 @@ pub mod views;
 pub mod models;
 
 pub use dto::*;
-pub use i18n::CatalogTranslate;
+pub use i18n::{
+    CatalogTranslate, IssuanceField, OfferingField, OverviewField, TableColumn,
+};
 #[cfg(feature = "server")]
 pub use models::Sto;

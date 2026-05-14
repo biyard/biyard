@@ -15,6 +15,10 @@ pub enum Partition {
 
     // 집계 row 의 partition. 단일 값 "AGGREGATE".
     Aggregate,
+
+    // 공모 예정 (발행사/증권사가 사이트에 직접 등록한 예상 공모).
+    // DART 신고 이전 단계라 Sto 와 완전히 분리. 단일 값 "PLANNED".
+    Planned,
 }
 
 /// Sto 외부 인터페이스용 newtype (REST 경로 파라미터 등)

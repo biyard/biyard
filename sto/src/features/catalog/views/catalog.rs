@@ -1,11 +1,17 @@
 use dioxus::prelude::*;
+use dioxus_translate::Translate;
 
-use crate::common::{Category, Country, StoStatus};
+use crate::common::{Category, StoStatus, use_language, use_translate};
 use crate::features::catalog::controllers::list_stos_handler;
 use crate::features::catalog::views::{Panel, StoTable, Topbar};
+use crate::features::catalog::CatalogTranslate;
 
 #[component]
 pub fn CatalogView() -> Element {
+    let t: CatalogTranslate = use_translate();
+    let lang = use_language();
+    let lang_now = lang();
+
     let mut category = use_signal(|| "all".to_string());
     let mut country_filter = use_signal(|| "all".to_string());
     let mut issuer_filter = use_signal(|| "all".to_string());
@@ -29,8 +35,8 @@ pub fn CatalogView() -> Element {
         .filter(|s| want_cat.map(|c| s.category == c).unwrap_or(true))
         .filter(|s| match country_f.as_str() {
             "all" => true,
-            "KR" => s.country == Country::Kr,
-            "GLOBAL" => s.country != Country::Kr && s.country != Country::Unknown,
+            "KR" => s.country == crate::common::Country::Kr,
+            "GLOBAL" => s.country.is_global(),
             _ => true,
         })
         .filter(|s| iss == "all" || s.issuer_id.as_deref() == Some(iss.as_str()))
@@ -52,13 +58,13 @@ pub fn CatalogView() -> Element {
         .collect();
 
     let total = filtered.len();
+    let results_text = t.filter_results_count.replace("{n}", &total.to_string());
 
-    let cats = [
-        ("all", "전체 카테고리"),
-        ("REAL_ESTATE", "🏢 부동산"),
-        ("ART", "🎨 미술품"),
-        ("MUSIC", "🎵 음악 IP"),
-        ("LIVESTOCK", "🐂 한우·축산"),
+    let category_filters: [(&str, Category); 4] = [
+        ("REAL_ESTATE", Category::RealEstate),
+        ("ART", Category::Art),
+        ("MUSIC", Category::Music),
+        ("LIVESTOCK", Category::Livestock),
     ];
 
     let select_cls = "bg-panel-muted border border-border rounded-lg px-3 py-2 text-xs text-foreground cursor-pointer max-w-[240px] appearance-none pr-8";
@@ -70,20 +76,20 @@ pub fn CatalogView() -> Element {
                 div { class: "flex flex-wrap gap-3 items-center",
                     input {
                         r#type: "search",
-                        placeholder: "자산명·발행사·기초자산 검색...",
+                        placeholder: "{t.filter_search_placeholder}",
                         class: "flex-1 min-w-[240px] bg-panel-muted border border-border rounded-lg px-3 py-2 text-foreground text-[13px]",
                         oninput: move |e| search_q.set(e.value()),
                     }
                     div { class: "flex gap-1",
-                        RegionBtn { value: "all", label: "전체", active: country_f == "all",
+                        FilterPill { label: t.filter_all.to_string(), active: country_f == "all",
                             on_click: EventHandler::new(move |_| country_filter.set("all".to_string())) }
-                        RegionBtn { value: "KR", label: "🇰🇷 한국", active: country_f == "KR",
+                        FilterPill { label: t.filter_kr_label.to_string(), active: country_f == "KR",
                             on_click: EventHandler::new(move |_| country_filter.set("KR".to_string())) }
-                        RegionBtn { value: "GLOBAL", label: "🌍 해외", active: country_f == "GLOBAL",
+                        FilterPill { label: t.filter_global_label.to_string(), active: country_f == "GLOBAL",
                             on_click: EventHandler::new(move |_| country_filter.set("GLOBAL".to_string())) }
                     }
                     select { class: "{select_cls}", onchange: move |e| issuer_filter.set(e.value()),
-                        option { value: "all", "발행사 — 전체" }
+                        option { value: "all", {t.filter_issuer_placeholder} }
                         option { value: "stockeeper", "스탁키퍼 (뱅카우)" }
                         option { value: "datagen", "데이터젠 (핀돈)" }
                         option { value: "togetherart", "투게더아트" }
@@ -96,21 +102,25 @@ pub fn CatalogView() -> Element {
                         option { value: "funble", "펀블" }
                     }
                     select { class: "{select_cls}", onchange: move |e| status_filter.set(e.value()),
-                        option { value: "all", "상태 — 전체" }
-                        option { value: "FILED", "공모 진행" }
-                        option { value: "ISSUED", "발행 완료" }
-                        option { value: "LIQUIDATED", "청산 완료" }
-                        option { value: "WITHDRAWN", "철회" }
+                        option { value: "all", {t.filter_status_placeholder} }
+                        option { value: "FILED", { StoStatus::Filed.translate(&lang_now) } }
+                        option { value: "ISSUED", { StoStatus::Issued.translate(&lang_now) } }
+                        option { value: "LIQUIDATED", { StoStatus::Liquidated.translate(&lang_now) } }
+                        option { value: "WITHDRAWN", { StoStatus::Withdrawn.translate(&lang_now) } }
                     }
                     span { class: "ml-auto text-xs text-foreground-muted font-mono whitespace-nowrap",
-                        "검색 결과 {total}건"
+                        "{results_text}"
                     }
                 }
                 div { class: "flex gap-1 flex-wrap mt-2.5",
-                    for (key, label) in cats.iter() {
-                        CatBtn {
-                            value: key.to_string(),
-                            label: label.to_string(),
+                    FilterPill {
+                        label: t.filter_cat_all.to_string(),
+                        active: cat_filter == "all",
+                        on_click: EventHandler::new(move |_| category.set("all".to_string())),
+                    }
+                    for (key, cat) in category_filters.iter() {
+                        FilterPill {
+                            label: cat.translate(&lang_now).to_string(),
                             active: cat_filter == *key,
                             on_click: EventHandler::new({
                                 let k = key.to_string();
@@ -130,30 +140,7 @@ pub fn CatalogView() -> Element {
 }
 
 #[component]
-fn RegionBtn(
-    value: String,
-    label: String,
-    active: bool,
-    on_click: EventHandler<MouseEvent>,
-) -> Element {
-    let _ = value;
-    let base = "px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors border";
-    let cls = if active {
-        format!("{base} bg-brand-soft text-brand border-brand")
-    } else {
-        format!("{base} bg-panel-muted text-foreground border-border hover:border-brand")
-    };
-    rsx! { button { class: "{cls}", onclick: move |e| on_click.call(e), {label} } }
-}
-
-#[component]
-fn CatBtn(
-    value: String,
-    label: String,
-    active: bool,
-    on_click: EventHandler<MouseEvent>,
-) -> Element {
-    let _ = value;
+fn FilterPill(label: String, active: bool, on_click: EventHandler<MouseEvent>) -> Element {
     let base = "px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors border";
     let cls = if active {
         format!("{base} bg-brand-soft text-brand border-brand")

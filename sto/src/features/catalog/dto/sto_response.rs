@@ -10,6 +10,7 @@ pub struct StoSummary {
     pub category: Category,
     pub country: Country,
     pub issuer_id: Option<String>,
+    pub issuer_name: Option<String>,
     pub security_type: Option<String>,
     pub classification: Option<String>,
     pub status: StoStatus,
@@ -60,6 +61,7 @@ pub struct StoDetailResponse {
     pub category: Category,
     pub country: Country,
     pub issuer_id: Option<String>,
+    pub issuer_name: Option<String>,
     pub security_type: Option<String>,
     pub classification: Option<String>,
     pub status: StoStatus,
@@ -83,6 +85,28 @@ pub struct FilingAttachmentDto {
     pub name: String,
     pub url: String,
     pub size_bytes: Option<i64>,
+}
+
+/// 예상 공모 (PlannedSto) 표시용 DTO. 홈 "공모 진행·예정" 카드에서 사용.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlannedStoSummary {
+    pub planned_id: String,
+    pub name: String,
+    pub category: Category,
+    pub country: Country,
+    pub issuer_id: String,
+    pub issuer_name: Option<String>,
+    pub broker: Option<String>,
+    pub broker_role: Option<String>,
+    pub expected_amount: Option<i64>,
+    pub expected_window: Option<String>,
+    pub registered_at: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PlannedStoListResponse {
+    pub items: Vec<PlannedStoSummary>,
+    pub total: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]

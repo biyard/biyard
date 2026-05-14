@@ -1,4 +1,70 @@
-use dioxus_translate::{Translator, translate};
+use dioxus_translate::{Translate, Translator, translate};
+
+/// 발행 개요 그리드 필드.
+#[derive(Translate, Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OverviewField {
+    #[translate(en = "Asset name", ko = "자산명")]
+    AssetName,
+    #[translate(en = "Underlying", ko = "기초자산")]
+    Underlying,
+    #[translate(en = "Security type", ko = "증권 유형")]
+    SecurityType,
+    #[translate(en = "Filed", ko = "신고일")]
+    FiledAt,
+    #[translate(en = "Status", ko = "모집 상태")]
+    Status,
+    #[translate(en = "Artist", ko = "작가")]
+    Artist,
+    #[translate(en = "Rights category", ko = "권리 유형")]
+    RightsCategory,
+    #[translate(en = "Trust no.", ko = "신탁계약 번호")]
+    TrustNo,
+    #[translate(en = "Year", ko = "제작연도")]
+    Year,
+}
+
+/// 공모 조건 그리드 필드.
+#[derive(Translate, Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OfferingField {
+    #[translate(en = "Amount raised", ko = "공모총액")]
+    Amount,
+    #[translate(en = "Unit price", ko = "공모가")]
+    UnitPrice,
+    #[translate(en = "Total units", ko = "발행 수량")]
+    TotalUnits,
+    #[translate(en = "Subscription period", ko = "청약 기간")]
+    Subscription,
+}
+
+/// 공모 구조 그리드 필드.
+#[derive(Translate, Clone, Copy, Debug, PartialEq, Eq)]
+pub enum IssuanceField {
+    #[translate(en = "Issuer", ko = "발행사")]
+    Issuer,
+    #[translate(en = "Trustee", ko = "신탁업자")]
+    Trustee,
+    #[translate(en = "Role", ko = "역할")]
+    Role,
+    #[translate(en = "Underwriter", ko = "주관 증권사")]
+    Underwriter,
+    #[translate(en = "Account custody", ko = "계좌관리기관")]
+    Custody,
+}
+
+/// 테이블 헤더 열.
+#[derive(Translate, Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TableColumn {
+    #[translate(en = "Asset / Underlying", ko = "자산명 / 기초자산")]
+    AssetUnderlying,
+    #[translate(en = "Category", ko = "카테고리")]
+    Category,
+    #[translate(en = "Issuer", ko = "발행사")]
+    Issuer,
+    #[translate(en = "Status", ko = "상태")]
+    Status,
+    #[translate(en = "Filed", ko = "발행")]
+    Filed,
+}
 
 translate! {
     CatalogTranslate;
@@ -114,4 +180,69 @@ translate! {
     loading: { en: "Loading...", ko: "불러오는 중" },
     load_failed: { en: "Failed to load", ko: "정보를 불러오지 못했습니다" },
     not_found: { en: "—", ko: "—" },
+
+    // 카탈로그 필터 추가
+    filter_cat_all: { en: "All categories", ko: "전체 카테고리" },
+    filter_kr_label: { en: "🇰🇷 Korea", ko: "🇰🇷 한국" },
+    filter_global_label: { en: "🌍 Global", ko: "🌍 해외" },
+    filter_issuer_placeholder: { en: "Issuer — all", ko: "발행사 — 전체" },
+    filter_status_placeholder: { en: "Status — all", ko: "상태 — 전체" },
+    filter_search_placeholder: {
+        en: "Search by asset name, issuer, underlying...",
+        ko: "자산명·발행사·기초자산 검색...",
+    },
+    filter_results_count: { en: "{n} results", ko: "검색 결과 {n}건" },
+
+    // 홈 영역
+    hero_title: { en: "Offerings — open & upcoming", ko: "공모 진행·예정" },
+    hero_disclaimer_pill: { en: "Issuer-registered", ko: "발행사 등록 정보" },
+    hero_disclaimer_body: {
+        en: "Expected offerings registered by issuers or brokers. Subscription dates and amounts may change; final terms are confirmed on the formal DART filing.",
+        ko: "발행사·증권사가 등록한 예상 공모입니다. 청약 일정·모집액은 변경될 수 있으며 정식 DART 공시 시점에 확정됩니다.",
+    },
+    section_recent_title: { en: "Recently issued STOs", ko: "최근 발행 STO" },
+    section_liquidated_title: { en: "Recently liquidated / distributed", ko: "최근 청산·분배 완료" },
+    section_more_arrow: { en: "View all →", ko: "전체 보기 →" },
+    section_category_scale_title: { en: "Investment volume by category", ko: "카테고리별 투자 규모" },
+    section_category_scale_note: {
+        en: "Cumulative raise (DART filing values). STOs without disclosed raises are counted but excluded from totals.",
+        ko: "누적 모집액 기준 (DART 공시 발행가). 모집액 미공시 STO 는 건수에는 포함되나 합산에서는 제외됨.",
+    },
+    donut_caption_raise: { en: "Cumulative raise", ko: "누적 모집액" },
+    donut_chart_aria: { en: "Pie chart by category", ko: "카테고리별 파이 차트" },
+    main_nav_aria: { en: "Primary navigation", ko: "주요 화면" },
+    nav_market_short: { en: "Market", ko: "STO 시장" },
+    nav_index_short: { en: "Index", ko: "평가지표" },
+    nav_launchpad_short: { en: "Launchpad", ko: "런치패드" },
+    nav_news_short: { en: "News", ko: "뉴스" },
+    nav_pricing_short: { en: "Pricing", ko: "가격" },
+    topbar_search_placeholder: { en: "Search STOs...", ko: "STO 검색..." },
+    topbar_lang_toggle_aria: { en: "Switch language", ko: "언어 전환" },
+    sponsored_pill: { en: "Sponsored · sample", ko: "증권사 등록 · 샘플" },
+
+    // 식별 배너
+    identity_index_pill: { en: "BIYARD INDEX", ko: "BIYARD INDEX" },
+    identity_index_title: { en: "Web3-native STO rating", ko: "Web3 기반 STO 평가지표" },
+    identity_index_body: {
+        en: "Converts Web3-native trust signals — on-chain issuance integrity, contract security, wallet distribution, governance — into 6 axes that traditional credit ratings can't capture.",
+        ko: "온체인 발행 무결성·컨트랙트 보안·지갑 분포·거버넌스 등 기존 신용평가가 다루지 못하는 Web3 신뢰 신호를 6개 축으로 환산해 등급을 부여합니다.",
+    },
+    identity_index_cta: { en: "Read the whitepaper →", ko: "백서 보기 →" },
+    identity_launchpad_pill: { en: "BIYARD LAUNCHPAD", ko: "BIYARD LAUNCHPAD" },
+    identity_launchpad_title: { en: "Brand token PaaS", ko: "브랜드 토큰 PaaS" },
+    identity_launchpad_body: {
+        en: "Issuance infrastructure for utility tokens that pair with STOs — letting issuers and brokers run their own branded token programs.",
+        ko: "STO 와 결합 가능한 유틸리티 토큰 발행 인프라. 발행사·증권사가 자체 브랜드 토큰을 운영할 수 있는 PaaS 서비스를 제공합니다.",
+    },
+    identity_launchpad_cta: { en: "Learn more →", ko: "자세히 보기 →" },
+
+    // 상세 페이지 보조 라벨
+    detail_filings_title_fmt: { en: "Filings ({n})", ko: "공시 ({n})" },
+    detail_no_external_short: { en: "No external link", ko: "원본 링크가 없습니다." },
+    detail_external_origin_arrow: { en: "Open original ↗", ko: "원문 보기 ↗" },
+    detail_filing_origin_arrow: { en: "Source ↗", ko: "원본 공시 ↗" },
+
+    // 표시 단위
+    unit_won: { en: "KRW", ko: "원" },
+    unit_seat: { en: "units", ko: "좌" },
 }

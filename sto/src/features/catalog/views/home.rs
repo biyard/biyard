@@ -1,15 +1,22 @@
 use dioxus::prelude::*;
+use dioxus_translate::Translate;
 
-use crate::common::{Category, Country, StoStatus};
-use crate::features::catalog::controllers::{get_category_scale_handler, list_stos_handler};
-use crate::features::catalog::{CategoryScaleResponse, StoSummary};
+use crate::common::{Category, StoStatus, use_language, use_translate};
+use crate::features::catalog::controllers::{
+    get_category_scale_handler, list_planned_stos_handler, list_stos_handler,
+};
+use crate::features::catalog::{
+    CatalogTranslate, CategoryScaleResponse, PlannedStoSummary, StoSummary, TableColumn,
+};
 
 #[component]
 pub fn HomeView() -> Element {
     let stos = use_loader(move || async move { list_stos_handler().await })?;
     let scale = use_loader(move || async move { get_category_scale_handler().await })?;
+    let planned = use_loader(move || async move { list_planned_stos_handler().await })?;
     let snapshot = stos();
     let scale_snap = scale();
+    let planned_snap = planned();
     let items = snapshot.items.clone();
     let recent: Vec<_> = items.iter().take(10).cloned().collect();
     let liquidated: Vec<_> = items
@@ -22,12 +29,12 @@ pub fn HomeView() -> Element {
     rsx! {
         Topbar { active: "assets".to_string() }
         main { class: "mx-auto w-full max-w-[1400px] px-7 py-7",
-            HeroOfferings {}
+            HeroOfferings { items: planned_snap.items }
             RecentStoPanel { items: recent }
             if !liquidated.is_empty() {
                 LiquidatedPanel { items: liquidated }
             }
-            CategoryScale { scale: scale_snap.clone() }
+            CategoryScale { scale: scale_snap }
             IdentityBanners {}
         }
     }
@@ -35,6 +42,19 @@ pub fn HomeView() -> Element {
 
 #[component]
 pub fn Topbar(active: String) -> Element {
+    let t: CatalogTranslate = use_translate();
+    let lang = use_language();
+    let lang_now = lang();
+    let lang_btn_label = match lang_now {
+        crate::common::Language::Ko => "EN",
+        _ => "한국어",
+    };
+    let on_toggle_lang = move |_| {
+        // Language::switch() 가 시그널 set + localStorage + cookie 까지 일괄 영구화.
+        // signal.set(next) 만 호출하면 다음 navigation/refresh 에서 부트스트랩이 다시
+        // 기본값으로 돌아간다.
+        let _ = lang_now.switch();
+    };
     let item = |key: &str, label: &str, href: &str| {
         let base = "px-3.5 py-2 text-sm font-medium rounded-lg transition-colors hover:bg-panel-muted hover:text-foreground";
         let cls = if active == key {
@@ -52,18 +72,18 @@ pub fn Topbar(active: String) -> Element {
                     span { class: "text-foreground", "Biyard" }
                     small { class: "text-foreground-muted font-normal text-xs ml-1", "STO" }
                 }
-                nav { class: "flex items-center gap-1 flex-1", "aria-label": "주요 화면",
-                    { item("assets", "STO 시장", "/market") }
-                    { item("index", "평가지표", "/biyard-index") }
-                    { item("launchpad", "런치패드", "/launchpad") }
-                    { item("news", "뉴스", "/news") }
-                    { item("pricing", "가격", "/pricing") }
+                nav { class: "flex items-center gap-1 flex-1", "aria-label": "{t.main_nav_aria}",
+                    { item("assets", t.nav_market_short, "/market") }
+                    { item("index", t.nav_index_short, "/biyard-index") }
+                    { item("news", t.nav_news_short, "/news") }
+                    { item("pricing", t.nav_pricing_short, "/pricing") }
                 }
                 div { class: "flex items-center gap-2.5",
-                    input {
-                        class: "w-[280px] bg-panel-muted border border-border rounded-full px-3.5 py-2 text-foreground text-[13px]",
-                        r#type: "search",
-                        placeholder: "STO 검색...",
+                    button {
+                        class: "bg-panel-muted border border-border rounded-lg px-3 py-2 text-xs font-medium text-foreground-soft hover:border-brand hover:text-brand transition-colors cursor-pointer whitespace-nowrap",
+                        "aria-label": "{t.topbar_lang_toggle_aria}",
+                        onclick: on_toggle_lang,
+                        "{lang_btn_label}"
                     }
                 }
             }
@@ -98,65 +118,72 @@ pub fn PanelHead(
 }
 
 #[component]
-fn HeroOfferings() -> Element {
+fn HeroOfferings(items: Vec<PlannedStoSummary>) -> Element {
+    let t: CatalogTranslate = use_translate();
+    if items.is_empty() {
+        return rsx! {};
+    }
     rsx! {
         Panel { extra_class: "mb-4".to_string(),
             div { class: "flex items-center justify-between mb-2.5",
-                h2 { class: "text-xl font-bold tracking-tight", "공모 진행·예정" }
+                h2 { class: "text-xl font-bold tracking-tight", {t.hero_title} }
                 span { class: "text-[11px] text-foreground-muted bg-panel-muted px-2 py-0.5 rounded",
-                    "증권사 제공 정보 · 예시"
+                    {t.hero_disclaimer_pill}
                 }
             }
             div { class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3",
-                OfferCard { cat: "🎨 미술", title: "유영국 — Work (1984)",
-                    issuer: "투게더아트", role: "인수", broker: "가람증권",
-                    end: "~ 05.18", amount: "6.6억" }
-                OfferCard { cat: "🐂 한우", title: "뱅카우 한우 제2-1호",
-                    issuer: "스탁키퍼", role: "계좌관리", broker: "해솔투자증권",
-                    end: "~ 05.22", amount: "4.8억" }
-                OfferCard { cat: "🎵 음악", title: "NCT DREAM — ANL 후속",
-                    issuer: "뮤직카우", role: "중개", broker: "다온증권",
-                    end: "~ 05.25", amount: "3.2억" }
+                for p in items.iter() {
+                    OfferCard { planned: p.clone() }
+                }
             }
             p { class: "text-[11px] text-foreground-muted mt-2.5",
-                "※ 위 카드는 데모용 예시 데이터입니다. 실제 서비스에서는 발행사·증권사가 직접 제공한 공모 정보를 표시하며, Biyard 는 추천·평가하지 않습니다."
+                {t.hero_disclaimer_body}
             }
         }
     }
 }
 
 #[component]
-fn OfferCard(
-    cat: String,
-    title: String,
-    issuer: String,
-    role: String,
-    broker: String,
-    end: String,
-    amount: String,
-) -> Element {
+fn OfferCard(planned: PlannedStoSummary) -> Element {
+    let t: CatalogTranslate = use_translate();
+    let lang_now = use_language()();
+    let cat_label = planned.category.translate(&lang_now);
+    let issuer_label = planned
+        .issuer_name
+        .clone()
+        .unwrap_or_else(|| planned.issuer_id.clone());
+    let window_label = planned
+        .expected_window
+        .clone()
+        .unwrap_or_else(|| "—".to_string());
+    let amount_label = planned
+        .expected_amount
+        .map(|a| format_amount_krw(a, &t))
+        .unwrap_or_else(|| "—".to_string());
     rsx! {
         div { class: "bg-panel border border-brand rounded-lg px-4 py-3.5 relative overflow-hidden",
             span { class: "inline-block text-[11px] px-2 py-0.5 rounded-[10px] bg-panel-muted text-foreground-soft mb-2",
-                {cat}
+                {cat_label}
             }
-            div { class: "text-sm font-semibold mb-2", {title} }
+            div { class: "text-sm font-semibold mb-2", {planned.name.clone()} }
             div { class: "text-xs text-foreground-soft mb-1.5",
-                "발행 "
-                strong { class: "text-foreground font-semibold", {issuer} }
-                " · "
-                {role}
-                " "
-                strong { class: "text-foreground font-semibold", {broker} }
+                {t.issuer} " "
+                strong { class: "text-foreground font-semibold", {issuer_label} }
+                if let (Some(role), Some(broker)) = (planned.broker_role.as_ref(), planned.broker.as_ref()) {
+                    " · "
+                    {role.clone()}
+                    " "
+                    strong { class: "text-foreground font-semibold", {broker.clone()} }
+                }
             }
             div { class: "flex justify-between text-xs text-foreground-soft",
                 span {
-                    "청약 "
-                    span { class: "text-foreground font-semibold", {end} }
+                    {t.subscription_end} " "
+                    span { class: "text-foreground font-semibold", {window_label} }
                 }
                 span {
-                    "모집 "
-                    span { class: "text-foreground font-semibold", {amount} }
+                    {t.raise_amount} " "
+                    span { class: "text-foreground font-semibold", {amount_label} }
                 }
             }
         }
@@ -165,12 +192,13 @@ fn OfferCard(
 
 #[component]
 fn RecentStoPanel(items: Vec<StoSummary>) -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
         Panel { extra_class: "mb-4".to_string(),
             PanelHead {
-                title: "최근 발행 STO".to_string(),
+                title: t.section_recent_title.to_string(),
                 more_href: "/market".to_string(),
-                more_label: "전체 보기 →".to_string(),
+                more_label: t.section_more_arrow.to_string(),
             }
             div { class: "overflow-x-auto",
                 StoTable { items, show_status: true }
@@ -181,12 +209,13 @@ fn RecentStoPanel(items: Vec<StoSummary>) -> Element {
 
 #[component]
 fn LiquidatedPanel(items: Vec<StoSummary>) -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
         Panel { extra_class: "mb-4".to_string(),
             PanelHead {
-                title: "최근 청산·분배 완료".to_string(),
+                title: t.section_liquidated_title.to_string(),
                 more_href: "/market?status=LIQUIDATED".to_string(),
-                more_label: "전체 보기 →".to_string(),
+                more_label: t.section_more_arrow.to_string(),
             }
             div { class: "overflow-x-auto",
                 StoTable { items, show_status: true }
@@ -197,6 +226,8 @@ fn LiquidatedPanel(items: Vec<StoSummary>) -> Element {
 
 #[component]
 pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
+    let lang = use_language();
+    let lang_now = lang();
     let th = "text-left px-3 py-2.5 text-xs font-semibold text-foreground-muted bg-panel-muted border-b border-border whitespace-nowrap";
     rsx! {
         table { class: "w-full border-collapse text-[13px]",
@@ -204,13 +235,13 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
                 tr {
                     th { class: "{th} w-7", "" }
                     th { class: "{th} w-7", "" }
-                    th { class: "{th}", "자산명 / 기초자산" }
-                    th { class: "{th} w-[110px]", "카테고리" }
-                    th { class: "{th} w-[150px]", "발행사" }
+                    th { class: "{th}", { TableColumn::AssetUnderlying.translate(&lang_now) } }
+                    th { class: "{th} w-[110px]", { TableColumn::Category.translate(&lang_now) } }
+                    th { class: "{th} w-[150px]", { TableColumn::Issuer.translate(&lang_now) } }
                     if show_status {
-                        th { class: "{th} w-[110px]", "상태" }
+                        th { class: "{th} w-[110px]", { TableColumn::Status.translate(&lang_now) } }
                     }
-                    th { class: "{th} w-[90px] text-right", "발행" }
+                    th { class: "{th} w-[90px] text-right", { TableColumn::Filed.translate(&lang_now) } }
                 }
             }
             tbody {
@@ -224,6 +255,8 @@ pub fn StoTable(items: Vec<StoSummary>, show_status: bool) -> Element {
 
 #[component]
 fn StoTableRow(item: StoSummary, show_status: bool) -> Element {
+    let lang = use_language();
+    let lang_now = lang();
     let href = format!("/sto/{}", item.sto_id);
     let nav = use_navigator();
     let td = "px-3 py-2.5 border-b border-border align-middle whitespace-nowrap";
@@ -231,8 +264,8 @@ fn StoTableRow(item: StoSummary, show_status: bool) -> Element {
         tr {
             class: "cursor-pointer transition-colors hover:bg-panel-muted",
             onclick: move |_| { nav.push(href.clone()); },
-            td { class: "{td} w-7", { flag_for(item.country) } }
-            td { class: "{td} w-7 text-base", { category_icon(item.category) } }
+            td { class: "{td} w-7", { item.country.flag() } }
+            td { class: "{td} w-7 text-base", { item.category.icon() } }
             td { class: "{td}",
                 div { class: "font-semibold mb-0.5", {item.name.clone()} }
                 if let Some(u) = &item.underlying {
@@ -243,15 +276,15 @@ fn StoTableRow(item: StoSummary, show_status: bool) -> Element {
             }
             td { class: "{td} w-[110px]",
                 span { class: "bg-panel-muted text-foreground-soft text-[11px] px-2 py-0.5 rounded whitespace-nowrap",
-                    { category_label(item.category) }
+                    { item.category.translate(&lang_now) }
                 }
             }
             td { class: "{td} w-[150px] text-foreground-soft text-xs",
-                {item.issuer_id.clone().unwrap_or_default()}
+                { item.issuer_name.clone().or_else(|| item.issuer_id.clone()).unwrap_or_default() }
             }
             if show_status {
-                td { class: "{td} w-[110px] text-[11px] {status_color_class(item.status)}",
-                    { status_label(item.status) }
+                td { class: "{td} w-[110px] text-[11px] {item.status.color_class()}",
+                    { item.status.translate(&lang_now) }
                 }
             }
             td { class: "{td} w-[90px] text-foreground-muted text-xs font-mono text-right",
@@ -263,6 +296,9 @@ fn StoTableRow(item: StoSummary, show_status: bool) -> Element {
 
 #[component]
 fn CategoryScale(scale: CategoryScaleResponse) -> Element {
+    let t: CatalogTranslate = use_translate();
+    let lang = use_language();
+    let lang_now = lang();
     let total_amount = scale.total_amount.max(1);
     let mut rows: Vec<(Category, i64, i64, f64)> = vec![
         (
@@ -320,7 +356,7 @@ fn CategoryScale(scale: CategoryScaleResponse) -> Element {
     rsx! {
         Panel { extra_class: "mb-4".to_string(),
             div { class: "flex items-center justify-between mb-3 pb-2.5 border-b border-border",
-                h2 { class: "text-xl font-bold tracking-tight m-0", "카테고리별 투자 규모" }
+                h2 { class: "text-xl font-bold tracking-tight m-0", {t.section_category_scale_title} }
             }
             div { class: "grid grid-cols-1 md:grid-cols-[220px_1fr] gap-7 items-center",
                 svg {
@@ -328,7 +364,7 @@ fn CategoryScale(scale: CategoryScaleResponse) -> Element {
                     view_box: "0 0 220 220",
                     width: "220",
                     height: "220",
-                    "aria-label": "카테고리별 파이 차트",
+                    "aria-label": "{t.donut_chart_aria}",
                     for (path, color, _cat, _count, _amount, _pct) in arcs.iter() {
                         path {
                             d: "{path}",
@@ -338,10 +374,10 @@ fn CategoryScale(scale: CategoryScaleResponse) -> Element {
                         }
                     }
                     text { x: "110", y: "104", text_anchor: "middle", font_size: "11", fill: "var(--color-foreground-muted)",
-                        "누적 모집액"
+                        {t.donut_caption_raise}
                     }
                     text { x: "110", y: "126", text_anchor: "middle", font_size: "16", font_weight: "700", fill: "var(--color-foreground)", font_family: "var(--font-mono)",
-                        { format_amount_krw(scale.total_amount) }
+                        { format_amount_krw(scale.total_amount, &t) }
                     }
                 }
                 ul { class: "grid gap-1.5 m-0 p-0 list-none",
@@ -349,30 +385,30 @@ fn CategoryScale(scale: CategoryScaleResponse) -> Element {
                         li {
                             class: "grid grid-cols-[14px_1fr_60px_90px_100px] gap-2.5 items-center px-2 py-1.5 rounded text-[13px] hover:bg-panel-muted",
                             span { class: "inline-block w-3.5 h-3.5 rounded-[3px]", style: "background: {color};" }
-                            span { class: "whitespace-nowrap", { category_label(*cat) } }
+                            span { class: "whitespace-nowrap", { cat.translate(&lang_now) } }
                             span { class: "text-right font-mono font-semibold text-foreground", "{pct:.1}%" }
-                            span { class: "text-right font-mono text-xs text-foreground-soft", { format_amount_krw(*amount) } }
-                            span { class: "text-right text-[11px] font-mono text-foreground-muted", "{count} 건" }
+                            span { class: "text-right font-mono text-xs text-foreground-soft", { format_amount_krw(*amount, &t) } }
+                            span { class: "text-right text-[11px] font-mono text-foreground-muted", "{count} " {t.unit_count} }
                         }
                     }
                 }
             }
             p { class: "text-[11px] text-foreground-muted mt-3 leading-relaxed",
-                "누적 모집액 기준 (DART 공시 발행가). 모집액 미공시 STO 는 건수에는 포함되나 합산에서는 제외됨."
+                {t.section_category_scale_note}
             }
         }
     }
 }
 
-pub fn format_amount_krw(amount: i64) -> String {
+pub fn format_amount_krw(amount: i64, t: &CatalogTranslate) -> String {
     if amount >= 1_000_000_000_000 {
-        format!("{:.1}조 원", amount as f64 / 1e12)
+        format!("{:.1}조 {}", amount as f64 / 1e12, t.unit_won)
     } else if amount >= 100_000_000 {
-        format!("{:.1}억 원", amount as f64 / 1e8)
+        format!("{:.1}억 {}", amount as f64 / 1e8, t.unit_won)
     } else if amount >= 10_000 {
-        format!("{:.0}만 원", amount as f64 / 1e4)
+        format!("{:.0}만 {}", amount as f64 / 1e4, t.unit_won)
     } else if amount > 0 {
-        format!("{} 원", amount)
+        format!("{} {}", amount, t.unit_won)
     } else {
         "—".to_string()
     }
@@ -391,93 +427,20 @@ fn category_color(c: Category) -> &'static str {
 
 #[component]
 fn IdentityBanners() -> Element {
+    let t: CatalogTranslate = use_translate();
     rsx! {
-        section { class: "grid grid-cols-1 md:grid-cols-2 gap-3 mb-4",
+        section { class: "mb-4",
             a {
-                class: "bg-panel border border-brand rounded-lg px-5 py-4 flex flex-col gap-2 transition-colors hover:bg-panel-muted",
+                class: "block bg-panel border border-brand rounded-lg px-5 py-4 flex flex-col gap-2 transition-colors hover:bg-panel-muted",
                 href: "/biyard-index",
-                span { class: "inline-block bg-brand-soft text-brand text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded self-start", "BIYARD INDEX" }
-                div { class: "text-base font-bold", "Web3 기반 STO 평가지표" }
+                span { class: "inline-block bg-brand-soft text-brand text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded self-start", {t.identity_index_pill} }
+                div { class: "text-base font-bold", {t.identity_index_title} }
                 p { class: "text-xs text-foreground-soft leading-relaxed m-0",
-                    "온체인 발행 무결성·컨트랙트 보안·지갑 분포·거버넌스 등 기존 신용평가가 다루지 못하는 Web3 신뢰 신호를 6개 축으로 환산해 등급을 부여합니다."
+                    {t.identity_index_body}
                 }
-                span { class: "text-brand text-xs font-semibold", "백서 보기 →" }
-            }
-            a {
-                class: "bg-panel border border-brand rounded-lg px-5 py-4 flex flex-col gap-2 transition-colors hover:bg-panel-muted",
-                href: "/launchpad",
-                span { class: "inline-block bg-brand-soft text-brand text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded self-start", "BIYARD LAUNCHPAD" }
-                div { class: "text-base font-bold", "브랜드 토큰 PaaS" }
-                p { class: "text-xs text-foreground-soft leading-relaxed m-0",
-                    "STO 와 결합 가능한 유틸리티 토큰 발행 인프라. 발행사·증권사가 자체 브랜드 토큰을 운영할 수 있는 PaaS 서비스를 제공합니다."
-                }
-                span { class: "text-brand text-xs font-semibold", "자세히 보기 →" }
+                span { class: "text-brand text-xs font-semibold", {t.identity_index_cta} }
             }
         }
-    }
-}
-
-pub fn category_icon(c: Category) -> &'static str {
-    use Category::*;
-    match c {
-        RealEstate => "🏢",
-        Art => "🎨",
-        Music => "🎵",
-        Livestock => "🐂",
-        Unknown => "·",
-    }
-}
-
-pub fn category_label(c: Category) -> &'static str {
-    use Category::*;
-    match c {
-        RealEstate => "🏢 부동산",
-        Art => "🎨 미술품",
-        Music => "🎵 음악 IP",
-        Livestock => "🐂 한우·축산",
-        Unknown => "기타",
-    }
-}
-
-pub fn flag_for(c: Country) -> &'static str {
-    use Country::*;
-    match c {
-        Kr => "🇰🇷",
-        Us => "🇺🇸",
-        Sg => "🇸🇬",
-        Eu => "🇪🇺",
-        Other | Unknown => "🌍",
-    }
-}
-
-pub fn country_display(c: Country) -> &'static str {
-    use Country::*;
-    match c {
-        Kr => "🇰🇷 한국",
-        Us => "🇺🇸 미국",
-        Sg => "🇸🇬 싱가포르",
-        Eu => "🇪🇺 유럽",
-        Other | Unknown => "🌍 해외",
-    }
-}
-
-pub fn status_label(s: StoStatus) -> &'static str {
-    use StoStatus::*;
-    match s {
-        Issued => "발행 완료",
-        Filed => "공모 진행",
-        Withdrawn => "철회",
-        Liquidated => "청산 완료",
-        Unknown => "—",
-    }
-}
-
-pub fn status_color_class(s: StoStatus) -> &'static str {
-    use StoStatus::*;
-    match s {
-        Issued | Liquidated | Filed => "text-brand",
-        Withdrawn => "text-warning",
-        Unknown => "text-foreground-muted",
     }
 }
 

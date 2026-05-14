@@ -21,6 +21,8 @@ pub use dioxus::prelude::*;
 pub use serde::{Deserialize, Serialize};
 pub use serde_with::{DeserializeFromStr, SerializeDisplay};
 
+pub use dioxus_translate::{Language, Translate, use_language, use_translate};
+
 #[cfg(feature = "server")]
 pub use aws_sdk_dynamodb;
 #[cfg(feature = "server")]

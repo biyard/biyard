@@ -25,4 +25,8 @@ pub enum EntityType {
 
     // 집계 row (pk = AGGREGATE, sk = AGGREGATE#{TYPE})
     Aggregate(String),
+
+    // 예상 공모 row (pk = PLANNED, sk = PLANNED#{id}).
+    // 발행사/증권사가 직접 등록한 청약 예정 정보. DART 신고 전 마케팅 단계.
+    Planned(String),
 }

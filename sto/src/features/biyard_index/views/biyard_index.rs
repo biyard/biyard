@@ -66,8 +66,8 @@ pub fn BiyardIndexView() -> Element {
                             }
                         }
                         div { class: "text-5xl font-mono font-black text-brand", "A" }
-                        div { class: "text-xs text-foreground-muted mt-2", "토큰증권 부문 · 상위 18%" }
-                        div { class: "inline-block text-[10px] bg-panel text-foreground-muted px-2 py-1 rounded mt-3 tracking-wider", "PREVIEW · 실제 산출 아님" }
+                        div { class: "text-xs text-foreground-muted mt-2", {t.preview_score_caption} }
+                        div { class: "inline-block text-[10px] bg-panel text-foreground-muted px-2 py-1 rounded mt-3 tracking-wider", {t.preview_score_pill} }
                     }
                 }
             }
