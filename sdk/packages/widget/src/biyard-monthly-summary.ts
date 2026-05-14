@@ -1,6 +1,6 @@
 import type { MonthlySummary } from "@biyard/sdk";
 
-import { BiyardWidgetBase, escapeHtml, renderAttribution } from "./base";
+import { BiyardWidgetBase, escapeHtml, renderAttribution, renderBrandHeader } from "./base";
 import { strings } from "./i18n";
 import { WIDGET_STYLES } from "./styles";
 

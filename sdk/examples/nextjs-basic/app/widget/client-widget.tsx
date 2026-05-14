@@ -442,14 +442,6 @@ function PartnerSite({
           "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
       }}
     >
-      <style>{`
-        biyard-balance,
-        biyard-transactions,
-        biyard-monthly-summary {
-          display: block;
-          width: 100%;
-        }
-      `}</style>
       <PartnerNav
         brand={copy.brand}
         nav={copy.nav}
@@ -680,7 +672,7 @@ function HomePage({
           gap: 16,
         }}
       >
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 14, fontWeight: 600 }}>{copy.banner}</div>
           <div
             style={{
@@ -863,13 +855,13 @@ function ActivityPage({ theme, lang }: { theme: Theme; lang: Lang }) {
           title: "활동",
           subtitle: "포인트 적립과 사용 내역을 한눈에 확인하세요.",
           summary: "월별 요약",
-          transactions: "트랜잭션",
+          transactions: "포인트 내역",
         }
       : {
           title: "Activity",
           subtitle: "Your points earned and spent at a glance.",
           summary: "Monthly summary",
-          transactions: "Transactions",
+          transactions: "Points history",
         };
 
   return (

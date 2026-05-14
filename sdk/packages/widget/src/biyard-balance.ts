@@ -1,6 +1,6 @@
 import type { TokenInfo, UserBalance } from "@biyard/sdk";
 
-import { BiyardWidgetBase, escapeHtml, renderAttribution } from "./base";
+import { BiyardWidgetBase, escapeHtml, renderAttribution, renderBrandHeader } from "./base";
 import { formatTokenAmount } from "./format";
 import { strings } from "./i18n";
 import { WIDGET_STYLES } from "./styles";
@@ -31,6 +31,7 @@ export class BiyardBalanceElement extends BiyardWidgetBase {
   private onChainBalance: string | null = null;
   private walletAddress: string | null = null;
   private loading = false;
+  private connecting = false;
   private error: string | null = null;
 
   protected override onConnected(): void {
@@ -94,24 +95,65 @@ export class BiyardBalanceElement extends BiyardWidgetBase {
     this.root.innerHTML = `
       <style>${WIDGET_STYLES}</style>
       <div class="inline" part="card">
+        ${renderBrandHeader(this.getBranding())}
         <div class="balance-header">
           <h3 class="title">${escapeHtml(title)}</h3>
           ${month ? `<span class="month-pill">${escapeHtml(month)}</span>` : ""}
         </div>
+        ${this.renderWallet()}
         ${this.renderBody({
           points,
           symbol,
           decimals,
           tokenBal,
           loading: this.loading && points === null && tokenBal === null,
-          hint:
-            !this.walletAddress && tokenBal === null
-              ? t.connectWalletHint
-              : null,
+          showConnect: !this.walletAddress && tokenBal === null,
+          connecting: this.connecting,
           t,
         })}
         ${this.error ? `<div class="alert error">${escapeHtml(this.error)}</div>` : ""}
         ${renderAttribution(this.getBranding(), t)}
+      </div>
+    `;
+
+    this.root
+      .querySelectorAll<HTMLButtonElement>('[data-action="connect-wallet"]')
+      .forEach((btn) => {
+        btn.addEventListener("click", () => void this.handleConnect());
+      });
+  }
+
+  private async handleConnect(): Promise<void> {
+    if (this.connecting || this.walletAddress) return;
+    this.connecting = true;
+    this.error = null;
+    this.render();
+    try {
+      const client = this.getClient(this.token);
+      this.walletAddress = await client.connectWallet();
+      // Re-load to fetch on-chain balance now that the wallet is connected.
+      await this.load();
+    } catch (e) {
+      this.error = e instanceof Error ? e.message : String(e);
+    } finally {
+      this.connecting = false;
+      this.render();
+    }
+  }
+
+  private renderWallet(): string {
+    const connected = !!this.walletAddress;
+    const truncated = connected
+      ? `${this.walletAddress!.slice(0, 6)}…${this.walletAddress!.slice(-4)}`
+      : "";
+    const chainName = this.token?.chain_id
+      ? chainLabel(this.token.chain_id)
+      : "";
+    return `
+      <div class="wallet-row" data-connected="${connected}">
+        <span class="wallet-dot" aria-hidden="true"></span>
+        <span class="wallet-addr">${escapeHtml(truncated)}</span>
+        ${chainName ? `<span class="wallet-chain">${escapeHtml(chainName)}</span>` : ""}
       </div>
     `;
   }
@@ -122,7 +164,8 @@ export class BiyardBalanceElement extends BiyardWidgetBase {
     decimals: number;
     tokenBal: string | null;
     loading: boolean;
-    hint: string | null;
+    showConnect: boolean;
+    connecting: boolean;
     t: ReturnType<typeof strings>;
   }): string {
     if (args.loading) {
@@ -142,14 +185,56 @@ export class BiyardBalanceElement extends BiyardWidgetBase {
             args.symbol ? ` <span class="balance-cell-symbol">${escapeHtml(args.symbol)}</span>` : ""
           }`
         : "—";
+    const connectAction = args.showConnect
+      ? `
+        <button
+          class="connect-wallet"
+          type="button"
+          data-action="connect-wallet"
+          ${args.connecting ? "disabled" : ""}
+        >
+          ${
+            args.connecting
+              ? `<span class="spinner" aria-hidden="true"></span><span>${escapeHtml(args.t.connectingWallet)}</span>`
+              : escapeHtml(args.t.connectWalletCta)
+          }
+        </button>
+        <div class="balance-cell-hint">${escapeHtml(args.t.connectWalletHint)}</div>
+      `
+      : "";
     const tokenCell = `
       <div class="balance-cell">
         <div class="balance-cell-label">${escapeHtml(args.t.tokensLabel)}</div>
         <div class="balance-cell-value">${tokenValue}</div>
-        ${args.hint ? `<div class="balance-cell-hint">${escapeHtml(args.hint)}</div>` : ""}
+        ${connectAction}
       </div>
     `;
     return `<div class="balance-grid">${pointsCell}${tokenCell}</div>`;
+  }
+}
+
+function chainLabel(chainId: number): string {
+  switch (chainId) {
+    case 1:
+      return "Ethereum";
+    case 11155111:
+      return "Sepolia";
+    case 137:
+      return "Polygon";
+    case 80002:
+      return "Polygon Amoy";
+    case 8453:
+      return "Base";
+    case 84532:
+      return "Base Sepolia";
+    case 42161:
+      return "Arbitrum";
+    case 421614:
+      return "Arbitrum Sepolia";
+    case 10:
+      return "Optimism";
+    default:
+      return `Chain ${chainId}`;
   }
 }
 

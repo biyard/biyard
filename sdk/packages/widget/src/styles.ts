@@ -22,14 +22,27 @@ export const WIDGET_STYLES = /* css */ `
     --biyard-font-family: inherit;
     --biyard-radius: 12px;
     --biyard-spacing: 4px;
+
+    /* ── Biyard brand (NOT partner-tunable — identifies the SDK) ──────── */
+    --biyard-brand-1: #10d99c;
+    --biyard-brand-2: #3eeab1;
+    --biyard-brand-gradient: linear-gradient(135deg, var(--biyard-brand-1), var(--biyard-brand-2));
     /* ──────────────────────────────────────────────────────────────────── */
 
     display: block;
+    width: 100%;
     container-type: inline-size;
     container-name: biyard;
     font-family: var(--biyard-font-family);
     color: var(--biyard-color-text);
     line-height: 1.5;
+    box-sizing: border-box;
+  }
+
+  :host *,
+  :host *::before,
+  :host *::after {
+    box-sizing: border-box;
   }
 
   :host([theme="dark"]) {
@@ -83,16 +96,72 @@ export const WIDGET_STYLES = /* css */ `
   .trigger:active {
     transform: translateY(1px);
   }
+  .trigger-mark {
+    display: inline-flex;
+    width: 14px;
+    height: 14px;
+  }
+  .trigger-mark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
   /* ── Inline container (mode="inline") ───────────────────────────────── */
   .inline {
     display: block;
+    position: relative;
     background: var(--biyard-color-bg);
     color: var(--biyard-color-text);
     border: 1px solid var(--biyard-color-border);
     border-radius: var(--biyard-radius);
     padding: calc(var(--biyard-spacing) * 5);
-    min-width: 280px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  /* Biyard brand stripe on the left edge — subtle but always present, so
+     the card is recognisable as a Biyard widget no matter how the partner
+     theme overrides accent colors. */
+  .inline::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--biyard-brand-gradient);
+    border-top-left-radius: var(--biyard-radius);
+    border-bottom-left-radius: var(--biyard-radius);
+  }
+
+  /* ── Brand header (top of every card) ───────────────────────────────── */
+  .brand-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+    padding: 3px 8px 3px 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--biyard-brand-1) 10%, transparent);
+    color: var(--biyard-brand-1);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .brand-mark {
+    display: inline-flex;
+    width: 12px;
+    height: 12px;
+  }
+  .brand-mark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .brand-name {
+    line-height: 1;
   }
 
   /* ── Modal overlay ─────────────────────────────────────────────────── */
@@ -125,6 +194,19 @@ export const WIDGET_STYLES = /* css */ `
       0 1px 2px rgba(0, 0, 0, 0.05),
       0 20px 40px -10px rgba(0, 0, 0, 0.15);
     animation: biyard-pop 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  }
+  /* Top brand bar on the modal card — stronger than the inline stripe
+     because users opt in to the modal explicitly. */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--biyard-brand-gradient);
+    border-top-left-radius: var(--biyard-radius);
+    border-top-right-radius: var(--biyard-radius);
   }
   @keyframes biyard-pop {
     from {
@@ -376,6 +458,52 @@ export const WIDGET_STYLES = /* css */ `
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
   }
+
+  /* Wallet info row — only visible when there is room. Sits above the
+     balance grid and identifies which wallet is connected. */
+  .wallet-row {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: var(--biyard-color-surface);
+    border: 1px solid var(--biyard-color-border);
+    border-radius: calc(var(--biyard-radius) - 4px);
+    font-size: 12px;
+    color: var(--biyard-color-muted);
+    min-width: 0;
+  }
+  .wallet-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--biyard-color-success);
+    flex-shrink: 0;
+  }
+  .wallet-addr {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--biyard-color-text);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+  }
+  .wallet-chain {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--biyard-color-bg);
+    border: 1px solid var(--biyard-color-border);
+    flex-shrink: 0;
+  }
+  @container biyard (min-width: 320px) {
+    .wallet-row[data-connected="true"] {
+      display: flex;
+    }
+  }
   .balance-cell {
     background: var(--biyard-color-surface);
     border: 1px solid var(--biyard-color-border);
@@ -408,6 +536,31 @@ export const WIDGET_STYLES = /* css */ `
     font-size: 11px;
     margin-top: 6px;
     line-height: 1.4;
+  }
+  .connect-wallet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 7px 12px;
+    border-radius: calc(var(--biyard-radius) - 4px);
+    border: 1px solid var(--biyard-color-accent);
+    background: var(--biyard-color-accent);
+    color: var(--biyard-color-accent-foreground);
+    font: inherit;
+    font-family: var(--biyard-font-family);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+  }
+  .connect-wallet:hover:not([disabled]) {
+    filter: brightness(0.95);
+  }
+  .connect-wallet[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   /* ── Transactions widget ────────────────────────────────────────────── */
@@ -565,17 +718,32 @@ export const WIDGET_STYLES = /* css */ `
   /* ── Attribution footer ─────────────────────────────────────────────── */
   .attribution {
     margin-top: calc(var(--biyard-spacing) * 4);
+    padding-top: calc(var(--biyard-spacing) * 3);
+    border-top: 1px dashed var(--biyard-color-border);
     text-align: center;
     font-size: 11px;
     line-height: 1;
   }
   .attribution a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     color: var(--biyard-color-muted);
     text-decoration: none;
-    opacity: 0.7;
+    transition: color 0.15s ease;
   }
   .attribution a:hover {
-    opacity: 1;
-    color: var(--biyard-color-text);
+    color: var(--biyard-brand-1);
+  }
+  .attribution-mark {
+    display: inline-flex;
+    width: 11px;
+    height: 11px;
+    color: var(--biyard-brand-1);
+  }
+  .attribution-mark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 `;

@@ -2,6 +2,7 @@ import { BiyardClaim, type TokenInfo } from "@biyard/sdk";
 
 import { formatTokenAmount, shortHex } from "./format";
 import { resolveLocale, strings, type Locale } from "./i18n";
+import { renderBrandHeader } from "./base";
 import { WIDGET_STYLES } from "./styles";
 
 /**
@@ -361,6 +362,14 @@ export class BiyardClaimElement extends HTMLElement {
     const t = strings(this.getLocale());
     this.root.innerHTML = `
       <style>${WIDGET_STYLES}</style>
+      <style>
+        :host {
+          display: inline-block !important;
+          width: auto !important;
+          container-type: normal !important;
+          flex-shrink: 0;
+        }
+      </style>
       <button class="trigger" type="button" data-action="open">
         ${escapeHtml(this.getAttribute("label") ?? t.triggerLabel)}
       </button>
@@ -431,6 +440,7 @@ export class BiyardClaimElement extends HTMLElement {
         : "";
 
     return `
+      ${renderBrandHeader(this.getBranding())}
       <div>
         <h3 class="title">${escapeHtml(title)}</h3>
         ${subtitle ? `<div class="subtitle">${escapeHtml(subtitle)}</div>` : ""}
@@ -439,7 +449,6 @@ export class BiyardClaimElement extends HTMLElement {
       ${review}
       ${ctaOrSuccess}
       ${errorAlert}
-      ${this.renderAttribution()}
     `;
   }
 
@@ -492,15 +501,6 @@ export class BiyardClaimElement extends HTMLElement {
         ${tx ? `<div class="success-tx">tx ${escapeHtml(shortHex(tx, 10, 8))}</div>` : ""}
       </div>
     `;
-  }
-
-  private renderAttribution(): string {
-    const branding = this.getBranding();
-    if (branding === "none") return "";
-    const t = strings(this.getLocale());
-    const label =
-      branding === "minimal" ? t.attributionMinimal : t.attributionDefault;
-    return `<div class="attribution"><a href="https://biyard.co" target="_blank" rel="noopener">${escapeHtml(label)}</a></div>`;
   }
 
   private canClaim(): boolean {
