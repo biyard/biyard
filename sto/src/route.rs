@@ -24,10 +24,10 @@ pub enum Route {
     #[route("/issuers/:issuer_id")]
     IssuerDetailView { issuer_id: String },
 
-    #[route("/index")]
+    #[route("/biyard-index")]
     BiyardIndexView {},
 
-    #[route("/index/whitepaper")]
+    #[route("/biyard-index/whitepaper")]
     WhitepaperView {},
 
     #[route("/launchpad")]
