@@ -35,6 +35,8 @@ pub use config::CommonConfig;
 pub use macros::DynamoEntity;
 pub use macros::DynamoEnum;
 pub use run::run;
+#[cfg(feature = "server")]
+pub use run::build_router;
 pub use types::*;
 
 pub use dioxus::logger::tracing::{debug, error, info, warn};

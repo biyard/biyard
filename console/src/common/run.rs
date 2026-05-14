@@ -18,7 +18,7 @@ fn launch(app: fn() -> Element) {
 }
 
 #[cfg(feature = "server")]
-fn serve(app: fn() -> Element) {
+pub fn build_router(app: fn() -> Element) -> dioxus::fullstack::axum::Router {
     let cfg = crate::common::CommonConfig::default();
 
     let cli = cfg.dynamodb();
@@ -35,13 +35,18 @@ fn serve(app: fn() -> Element) {
     let dapp_router = crate::common::blockchain::dapp::router();
     let openapi_router = crate::common::openapi::router();
     let health_router = crate::common::health::router();
-    let app = dioxus_router
+    dioxus_router
         .merge(dapp_router)
         .merge(openapi_router)
         .merge(health_router)
         .layer(api_domain_filter)
         .layer(account_auth_layer)
-        .layer(session_layer);
+        .layer(session_layer)
+}
+
+#[cfg(feature = "server")]
+fn serve(app: fn() -> Element) {
+    let app = build_router(app);
 
     #[cfg(not(feature = "lambda"))]
     dioxus::serve(move || {

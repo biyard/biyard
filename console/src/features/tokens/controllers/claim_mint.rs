@@ -57,22 +57,30 @@ pub async fn get_claimable_handler(
         PointBalance::find_by_meta_user(cli, &format!("PB#{meta_user_id}"), opt).await?;
 
     // On-chain: get currentMonth and already claimed per month
+    #[cfg(not(feature = "disable-chain"))]
     let provider = crate::common::blockchain::provider(chain_id)?;
+    #[cfg(not(feature = "disable-chain"))]
     let token_addr: ethers::types::Address = contract_address
         .parse()
         .map_err(|e| TokenError::DeployFailed(format!("Invalid token address: {e}")))?;
+    #[cfg(not(feature = "disable-chain"))]
     let brand_contract = crate::common::blockchain::BrandTokenContract::new(
         token_addr,
         std::sync::Arc::new(provider),
     );
 
     // Use on-chain currentMonth (includes advanceMonth offset) for comparison
+    #[cfg(not(feature = "disable-chain"))]
     let on_chain_current_month = brand_contract
         .current_month()
         .call()
         .await
         .map(|m| m.as_u64())
         .unwrap_or(0);
+    #[cfg(feature = "disable-chain")]
+    let on_chain_current_month = crate::common::blockchain::chain_stub::current_month();
+    #[cfg(feature = "disable-chain")]
+    let _ = (contract_address, chain_id); // silence unused
 
     let mut months = Vec::new();
 
@@ -101,12 +109,15 @@ pub async fn get_claimable_handler(
         let user_points_remaining = bal.balance.max(0);
 
         let month_index = month_str_to_index(&bal.month, &token);
+        #[cfg(not(feature = "disable-chain"))]
         let ceiling = brand_contract
             .monthly_ceiling(ethers::types::U256::from(month_index))
             .call()
             .await
             .map(|v| v.as_u128())
             .unwrap_or(0);
+        #[cfg(feature = "disable-chain")]
+        let ceiling = crate::common::blockchain::chain_stub::monthly_ceiling(month_index);
         let user_pool = ceiling * user_pool_bps / 10000;
 
         // Max tokens this user could ever claim (based on total earned points)
@@ -178,20 +189,26 @@ pub async fn get_claim_signature_handler(
     let total_slot_bps: u16 = token.distribution_slots.iter().map(|s| s.bps).sum();
     let user_pool_bps = 10000u128.saturating_sub(total_slot_bps as u128);
 
+    #[cfg(not(feature = "disable-chain"))]
     let provider = crate::common::blockchain::provider(chain_id)?;
+    #[cfg(not(feature = "disable-chain"))]
     let token_contract_addr: ethers::types::Address = contract_address
         .parse()
         .map_err(|e| TokenError::DeployFailed(format!("Invalid token address: {e}")))?;
+    #[cfg(not(feature = "disable-chain"))]
     let brand_contract = crate::common::blockchain::BrandTokenContract::new(
         token_contract_addr,
         std::sync::Arc::new(provider),
     );
+    #[cfg(not(feature = "disable-chain"))]
     let on_chain_current_month = brand_contract
         .current_month()
         .call()
         .await
         .map(|m| m.as_u64())
         .unwrap_or(0);
+    #[cfg(feature = "disable-chain")]
+    let on_chain_current_month = crate::common::blockchain::chain_stub::current_month();
 
     let month_index = month_str_to_index(&month, &token);
     if month_index >= on_chain_current_month {
@@ -222,12 +239,15 @@ pub async fn get_claim_signature_handler(
     let total_points = agg.awarded_points.max(1);
 
     // monthlyCeiling returns ERC-20 raw units (includes 10^decimals)
+    #[cfg(not(feature = "disable-chain"))]
     let ceiling = brand_contract
         .monthly_ceiling(ethers::types::U256::from(month_index))
         .call()
         .await
         .map(|v| v.as_u128())
         .map_err(|e| TokenError::MintFailed(format!("monthlyCeiling call failed: {e}")))?;
+    #[cfg(feature = "disable-chain")]
+    let ceiling = crate::common::blockchain::chain_stub::monthly_ceiling(month_index);
     let user_pool = ceiling * user_pool_bps / 10000;
 
     // max_claimable = share based on total earned points
