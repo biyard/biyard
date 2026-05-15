@@ -100,3 +100,23 @@ server = [
     "validator",
 ]
 lambda = ["lambda_http", "server"]
+
+# Test-only feature: bypasses on-chain reads (current_month, monthly_ceiling, etc.)
+# and returns values injected via `common::blockchain::chain_stub`. Never enable
+# in production builds. Requires `server`.
+disable-chain = ["server"]
+
+[dev-dependencies]
+tokio = { workspace = true }
+reqwest = { workspace = true }
+serde_json = { workspace = true }
+uuid = { version = "1", features = ["serde", "v7"] }
+axum = { version = "0.8", features = ["macros"] }
+hyper = { version = "1", features = ["full"] }
+tower = "0.5"
+tower-sessions = "0.15.0"
+aws-sdk-dynamodb = { workspace = true }
+bcrypt = "0.16"
+ethers = { workspace = true }
+once_cell = "1"
+serde = { workspace = true }
