@@ -16,7 +16,7 @@ AWS_ACCOUNT_ID ?= $(shell aws sts get-caller-identity --query "Account" --output
 REPOSITORY ?= biyard/sto
 ECR ?= $(shell aws ecr describe-repositories --repository-names $(REPOSITORY) --query "repositories[0].repositoryUri" --output text)
 
-.PHONY: dev build build-lambda clean fmt clippy docker docker.push docker.login seed
+.PHONY: dev build build-lambda clean fmt clippy docker docker.push docker.login docker.local seed up down
 
 BUILD_ENV ?= DYNAMO_TABLE_PREFIX=$(DYNAMO_TABLE_PREFIX) RUST_LOG=$(RUST_LOG)
 
@@ -24,12 +24,12 @@ dev:
 	$(BUILD_ENV) dx serve --port $(PORT) --web
 
 build:
-	dx build --release --debug-symbols false \
+	$(BUILD_ENV) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features server --platform server
 
 build-lambda:
-	dx build --release --debug-symbols false \
+	$(BUILD_ENV) dx build --release --debug-symbols false \
 		@client --features web --platform web \
 		@server --features lambda --platform server
 

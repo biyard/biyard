@@ -13,6 +13,7 @@ pub enum OverviewField {
     FiledAt,
     #[translate(en = "Status", ko = "모집 상태")]
     Status,
+    // Music
     #[translate(en = "Artist", ko = "작가")]
     Artist,
     #[translate(en = "Rights category", ko = "권리 유형")]
@@ -21,6 +22,49 @@ pub enum OverviewField {
     TrustNo,
     #[translate(en = "Year", ko = "제작연도")]
     Year,
+    // Real estate
+    #[translate(en = "Address", ko = "소재지")]
+    Address,
+    #[translate(en = "Building type", ko = "건물 유형")]
+    BuildingType,
+    #[translate(en = "Floor area", ko = "연면적")]
+    FloorArea,
+    #[translate(en = "Land area", ko = "대지면적")]
+    LandArea,
+    #[translate(en = "Floors", ko = "건물 규모")]
+    Floors,
+    #[translate(en = "Completed", ko = "준공일")]
+    CompletionDate,
+    #[translate(en = "Tenant", ko = "임차인")]
+    Tenant,
+    #[translate(en = "Lease term", ko = "임대기간")]
+    LeaseTerm,
+    #[translate(en = "Total offering", ko = "모집총액")]
+    TotalOffering,
+    #[translate(en = "Total units", ko = "발행 수량")]
+    TotalUnitsStr,
+    #[translate(en = "Unit price", ko = "1좌당 가액")]
+    UnitPriceStr,
+    #[translate(en = "Upfront fee", ko = "총수수료")]
+    UpfrontFee,
+    #[translate(en = "Dividend freq.", ko = "배당 주기")]
+    DividendFrequency,
+    // Art
+    #[translate(en = "Artist", ko = "작가")]
+    ArtArtist,
+    #[translate(en = "Year created", ko = "제작연도")]
+    ArtworkYear,
+    #[translate(en = "Medium", ko = "매체")]
+    Medium,
+    #[translate(en = "Dimensions", ko = "크기")]
+    Dimensions,
+    // Livestock
+    #[translate(en = "Farm", ko = "농장명")]
+    FarmName,
+    #[translate(en = "Breed", ko = "품종")]
+    Breed,
+    #[translate(en = "Head count", ko = "마릿수")]
+    HeadCount,
 }
 
 /// 공모 조건 그리드 필드.
@@ -198,9 +242,9 @@ translate! {
     hero_disclaimer_pill: { en: "Issuer-registered", ko: "발행사 등록 정보" },
     hero_disclaimer_body: {
         en: "Expected offerings registered by issuers or brokers. Subscription dates and amounts may change; final terms are confirmed on the formal DART filing.",
-        ko: "발행사·증권사가 등록한 예상 공모입니다. 청약 일정·모집액은 변경될 수 있으며 정식 DART 공시 시점에 확정됩니다.",
+        ko: "발행사·증권사가 등록한 예상 공모입니다. 청약 일정·모집액은 변경될 수 있으며 발행 시점에 확정됩니다.",
     },
-    section_recent_title: { en: "Recently issued STOs", ko: "최근 발행 STO" },
+    section_recent_title: { en: "Recently issued STOs", ko: "최신 발행 STO" },
     section_liquidated_title: { en: "Recently liquidated / distributed", ko: "최근 청산·분배 완료" },
     section_more_arrow: { en: "View all →", ko: "전체 보기 →" },
     section_category_scale_title: { en: "Investment volume by category", ko: "카테고리별 투자 규모" },
@@ -237,10 +281,12 @@ translate! {
     identity_launchpad_cta: { en: "Learn more →", ko: "자세히 보기 →" },
 
     // 상세 페이지 보조 라벨
+    detail_section_appraisal: { en: "Appraisal values", ko: "감정평가액" },
     detail_filings_title_fmt: { en: "Filings ({n})", ko: "공시 ({n})" },
     detail_no_external_short: { en: "No external link", ko: "원본 링크가 없습니다." },
     detail_external_origin_arrow: { en: "Open original ↗", ko: "원문 보기 ↗" },
     detail_filing_origin_arrow: { en: "Source ↗", ko: "원본 공시 ↗" },
+    detail_map_link: { en: "View on map ↗", ko: "지도에서 보기 ↗" },
 
     // 표시 단위
     unit_won: { en: "KRW", ko: "원" },

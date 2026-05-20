@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_translate::Translate;
 
-use crate::common::{use_language, use_translate};
+use crate::common::{use_language, use_translate, Category};
 use crate::features::catalog::controllers::get_sto_handler;
 use crate::features::catalog::views::{Panel, PanelHead, Topbar};
 use crate::features::catalog::{
@@ -28,7 +28,7 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
     let lang_now = lang();
     let dash = || "—".to_string();
 
-    let overview_entries: Vec<(String, String)> = vec![
+    let mut overview_entries: Vec<(String, String)> = vec![
         (
             OverviewField::AssetName.translate(&lang_now).to_string(),
             sto.name.clone(),
@@ -49,23 +49,117 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
             OverviewField::Status.translate(&lang_now).to_string(),
             sto.status.translate(&lang_now).to_string(),
         ),
-        (
-            OverviewField::Artist.translate(&lang_now).to_string(),
-            sto.artist.clone().unwrap_or_else(dash),
-        ),
-        (
-            OverviewField::RightsCategory.translate(&lang_now).to_string(),
-            sto.rights_category.clone().unwrap_or_else(dash),
-        ),
-        (
-            OverviewField::TrustNo.translate(&lang_now).to_string(),
-            sto.trust_no.clone().unwrap_or_else(dash),
-        ),
-        (
-            OverviewField::Year.translate(&lang_now).to_string(),
-            sto.year.clone().unwrap_or_else(dash),
-        ),
     ];
+
+    match sto.category {
+        Category::Music => {
+            overview_entries.extend([
+                (
+                    OverviewField::Artist.translate(&lang_now).to_string(),
+                    sto.artist.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::RightsCategory.translate(&lang_now).to_string(),
+                    sto.rights_category.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::TrustNo.translate(&lang_now).to_string(),
+                    sto.trust_no.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::Year.translate(&lang_now).to_string(),
+                    sto.year.clone().unwrap_or_else(dash),
+                ),
+            ]);
+        }
+        Category::RealEstate => {
+            let mut re_entries: Vec<(String, String)> = vec![
+                (OverviewField::Address.translate(&lang_now).to_string(), sto.address.clone().unwrap_or_else(dash)),
+                (OverviewField::BuildingType.translate(&lang_now).to_string(), sto.building_type.clone().unwrap_or_else(dash)),
+                (OverviewField::FloorArea.translate(&lang_now).to_string(), sto.floor_area.clone().unwrap_or_else(dash)),
+            ];
+            if sto.land_area.is_some() {
+                re_entries.push((OverviewField::LandArea.translate(&lang_now).to_string(), sto.land_area.clone().unwrap_or_else(dash)));
+            }
+            if sto.floors.is_some() {
+                re_entries.push((OverviewField::Floors.translate(&lang_now).to_string(), sto.floors.clone().unwrap_or_else(dash)));
+            }
+            if sto.completion_date.is_some() {
+                re_entries.push((OverviewField::CompletionDate.translate(&lang_now).to_string(), sto.completion_date.clone().unwrap_or_else(dash)));
+            }
+            if sto.tenant.is_some() {
+                re_entries.push((OverviewField::Tenant.translate(&lang_now).to_string(), sto.tenant.clone().unwrap_or_else(dash)));
+            }
+            if sto.lease_term.is_some() {
+                re_entries.push((OverviewField::LeaseTerm.translate(&lang_now).to_string(), sto.lease_term.clone().unwrap_or_else(dash)));
+            }
+            if sto.total_offering.is_some() {
+                re_entries.push((OverviewField::TotalOffering.translate(&lang_now).to_string(), sto.total_offering.clone().unwrap_or_else(dash)));
+            }
+            if sto.total_units_str.is_some() {
+                re_entries.push((OverviewField::TotalUnitsStr.translate(&lang_now).to_string(), sto.total_units_str.clone().unwrap_or_else(dash)));
+            }
+            if sto.unit_price_str.is_some() {
+                re_entries.push((OverviewField::UnitPriceStr.translate(&lang_now).to_string(), sto.unit_price_str.clone().unwrap_or_else(dash)));
+            }
+            if sto.upfront_fee.is_some() {
+                re_entries.push((OverviewField::UpfrontFee.translate(&lang_now).to_string(), sto.upfront_fee.clone().unwrap_or_else(dash)));
+            }
+            if sto.dividend_frequency.is_some() {
+                re_entries.push((OverviewField::DividendFrequency.translate(&lang_now).to_string(), sto.dividend_frequency.clone().unwrap_or_else(dash)));
+            }
+            overview_entries.extend(re_entries);
+        }
+        Category::Art => {
+            overview_entries.extend([
+                (
+                    OverviewField::ArtArtist.translate(&lang_now).to_string(),
+                    sto.art_artist.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::ArtworkYear.translate(&lang_now).to_string(),
+                    sto.artwork_year.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::Medium.translate(&lang_now).to_string(),
+                    sto.medium.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::Dimensions.translate(&lang_now).to_string(),
+                    sto.dimensions.clone().unwrap_or_else(dash),
+                ),
+            ]);
+        }
+        Category::Livestock => {
+            overview_entries.extend([
+                (
+                    OverviewField::FarmName.translate(&lang_now).to_string(),
+                    sto.farm_name.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::Breed.translate(&lang_now).to_string(),
+                    sto.breed.clone().unwrap_or_else(dash),
+                ),
+                (
+                    OverviewField::HeadCount.translate(&lang_now).to_string(),
+                    sto.head_count
+                        .map(|n| n.to_string())
+                        .unwrap_or_else(dash),
+                ),
+            ]);
+        }
+        _ => {}
+    };
+
+    let appraisal_entries: Option<Vec<(String, String)>> = sto.appraisal_values.as_ref().and_then(|v| {
+        let arr = v.as_array()?;
+        let entries = arr.iter().filter_map(|item| {
+            let amount = item.get("amount_억원")?.as_f64()?;
+            let appraiser = item.get("appraiser")?.as_str()?;
+            Some((appraiser.to_string(), format!("{:.2}억원", amount)))
+        }).collect::<Vec<_>>();
+        if entries.is_empty() { None } else { Some(entries) }
+    });
 
     let offering_entries: Option<Vec<(String, String)>> = sto.offering.as_ref().map(|o| {
         vec![
@@ -143,12 +237,32 @@ fn DetailBody(sto: StoDetailResponse) -> Element {
             if let Some(u) = &sto.underlying {
                 p { class: "text-sm text-foreground-muted m-0", {u.clone()} }
             }
+            if sto.category == Category::RealEstate {
+                if let Some(addr) = &sto.address {
+                    div { class: "mt-3 flex items-center gap-2 text-sm text-foreground-muted",
+                        span { class: "text-base", "📍" }
+                        span { {addr.clone()} }
+                        a {
+                            class: "ml-auto text-xs text-brand whitespace-nowrap",
+                            href: "https://map.kakao.com/?q={addr}",
+                            target: "_blank",
+                            {t.detail_map_link}
+                        }
+                    }
+                }
+            }
         }
 
         div { class: "grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-[18px]",
             div {
                 DetailPanel { title: t.detail_section_info.to_string(),
                     DetailGrid { entries: overview_entries }
+                }
+
+                if let Some(entries) = appraisal_entries {
+                    DetailPanel { title: t.detail_section_appraisal.to_string(),
+                        DetailGrid { entries }
+                    }
                 }
 
                 if let Some(entries) = offering_entries {

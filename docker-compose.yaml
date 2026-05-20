@@ -111,6 +111,31 @@ services:
       - development
       - infra
 
+  sto:
+    image: biyard/sto:${COMMIT:-latest}
+    restart: always
+    environment:
+      IP: "0.0.0.0"
+      PORT: "8085"
+      DYNAMO_TABLE_PREFIX: "biyard-local"
+      DYNAMO_ENDPOINT: "http://localstack:4566"
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      RUST_LOG: ${RUST_LOG:-info}
+    ports:
+      - "8085:8085"
+    depends_on:
+      localstack:
+        condition: service_healthy
+      sto-localstack-init:
+        condition: service_completed_successfully
+    networks:
+      - biyard-network
+    profiles:
+      - sto
+      - development
+
   # STO DynamoDB initialization (biyard-local-sto 테이블 + 시드)
   sto-localstack-init:
     image: amazonlinux:2023

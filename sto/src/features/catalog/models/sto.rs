@@ -161,31 +161,45 @@ impl Sto {
         let (artist, rights_category, trust_no, year) = meta
             .music
             .as_ref()
-            .map(|m| {
-                (
-                    m.artist.clone(),
-                    m.rights_category.clone(),
-                    m.trust_no.clone(),
-                    m.year.clone(),
-                )
-            })
+            .map(|m| (m.artist.clone(), m.rights_category.clone(), m.trust_no.clone(), m.year.clone()))
             .unwrap_or((None, None, None, None));
 
+        let re = meta.real_estate.as_ref();
+        let address = re.and_then(|r| r.address.clone());
+        let building_type = re.and_then(|r| r.building_type.clone());
+        let floor_area = re.and_then(|r| r.floor_area.clone());
+        let land_area = re.and_then(|r| r.land_area.clone());
+        let floors = re.and_then(|r| r.floors.clone());
+        let completion_date = re.and_then(|r| r.completion_date.clone());
+        let trustee = re.and_then(|r| r.trustee.clone());
+        let tenant = re.and_then(|r| r.tenant.clone());
+        let lease_term = re.and_then(|r| r.lease_term.clone());
+        let total_offering = re.and_then(|r| r.total_offering.clone());
+        let total_units_str = re.and_then(|r| r.total_units.clone());
+        let unit_price_str = re.and_then(|r| r.unit_price.clone());
+        let upfront_fee = re.and_then(|r| r.upfront_fee.clone());
+        let dividend_frequency = re.and_then(|r| r.dividend_frequency.clone());
+        let appraisal_values = re.and_then(|r| r.appraisal_values.clone());
+
+        let (art_artist, artwork_year, medium, dimensions) = meta
+            .art
+            .as_ref()
+            .map(|a| (a.artist.clone(), a.artwork_year.clone(), a.medium.clone(), a.dimensions.clone()))
+            .unwrap_or((None, None, None, None));
+
+        let (farm_name, breed, head_count) = meta
+            .livestock
+            .as_ref()
+            .map(|l| (l.farm_name.clone(), l.breed.clone(), l.head_count))
+            .unwrap_or((None, None, None));
+
         StoDetailResponse {
-            sto_id: if id.is_empty() {
-                self.sto_id.clone()
-            } else {
-                id
-            },
+            sto_id: if id.is_empty() { self.sto_id.clone() } else { id },
             name: self.name,
             underlying: self.underlying,
             category: self.category,
             country: self.country,
-            issuer_id: if self.issuer_id.is_empty() {
-                None
-            } else {
-                Some(self.issuer_id)
-            },
+            issuer_id: if self.issuer_id.is_empty() { None } else { Some(self.issuer_id) },
             issuer_name: self.issuer_name,
             security_type: self.security_type,
             classification: self.classification,
@@ -198,6 +212,28 @@ impl Sto {
             rights_category,
             trust_no,
             year,
+            address,
+            building_type,
+            floor_area,
+            land_area,
+            floors,
+            completion_date,
+            trustee,
+            tenant,
+            lease_term,
+            total_offering,
+            total_units_str,
+            unit_price_str,
+            upfront_fee,
+            dividend_frequency,
+            appraisal_values,
+            art_artist,
+            artwork_year,
+            medium,
+            dimensions,
+            farm_name,
+            breed,
+            head_count,
             offering: self.offering.map(|o| OfferingDto {
                 amount: o.amount,
                 currency: o.currency,
@@ -216,10 +252,7 @@ impl Sto {
             sources: self
                 .sources
                 .into_iter()
-                .map(|s| SourceRefDto {
-                    src: s.src,
-                    label: s.label,
-                })
+                .map(|s| SourceRefDto { src: s.src, label: s.label })
                 .collect(),
             filings,
         }
