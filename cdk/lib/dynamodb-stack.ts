@@ -49,5 +49,37 @@ export class GlobalTableStack extends Stack {
     new cdk.CfnOutput(this, "DDBTableName", {
       value: ddb.tableName,
     });
+
+    const stoTable = new dynamodb.Table(this, "StoTable", {
+      tableName: `${service}-${stage}-sto`,
+      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: true,
+      },
+      removalPolicy: RemovalPolicy.RETAIN,
+      deletionProtection: true,
+    });
+    stoTable.addGlobalSecondaryIndex({
+      indexName: "type-index",
+      projectionType: dynamodb.ProjectionType.ALL,
+      partitionKey: { name: "sk", type: dynamodb.AttributeType.STRING },
+    });
+    for (const i of [1, 2, 3, 4, 5, 6]) {
+      stoTable.addGlobalSecondaryIndex({
+        indexName: `gsi${i}-index`,
+        projectionType: dynamodb.ProjectionType.ALL,
+        partitionKey: {
+          name: `gsi${i}_pk`,
+          type: dynamodb.AttributeType.STRING,
+        },
+        sortKey: { name: `gsi${i}_sk`, type: dynamodb.AttributeType.STRING },
+      });
+    }
+
+    new cdk.CfnOutput(this, "StoTableName", {
+      value: stoTable.tableName,
+    });
   }
 }

@@ -1,0 +1,38 @@
+{
+  "name": "@biyard/widget",
+  "version": "0.1.0",
+  "description": "Drop-in Biyard claim widget as a framework-agnostic Web Component (<biyard-claim>).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./cdn": "./dist/cdn.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./dist/cdn.js"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@biyard/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@biyard/sdk": "workspace:*",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}

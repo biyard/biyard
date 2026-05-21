@@ -1,0 +1,55 @@
+{
+  "fetched_at": "2026-05-12",
+  "purpose": "1회성 발행 구조 확인 (시장 데이터 제외)",
+  "samples": [
+    {
+      "id": "2346",
+      "name": "지켜줄게 (Just as usual)",
+      "artist": "EXO (엑소)",
+      "issuer": "㈜뮤직카우인베스트",
+      "trustee": "키움증권㈜",
+      "rights": "저작권료 수익증권",
+      "url": "https://www.musicow.com/song/2346"
+    },
+    {
+      "id": "1346",
+      "name": "부끄럼",
+      "artist": "멜로망스",
+      "issuer": "㈜뮤직카우인베스트",
+      "trustee": "키움증권㈜",
+      "rights": "저작인접권",
+      "url": "https://www.musicow.com/song/1346"
+    },
+    {
+      "id": "2381",
+      "name": "말 없이",
+      "artist": "브레이브걸스",
+      "issuer": "㈜뮤직카우인베스트 (혁신금융사업자)",
+      "trustee": "키움증권㈜",
+      "rights": "저작인접권",
+      "url": "https://www.musicow.com/song/2381"
+    },
+    {
+      "id": "1157",
+      "name": "보라빛 향기",
+      "artist": "강수지",
+      "issuer": null,
+      "trustee": null,
+      "note": "fetch 권한 거부 — 시스템 가드"
+    },
+    {
+      "id": "1001",
+      "name": "인기 (Feat. 송가인, 챈슬러)",
+      "artist": "MC몽",
+      "issuer": null,
+      "trustee": null,
+      "note": "fetch 권한 거부 — 시스템 가드"
+    }
+  ],
+  "common_structure": {
+    "발행사": "㈜뮤직카우인베스트",
+    "역할": "혁신금융사업자",
+    "신탁/보관기관": "키움증권㈜",
+    "근거": "5건 중 3건 fetch 성공, 모두 동일 구조"
+  }
+}

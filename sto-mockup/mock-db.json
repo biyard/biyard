@@ -1,0 +1,880 @@
+{
+  "_schema": "biyard-sto-v1",
+  "_generated_at": "2026-05-07T12:00:00+09:00",
+  "_note": "DynamoDB 단일테이블 매핑용 mock. Phase 1 — 적재 안 함, JSON 파일로만 운영.",
+
+  "issuers": [
+    {
+      "pk": "ISSUER#kasa",
+      "sk": "META",
+      "id": "kasa",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": {
+        "value": "카사 코리아",
+        "source": "OFFICIAL",
+        "sourceUrl": "https://kasa.co.kr",
+        "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00",
+        "confidence": "high"
+      },
+      "category": {
+        "value": "real_estate",
+        "source": "OFFICIAL",
+        "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00",
+        "confidence": "high"
+      },
+      "license": {
+        "value": {
+          "type": "혁신금융서비스 정식 지정 (1호)",
+          "designatedAt": "2019-12-18"
+        },
+        "source": "FSC",
+        "sourceUrl": "https://www.fsc.go.kr/no010101",
+        "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00",
+        "confidence": "high"
+      },
+      "chain": {
+        "value": { "type": "private", "name": "K-Ledger" },
+        "source": "OFFICIAL",
+        "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00",
+        "confidence": "high"
+      },
+      "status": {
+        "value": "신규 매수 중단 · 인가 신청 중",
+        "source": "PRESS",
+        "sourceRef": "뉴스1 2025",
+        "refreshPolicy": "event",
+        "collectedAt": "2026-05-07T00:00:00+09:00",
+        "asOf": "2025",
+        "confidence": "medium"
+      },
+      "websiteUrl": "https://kasa.co.kr",
+      "gsi3_pk": "ISSUER_BY_REGION#KR",
+      "gsi3_sk": "CAT#real_estate#kasa",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#lucentblock",
+      "sk": "META",
+      "id": "lucentblock",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "루센트블록 (소유)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "real_estate", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": {
+        "value": { "type": "혁신금융서비스 지정", "designatedAt": "2021-05-12" },
+        "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high"
+      },
+      "chain": { "value": { "type": "private", "name": "컨소시엄" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "유통 인가 신청 중", "source": "PRESS", "sourceRef": "더퍼블릭 2026", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "websiteUrl": "https://sou.place",
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#real_estate#lucentblock",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#funble",
+      "sk": "META",
+      "id": "funble",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "펀블 (Funble)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "real_estate", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "혁신금융서비스 지정", "designatedAt": "2021" }, "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "chain": { "value": { "type": "private", "name": "Funble Chain" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "status": { "value": "운영 중 · 키움증권 협업", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "partnerSecurity": { "value": ["키움증권"], "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#real_estate#funble",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#musicow",
+      "sk": "META",
+      "id": "musicow",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "뮤직카우", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "music", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": {
+        "value": { "type": "혁신금융서비스 정식 지정 (사후 정리)", "designatedAt": "2022-09-15" },
+        "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high"
+      },
+      "chain": { "value": { "type": "private", "name": "프라이빗 + 미국 SEC 등록 (해외 자회사)" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 미국 진출 · NXT 컨소", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "partnerSecurity": { "value": ["신한투자증권"], "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "websiteUrl": "https://musicow.com",
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#music#musicow",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#stockeeper",
+      "sk": "META",
+      "id": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "스탁키퍼 (뱅카우)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "livestock", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "혁신금융서비스 지정", "designatedAt": "2022-05-20" }, "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "chain": { "value": { "type": "private", "name": "자체" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "status": { "value": "운영 중 · 시리즈B 70억 (2026.04)", "source": "PRESS", "sourceRef": "한국일보 2026.04", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "partnerSecurity": { "value": ["KB증권"], "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#livestock#stockeeper",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#yeolmae",
+      "sk": "META",
+      "id": "yeolmae",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "열매컴퍼니", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "art", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "투자계약증권 정식 발행" }, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 미술금융회사 도약", "source": "PRESS", "sourceRef": "더벨 2024", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#art#yeolmae",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#seoulauctionblue",
+      "sk": "META",
+      "id": "seoulauctionblue",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "서울옥션블루", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "art", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "혁신금융 지정" }, "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · NXT 컨소 MOU", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "partnerSecurity": { "value": ["신한투자증권"], "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#art#seoulauctionblue",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#togetherart",
+      "sk": "META",
+      "id": "togetherart",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "투게더아트", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "art", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "license": { "value": { "type": "혁신금융 지정 (확인 필요)" }, "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+      "status": { "value": "운영 중 · NXT 컨소 MOU", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "partnerSecurity": { "value": ["신한투자증권"], "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#art#togetherart",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#tessa",
+      "sk": "META",
+      "id": "tessa",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "name": { "value": "테사 (TESSA)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "art", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "혁신금융 지정" }, "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "위축 · 키움증권 결별 (2026.02)", "source": "PRESS", "sourceRef": "비즈한국 2026.02", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "websiteUrl": "https://tessa.art",
+      "gsi3_pk": "ISSUER_BY_REGION#KR", "gsi3_sk": "CAT#art#tessa",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#masterworks",
+      "sk": "META",
+      "id": "masterworks",
+      "region": "GLOBAL",
+      "country": "🇺🇸 미국",
+      "name": { "value": "Masterworks", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "art", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "SEC Reg A+ (일반 투자자 청약 가능)" }, "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "chain": { "value": { "type": "private", "name": "Off-chain (SEC 등록 주식)" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 누적 100+ 작품", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "websiteUrl": "https://masterworks.com",
+      "gsi3_pk": "ISSUER_BY_REGION#GLOBAL", "gsi3_sk": "CAT#art#masterworks",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#musicow-us",
+      "sk": "META",
+      "id": "musicow-us",
+      "region": "GLOBAL",
+      "country": "🇺🇸 미국",
+      "name": { "value": "Musicow Inc. (US)", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "music", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "SEC Reg A+ 등록" }, "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 첫 상품 완판 (2025.11)", "source": "PRESS", "sourceRef": "한국경제 2025.11", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#GLOBAL", "gsi3_sk": "CAT#music#musicow-us",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#anote",
+      "sk": "META",
+      "id": "anote",
+      "region": "GLOBAL",
+      "country": "🇪🇺 EU",
+      "name": { "value": "ANote Music", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "music", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "ESMA Prospectus EU 등록" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "chain": { "value": { "type": "public", "name": "Polygon" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#GLOBAL", "gsi3_sk": "CAT#music#anote",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "ISSUER#konvi",
+      "sk": "META",
+      "id": "konvi",
+      "region": "GLOBAL",
+      "country": "🇪🇺 유럽",
+      "name": { "value": "Konvi", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "category": { "value": "luxury", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "license": { "value": { "type": "EU 규제 (개별 확인)" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+      "status": { "value": "운영 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "gsi3_pk": "ISSUER_BY_REGION#GLOBAL", "gsi3_sk": "CAT#luxury#konvi",
+      "createdAt": "2026-05-07T00:00:00+09:00", "updatedAt": "2026-05-07T00:00:00+09:00"
+    }
+  ],
+
+  "stos": [
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#kasa#STO#sto-kasa-1-londonbill",
+      "id": "sto-kasa-1-londonbill",
+      "issuerId": "kasa",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "real_estate",
+      "icon": "🏢",
+      "name": { "value": "역삼 런던빌 (1호)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "카사가 발행한 1호 DABS. 강남구 역삼동 런던빌 (지하1층, 지상8층, 2019.10 완공). 임대 완료 신축 빌딩.", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "securityType": { "value": "부동산 신탁 디지털 수익증권 (DABS)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "상장·거래 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2020-12-22", "source": "PRESS", "sourceRef": "코인데스크코리아 2020.12", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": {
+        "value": {
+          "amount": 10156000000, "currency": "KRW",
+          "unitPrice": 5000, "totalUnits": 2031200,
+          "subscriptionStart": "2020-12-15",
+          "subscriptionEnd": "2020-12-22",
+          "subscriptionRate": 100
+        },
+        "source": "PRESS", "sourceRef": "이코노믹리뷰 / 카사 보도자료", "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium",
+        "notes": "DART 신고서 직접 확인 시 정확한 청약 일자 확정 필요"
+      },
+      "realEstate": {
+        "propertyName": { "value": "런던빌", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "address": { "value": "서울 강남구 역삼동 (정확 번지 미공개)", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "propertyType": { "value": "office", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "completionYear": { "value": 2019, "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "occupancyRate": { "value": null, "source": "OFFICIAL", "refreshPolicy": "semi", "refreshInterval": "quarterly", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "분기별 운용보고서에서 추출 필요" },
+        "appraisal": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "DART 증권신고서 직접 확인 필요" },
+        "trustee": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "한국토지신탁 추정" }
+      },
+      "distributions": {
+        "value": [],
+        "source": "DART", "refreshPolicy": "event",
+        "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low",
+        "notes": "DART 분배 보고 폴링 시 자동 채움. 카사 자체 IR PDF 추가 입력 필요."
+      },
+      "exchange": {
+        "listed": { "value": { "name": "카사 자체 거래소 (DABS)", "listedAt": "2020-12-22" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "lastTrade": { "value": null, "source": "EXCHANGE_KDX", "refreshPolicy": "auto", "refreshInterval": "daily", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "사업자 사이트 시세 직접 크롤링 불가 — KDX 본인가 후 합법 수집" }
+      },
+      "gsi1_pk": "CATEGORY#real_estate#KR",
+      "gsi1_sk": "ISSUED#2020-12-22#sto-kasa-1-londonbill",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#kasa#STO#sto-kasa-2-jiwell",
+      "id": "sto-kasa-2-jiwell",
+      "issuerId": "kasa",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "real_estate",
+      "icon": "🏢",
+      "name": { "value": "서초 지웰타워 12층 (2호)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "카사 2호 DABS. 공모액 40억 원, 80만 DABS, 1DABS = 5,000원. 공모 당일 완판.", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "DABS", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "공모 당일 완판 · 거래 중", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2021-07-30", "source": "PRESS", "sourceRef": "아주경제 2021.07", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": {
+        "value": {
+          "amount": 4000000000, "currency": "KRW", "unitPrice": 5000, "totalUnits": 800000,
+          "subscriptionStart": "2021-07-30", "subscriptionEnd": "2021-07-30",
+          "subscriptionRate": 100, "soldOutMinutes": null
+        },
+        "source": "PRESS", "sourceRef": "아주경제 2021.07", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "공모 당일 완판 — 정확한 분 단위 미보도"
+      },
+      "realEstate": {
+        "propertyName": { "value": "서초 지웰타워 12층", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "address": { "value": "서울 서초구", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "propertyType": { "value": "office", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" }
+      },
+      "gsi1_pk": "CATEGORY#real_estate#KR",
+      "gsi1_sk": "ISSUED#2021-07-30#sto-kasa-2-jiwell",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#lucentblock#STO#sto-lucent-11-startup-park",
+      "id": "sto-lucent-11-startup-park",
+      "issuerId": "lucentblock",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "real_estate",
+      "icon": "🏢",
+      "name": { "value": "대전 하나 스타트업파크 (소유 11호)", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "루센트블록 '소유' 11호. 지역 상업용 부동산 신탁 수익증권. 청약 완판.", "source": "PRESS", "sourceRef": "이데일리 2025.07", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "securityType": { "value": "부동산관리처분신탁 수익증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청약 완판", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2025-07-10", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": {
+        "value": { "amount": null, "currency": "KRW", "unitPrice": null, "totalUnits": null, "subscriptionRate": 100 },
+        "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "정확 모집액·단가 DART/OFFICIAL 추가 확인 필요"
+      },
+      "realEstate": {
+        "propertyName": { "value": "대전 하나 스타트업파크", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "address": { "value": "대전광역시", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "propertyType": { "value": "office", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+        "trustStructure": { "value": "관리처분신탁", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "gsi1_pk": "CATEGORY#real_estate#KR",
+      "gsi1_sk": "ISSUED#2025-07-10#sto-lucent-11-startup-park",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#musicow#STO#sto-musicow-nctdream-anl",
+      "id": "sto-musicow-nctdream-anl",
+      "issuerId": "musicow",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "music",
+      "icon": "🎵",
+      "name": { "value": "NCT DREAM 'ANL' 저작권료 참여청구권", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "뮤직카우 신탁수익증권. 2024.01.05 옥션 14,000원 → 18,200원, 6분 34초 완판. ⚠️ 검증 결과 — 뮤직카우 본사·자회사(뮤직카우에셋·포트폴리오인베스트먼트) 의 DART 공시는 감사보고서뿐, 곡별 발행공시 없음. 혁신금융서비스 특례 또는 사모형 발행으로 추정.", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "무체재산권 신탁수익증권", "source": "FSC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium", "notes": "정확한 DART 공시 출처 부재 — 혁신금융 지정문 + 보도 기반" },
+      "status": { "value": "거래 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2023-11-15", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium", "notes": "옥션 등록 시점 — DART 신고일 아님" },
+      "music": {
+        "songTitle": { "value": "ANL", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "artistName": { "value": "NCT DREAM", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "releaseYear": { "value": 2023, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "rightType": { "value": "composition", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "auctionResult": {
+          "value": { "auctionDate": "2024-01-05", "startPrice": 14000, "endPrice": 18200, "soldOutMinutes": 6.57 },
+          "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high"
+        }
+      },
+      "gsi1_pk": "CATEGORY#music#KR",
+      "gsi1_sk": "ISSUED#2023-11-15#sto-musicow-nctdream-anl",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#yeolmae#STO#sto-yeolmae-1-pumpkin",
+      "id": "sto-yeolmae-1-pumpkin",
+      "issuerId": "yeolmae",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "art",
+      "icon": "🎨",
+      "name": { "value": "쿠사마 야요이 〈호박〉 (1호)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "열매컴퍼니 투자계약증권 1호. 한국 미술품 STO 정식 발행 첫 사례 중 하나.", "source": "PRESS", "sourceRef": "더벨 2023.12", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운용 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "issuedAt": { "value": "2023-12-15", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "art": {
+        "artworkTitle": { "value": "호박 (Pumpkin)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "artistName": { "value": "쿠사마 야요이 (Yayoi Kusama)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "creationYear": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "DART 신고서 첨부에서 확인 필요" },
+        "medium": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+        "appraisal": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" }
+      },
+      "gsi1_pk": "CATEGORY#art#KR",
+      "gsi1_sk": "ISSUED#2023-12-15#sto-yeolmae-1-pumpkin",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#yeolmae#STO#sto-yeolmae-2-leeufan",
+      "id": "sto-yeolmae-2-leeufan",
+      "issuerId": "yeolmae",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "art",
+      "icon": "🎨",
+      "name": { "value": "이우환 〈점·선〉 시리즈 (2호)", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "열매컴퍼니 투자계약증권 2호. 1호 쿠사마 야요이 후속.", "source": "PRESS", "sourceRef": "더벨 2025.05", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운용 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "issuedAt": { "value": "2025-05-15", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "art": {
+        "artworkTitle": { "value": "점·선 시리즈", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "artistName": { "value": "이우환 (Lee Ufan)", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "gsi1_pk": "CATEGORY#art#KR",
+      "gsi1_sk": "ISSUED#2025-05-15#sto-yeolmae-2-leeufan",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#seoulauctionblue#STO#sto-seoulauction-warhol-dollar",
+      "id": "sto-seoulauction-warhol-dollar",
+      "issuerId": "seoulauctionblue",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "art",
+      "icon": "🎨",
+      "name": { "value": "앤디 워홀 〈Dollar Sign〉 시리즈", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운용 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "issuedAt": { "value": "2023-11-08", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "art": {
+        "artworkTitle": { "value": "Dollar Sign", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "artistName": { "value": "Andy Warhol (앤디 워홀)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "gsi1_pk": "CATEGORY#art#KR",
+      "gsi1_sk": "ISSUED#2023-11-08#sto-seoulauction-warhol-dollar",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-1-1",
+      "id": "sto-bancow-1-1",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "가축투자계약증권 제1-1호 (계림농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "스탁키퍼 가축투자계약증권 제1-1호. 계림농장 한우 50두. 532일 운용 후 청산. 매각순액 481,191,510원, 수익률 11.2% (연환산 7.7%).", "source": "DART", "sourceRef": "DART rcept 20260414002068 정정신고서 청산 표", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청산 완료", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2024-07-05", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high", "notes": "스탁키퍼 정정신고서 — 청산 결과표 출처" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": {
+        "value": { "amount": 432600000, "currency": "KRW" },
+        "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high"
+      },
+      "livestock": {
+        "lotName": { "value": "제1-1호 (계림농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": 50, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "farmName": { "value": "계림농장", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": "2025-12-19",
+          "salePrice": 492197964,
+          "currency": "KRW",
+          "reason": "운용기간 종료 매각",
+          "reportedYieldPercent": 11.2,
+          "reportedYieldType": "total",
+          "reportedYieldSource": "DART 스탁키퍼 정정신고서 (rcept 20260414002068) 청산 결과표",
+          "reportedYieldSourceUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068"
+        },
+        "source": "DART", "refreshPolicy": "event",
+        "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "운용기간 532일, 매각총액 492,197,964원, 매각순액 481,191,510원, 연환산수익률 7.7%"
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2024-07-05#sto-bancow-1-1",
+      "gsi5_pk": "STO_BY_STATUS#청산완료",
+      "gsi5_sk": "TS#2025-12-19#sto-bancow-1-1",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-1-2",
+      "id": "sto-bancow-1-2",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "가축투자계약증권 제1-2호 (계림농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "계림농장 한우 50두. 519일 운용 후 청산. 매각순액 482,499,848원, 수익률 11.1% (연환산 7.8%).", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청산 완료", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2024-07-22", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": { "value": { "amount": 434200000, "currency": "KRW" }, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "livestock": {
+        "lotName": { "value": "제1-2호 (계림농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": 50, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "farmName": { "value": "계림농장", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": "2025-12-23", "salePrice": 493288363, "currency": "KRW",
+          "reason": "운용기간 종료 매각",
+          "reportedYieldPercent": 11.1, "reportedYieldType": "total",
+          "reportedYieldSource": "DART rcept 20260414002068",
+          "reportedYieldSourceUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068"
+        },
+        "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "운용기간 519일, 매각순액 482,499,848원, 연환산수익률 7.8%"
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2024-07-22#sto-bancow-1-2",
+      "gsi5_pk": "STO_BY_STATUS#청산완료",
+      "gsi5_sk": "TS#2025-12-23#sto-bancow-1-2",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-2-1",
+      "id": "sto-bancow-2-1",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "가축투자계약증권 제2-1호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "충만농장 한우 44두. 398일 운용 후 청산. 매각순액 423,605,086원, 수익률 11.3% (연환산 10.4%).", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청산 완료", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2024-10-25", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": { "value": { "amount": 380540000, "currency": "KRW" }, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "livestock": {
+        "lotName": { "value": "제2-1호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": 44, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "farmName": { "value": "충만농장", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": "2025-11-27", "salePrice": 432574442, "currency": "KRW",
+          "reason": "운용기간 종료 매각",
+          "reportedYieldPercent": 11.3, "reportedYieldType": "total",
+          "reportedYieldSource": "DART rcept 20260414002068",
+          "reportedYieldSourceUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068"
+        },
+        "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "운용기간 398일, 매각순액 423,605,086원, 연환산수익률 10.4%"
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2024-10-25#sto-bancow-2-1",
+      "gsi5_pk": "STO_BY_STATUS#청산완료",
+      "gsi5_sk": "TS#2025-11-27#sto-bancow-2-1",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-2-2",
+      "id": "sto-bancow-2-2",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "가축투자계약증권 제2-2호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "충만농장 한우 44두. 385일 운용 후 청산. 매각순액 433,476,682원, 수익률 14.1% (연환산 13.3%).", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청산 완료", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2024-11-07", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": { "value": { "amount": 380000000, "currency": "KRW" }, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "livestock": {
+        "lotName": { "value": "제2-2호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": 44, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "farmName": { "value": "충만농장", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": "2025-11-27", "salePrice": 442630799, "currency": "KRW",
+          "reason": "운용기간 종료 매각",
+          "reportedYieldPercent": 14.1, "reportedYieldType": "total",
+          "reportedYieldSource": "DART rcept 20260414002068",
+          "reportedYieldSourceUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068"
+        },
+        "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "운용기간 385일, 매각순액 433,476,682원, 연환산수익률 13.3%"
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2024-11-07#sto-bancow-2-2",
+      "gsi5_pk": "STO_BY_STATUS#청산완료",
+      "gsi5_sk": "TS#2025-11-27#sto-bancow-2-2",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-2-3",
+      "id": "sto-bancow-2-3",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "가축투자계약증권 제2-3호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "충만농장 한우 43두. 371일 운용 후 청산. 매각순액 435,793,707원, 수익률 17.0% (연환산 16.7%) — 5건 중 최고 수익률.", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "청산 완료", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2024-11-22", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": { "value": { "amount": 372440000, "currency": "KRW" }, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "livestock": {
+        "lotName": { "value": "제2-3호 (충만농장)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": 43, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "farmName": { "value": "충만농장", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": "2025-11-28", "salePrice": 452387200, "currency": "KRW",
+          "reason": "운용기간 종료 매각",
+          "reportedYieldPercent": 17.0, "reportedYieldType": "total",
+          "reportedYieldSource": "DART rcept 20260414002068",
+          "reportedYieldSourceUrl": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260414002068"
+        },
+        "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "운용기간 371일, 매각순액 435,793,707원, 연환산수익률 16.7%"
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2024-11-22#sto-bancow-2-3",
+      "gsi5_pk": "STO_BY_STATUS#청산완료",
+      "gsi5_sk": "TS#2025-11-28#sto-bancow-2-3",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-8",
+      "id": "sto-bancow-8",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "뱅카우 8호 (제8-1·제8-2 합산 발행)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "스탁키퍼 가축투자계약증권 제8-1호 30,367주 + 제8-2호 30,547주 합산 발행. 신고서 2026.03.26 제출, 효력 2026.03.27 발생.", "source": "DART", "sourceRef": "DART rcept_no 20260326001272", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "발행 진행", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2026-03-26", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "dartRcptNo": { "value": "20260326001272", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "prospectusUrl": { "value": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260326001272", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "offering": {
+        "value": {
+          "amount": 1218220000, "currency": "KRW",
+          "totalUnits": 60914,
+          "subscriptionStart": null, "subscriptionEnd": null
+        },
+        "source": "DART", "sourceRef": "스탁키퍼 증권신고서(투자계약증권) 2026.03.26", "refreshPolicy": "static",
+        "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high",
+        "notes": "8-1호 30,367주 + 8-2호 30,547주 합산. 1주당 단가는 신고서 본문 추가 파싱 필요"
+      },
+      "livestock": {
+        "lotName": { "value": "뱅카우 8호 (8-1 + 8-2)", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "cattleCount": { "value": null, "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "신고서 본문 파싱 필요" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "feedingPeriodMonths": { "value": 24, "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" }
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2026-03-26#sto-bancow-8",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#KR",
+      "sk": "ISSUER#stockeeper#STO#sto-bancow-series-summary",
+      "id": "sto-bancow-series-summary",
+      "issuerId": "stockeeper",
+      "region": "KR",
+      "country": "🇰🇷 한국",
+      "category": "livestock",
+      "icon": "🐄",
+      "name": { "value": "뱅카우 시리즈 요약 (1~8호)", "source": "DART", "refreshPolicy": "auto", "refreshInterval": "monthly", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "DART 폴링 결과 — 스탁키퍼는 2023.12 ~ 2026.04 동안 49건의 발행공시 등록 (증권신고서 + 정정 + 발행실적 + 투자설명서 사이클). 1~8호 발행 확인.", "source": "DART", "refreshPolicy": "auto", "refreshInterval": "weekly", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "가축투자계약증권", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 분기마다 신규 호 발행", "source": "DART", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2023-12-29", "source": "DART", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high", "notes": "DART 등록 첫 신고서 2023-12-29 — 그 이전 1호는 혁신금융 시범기로 DART 미등록 추정" },
+      "livestock": {
+        "lotName": { "value": "1~8호 (회차별 분리 백필 대상)", "source": "DART", "refreshPolicy": "auto", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "breed": { "value": "한우 거세우", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "feedingPeriodMonths": { "value": 24, "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" }
+      },
+      "gsi1_pk": "CATEGORY#livestock#KR",
+      "gsi1_sk": "ISSUED#2023-12-29#sto-bancow-series-summary",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#GLOBAL",
+      "sk": "ISSUER#masterworks#STO#sto-masterworks-bluechips",
+      "id": "sto-masterworks-bluechips",
+      "issuerId": "masterworks",
+      "region": "GLOBAL",
+      "country": "🇺🇸 미국",
+      "category": "art",
+      "icon": "🎨",
+      "name": { "value": "Masterworks 블루칩 미술품 시리즈 (LLC 100+)", "source": "SEC", "refreshPolicy": "auto", "refreshInterval": "monthly", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "뱅크시·바스키아·워홀 등 블루칩 미술품 토큰화. 작품당 1개 LLC. 일부 작품 매각·청산 완료.", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "SEC Reg A+ (LLC 지분)", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "운영 중 · 누적 100+ 작품 · 일부 매각 청산", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2017-12", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "art": {
+        "artistName": { "value": "Banksy / Basquiat / Warhol 등 블루칩", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" }
+      },
+      "liquidation": {
+        "value": {
+          "liquidatedAt": null,
+          "salePrice": null,
+          "currency": "USD",
+          "reason": "기간 도래 매각 (작품별)",
+          "reportedYieldPercent": null,
+          "reportedYieldType": "annualized",
+          "reportedYieldSource": "Masterworks 'Exited Works' (masterworks.com/exited)",
+          "reportedYieldSourceUrl": "https://www.masterworks.com/exited"
+        },
+        "source": "OFFICIAL", "refreshPolicy": "event",
+        "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium",
+        "notes": "Masterworks 발표 — 작품별 평균 IRR 별도 페이지 공시. 작품 단위 분리 백필 대상."
+      },
+      "gsi1_pk": "CATEGORY#art#GLOBAL",
+      "gsi1_sk": "ISSUED#2017-12-01#sto-masterworks-bluechips",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#GLOBAL",
+      "sk": "ISSUER#musicow-us#STO#sto-musicow-us-1-kpop-catalog",
+      "id": "sto-musicow-us-1-kpop-catalog",
+      "issuerId": "musicow-us",
+      "region": "GLOBAL",
+      "country": "🇺🇸 미국",
+      "category": "music",
+      "icon": "🎵",
+      "name": { "value": "Musicow US 1차 K-pop 카탈로그", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "한국 뮤직카우의 미국 SEC Reg A+ 첫 발행 상품. K-pop 음원 카탈로그. 완판.", "source": "PRESS", "sourceRef": "한국경제 2025.11", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "SEC Reg A+", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "status": { "value": "완판 · 운용 중", "source": "PRESS", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "issuedAt": { "value": "2025-11-20", "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "music": {
+        "catalogName": { "value": "1차 K-pop 카탈로그", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "artistName": { "value": "복수 아티스트 (구체 명단 미공개)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+        "rightType": { "value": "master_recording", "source": "SEC", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" }
+      },
+      "offering": {
+        "value": { "amount": null, "currency": "USD", "subscriptionRate": 100 },
+        "source": "PRESS", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium"
+      },
+      "gsi1_pk": "CATEGORY#music#GLOBAL",
+      "gsi1_sk": "ISSUED#2025-11-20#sto-musicow-us-1-kpop-catalog",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#GLOBAL",
+      "sk": "ISSUER#anote#STO#sto-anote-catalog-series",
+      "id": "sto-anote-catalog-series",
+      "issuerId": "anote",
+      "region": "GLOBAL",
+      "country": "🇪🇺 EU",
+      "category": "music",
+      "icon": "🎵",
+      "name": { "value": "ANote Music 카탈로그 시리즈", "source": "OFFICIAL", "refreshPolicy": "auto", "refreshInterval": "monthly", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "음원 카탈로그 단위 토큰화 플랫폼. EU ESMA Prospectus. 카탈로그 단위 SPV로 분산 효과.", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "ESMA Prospectus 등록", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "status": { "value": "운영 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "issuedAt": { "value": "2021-06", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "chain": { "value": { "type": "public", "name": "Polygon" }, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "music": {
+        "catalogName": { "value": "카탈로그 단위 발행 (다건)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" }
+      },
+      "gsi1_pk": "CATEGORY#music#GLOBAL",
+      "gsi1_sk": "ISSUED#2021-06-01#sto-anote-catalog-series",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    },
+    {
+      "pk": "STO#GLOBAL",
+      "sk": "ISSUER#konvi#STO#sto-konvi-luxury-series",
+      "id": "sto-konvi-luxury-series",
+      "issuerId": "konvi",
+      "region": "GLOBAL",
+      "country": "🇪🇺 유럽",
+      "category": "luxury",
+      "icon": "⌚",
+      "name": { "value": "Konvi 명품 시리즈 (시계·와인·자동차)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "description": { "value": "고급 시계·와인·자동차 등 명품 자산 분할 소유 플랫폼. 롤렉스·파텍 필립·빈티지 와인·자동차.", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+      "securityType": { "value": "EU 규제 (개별 확인)", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+      "status": { "value": "운영 중", "source": "OFFICIAL", "refreshPolicy": "event", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "issuedAt": { "value": "2021", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium" },
+      "luxury": {
+        "itemCategory": { "value": "watch", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "medium", "notes": "다중 카테고리 — watch/wine/car" },
+        "brand": { "value": "Rolex / Patek Philippe / Ferrari 등", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "high" },
+        "model": { "value": "다건", "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low" },
+        "purchasePrice": { "value": null, "source": "OFFICIAL", "refreshPolicy": "static", "collectedAt": "2026-05-07T00:00:00+09:00", "confidence": "low", "notes": "개별 자산 분리 필요" }
+      },
+      "gsi1_pk": "CATEGORY#luxury#GLOBAL",
+      "gsi1_sk": "ISSUED#2021-01-01#sto-konvi-luxury-series",
+      "createdAt": "2026-05-07T00:00:00+09:00",
+      "updatedAt": "2026-05-07T00:00:00+09:00"
+    }
+  ],
+
+  "_stats": {
+    "issuers_total": 13,
+    "issuers_kr": 9,
+    "issuers_global": 4,
+    "stos_total": 18,
+    "stos_kr": 14,
+    "stos_global": 4,
+    "scope_policy": "한국 시행 가능한 발행 구조에 한정. LLC 지분 토큰화 (RealT 등) 는 한국 미허용 — 수집 대상에서 제외. Masterworks 는 자산 카테고리(미술품) 비교군으로만 유지.",
+    "stos_liquidated": 5,
+    "stos_with_liquidation_field": 6,
+    "stos_with_dart_yield_data": 5,
+    "categories_covered": ["real_estate", "music", "art", "livestock", "luxury"],
+    "yield_policy": "DB 에는 발행사·DART·SEC 가 직접 공시한 reportedYield 만 저장. 우리 자체 계산 IRR 저장 금지. UI 표시 시 산식·입력값 출처 명시.",
+    "dart_findings": {
+      "verified_corp_codes": {
+        "kasa": "01353945 (카사코리아) — 19건 공시, 대부분 대규모기업집단공시",
+        "yeolmae": "01645448 (열매컴퍼니) — 49건, 투자설명서·발행실적보고서 다수",
+        "stockeeper": "01760118 (스탁키퍼) — 54건, 가축투자계약증권 신고+정정+발행실적+투자설명서 사이클",
+        "seoulauctionblue": "01296534 (서울옥션블루) — 18건",
+        "togetherart": "01721933 (투게더아트) — 46건, 투자계약증권",
+        "tessa": "01995848 (테사) — 0건, DART 미등록"
+      },
+      "musicow_dart_status": "뮤직카우 본사(01560095)·자회사(01599495·01738058) 모두 감사보고서만 등록. 곡별 발행공시 부재. 사모 또는 혁신금융 특례로 DART 공시 의무 면제 추정.",
+      "first_real_filing_cached": "rcept_no 20260326001272 (스탁키퍼 가축투자계약증권 제8호) — 2.9MB 다운로드 후 ./.dart-cache 저장",
+      "cache_strategy": "신규 발행만 DART 호출. 본문은 S3 또는 로컬 fs 1회 다운로드 후 영구 캐시. dart-collector 의 cache::FilingCache 트레이트 + sync_new_filings()."
+    },
+    "todo": [
+      "sto-bancow-8: 신고서 본문 파싱 (사육 마릿수·1주 단가·청약 일정·예상 출하가) — 캐시된 rcept 20260326001272 활용",
+      "스탁키퍼 1~7호 별도 분리 — DART 49건 메타에서 호 별 추출",
+      "sto-kasa-1-londonbill: appraisal/trustee/occupancyRate/distributions (DART 신고서·카사 IR PDF)",
+      "sto-kasa-recent-2024 분리 (상암235·그레인바운더리·북촌 월하재)",
+      "sto-funble 개별 자산 분리 — corp_code DART 미등록 (펀블 0건). 자체 IR PDF 수기 확인 필요",
+      "sto-bancow-1: 매각가·도축등급·수익률 정량 수치 (DART 정산보고서 직접 확인)",
+      "sto-musicow-catalog: DART 미등록 — 뮤직카우 자체 옥션 페이지 fair-use 인용 검토",
+      "sto-masterworks: 작품 단위 분리 (100+) — SEC EDGAR 폴링 자동",
+      "sto-masterworks 청산 작품별 매각가·IRR (SEC 8-K + masterworks.com/exited)",
+      "공시 수익률 백필 — DART 정산보고서 / 발행사 IR PDF 수동 1차"
+    ]
+  }
+}

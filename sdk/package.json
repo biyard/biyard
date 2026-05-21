@@ -1,0 +1,16 @@
+{
+  "name": "biyard-sdk-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Biyard JavaScript SDK monorepo (core + react + examples).",
+  "scripts": {
+    "build": "pnpm -r --filter './packages/*' build",
+    "dev": "pnpm -r --parallel --filter './packages/*' dev",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r exec rm -rf dist .turbo node_modules/.cache"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@10.15.0"
+}

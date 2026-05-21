@@ -1,0 +1,66 @@
+services:
+  localstack:
+    hostname: localstack
+    image: localstack/localstack:4.3.0
+    ports:
+      - "4567:4566"
+    environment:
+      SERVICES: dynamodb
+      DYNAMODB_SHARE_DB: 1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - sto-network
+
+  sto-init:
+    image: amazonlinux:2023
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      DYNAMO_ENDPOINT: http://localstack:4566
+    volumes:
+      - ../scripts:/scripts
+    command: ["bash", "/scripts/sto-init-entrypoint.sh"]
+    depends_on:
+      localstack:
+        condition: service_healthy
+    networks:
+      - sto-network
+
+  sto:
+    build:
+      context: ..
+      dockerfile: sto/Dockerfile
+      args:
+        DYNAMO_TABLE_PREFIX: biyard-local
+    image: biyard/sto:latest
+    ports:
+      - "8085:8085"
+    environment:
+      IP: "0.0.0.0"
+      PORT: "8085"
+      DYNAMO_TABLE_PREFIX: biyard-local
+      DYNAMO_ENDPOINT: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_REGION: us-east-1
+      RUST_LOG: ${RUST_LOG:-info}
+    depends_on:
+      localstack:
+        condition: service_healthy
+      sto-init:
+        condition: service_completed_successfully
+    networks:
+      - sto-network
+
+networks:
+  sto-network:
+    driver: bridge

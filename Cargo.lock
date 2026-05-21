@@ -1212,6 +1212,7 @@ dependencies = [
  "aws-credential-types",
  "aws-sdk-dynamodb",
  "aws-sdk-s3",
+ "axum",
  "base64 0.22.1",
  "bcrypt",
  "by-macros",
@@ -1224,9 +1225,11 @@ dependencies = [
  "getrandom 0.4.2",
  "gloo-timers 0.3.0",
  "hex",
+ "hyper 1.7.0",
  "inventory",
  "js-sys",
  "lambda_http",
+ "once_cell",
  "percent-encoding",
  "rand 0.10.0",
  "reqwest 0.12.24",
@@ -1240,6 +1243,7 @@ dependencies = [
  "sha3",
  "thiserror 2.0.17",
  "tokio",
+ "tower",
  "tower-sessions",
  "tracing",
  "tracing-subscriber",
@@ -4746,7 +4750,7 @@ dependencies = [
 name = "parity-scale-codec"
 version = "3.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "799781ae679d79a948e13d4824a40970bfa500058d245760dd857301059810fa"
+checksum = "799781ae679d79a948e13d4824a40970bfa500058d245760dd857300059810fa"
 dependencies = [
  "arrayvec",
  "bitvec",
@@ -6290,6 +6294,42 @@ name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
+
+[[package]]
+name = "sto"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "aws-config",
+ "aws-credential-types",
+ "aws-sdk-dynamodb",
+ "base64 0.22.1",
+ "by-macros",
+ "chrono",
+ "dioxus",
+ "dioxus-cli-config",
+ "dioxus-translate",
+ "getrandom 0.4.2",
+ "gloo-timers 0.3.0",
+ "js-sys",
+ "lambda_http",
+ "percent-encoding",
+ "schemars 1.2.1",
+ "serde",
+ "serde-wasm-bindgen",
+ "serde_dynamo",
+ "serde_json",
+ "serde_with",
+ "thiserror 2.0.17",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "tracing-wasm",
+ "uuid 1.18.1",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
 
 [[package]]
 name = "string_cache"

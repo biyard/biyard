@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@source "./src/**/*.{rs,css}";
+
+/* ============================================================================
+ * Biyard STO Theme — sourced from the mock design (sto-mockup/).
+ *
+ *   Brand:   #00e5a0 mint-teal (dark) / #00b89e (light) — single visual accent
+ *   Base:    deep navy (#0a0e14 family) for dark / slate-50 for light
+ *
+ * All color references in components go through these tokens. mock-components.css
+ * uses var(--color-*) only — never mock-specific --bg / --panel / --ink etc.
+ * Dark is default. Light is opt-in via `data-theme="light"` on <html>.
+ * ============================================================================ */
+
+@theme {
+    --font-display: "Pretendard", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Pretendard", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    /* Surfaces */
+    --color-background: #0a0e14;
+    --color-background-muted: #11161f;
+    --color-panel: #151b26;
+    --color-panel-muted: #1b2230;
+    --color-panel-strong: #232b3c;
+
+    --color-border: #232b3c;
+    --color-border-strong: #2f3a52;
+
+    --color-foreground: #e8edf5;
+    --color-foreground-soft: #b6c0d1;
+    --color-foreground-muted: #7a8699;
+
+    /* Brand */
+    --color-brand: #00e5a0;
+    --color-brand-strong: #00b27c;
+    --color-brand-soft: rgba(0, 229, 160, 0.12);
+    --color-brand-contrast: #001b12;
+
+    /* Semantic */
+    --color-success: #00e5a0;
+    --color-success-soft: rgba(0, 229, 160, 0.12);
+    --color-warning: #ffb547;
+    --color-warning-soft: rgba(255, 181, 71, 0.12);
+    --color-danger: #ff5f6d;
+    --color-danger-soft: rgba(255, 95, 109, 0.12);
+    --color-info: #5eb0ff;
+    --color-info-soft: rgba(94, 176, 255, 0.12);
+
+    /* Sidebar (kept for shared dx components) */
+    --color-sidebar: #010204;
+    --color-sidebar-panel: #0a0e15;
+    --color-sidebar-foreground: #e8edf5;
+    --color-sidebar-muted: #7a8699;
+    --color-sidebar-border: #232b3c;
+}
+
+:root {
+    color-scheme: dark;
+
+    /* Non-color mock tokens (radius / shadow / backdrop) */
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    --backdrop: rgba(10, 14, 20, 0.85);
+}
+
+/* ----------------------------------------------------------------------------
+ * Light theme — opt-in via data-theme="light".
+ * Sourced from sto-mockup/styles.css light variant.
+ * ---------------------------------------------------------------------------- */
+html[data-theme="light"] {
+    color-scheme: light;
+
+    --color-background: #f8fafc;
+    --color-background-muted: #ffffff;
+    --color-panel: #ffffff;
+    --color-panel-muted: #f1f5f9;
+    --color-panel-strong: #e2e8f0;
+
+    --color-border: #e2e8f0;
+    --color-border-strong: #cbd5e1;
+
+    --color-foreground: #0f172a;
+    --color-foreground-soft: #334155;
+    --color-foreground-muted: #64748b;
+
+    --color-brand: #00b89e;
+    --color-brand-strong: #009480;
+    --color-brand-soft: rgba(0, 184, 158, 0.12);
+    --color-brand-contrast: #ffffff;
+
+    --color-success: #059669;
+    --color-success-soft: rgba(5, 150, 105, 0.12);
+    --color-warning: #d97706;
+    --color-warning-soft: rgba(217, 119, 6, 0.12);
+    --color-danger: #dc2626;
+    --color-danger-soft: rgba(220, 38, 38, 0.12);
+    --color-info: #2563eb;
+    --color-info-soft: rgba(37, 99, 235, 0.12);
+
+    --color-sidebar: #0f172a;
+    --color-sidebar-panel: #1e293b;
+    --color-sidebar-foreground: #f1f5f9;
+    --color-sidebar-muted: #94a3b8;
+    --color-sidebar-border: #334155;
+
+    --shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+    --backdrop: rgba(255, 255, 255, 0.85);
+}
+
+body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+}
+
+::selection {
+    background: var(--color-brand);
+    color: var(--color-brand-contrast);
+}

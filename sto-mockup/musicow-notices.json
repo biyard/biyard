@@ -1,0 +1,139 @@
+{
+  "generated_at": "2026-05-12",
+  "method": "Playwright headless browser (사용자 브라우저와 동일한 트래픽) — 5건 1회성 fetch",
+  "source": "musicow.com/song/notice/{notice_id} — JS 렌더링 후 Vue data 객체에서 files 배열 추출",
+  "note": "PDF URL 은 cdn.musicow.com 공개 정적 파일. 원본 보기 채널로만 사용 (재가공 X).",
+  "total": 5,
+  "notices": [
+    {
+      "song_id": "2346",
+      "notice_id": "727",
+      "title": "지켜줄게 음악 수익증권 발행 안내",
+      "recdate": "2023-09-19 17:43:21",
+      "notice_page_url": "https://www.musicow.com/song/notice/727",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/4251e95c.pdf",
+          "name": "수익증권 안내문(재산권-678호).pdf",
+          "size": 415304
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/28e87fd2.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-678호).pdf",
+          "size": 1283961
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/35e3ac3a.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "trustNo": "재산권-678",
+      "rightsType": "저작재산권"
+    },
+    {
+      "song_id": "1157",
+      "notice_id": "475",
+      "title": "보라빛 향기 음악 수익증권 발행 안내",
+      "recdate": "2023-09-19 16:41:42",
+      "notice_page_url": "https://www.musicow.com/song/notice/475",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/6b6015d4.pdf",
+          "name": "수익증권 안내문(재산권-580호).pdf",
+          "size": 447845
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/5721ef23.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-580호).pdf",
+          "size": 1557524
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/deb0b7ab.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "trustNo": "재산권-580",
+      "rightsType": "저작재산권"
+    },
+    {
+      "song_id": "1001",
+      "notice_id": "580",
+      "title": "인기 음악 수익증권 발행 안내",
+      "recdate": "2023-09-19 17:16:36",
+      "notice_page_url": "https://www.musicow.com/song/notice/580",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/63472f38.pdf",
+          "name": "수익증권 안내문(재산권-929호).pdf",
+          "size": 418509
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/85de4470.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(재산권-929호).pdf",
+          "size": 1272277
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/c3aaba35.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_재산권.pdf",
+          "size": 2630547
+        }
+      ],
+      "trustNo": "재산권-929",
+      "rightsType": "저작재산권"
+    },
+    {
+      "song_id": "1346",
+      "notice_id": "266",
+      "title": "부끄럼 음악 수익증권 발행 안내",
+      "recdate": "2023-09-19 15:53:41",
+      "notice_page_url": "https://www.musicow.com/song/notice/266",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/bc1cd486.pdf",
+          "name": "수익증권 안내문(인접권-277호).pdf",
+          "size": 397186
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/9e31d9cd.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(인접권-277호).pdf",
+          "size": 1198739
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/878e89b2.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_인접권.pdf",
+          "size": 2710364
+        }
+      ],
+      "trustNo": "인접권-277",
+      "rightsType": "저작인접권"
+    },
+    {
+      "song_id": "2381",
+      "notice_id": "755",
+      "title": "말 없이 음악 수익증권 발행 안내",
+      "recdate": "2023-09-19 17:47:17",
+      "notice_page_url": "https://www.musicow.com/song/notice/755",
+      "files": [
+        {
+          "url": "https://cdn.musicow.com/song/230919/f244304d.pdf",
+          "name": "수익증권 안내문(인접권-161호).pdf",
+          "size": 389335
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230919/5ec74660.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁계약서(인접권-161호).pdf",
+          "size": 1210686
+        },
+        {
+          "url": "https://cdn.musicow.com/song/230926/da422e9b.pdf",
+          "name": "저작재산권(저작인접권)관리처분신탁_기본계약서(수익증권 발행-대체용)_인접권.pdf",
+          "size": 2710364
+        }
+      ],
+      "trustNo": "인접권-161",
+      "rightsType": "저작인접권"
+    }
+  ]
+}
