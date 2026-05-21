@@ -1,0 +1,294 @@
+/* Le Mouton Demo Page — styles */
+
+:root {
+  --lm-bg: #FAF7F2;
+  --lm-surface: #FFFFFF;
+  --lm-text: #2C2420;
+  --lm-text-soft: #6B5D52;
+  --lm-accent: #8B7355;
+  --lm-soft: #D4C5B0;
+  --lm-border: #E8E0D3;
+  --lm-danger: #C65D47;
+
+  --by-bg: #020408;
+  --by-primary: #00dfc0;
+  --by-secondary: #7000ff;
+}
+
+.demo-page {
+  min-height: 100vh;
+  background: #0a0d12;
+  color: #e2e8f0;
+  font-family: 'Noto Sans KR', -apple-system, system-ui, sans-serif;
+}
+
+/* Top nav bar — back to landing */
+.demo-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 13, 18, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 14px 24px;
+}
+
+/* Section wrappers */
+.demo-section {
+  position: relative;
+  padding: 80px 24px;
+}
+
+.demo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Legend badge */
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.legend-lm {
+  background: rgba(139, 115, 85, 0.1);
+  border: 1px solid rgba(139, 115, 85, 0.25);
+  color: #D4C5B0;
+}
+
+.legend-by {
+  background: rgba(0, 223, 192, 0.08);
+  border: 1px solid rgba(0, 223, 192, 0.3);
+  color: var(--by-primary);
+}
+
+/* Phone frame */
+.phone-frame {
+  width: 380px;
+  height: 780px;
+  background: #1a1a1a;
+  border-radius: 48px;
+  padding: 14px;
+  box-shadow:
+    0 0 0 2px #2a2a2a,
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    0 0 100px rgba(0, 223, 192, 0.08);
+  position: relative;
+}
+
+.phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  background: var(--lm-bg);
+}
+
+.phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 28px;
+  background: #1a1a1a;
+  border-radius: 18px;
+  z-index: 10;
+}
+
+/* Biyard overlay indicator on screens */
+.biyard-zone {
+  position: relative;
+  border: 2px solid var(--by-primary);
+  border-radius: 16px;
+  box-shadow: 0 0 24px rgba(0, 223, 192, 0.2), inset 0 0 30px rgba(0, 223, 192, 0.04);
+  background: linear-gradient(135deg, rgba(2, 4, 8, 0.96) 0%, rgba(10, 20, 28, 0.96) 100%);
+}
+
+.biyard-badge {
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  background: var(--by-primary);
+  color: #020408;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 5;
+  box-shadow: 0 0 16px rgba(0, 223, 192, 0.4);
+}
+
+/* Le Mouton app UI primitives */
+.lm-header {
+  background: var(--lm-surface);
+  padding: 16px;
+  border-bottom: 1px solid var(--lm-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lm-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--lm-text);
+}
+
+.lm-card {
+  background: var(--lm-surface);
+  border: 1px solid var(--lm-border);
+  border-radius: 8px;
+}
+
+.lm-btn {
+  background: var(--lm-text);
+  color: var(--lm-bg);
+  font-weight: 600;
+  padding: 14px 24px;
+  border-radius: 4px;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* Scenario step controller */
+.step-controller {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.step-btn {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.step-btn.active {
+  background: rgba(0, 223, 192, 0.1);
+  border-color: var(--by-primary);
+  color: var(--by-primary);
+  box-shadow: 0 0 20px rgba(0, 223, 192, 0.2);
+}
+
+.step-btn.lm-step {
+  border-color: rgba(212, 197, 176, 0.3);
+}
+
+.step-btn.lm-step.active {
+  background: rgba(212, 197, 176, 0.1);
+  color: #D4C5B0;
+  border-color: #D4C5B0;
+  box-shadow: 0 0 20px rgba(212, 197, 176, 0.2);
+}
+
+/* Callout arrows */
+.callout {
+  position: absolute;
+  background: rgba(0, 223, 192, 0.95);
+  color: #020408;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  max-width: 200px;
+}
+
+.callout::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+}
+
+.callout-left::after {
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 8px;
+  border-color: transparent transparent transparent rgba(0, 223, 192, 0.95);
+}
+
+.callout-right::after {
+  top: 50%;
+  left: -8px;
+  transform: translateY(-50%);
+  border-width: 6px 8px 6px 0;
+  border-color: transparent rgba(0, 223, 192, 0.95) transparent transparent;
+}
+
+/* Paradigm shift section */
+.paradigm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .paradigm-grid {
+    grid-template-columns: 1fr;
+  }
+  .phone-frame {
+    width: 320px;
+    height: 680px;
+  }
+}
+
+.paradigm-card {
+  padding: 32px;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+}
+
+.paradigm-before {
+  background: rgba(255, 77, 77, 0.04);
+  border: 1px solid rgba(255, 77, 77, 0.15);
+}
+
+.paradigm-after {
+  background: rgba(0, 223, 192, 0.04);
+  border: 1px solid rgba(0, 223, 192, 0.2);
+}
+
+/* Fandom section */
+.fandom-hero-text {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.fandom-card {
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+}
+
+.gradient-text-mint {
+  background: linear-gradient(135deg, #00dfc0, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

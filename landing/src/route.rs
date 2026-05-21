@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::pages::{Dao, Home, Pricing, SignIn, Team, Wallet};
+use crate::pages::{Dao, Home, LemoutonDemo, Pricing, SignIn, Team, Wallet};
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 pub enum Route {
@@ -16,4 +16,6 @@ pub enum Route {
     Team {},
     #[route("/pricing")]
     Pricing {},
+    #[route("/demo/lemouton")]
+    LemoutonDemo {},
 }
