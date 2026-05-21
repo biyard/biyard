@@ -1,0 +1,11 @@
+[application]
+
+[web.app]
+title = "Biyard STO"
+
+[web.resource]
+style = []
+script = []
+
+[web.resource.dev]
+script = []

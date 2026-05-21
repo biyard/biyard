@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STO 시장 · Biyard</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=26" />
+  </head>
+  <body>
+    <main class="page">
+      <!-- FILTERS -->
+      <section class="panel" style="margin-bottom: 16px; padding: 16px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="자산명·발행사·기초자산 검색..."
+            style="flex: 1; min-width: 240px; padding: 9px 13px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font-size: 13px;"
+          />
+
+          <div style="display: flex; gap: 4px;">
+            <button class="filter-btn region-btn active" data-region="all">전체</button>
+            <button class="filter-btn region-btn" data-region="KR">🇰🇷 한국</button>
+            <button class="filter-btn region-btn" data-region="GLOBAL">🌍 해외</button>
+          </div>
+
+          <select id="issuerFilter" class="select-input">
+            <option value="all">발행사 — 전체</option>
+          </select>
+
+          <select id="securityFilter" class="select-input">
+            <option value="all">증권 종류 — 전체</option>
+          </select>
+
+          <select id="statusFilter" class="select-input">
+            <option value="all">상태 — 전체</option>
+            <option value="active">운영·거래 중</option>
+            <option value="liquidated">청산 완료</option>
+          </select>
+
+          <div class="view-toggle" id="viewToggle">
+            <button class="active" data-view="list">≡ 리스트</button>
+            <button data-view="card">▦ 카드</button>
+          </div>
+
+          <span class="filter-count muted" id="resultCount"></span>
+        </div>
+
+        <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px;" id="catFilters"></div>
+      </section>
+
+      <!-- ASSET LIST/GRID -->
+      <div id="assetGrid"></div>
+    </main>
+
+    <script src="data-dart-backfill.js?v=2"></script>
+    <script src="data-artipio.js?v=1"></script>
+    <script src="data-musicow.js?v=1"></script>
+    <script src="data.js?v=27"></script>
+    <script src="app.js?v=26"></script>
+    <script>
+      const U = window.STO_UI;
+      U.mountChrome("assets");
+
+      const params = new URLSearchParams(location.search);
+      const state = {
+        q: params.get("q") || "",
+        cat: params.get("cat") || "all",
+        region: params.get("region") || "all",
+        issuer: params.get("issuer") || "all",
+        security: params.get("security") || "all",
+        status: params.get("status") || "all",
+        view: localStorage.getItem("sto-view") || "list",
+      };
+
+      $$("#viewToggle button").forEach((b) => {
+        b.classList.toggle("active", b.dataset.view === state.view);
+      });
+
+      const searchInput = $("#searchInput");
+      searchInput.value = state.q;
+
+      // Category filters
+      $("#catFilters").innerHTML = `
+        <button class="filter-btn cat-btn ${state.cat === "all" ? "active" : ""}" data-cat="all">전체 카테고리</button>
+        ${D.CATEGORIES.map((c) => `
+          <button class="filter-btn cat-btn ${state.cat === c.key ? "active" : ""}" data-cat="${c.key}">
+            ${c.icon} ${c.label}
+          </button>
+        `).join("")}
+      `;
+
+      // Issuer filter (sorted by region then name)
+      const issuersSorted = [...D.ISSUERS].sort((a, b) => {
+        if (a.region !== b.region) return a.region === "KR" ? -1 : 1;
+        return a.name.localeCompare(b.name, "ko");
+      });
+      const issuerSel = $("#issuerFilter");
+      issuersSorted.forEach((i) => {
+        const opt = document.createElement("option");
+        opt.value = i.id;
+        opt.textContent = `${i.region === "KR" ? "🇰🇷" : "🌍"} ${i.name}`;
+        if (state.issuer === i.id) opt.selected = true;
+        issuerSel.appendChild(opt);
+      });
+
+      // Security type filter — distinct values from STOS, sorted by count desc
+      const secCounts = {};
+      D.STOS.forEach((s) => {
+        const t = (s.securityType || "기타").trim();
+        secCounts[t] = (secCounts[t] || 0) + 1;
+      });
+      const secSel = $("#securityFilter");
+      Object.entries(secCounts)
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([type, n]) => {
+          const opt = document.createElement("option");
+          opt.value = type;
+          opt.textContent = `${type} (${n})`;
+          if (state.security === type) opt.selected = true;
+          secSel.appendChild(opt);
+        });
+
+      // Status filter — preset options already in HTML
+      const statusSel = $("#statusFilter");
+      statusSel.value = state.status;
+
+      $$(".region-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.region === state.region);
+      });
+
+      function isLiquidated(s) {
+        const st = (s.status || "").toLowerCase();
+        return st.includes("청산") || st.includes("liquidated");
+      }
+
+      function applyFilters() {
+        const q = state.q.toLowerCase();
+        let list = D.STOS;
+        if (state.region !== "all") list = list.filter((s) => s.region === state.region);
+        if (state.cat !== "all") list = list.filter((s) => s.category === state.cat);
+        if (state.issuer !== "all") list = list.filter((s) => s.issuerId === state.issuer);
+        if (state.security !== "all") {
+          list = list.filter((s) => (s.securityType || "기타").trim() === state.security);
+        }
+        if (state.status === "liquidated") list = list.filter(isLiquidated);
+        else if (state.status === "active") list = list.filter((s) => !isLiquidated(s));
+        if (q) {
+          list = list.filter((s) => {
+            const issuer = D.findIssuer(s.issuerId);
+            return (
+              s.name.toLowerCase().includes(q) ||
+              (issuer && issuer.name.toLowerCase().includes(q)) ||
+              (s.underlying || "").toLowerCase().includes(q) ||
+              (s.description || "").toLowerCase().includes(q) ||
+              (s.securityType || "").toLowerCase().includes(q)
+            );
+          });
+        }
+        return list;
+      }
+
+      function render() {
+        const list = applyFilters();
+        $("#resultCount").textContent =
+          list.length === D.STOS.length
+            ? `총 ${D.STOS.length}건`
+            : `${list.length} / 전체 ${D.STOS.length}건`;
+        const grid = $("#assetGrid");
+        if (list.length === 0) {
+          grid.className = "";
+          grid.innerHTML = `
+            <div class="empty" style="padding: 60px; text-align: center; color: var(--muted);">
+              조건에 맞는 STO가 없습니다.
+            </div>
+          `;
+          return;
+        }
+        if (state.view === "list") {
+          grid.className = "";
+          grid.innerHTML = U.stoTable(list);
+        } else {
+          grid.className = "grid-dense";
+          grid.innerHTML = list.map(U.stoCard).join("");
+        }
+      }
+
+      $$("#viewToggle button").forEach((b) => {
+        b.addEventListener("click", () => {
+          $$("#viewToggle button").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          state.view = b.dataset.view;
+          localStorage.setItem("sto-view", state.view);
+          render();
+        });
+      });
+
+      searchInput.addEventListener("input", (e) => {
+        state.q = e.target.value;
+        render();
+      });
+
+      $$(".region-btn").forEach((b) => {
+        b.addEventListener("click", () => {
+          $$(".region-btn").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          state.region = b.dataset.region;
+          render();
+        });
+      });
+
+      $$(".cat-btn").forEach((b) => {
+        b.addEventListener("click", () => {
+          $$(".cat-btn").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          state.cat = b.dataset.cat;
+          render();
+        });
+      });
+
+      issuerSel.addEventListener("change", (e) => {
+        state.issuer = e.target.value;
+        render();
+      });
+
+      secSel.addEventListener("change", (e) => {
+        state.security = e.target.value;
+        render();
+      });
+
+      statusSel.addEventListener("change", (e) => {
+        state.status = e.target.value;
+        render();
+      });
+
+      render();
+    </script>
+
+    <style>
+      .filter-btn {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .filter-btn:hover {
+        border-color: var(--brand-line);
+      }
+      .filter-btn.active {
+        background: rgba(0, 229, 160, 0.10);
+        border-color: var(--brand-line);
+        color: var(--brand);
+      }
+      .select-input {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 8px 32px 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        cursor: pointer;
+        max-width: 240px;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%237a8699' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 10px;
+      }
+      .select-input:hover {
+        border-color: var(--brand-line);
+      }
+    </style>
+  </body>
+</html>

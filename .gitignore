@@ -27,4 +27,5 @@ contracts/coverage/
 
 # Generated assets
 
+*/assets/tailwind.css
 console/test-build-target/*

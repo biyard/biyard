@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Biyard · STO 뉴스 피드</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=26" />
+    <style>
+      .news-hero {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 900px) {
+        .news-hero {
+          grid-template-columns: 1fr;
+        }
+      }
+      .news-hero h1 {
+        font-size: 28px;
+        margin: 8px 0 6px;
+      }
+      .news-hero h1 em {
+        color: var(--brand);
+        font-style: normal;
+      }
+      .news-hero p {
+        color: var(--ink-soft);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .rss-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+      .rss-card h4 {
+        margin: 0 0 10px;
+        font-size: 13px;
+        color: var(--brand);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .rss-card .rss-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        padding: 6px 0;
+        border-bottom: 1px dashed var(--line);
+      }
+      .rss-card .rss-row:last-child {
+        border-bottom: 0;
+      }
+      .rss-card .rss-row span:last-child {
+        color: var(--muted);
+        font-family: var(--font-mono);
+      }
+
+      .news-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+      }
+      .toolbar-group {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .toolbar-group label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-right: 4px;
+      }
+      .filter-chip {
+        background: var(--panel-2);
+        border: 1px solid var(--line-strong);
+        color: var(--ink-soft);
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.15s;
+      }
+      .filter-chip:hover {
+        border-color: var(--brand-line);
+        color: var(--ink);
+      }
+      .filter-chip.active {
+        background: var(--brand-soft);
+        border-color: var(--brand-line);
+        color: var(--brand);
+        font-weight: 600;
+      }
+      .news-search {
+        flex: 1;
+        min-width: 200px;
+        background: var(--bg);
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+      }
+
+      .news-feed {
+        display: grid;
+        gap: 12px;
+      }
+      .news-item {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .news-item:hover {
+        border-color: var(--brand-line);
+      }
+      .news-item-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 12px;
+      }
+      .news-date {
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-weight: 500;
+      }
+      .news-source {
+        background: var(--panel-2);
+        color: var(--ink);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        border: 1px solid var(--line-strong);
+      }
+      .news-source.official {
+        background: rgba(0, 100, 200, 0.15);
+        color: #5eb0ff;
+        border-color: rgba(94, 176, 255, 0.3);
+      }
+      .news-region-flag {
+        font-size: 14px;
+      }
+      .news-verified {
+        background: var(--brand-soft);
+        color: var(--brand);
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .news-title {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.5;
+        margin: 0 0 8px;
+        color: var(--ink);
+      }
+      .news-summary {
+        color: var(--ink-soft);
+        line-height: 1.7;
+        font-size: 13px;
+        margin: 0 0 10px;
+      }
+      .news-keypoints {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        margin: 10px 0;
+      }
+      .news-keypoints ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 12px;
+        color: var(--ink-soft);
+        line-height: 1.7;
+      }
+      .news-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .news-tag {
+        font-size: 11px;
+        color: var(--muted);
+        background: var(--panel-2);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+      .news-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+      .news-related {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .news-related a {
+        color: var(--brand);
+      }
+      .news-link {
+        font-size: 12px;
+        color: var(--brand);
+        font-weight: 500;
+      }
+
+      .filter-count {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        white-space: nowrap;
+      }
+
+      .empty-feed {
+        padding: 60px;
+        text-align: center;
+        color: var(--muted);
+        background: var(--panel);
+        border: 1px dashed var(--line-strong);
+        border-radius: var(--radius);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+
+      <!-- Toolbar (filters + inline count) -->
+      <div class="news-toolbar">
+        <input
+          type="search"
+          id="newsSearch"
+          class="news-search"
+          placeholder="제목·요약 검색..."
+        />
+        <div class="toolbar-group" id="regionFilter"></div>
+        <div class="toolbar-group" id="tagFilter"></div>
+        <span class="filter-count muted" id="feedCount"></span>
+      </div>
+
+      <!-- Feed -->
+      <section id="newsFeed" class="news-feed"></section>
+    </main>
+
+    <script src="data-dart-backfill.js?v=2"></script>
+    <script src="data-artipio.js?v=1"></script>
+    <script src="data-musicow.js?v=1"></script>
+    <script src="data.js?v=27"></script>
+    <script src="news.js?v=1"></script>
+    <script src="app.js?v=26"></script>
+    <script>
+      const U = window.STO_UI;
+      const N = window.STO_NEWS;
+      U.mountChrome("news");
+
+      const items = [...N.NEWS_ITEMS].sort((a, b) => b.date.localeCompare(a.date));
+
+      const state = {
+        q: "",
+        region: "all",
+        tag: "all",
+      };
+
+      function fmtRel(dateStr) {
+        const d = new Date(dateStr + "T00:00:00+09:00");
+        const now = new Date();
+        const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+        if (diff < 0) return dateStr;
+        if (diff === 0) return "오늘";
+        if (diff === 1) return "어제";
+        if (diff < 7) return `${diff}일 전`;
+        if (diff < 30) return `${Math.floor(diff / 7)}주 전`;
+        if (diff < 365) return `${Math.floor(diff / 30)}개월 전`;
+        return `${Math.floor(diff / 365)}년 전`;
+      }
+
+      function renderCount(filteredCount) {
+        const total = items.length;
+        const el = document.getElementById("feedCount");
+        if (!el) return;
+        el.textContent =
+          filteredCount === total
+            ? `총 ${total}건`
+            : `${filteredCount} / 전체 ${total}건`;
+      }
+
+      function renderFilters() {
+        const regionEl = document.getElementById("regionFilter");
+        regionEl.innerHTML = `
+          <label>지역</label>
+          <span class="filter-chip ${state.region === "all" ? "active" : ""}" data-region="all">전체</span>
+          <span class="filter-chip ${state.region === "KR" ? "active" : ""}" data-region="KR">🇰🇷 한국</span>
+          <span class="filter-chip ${state.region === "GLOBAL" ? "active" : ""}" data-region="GLOBAL">🌍 해외</span>
+        `;
+        regionEl.querySelectorAll("[data-region]").forEach((el) => {
+          el.addEventListener("click", () => {
+            state.region = el.dataset.region;
+            renderFilters();
+            renderFeed();
+          });
+        });
+
+        const tagEl = document.getElementById("tagFilter");
+        tagEl.innerHTML = `
+          <label>분류</label>
+          <span class="filter-chip ${state.tag === "all" ? "active" : ""}" data-tag="all">전체</span>
+          ${N.NEWS_TAGS.map(
+            (t) => `
+            <span class="filter-chip ${state.tag === t.key ? "active" : ""}" data-tag="${t.key}">
+              ${t.icon} ${t.label}
+            </span>
+          `,
+          ).join("")}
+        `;
+        tagEl.querySelectorAll("[data-tag]").forEach((el) => {
+          el.addEventListener("click", () => {
+            state.tag = el.dataset.tag;
+            renderFilters();
+            renderFeed();
+          });
+        });
+      }
+
+      function tagOf(key) {
+        return N.NEWS_TAGS.find((t) => t.key === key) || { label: key, icon: "·" };
+      }
+
+      function sourceOf(key) {
+        return (
+          N.NEWS_SOURCES[key] || {
+            name: key,
+            country: "KR",
+            color: "#7a8699",
+            official: false,
+          }
+        );
+      }
+
+      function newsCard(item) {
+        const src = sourceOf(item.source);
+        const flag = item.region === "KR" ? "🇰🇷" : "🌍";
+        const relatedHtml = (() => {
+          const issuers = item.relatedIssuers || [];
+          const stos = item.relatedStos || [];
+          if (!issuers.length && !stos.length) return "";
+          const parts = [];
+          for (const id of issuers) {
+            const i = window.STO_DATA.findIssuer(id);
+            if (i) parts.push(`<a href="assets.html?issuer=${id}">${i.name}</a>`);
+          }
+          for (const id of stos) {
+            const s = window.STO_DATA.STOS.find((x) => x.id === id);
+            if (s) parts.push(`<a href="detail.html?id=${id}">${s.name}</a>`);
+          }
+          if (!parts.length) return "";
+          return `<div class="news-related">관련: ${parts.join(" · ")}</div>`;
+        })();
+
+        const tagsHtml = (item.tags || [])
+          .map((t) => {
+            const tag = tagOf(t);
+            return `<span class="news-tag">${tag.icon} ${tag.label}</span>`;
+          })
+          .join("");
+
+        const keyHtml =
+          item.keyPoints && item.keyPoints.length
+            ? `<div class="news-keypoints">
+              <ul>${item.keyPoints.map((k) => `<li>${k}</li>`).join("")}</ul>
+            </div>`
+            : "";
+
+        return `
+          <article class="news-item">
+            <div class="news-item-head">
+              <span class="news-date">${item.date} · ${fmtRel(item.date)}</span>
+              <span class="news-source ${src.official ? "official" : ""}">${src.name}</span>
+              <span class="news-region-flag">${flag}</span>
+              ${item.verified ? `<span class="news-verified">✓ 출처 검증</span>` : ""}
+            </div>
+            <h3 class="news-title">${item.title}</h3>
+            <p class="news-summary">${item.summary}</p>
+            ${keyHtml}
+            <div class="news-tags">${tagsHtml}</div>
+            <div class="news-foot">
+              ${relatedHtml || "<span></span>"}
+              <a class="news-link" href="${item.url}" target="_blank" rel="noopener">원문 보기 →</a>
+            </div>
+          </article>
+        `;
+      }
+
+      function renderFeed() {
+        let filtered = items;
+        if (state.region !== "all") {
+          filtered = filtered.filter((i) => i.region === state.region);
+        }
+        if (state.tag !== "all") {
+          filtered = filtered.filter((i) => (i.tags || []).includes(state.tag));
+        }
+        if (state.q) {
+          const q = state.q.toLowerCase();
+          filtered = filtered.filter(
+            (i) =>
+              i.title.toLowerCase().includes(q) ||
+              i.summary.toLowerCase().includes(q),
+          );
+        }
+
+        const feed = document.getElementById("newsFeed");
+        renderCount(filtered.length);
+        if (!filtered.length) {
+          feed.innerHTML =
+            '<div class="empty-feed">조건에 맞는 기사가 없습니다.</div>';
+          return;
+        }
+        feed.innerHTML = filtered.map(newsCard).join("");
+      }
+
+      document.getElementById("newsSearch").addEventListener("input", (e) => {
+        state.q = e.target.value.trim();
+        renderFeed();
+      });
+
+      renderFilters();
+      renderFeed();
+    </script>
+  </body>
+</html>

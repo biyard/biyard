@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Biyard · 가격</title>
+    <link rel="icon" href="biyard-logo.png" />
+    <link rel="stylesheet" href="styles.css?v=26" />
+    <style>
+      .pricing-hero {
+        text-align: center;
+        padding: 60px 0 40px;
+      }
+      .pricing-hero .eyebrow {
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .pricing-hero h1 {
+        font-size: 32px;
+        margin: 12px 0 12px;
+        line-height: 1.3;
+      }
+      .pricing-hero h1 em {
+        color: var(--brand);
+        font-style: normal;
+      }
+      .pricing-hero p {
+        max-width: 680px;
+        margin: 0 auto;
+        color: var(--ink-soft);
+        line-height: 1.7;
+        font-size: 15px;
+      }
+      .pricing-hero .cta-row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+      .pricing-hero .cta-row a {
+        padding: 12px 22px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .pricing-hero .cta-row a.primary {
+        background: var(--brand);
+        color: #002418;
+      }
+      .pricing-hero .cta-row a.secondary {
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+      }
+
+      /* 누구를 위한 서비스 — 두 트랙 */
+      .audience-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      @media (max-width: 800px) {
+        .audience-pair { grid-template-columns: 1fr; }
+      }
+      .audience-track {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+      }
+      .audience-track.brand {
+        border-color: var(--brand-line);
+        background: linear-gradient(180deg, var(--brand-soft) 0%, var(--panel) 35%);
+      }
+      .audience-track .track-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 8px;
+      }
+      .audience-track h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      .audience-track p {
+        margin: 0 0 16px;
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.7;
+      }
+      .audience-track ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px;
+        flex: 1;
+      }
+      .audience-track li {
+        padding: 6px 0;
+        font-size: 13px;
+        color: var(--ink-soft);
+        display: flex;
+        gap: 8px;
+      }
+      .audience-track li::before {
+        content: "·";
+        color: var(--brand);
+        font-weight: 700;
+      }
+      .audience-track .track-cta {
+        padding: 10px 16px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 13px;
+        text-align: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line-strong);
+      }
+      .audience-track.brand .track-cta {
+        background: var(--brand);
+        color: #002418;
+        border-color: var(--brand);
+      }
+
+      /* 데이터 자산 5가지 */
+      .asset-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 1100px) {
+        .asset-grid { grid-template-columns: repeat(3, 1fr); }
+      }
+      @media (max-width: 700px) {
+        .asset-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+      .asset-card {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+      }
+      .asset-card .ico {
+        font-size: 22px;
+        margin-bottom: 8px;
+      }
+      .asset-card h4 {
+        margin: 0 0 6px;
+        font-size: 13px;
+      }
+      .asset-card p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--ink-soft);
+        line-height: 1.6;
+      }
+
+      /* 4묶음 */
+      .bundle-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 800px) {
+        .bundle-grid { grid-template-columns: 1fr; }
+      }
+      .bundle-card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .bundle-card .num {
+        display: inline-block;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 999px;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+      }
+      .bundle-card h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+      }
+      .bundle-card p {
+        margin: 0 0 12px;
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.6;
+      }
+      .bundle-card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .bundle-card li {
+        padding: 5px 0;
+        font-size: 12px;
+        color: var(--ink-soft);
+        line-height: 1.5;
+        display: flex;
+        gap: 6px;
+      }
+      .bundle-card li::before {
+        content: "→";
+        color: var(--brand);
+      }
+
+      /* 매트릭스 */
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .compare-table th,
+      .compare-table td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+      }
+      .compare-table th {
+        background: var(--panel-2);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .compare-table td.center {
+        text-align: center;
+      }
+      .compare-table .yes { color: var(--brand); font-weight: 700; }
+      .compare-table .no { color: var(--soft); }
+
+      /* CTA */
+      .final-cta {
+        text-align: center;
+        padding: 36px;
+      }
+      .final-cta h2 {
+        margin: 0 0 12px;
+        font-size: 22px;
+      }
+      .final-cta p {
+        margin: 0 0 22px;
+        color: var(--ink-soft);
+      }
+      .final-cta .row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .final-cta a {
+        padding: 12px 20px;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+      }
+      .final-cta a.primary {
+        background: var(--brand);
+        color: #002418;
+      }
+      .final-cta a.secondary {
+        background: var(--panel-2);
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <!-- 1. Hero -->
+      <section class="pricing-hero">
+        <span class="eyebrow">● Biyard STO</span>
+        <h1>한국 STO 시장의 <em>데이터·인사이트 인프라</em></h1>
+        <p>
+          DART·SEC 등 공시·발행·시장 데이터를 한 곳에서 정리하고,
+          Biyard 만의 행위·팬덤 데이터로 시장 관심도까지 측정합니다.
+          개인 사용자에겐 무료, 기관에겐 라이선스로.
+        </p>
+        <div class="cta-row">
+          <a class="primary" href="assets.html">무료 시장 보기 →</a>
+          <a class="secondary" href="mailto:hi@biyard.co?subject=Enterprise">기관 상담 신청</a>
+        </div>
+      </section>
+
+      <!-- 2. 누구를 위한 서비스 — 두 트랙 -->
+      <section style="margin-bottom: 28px;">
+        <div class="section-head">
+          <div>
+            <h2>두 종류의 사용자</h2>
+            <p>같은 데이터, 다른 깊이로 제공</p>
+          </div>
+        </div>
+        <div class="audience-pair">
+          <div class="audience-track">
+            <span class="track-tag">개인 — 무료</span>
+            <h3>STO 시장을 학습·탐색</h3>
+            <p>한국·해외 STO 가 어떻게 발행되고 청산되는지, 어떤 자산이 토큰화되고 있는지 한눈에.</p>
+            <ul>
+              <li>전체 STO 카탈로그·검색·필터</li>
+              <li>단건 상세 (자산·발행 구조·청산 결과)</li>
+              <li>같은 카테고리 청산 결과 비교</li>
+              <li>카테고리별 투자 규모 차트</li>
+              <li>뉴스 피드 + 공시 원문 링크</li>
+            </ul>
+            <a class="track-cta" href="assets.html">시장 둘러보기 →</a>
+          </div>
+          <div class="audience-track brand">
+            <span class="track-tag">기관 — 라이선스</span>
+            <h3>증권사·신탁사·법무법인</h3>
+            <p>발행 검토·시장 모니터링·자체 시스템 통합용 데이터 라이선스. 가격은 상담 시 안내.</p>
+            <ul>
+              <li>히스토리컬 시계열·다중 비교·CSV 다운로드</li>
+              <li>다국가 공시·규제 변경 알림 (이메일·Slack·Webhook)</li>
+              <li>Biyard 만의 시장 관심도 데이터 (행위·팬덤 익명 집계)</li>
+              <li>API·Whitelabel·MTS 통합</li>
+              <li>맞춤 리포트 / 전담 기술 지원</li>
+            </ul>
+            <a class="track-cta" href="mailto:hi@biyard.co?subject=Enterprise">기관 상담 신청 →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Biyard 만의 데이터 자산 5가지 -->
+      <section class="panel" style="margin-bottom: 24px;">
+        <div class="section-head">
+          <div>
+            <h2>Biyard 만의 데이터 자산</h2>
+            <p>차별화 된 데이터</p>
+          </div>
+        </div>
+        <div class="asset-grid">
+          <div class="asset-card">
+            <div class="ico">📂</div>
+            <h4>외부 데이터 가공</h4>
+            <p>DART·SEC·금융위·검증 매체를 카테고리별로 정리·시각화. 출처·갱신 시점 명시.</p>
+          </div>
+          <div class="asset-card">
+            <div class="ico">🔗</div>
+            <h4>데이터 간 관계</h4>
+            <p>같은 발행사·카테고리 청산 결과 비교, 카테고리 거시 통계, 한국 vs 해외 매핑.</p>
+          </div>
+          <div class="asset-card">
+            <div class="ico">📊</div>
+            <h4>B2C 행위 집계</h4>
+            <p>익명 검색·조회·워치리스트를 카테고리·지역·시간대 단위 통계로 가공해 제공합니다.</p>
+          </div>
+          <div class="asset-card">
+            <div class="ico">👥</div>
+            <h4>Launchpad 팬덤</h4>
+            <p>비증권 브랜드 토큰 보유자·캠페인 참여 → 카테고리 관심 사용자 수 집계.</p>
+          </div>
+          <div class="asset-card">
+            <div class="ico">⛓️</div>
+            <h4>블록체인 인프라</h4>
+            <p>ERC20 토큰 발행 PaaS + 온체인 RPC 수집 + (시행 후) 청약 인프라.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 무엇을 받나 — 4묶음 -->
+      <section class="panel" style="margin-bottom: 24px;">
+        <div class="section-head">
+          <div>
+            <h2>기관 라이선스 — 4가지 묶음</h2>
+            <p>고객 사용 목적별로 분류. 세부 솔루션 라인업·가격은 상담 시 안내</p>
+          </div>
+        </div>
+        <div class="bundle-grid">
+          <div class="bundle-card">
+            <span class="num">① 시장 데이터</span>
+            <h3>공시·발행·규제·뉴스 통합</h3>
+            <p>DART·SEC EDGAR·금융위·MAS·FINMA·BaFin·검증 매체 통합 라이선스.</p>
+            <ul>
+              <li>한국·해외 STO 카탈로그</li>
+              <li>발행 메타·시계열·정정공시 추적</li>
+              <li>API·CSV·JSON 다운로드</li>
+              <li>다국가 규제 변경 알림</li>
+            </ul>
+          </div>
+          <div class="bundle-card">
+            <span class="num">② 발행 검토 지원</span>
+            <h3>유사 사례 비교·법적 구조 매핑</h3>
+            <p>발행 검토 단계의 발행사·자문사·증권사를 위한 정량 비교 자료.</p>
+            <ul>
+              <li>유사 사례 자동 매칭</li>
+              <li>모집 결과·운용 지표 분포</li>
+              <li>한국 법적 구조 매핑 (신탁/투자계약/SPV)</li>
+              <li>내부 검토용 PDF 익스포트</li>
+            </ul>
+          </div>
+          <div class="bundle-card">
+            <span class="num">③ 시장 관심도</span>
+            <h3>행위·팬덤 데이터 인텔리전스</h3>
+            <p>Biyard 만 보유한 한국 사용자 관심 신호. 익명 집계 기반.</p>
+            <ul>
+              <li>카테고리·지역·시간대 관심도 추이</li>
+              <li>발행사별 트래픽·유입 채널</li>
+              <li>한국인의 글로벌 STO 관심 비대칭</li>
+              <li>Launchpad 팬덤 카운트</li>
+            </ul>
+          </div>
+          <div class="bundle-card">
+            <span class="num">④ 인프라</span>
+            <h3>API·Whitelabel·토큰·청약</h3>
+            <p>증권사·발행사 자체 시스템 통합. 시행 후 청약 인프라 임대 옵션.</p>
+            <ul>
+              <li>대량 API 액세스</li>
+              <li>iframe·SDK 임베드</li>
+              <li>토큰 발행 PaaS (ERC20 호환)</li>
+              <li>(시행 후) 청약 인프라 백엔드</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 무료 vs 기관용 매트릭스 -->
+      <section class="panel" style="margin-bottom: 24px;">
+        <div class="section-head">
+          <div>
+            <h2>무료 vs 기관용</h2>
+            <p>경계는 데이터 깊이·자동화·이력 — 분석 자체는 양쪽 모두 제공</p>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>기능</th>
+                <th class="center">개인 무료</th>
+                <th class="center">기관 라이선스</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>전체 STO 카탈로그·검색·필터</td><td class="center yes">○</td><td class="center yes">○</td></tr>
+              <tr><td>단건 상세·공시 원문 링크</td><td class="center yes">○</td><td class="center yes">○</td></tr>
+              <tr><td>카테고리 청산 결과 비교 (요약)</td><td class="center yes">○</td><td class="center yes">○</td></tr>
+              <tr><td>뉴스 피드 (최근)</td><td class="center yes">○</td><td class="center yes">○</td></tr>
+              <tr><td>히스토리컬 시계열·이력 데이터</td><td class="center no">—</td><td class="center yes">○</td></tr>
+              <tr><td>다중 STO 비교 표·CSV·JSON 다운로드</td><td class="center no">—</td><td class="center yes">○</td></tr>
+              <tr><td>알림 (공시·규제·트렌드)</td><td class="center no">—</td><td class="center yes">○</td></tr>
+              <tr><td>시장 관심도 데이터 (행위·팬덤 집계)</td><td class="center no">—</td><td class="center yes">○</td></tr>
+              <tr><td>API 통합</td><td class="center no">—</td><td class="center yes">○</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 6. 합법성 한 줄 -->
+      <section class="panel" style="margin-bottom: 24px;">
+        <p style="margin: 0; font-size: 13px; line-height: 1.7; color: var(--ink-soft);">
+          Biyard 는 신용평가업·투자자문업 인가 영역과 분리됩니다. 자체 등급·점수·매수추천을 부여하지 않으며, 정량 분석·유사군 매칭·트렌드 리포트는 유사투자자문업 신고 기반으로 제공합니다.
+          행위 데이터는 익명 집계·사용자 동의·opt-out 기반으로 운영합니다.
+        </p>
+      </section>
+
+    </main>
+
+    <script src="data-dart-backfill.js?v=2"></script>
+    <script src="data-artipio.js?v=1"></script>
+    <script src="data-musicow.js?v=1"></script>
+    <script src="data.js?v=27"></script>
+    <script src="app.js?v=26"></script>
+    <script>
+      window.STO_UI.mountChrome("pricing");
+    </script>
+  </body>
+</html>

@@ -19,6 +19,19 @@ WEB_BUCKET=$(shell aws cloudformation describe-stacks \
   --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucket'].OutputValue" \
   --output text)
 
+STO_STACK_NAME=$(STACK)-sto-cdn
+STO_CDN_ID=$(shell aws cloudformation describe-stacks \
+  --region us-east-1 \
+  --stack-name $(STO_STACK_NAME) \
+  --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue" \
+  --output text 2>/dev/null)
+
+STO_BUCKET=$(shell aws cloudformation describe-stacks \
+  --region us-east-1 \
+  --stack-name $(STO_STACK_NAME) \
+  --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucket'].OutputValue" \
+  --output text 2>/dev/null)
+
 BUILD_CDK_ENV=AWS_ACCESS_KEY_ID=$(ACCESS_KEY_ID) AWS_SECRET_ACCESS_KEY=$(SECRET_ACCESS_KEY) AWS_REGION=$(REGION) \
               ENV=$(ENV) STACK=$(STACK) COMMIT=$(COMMIT) \
               WEB_STACK_NAME=$(WEB_STACK_NAME)
@@ -35,3 +48,10 @@ deploy:
 sync-landing:
 	@aws s3 sync target/dx/landing/release/web/public s3://$(WEB_BUCKET) > /dev/null
 	@aws cloudfront create-invalidation --distribution-id $(WEB_CDN_ID) --paths "/*" > /dev/null
+
+sync-sto:
+	@aws s3 sync target/dx/sto/release/web/public s3://$(STO_BUCKET) > /dev/null
+	@aws cloudfront create-invalidation --distribution-id $(STO_CDN_ID) --paths "/*" > /dev/null
+
+seed-sto:
+	@AWS_REGION=$(REGION) STAGE=$(ENV) bash scripts/seed-sto-remote.sh

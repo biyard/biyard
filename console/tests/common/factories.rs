@@ -65,6 +65,35 @@ where
     panic!("{label}: {:?}", last_err.unwrap());
 }
 
+/// Read-after-write 검증 — DynamoEntity::get 이 Query 기반(eventually
+/// consistent)이라 LocalStack 에서 막 PUT 한 row 가 즉시 안 보일 수 있다.
+/// signin 직후 첫 핸들러가 auth extractor 단계에서 row 를 못 찾고 NotFound
+/// 를 던지는 race 를 막기 위해, factory 마다 create 직후 polling 으로
+/// 가시성을 확보한다.
+async fn verify_read<T, F, Fut>(label: &str, mut probe: F)
+where
+    F: FnMut() -> Fut,
+    Fut: std::future::Future<Output = Result<Option<T>, console::common::Error>>,
+{
+    for attempt in 0..10 {
+        match probe().await {
+            Ok(Some(_)) => return,
+            Ok(None) => {
+                tokio::time::sleep(std::time::Duration::from_millis(20 * (attempt + 1))).await;
+            }
+            Err(e) => {
+                let msg = format!("{e:?}");
+                let is_transient = msg.contains("unhandled error");
+                if !is_transient {
+                    panic!("{label}: read probe failed: {e:?}");
+                }
+                tokio::time::sleep(std::time::Duration::from_millis(20 * (attempt + 1))).await;
+            }
+        }
+    }
+    panic!("{label}: write not visible after retries");
+}
+
 pub async fn new_account(role: OrganizationRole, user_type: AccountType) -> SeededAccount {
     let cfg = CommonConfig::default();
     let cli = cfg.dynamodb();
@@ -91,6 +120,12 @@ pub async fn new_account(role: OrganizationRole, user_type: AccountType) -> Seed
     with_retry("seed account", || {
         let a = account.clone();
         async move { a.create(cli).await }
+    })
+    .await;
+
+    verify_read("account read-after-write", || {
+        let pk = account.pk.clone();
+        async move { Account::get(cli, &pk, Some(EntityType::Account)).await }
     })
     .await;
 
@@ -123,6 +158,12 @@ pub async fn new_enterprise_with_owner_role(role: OrganizationRole) -> SeededEnt
     })
     .await;
 
+    verify_read("enterprise read-after-write", || {
+        let pk = enterprise.pk.clone();
+        async move { Enterprise::get(cli, &pk, Some(EntityType::Enterprise)).await }
+    })
+    .await;
+
     // Link account back to the enterprise.
     let updated = with_retry("link account to enterprise", || {
         let pk = owner.account.pk.clone();
@@ -137,6 +178,17 @@ pub async fn new_enterprise_with_owner_role(role: OrganizationRole) -> SeededEnt
     })
     .await;
     owner.account = updated;
+
+    // 업데이트 직후에도 같은 race 가 가능하다 — enterprise_id 가 실제로
+    // 보일 때까지 polling.
+    verify_read("account link read-after-write", || {
+        let pk = owner.account.pk.clone();
+        async move {
+            let row = Account::get(cli, &pk, Some(EntityType::Account)).await?;
+            Ok(row.filter(|a| a.enterprise_id != Partition::None))
+        }
+    })
+    .await;
 
     SeededEnterprise {
         owner,
@@ -163,6 +215,13 @@ pub async fn new_project(ent: &SeededEnterprise) -> Project {
         async move { p.create(cli).await }
     })
     .await;
+
+    verify_read("project read-after-write", || {
+        let pk = project.pk.clone();
+        async move { Project::get(cli, &pk, Some(EntityType::Project)).await }
+    })
+    .await;
+
     project
 }
 
@@ -193,6 +252,12 @@ pub async fn new_credential_for(enterprise: &SeededEnterprise) -> SeededCredenti
     with_retry("seed credential", || {
         let c = credential.clone();
         async move { c.create(cli).await }
+    })
+    .await;
+
+    verify_read("credential read-after-write", || {
+        let pk = credential.pk.clone();
+        async move { Credential::get(cli, &pk, Some(EntityType::Credential)).await }
     })
     .await;
 
@@ -266,6 +331,13 @@ pub async fn new_deployed_token(project: &Project, start_month: &str) -> Project
         async move { t.create(cli).await }
     })
     .await;
+
+    verify_read("token read-after-write", || {
+        let pk = token.pk.clone();
+        async move { ProjectToken::get(cli, &pk, Some(EntityType::Token)).await }
+    })
+    .await;
+
     token
 }
 
@@ -301,6 +373,17 @@ pub async fn new_point_balance(
         async move { b.create(cli).await }
     })
     .await;
+
+    verify_read("point balance read-after-write", || {
+        let (pk, sk) = PointBalance::keys(
+            project.pk.clone(),
+            meta_user_id.to_string(),
+            month.to_string(),
+        );
+        async move { PointBalance::get(cli, &pk, Some(sk)).await }
+    })
+    .await;
+
     bal
 }
 
@@ -329,6 +412,13 @@ pub async fn new_monthly_aggregation(
         async move { a.create(cli).await }
     })
     .await;
+
+    verify_read("aggregation read-after-write", || {
+        let (pk, sk) = MonthlyPointAggregation::keys(project.pk.clone(), month.to_string());
+        async move { MonthlyPointAggregation::get(cli, &pk, Some(sk)).await }
+    })
+    .await;
+
     agg
 }
 
