@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard — 서비스 플로우</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand-logo">
+      <span class="dot">B</span>
+      <span>Biyard</span>
+      <small class="sub">서비스 플로우</small>
+    </a>
+    <nav class="nav">
+      <a href="index.html" class="active">서비스 플로우</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">LaunchPad</div>
+    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
+    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
+    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
+    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  <div class="hero">
+    <span class="badge brand">Service flow</span>
+    <h1 style="margin-top:12px">Assets에서 Biyard Index를 확인하고, 검증 데이터 연결로 Index를 보강합니다</h1>
+    <p>Assets는 STO 기초자산과 발행사 데이터를 바탕으로 Biyard Index를 보여주는 서비스입니다. 기본 공개·제출 자료만으로도 Index 산출은 가능하며, Dataroom이나 LaunchPad를 연결하면 미확보·저신뢰 입력값을 검증 데이터로 보완해 Index Dashboard를 만들 수 있습니다.</p>
+    <div class="cta-row">
+      <a href="01-landing.html" class="btn btn-primary btn-lg">플로우 시작 →</a>
+      <a href="methodology.html" class="btn btn-ghost btn-lg">Methodology 보기</a>
+    </div>
+  </div>
+
+  <!-- ASSETS FLOW -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>① Assets — sto.dev.biyard.co</h2>
+      <span class="sub">STO 자산 탐색 · Biyard Index · 발행사 등록</span>
+    </div>
+
+    <div style="display:grid; gap:12px;">
+
+      <a href="01-landing.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand-soft); color:var(--color-brand); display:grid; place-items:center; font-weight:800;">00</div>
+        <div>
+          <div class="h3">STO 자산 탐색 · Biyard Index</div>
+          <div class="muted tiny">기존 STO 기초자산을 랭킹·카테고리·Index 기준으로 확인</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="02-intake.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand-soft); color:var(--color-brand); display:grid; place-items:center; font-weight:800;">01</div>
+        <div>
+          <div class="h3">발행사 등록 신청</div>
+          <div class="muted tiny">Index 산출을 원하는 기업이 기본 정보와 담당자를 입력</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="03-asset.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand-soft); color:var(--color-brand); display:grid; place-items:center; font-weight:800;">02</div>
+        <div>
+          <div class="h3">기초자산 정보 등록</div>
+          <div class="muted tiny">토큰화 검토 대상의 범위·권리·현금흐름·자료 보유 현황 정리</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="04-dataroom.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px; border-color:var(--color-brand);">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand); color:var(--color-brand-contrast); display:grid; place-items:center; font-weight:800;">03</div>
+        <div>
+          <div class="h3">Dataroom 연결 및 자료 검토 <span class="badge brand" style="margin-left:8px">선택</span></div>
+          <div class="muted tiny">Drive·Notion·회계·결제 소스를 연결하면 CT·MR 입력값의 신뢰도를 높일 수 있음</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="05-valuation.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px; border-color:var(--color-brand);">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand); color:var(--color-brand-contrast); display:grid; place-items:center; font-weight:800;">04</div>
+        <div>
+          <div class="h3">Biyard Index Dashboard 검토 <span class="badge brand" style="margin-left:8px">핵심</span></div>
+          <div class="muted tiny">현재 점수, 미확보 입력값, 연결 시 보강 후보을 함께 확인</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="06-handoff.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand-soft); color:var(--color-brand); display:grid; place-items:center; font-weight:800;">05</div>
+        <div>
+          <div class="h3">LaunchPad 이동</div>
+          <div class="muted tiny">Token/Web3 입력값 보강이 필요하면 console 서비스로 이동</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="issuer-workspace.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:var(--color-brand-soft); color:var(--color-brand); display:grid; place-items:center; font-weight:800;">↺</div>
+        <div>
+          <div class="h3">발행사 워크스페이스</div>
+          <div class="muted tiny">신청서 저장 · 담당자 초대 · 보완 요청 · LaunchPad 재진입</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- LAUNCHPAD FLOW -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>② LaunchPad — console.dev.biyard.co</h2>
+      <span class="sub">Token/Web3 데이터 생성 · 운영 · Index 입력값 보강</span>
+    </div>
+
+    <div style="display:grid; gap:12px;">
+
+      <a href="console-signup.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:rgba(94,176,255,0.12); color:var(--color-info); display:grid; place-items:center; font-weight:800;">06</div>
+        <div>
+          <div class="h3">Enterprise 생성</div>
+          <div class="muted tiny">Assets에서 전달된 발행사·기초자산 정보를 이어받아 콘솔 환경 구성</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="console-token-new.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:rgba(94,176,255,0.12); color:var(--color-info); display:grid; place-items:center; font-weight:800;">07</div>
+        <div>
+          <div class="h3">Token 설정</div>
+          <div class="muted tiny">기업 자체 토큰을 연결하거나 Biyard LaunchPad에서 발행</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="console-treasury.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:rgba(94,176,255,0.12); color:var(--color-info); display:grid; place-items:center; font-weight:800;">08</div>
+        <div>
+          <div class="h3">Treasury · Oracle 연결</div>
+          <div class="muted tiny">매출·결제·트레저리 데이터를 Index 입력값으로 검증 가능하게 연결</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+      <a href="console-overview.html" class="card card-hover" style="display:grid; grid-template-columns:60px 1fr auto; align-items:center; gap:16px;">
+        <div style="width:48px; height:48px; border-radius:24px; background:rgba(94,176,255,0.12); color:var(--color-info); display:grid; place-items:center; font-weight:800;">09</div>
+        <div>
+          <div class="h3">Assets 프로필 반영</div>
+          <div class="muted tiny">Token/Web3 데이터가 Biyard Index 보강 근거로 표시됨</div>
+        </div>
+        <span class="muted">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- REFERENCE -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>참고 페이지</h2>
+      <span class="sub">플로우 외 — 신뢰 빌딩 / 비교용</span>
+    </div>
+    <div class="row cols-2">
+      <a href="methodology.html" class="card card-hover">
+        <div class="h3">Methodology (5-Pillar 공식)</div>
+        <div class="muted tiny">평가 모델의 공개 백서. 증권사·VC가 가장 먼저 읽는 곳.</div>
+      </a>
+      <a href="sto-detail.html" class="card card-hover">
+        <div class="h3">동적 백서 (sto/:id 확장)</div>
+        <div class="muted tiny">자산 상세 페이지에 5-Pillar 게이지 얹은 모습.</div>
+      </a>
+      <a href="issuer-workspace.html" class="card card-hover">
+        <div class="h3">발행사 워크스페이스</div>
+        <div class="muted tiny">B2B 담당자가 중간에 나갔다가 다시 들어오는 운영 허브.</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- DOMAIN -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>도메인 경계 요약</h2>
+    </div>
+    <div class="row cols-2">
+      <div class="card" style="border-color:var(--color-brand)">
+        <div class="h3" style="color:var(--color-brand)">Assets — "어떤 자산인가"</div>
+        <ul class="dot-list">
+          <li>STO 기초자산 탐색</li>
+          <li>발행사·기초자산 프로필</li>
+          <li><b>Dataroom 연결 및 자료 검토</b></li>
+          <li>Biyard Index 산출 결과 노출</li>
+          <li>방법론·리서치·공시 자료 제공</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--color-info)">
+        <div class="h3" style="color:var(--color-info)">LaunchPad — "어떤 Token/Web3 데이터가 생기는가"</div>
+        <ul class="dot-list">
+          <li>Enterprise 계정과 권한 관리</li>
+          <li>기업 자체 토큰 연결 또는 LaunchPad 발행</li>
+          <li>분배·홀더·거래 데이터 생성</li>
+          <li>트레저리·오라클 데이터 연결</li>
+          <li>포인트·커뮤니티 활동 운영</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

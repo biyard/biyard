@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard LaunchPad — 트레저리 설정</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="console-signup.html" class="brand-logo">
+      <span class="dot" style="background:var(--color-info); color:var(--color-bg)">B</span>
+      <span>Biyard</span>
+      <small class="sub">LaunchPad</small>
+    </a>
+    <nav class="nav">
+      <a href="#">대시보드</a>
+      <a href="#">프로젝트</a>
+      <a href="#" class="active">트레저리</a>
+      <a href="#">멤버</a>
+      <a href="01-landing.html" class="external">Assets</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="muted tiny">Sample Issuer A · issuer@example.co.kr</span>
+    </div>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">LaunchPad</div>
+    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
+    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
+    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
+    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  <div class="workspace-tabs">
+    <a href="console-signup.html" class="workspace-tab">Enterprise</a>
+    <a href="console-token-new.html" class="workspace-tab">Token</a>
+    <a href="console-treasury.html" class="workspace-tab active">Treasury</a>
+    <a href="console-overview.html" class="workspace-tab">Overview</a>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>트레저리 적립 룰</h2>
+      <span class="sub">LaunchPad 발행 토큰</span>
+    </div>
+
+    <p class="soft" style="margin-top:0">Biyard LaunchPad에서 발행한 토큰의 Treasury 적립률과 정책을 관리합니다.</p>
+
+    <div class="callout info">
+      <div class="callout-title">기업 자체 토큰</div>
+      <div class="callout-body">외부 발행 토큰은 Treasury 적립률을 표시하지 않습니다. Assets에는 컨트랙트·홀더·활동 데이터만 연결됩니다.</div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">매출 데이터 소스</div>
+      <div class="callout-body">Assets에서 연결된 회계·결제·ERP 시스템(더존·Stripe·Toss Payments 등)의 매출 데이터를 적립 기준으로 사용할 수 있습니다.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">
+      <h3>적립 룰 — 매출 기반</h3>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+        <div>
+          <div class="h3">월 매출 비율 적립</div>
+          <div class="muted tiny">연결된 회계·결제 소스 기준으로 월 단위 적립 금액 산정</div>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" checked /><span class="tiny">활성</span></label>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span class="muted tiny">적립 비율</span>
+          <span class="brand h3" style="margin:0">5%</span>
+        </div>
+        <input type="range" min="0" max="20" value="5" style="width:100%; accent-color:var(--color-brand);"/>
+        <div style="display:flex; justify-content:space-between; margin-top:4px;">
+          <span class="muted tiny">0%</span><span class="muted tiny">5%</span><span class="muted tiny">10%</span><span class="muted tiny">15%</span><span class="muted tiny">20%</span>
+        </div>
+      </div>
+      <div class="row cols-3" style="margin-top:14px;">
+        <div><div class="muted tiny">평균 월 매출 (24개월)</div><div class="h3 tabular">1.18억 KRW</div></div>
+        <div><div class="muted tiny">월 기준 적립액</div><div class="h3 tabular">590만 KRW</div></div>
+        <div><div class="muted tiny">연 기준 적립액</div><div class="h3 tabular">7,080만 KRW</div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+        <div>
+          <div class="h3">마케팅비 비율 적립</div>
+          <div class="muted tiny">광고비의 일부를 트레저리로 전환</div>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" /><span class="tiny muted">비활성</span></label>
+      </div>
+      <div class="muted tiny">활성화 시 연결된 광고 플랫폼 데이터를 기준으로 산정합니다.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+        <div>
+          <div class="h3">고정 금액 적립</div>
+          <div class="muted tiny">매월 1일 지정 금액을 USDC로 적립</div>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" /><span class="tiny muted">비활성</span></label>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">
+      <h3>공지 정책</h3>
+      <span class="badge brand">검토 근거</span>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">사전 공지 기간</label>
+        <select class="select">
+          <option>3일 전</option>
+          <option selected>7일 전</option>
+          <option>14일 전</option>
+          <option>30일 전</option>
+        </select>
+        <div class="hint">공지 정책은 Index 산출 근거에 표시됩니다.</div>
+      </div>
+      <div class="field">
+        <label class="label">인출 정책</label>
+        <select class="select">
+          <option selected>multi-sig 2/3 + 90일 타임락</option>
+          <option>multi-sig 1/2</option>
+          <option>단일 키</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">Assets 반영 방식</div>
+      <div class="callout-body">현재 설정 기준(5% 매출 적립 · 7일 사전 공지 · 2/3 multi-sig + 90일 타임락)은 Assets의 Biyard Index 입력 데이터로 전송됩니다. 점수 산출은 Methodology의 백서 기준을 그대로 따릅니다.</div>
+    </div>
+
+  </section>
+
+  <div class="nav-actions">
+    <a href="console-token-new.html" class="btn btn-ghost">← 이전</a>
+    <a href="console-overview.html" class="btn btn-primary">Overview로 이동 →</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>LaunchPad Console</span>
+    <a href="console-overview.html">다음 →</a>
+  </div>
+
+</main>
+
+</body>
+</html>

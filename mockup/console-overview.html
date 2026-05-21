@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard LaunchPad — 연결 완료</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="console-signup.html" class="brand-logo">
+      <span class="dot" style="background:var(--color-info); color:var(--color-bg)">B</span>
+      <span>Biyard</span>
+      <small class="sub">LaunchPad</small>
+    </a>
+    <nav class="nav">
+      <a href="#" class="active">대시보드</a>
+      <a href="#">프로젝트</a>
+      <a href="#">트레저리</a>
+      <a href="#">멤버</a>
+      <a href="01-landing.html" class="external">Assets</a>
+    </nav>
+    <div class="topbar-actions">
+      <span class="muted tiny">Sample Issuer A · issuer@example.co.kr</span>
+    </div>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">LaunchPad</div>
+    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
+    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
+    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
+    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container">
+
+  <div style="max-width:1100px; margin:0 auto;">
+
+  <div class="workspace-tabs">
+    <a href="console-signup.html" class="workspace-tab">Enterprise</a>
+    <a href="console-token-new.html" class="workspace-tab">Token</a>
+    <a href="console-treasury.html" class="workspace-tab">Treasury</a>
+    <a href="console-overview.html" class="workspace-tab active">Overview</a>
+  </div>
+
+  <section class="panel">
+    <div style="display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center;">
+      <div>
+        <div class="muted tiny" style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">컨트랙트 연결됨</div>
+        <h1 class="h1" style="margin:8px 0 8px; font-size:24px;">Sample Issuer Token (SIT)</h1>
+        <div class="muted tabular" style="font-size:13px;">Polygon · 0x7a31a4d2c89e0...d20f &nbsp;<a href="#" class="brand">View on explorer ↗</a></div>
+      </div>
+      <span class="badge brand">연결 완료</span>
+    </div>
+  </section>
+
+  <div class="row cols-4" style="margin-bottom:24px;">
+    <div class="stat">
+      <div class="stat-label">토큰 유형</div>
+      <div class="stat-value">LaunchPad</div>
+      <div class="stat-delta">SIT 토큰</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">트레저리 룰</div>
+      <div class="stat-value">매출 5%</div>
+      <div class="stat-delta brand">LaunchPad 발행 토큰</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">초기 백킹</div>
+      <div class="stat-value tabular">0 USDC</div>
+      <div class="stat-delta muted">월 적립 시작</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Biyard Index</div>
+      <div class="stat-value"><span class="tier tier-T3">T3</span> 58</div>
+      <div class="stat-delta muted">보강 데이터 검토 중</div>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Assets 보강 데이터 연결</h2>
+      <span class="sub">기업 자체 토큰 또는 LaunchPad 토큰</span>
+    </div>
+
+    <table class="tbl">
+      <tbody>
+        <tr>
+          <td style="width:40px"><span class="brand">✓</span></td>
+          <td>
+            <div class="h3" style="font-size:14px; margin:0">토큰 메타데이터 등록</div>
+            <div class="muted tiny">컨트랙트 주소·심볼·발행량·연결 방식 전송 완료</div>
+          </td>
+          <td style="width:100px; text-align:right"><span class="badge brand">완료</span></td>
+        </tr>
+        <tr>
+          <td><span class="brand">✓</span></td>
+          <td>
+            <div class="h3" style="font-size:14px; margin:0">Treasury 정책 등록</div>
+            <div class="muted tiny">LaunchPad 발행 토큰 · 매출 5% 적립 · 7일 사전 공지</div>
+          </td>
+          <td style="text-align:right"><span class="badge brand">완료</span></td>
+        </tr>
+        <tr>
+          <td><span class="info" style="color:var(--color-info)">●</span></td>
+          <td>
+            <div class="h3" style="font-size:14px; margin:0">Index 입력 데이터 검토</div>
+            <div class="muted tiny">TB·CP·EG 축을 보강할 수 있는 Token/Web3 데이터 검토 시작.</div>
+          </td>
+          <td style="text-align:right"><span class="badge info">진행 중</span></td>
+        </tr>
+        <tr>
+          <td><span class="muted">○</span></td>
+          <td>
+            <div class="h3" style="font-size:14px; margin:0">Assets 프로필 반영</div>
+            <div class="muted tiny">검토 완료 후 Assets의 발행사 프로필에 입력 근거 표시.</div>
+          </td>
+          <td style="text-align:right"><span class="badge">대기</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>다음 작업</h2>
+    </div>
+
+    <div class="row cols-3">
+      <a href="01-landing.html" class="card card-hover">
+        <div class="h3">Assets에서 확인</div>
+        <div class="muted tiny">Token/Web3 보강 근거가 반영된 발행사 프로필 보기</div>
+      </a>
+      <a href="#" class="card card-hover">
+        <div class="h3">포인트 → 토큰 연결</div>
+        <div class="muted tiny">기존 회원 포인트를 보유자·활동 데이터와 연결</div>
+      </a>
+      <a href="#" class="card card-hover">
+        <div class="h3">STO 청약 등록</div>
+        <div class="muted tiny">증권사 연동을 위한 청약 슬롯 오픈 신청</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="nav-actions">
+    <a href="console-treasury.html" class="btn btn-ghost">← 트레저리 설정</a>
+    <a href="01-landing.html" class="btn btn-primary btn-lg">Assets 프로필 확인 ↗</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>LaunchPad Overview</span>
+    <a href="01-landing.html">처음으로 →</a>
+  </div>
+
+  </div>
+
+</main>
+
+</body>
+</html>

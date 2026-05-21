@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard Assets — 기초 자산 등록</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="01-landing.html" class="brand-logo">
+      <span class="dot">B</span>
+      <span>Biyard</span>
+      <small class="sub">Assets</small>
+    </a>
+    <nav class="nav">
+      <a href="01-landing.html">Assets</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="#">Research</a>
+      <a href="#">Issuers</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  <div class="workspace-tabs">
+    <a href="05-valuation.html" class="workspace-tab">Index Dashboard</a>
+    <a href="02-intake.html" class="workspace-tab">Issuer Profile</a>
+    <a href="03-asset.html" class="workspace-tab active">Underlying Asset</a>
+    <a href="04-dataroom.html" class="workspace-tab">Dataroom</a>
+    <a href="06-handoff.html" class="workspace-tab">LaunchPad</a>
+  </div>
+
+  
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>기초 자산 등록</h2>
+      <span class="sub">Workspace</span>
+    </div>
+
+    <p class="soft" style="margin-top:0">Biyard Index 등록 검토 대상이 되는 기초자산을 입력합니다. 자산의 범위, 권리 구조, 현금흐름 원천이 명확할수록 이후 Dataroom 검토가 빨라집니다.</p>
+
+    <div class="section-title">
+      <h3>자산 카테고리 선택</h3>
+    </div>
+
+    <div class="row cols-4">
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🏢</div>
+        <div class="h3">부동산</div>
+        <div class="muted tiny">상업·주거·물류·창업공간</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🎨</div>
+        <div class="h3">미술품·아트</div>
+        <div class="muted tiny">회화·조각·NFT 연계</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🎵</div>
+        <div class="h3">음악·IP</div>
+        <div class="muted tiny">음원 저작권·아티스트 IP</div>
+      </div>
+      <div class="card selected">
+        <div style="font-size:32px; margin-bottom:8px">🐂</div>
+        <div class="h3">축산·농수산</div>
+        <div class="muted tiny">한우·작물·양식</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">📚</div>
+        <div class="h3">콘텐츠 IP</div>
+        <div class="muted tiny">웹툰·게임·드라마</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">💎</div>
+        <div class="h3">럭셔리·소비재</div>
+        <div class="muted tiny">시계·와인·위스키</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🏭</div>
+        <div class="h3">실물 인프라</div>
+        <div class="muted tiny">에너지·설비·기계</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">…</div>
+        <div class="h3">기타</div>
+        <div class="muted tiny">위에 없는 경우</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">
+      <h3>자산 상세</h3>
+      <span class="badge brand">축산·농수산 카테고리 기준</span>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">자산명</label>
+        <input class="input" value="프리미엄 농식품 정기배송 매출 기반 수익권" />
+      </div>
+      <div class="field">
+        <label class="label">감정 평가가치 (KRW)</label>
+        <input class="input" value="1,200,000,000" />
+        <div class="hint">감정평가서나 계약 자료가 데이터 소스에 있다면 연결 데이터로 분류됩니다.</div>
+      </div>
+    </div>
+
+    <div class="row cols-3">
+      <div class="field">
+        <label class="label">대상 기간</label>
+        <input class="input" value="2026.07 ~ 2029.06" />
+      </div>
+      <div class="field">
+        <label class="label">검토 중인 모집 규모</label>
+        <input class="input" value="3억 KRW" />
+      </div>
+      <div class="field">
+        <label class="label">발행 시점 (예정)</label>
+        <input class="input" value="2026 Q3" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">자산 설명</label>
+      <textarea class="textarea" rows="3">정기배송 회원과 오프라인 유통 채널에서 발생하는 프리미엄 농식품 매출 일부를 기초로 한 수익권입니다. 대상 매출, 비용 구조, 상환 재원, 보유자 혜택을 Dataroom에서 함께 검토합니다.</textarea>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">자료 보강</div>
+      <div class="callout-body">클라우드 저장소와 회계·결제 시스템을 연결하면 감정평가서·계약서·재무자료가 Index 입력 데이터로 분류됩니다.</div>
+    </div>
+
+  </section>
+
+  <div class="nav-actions">
+    <a href="02-intake.html" class="btn btn-ghost">← 이전</a>
+    <a href="issuer-workspace.html" class="btn btn-ghost">임시저장</a>
+    <a href="04-dataroom.html" class="btn btn-primary">Dataroom 열기 →</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>Underlying Asset</span>
+    <a href="04-dataroom.html">다음 →</a>
+  </div>
+
+</main>
+
+</body>
+</html>

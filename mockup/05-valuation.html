@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard Assets — Index Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="01-landing.html" class="brand-logo">
+      <span class="dot">B</span>
+      <span>Biyard</span>
+      <small class="sub">Assets</small>
+    </a>
+    <nav class="nav">
+      <a href="01-landing.html">Assets</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="#">Research</a>
+      <a href="#">Issuers</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container">
+  <div style="max-width:1100px; margin:0 auto;">
+
+  <div class="workspace-tabs">
+    <a href="05-valuation.html" class="workspace-tab active">Index Dashboard</a>
+    <a href="02-intake.html" class="workspace-tab">Issuer Profile</a>
+    <a href="03-asset.html" class="workspace-tab">Underlying Asset</a>
+    <a href="04-dataroom.html" class="workspace-tab">Dataroom</a>
+    <a href="06-handoff.html" class="workspace-tab">LaunchPad</a>
+  </div>
+
+  
+
+  <section class="panel">
+    <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:32px; align-items:center;">
+      <div style="text-align:center; border-right:1px solid var(--color-border); padding-right:32px;">
+        <div class="muted tiny" style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600">Biyard Index</div>
+        <div style="font-size:72px; font-weight:800; letter-spacing:-0.03em; margin:8px 0; line-height:1;">
+          <span class="tier tier-T3">T3</span>
+        </div>
+        <div class="tabular" style="font-size:24px; font-weight:700;">58 <span class="muted" style="font-size:14px;">/ 100</span></div>
+        <div class="muted tiny" style="margin-top:6px;">백서 기준 5-Pillar 산출값</div>
+      </div>
+      <div>
+        <div class="muted tiny" style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600">Index Dashboard</div>
+        <h2 class="h2" style="margin:6px 0 8px">Sample Issuer A — 프리미엄 농식품 정기배송 매출 기반 수익권</h2>
+        <p class="soft" style="margin:0">현재 확보 자료 기준의 Biyard Index · 연결 가능한 데이터</p>
+        <div class="row cols-3" style="margin-top:16px;">
+          <div class="stat">
+            <div class="stat-label">데이터 커버리지</div>
+            <div class="stat-value tabular">62%</div>
+            <div class="stat-delta muted">확인 완료 8 / 13</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">카테고리</div>
+            <div class="stat-value tabular">축산·농수산</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">보강 소스</div>
+            <div class="stat-value tabular">LaunchPad</div>
+            <div class="stat-delta muted">선택 연결</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>5-Pillar 입력 데이터</h2>
+      <span class="sub">Score = 0.25·TB + 0.25·CP + 0.20·EG + 0.15·CT + 0.15·MR</span>
+    </div>
+
+    <div class="row cols-2">
+      <div class="card">
+        <div class="h3">CT · Cash flow / Traction <span class="badge brand">확인 중</span></div>
+        <div class="muted tiny" style="margin-bottom:12px">매출·성장률·사용자 활동 (15%)</div>
+        <div class="pillar-row"><div class="pillar-label">CT1 매출</div><div class="pillar-bar"><div class="pillar-fill" style="width:78%"></div></div><div class="pillar-val">78</div></div>
+        <div class="pillar-row"><div class="pillar-label">CT2 성장률</div><div class="pillar-bar"><div class="pillar-fill" style="width:72%"></div></div><div class="pillar-val">72</div></div>
+        <div class="pillar-row"><div class="pillar-label">CT3 Web2 회원</div><div class="pillar-bar"><div class="pillar-fill" style="width:61%"></div></div><div class="pillar-val">61</div></div>
+        <div class="pillar-row"><div class="pillar-label">CT4 유동성</div><div class="pillar-bar"><div class="pillar-fill projected" style="width:0%"></div></div><div class="pillar-val muted">보강 가능</div></div>
+      </div>
+
+      <div class="card">
+        <div class="h3">MR · Market Readiness <span class="badge brand">확인 중</span></div>
+        <div class="muted tiny" style="margin-bottom:12px">공시·감사·고객확인·이코노믹스 (15%)</div>
+        <div class="pillar-row"><div class="pillar-label">MR1 공시 자료</div><div class="pillar-bar"><div class="pillar-fill" style="width:46%"></div></div><div class="pillar-val">46</div></div>
+        <div class="pillar-row"><div class="pillar-label">MR2 회계 검토</div><div class="pillar-bar"><div class="pillar-fill" style="width:64%"></div></div><div class="pillar-val">64</div></div>
+        <div class="pillar-row"><div class="pillar-label">MR3 고객확인·AML</div><div class="pillar-bar"><div class="pillar-fill" style="width:70%"></div></div><div class="pillar-val">70</div></div>
+        <div class="pillar-row"><div class="pillar-label">MR4 Tokenomics</div><div class="pillar-bar"><div class="pillar-fill projected" style="width:0%"></div></div><div class="pillar-val muted">보강 가능</div></div>
+      </div>
+
+      <div class="card" style="border-style:dashed;">
+        <div class="h3">TB · Treasury Backing <span class="badge warn">연결 시 보강</span></div>
+        <div class="muted tiny" style="margin-bottom:12px">트레저리 충당 수준 (25%)</div>
+        <div class="pillar-row"><div class="pillar-label">TB1~5</div><div class="pillar-bar"><div class="pillar-fill projected" style="width:0%"></div></div><div class="pillar-val muted">보강 가능</div></div>
+        <div class="hint">컨트랙트 · 트레저리 주소 · 적립 정책 · 출금 정책</div>
+      </div>
+
+      <div class="card" style="border-style:dashed;">
+        <div class="h3">CP · Community Power <span class="badge warn">연결 시 보강</span></div>
+        <div class="muted tiny" style="margin-bottom:12px">홀더 수·분포·홀딩 기간 (25%)</div>
+        <div class="pillar-row"><div class="pillar-label">CP1~4</div><div class="pillar-bar"><div class="pillar-fill projected" style="width:0%"></div></div><div class="pillar-val muted">보강 가능</div></div>
+        <div class="hint">회원 포인트 · 토큰 홀더 · 분배 슬롯 · 보유 기간</div>
+      </div>
+    </div>
+
+    <div class="card" style="border-style:dashed; margin-top:16px;">
+      <div class="h3">EG · Engagement <span class="badge warn">연결 시 보강</span></div>
+      <div class="muted tiny" style="margin-bottom:12px">월간 활성 토큰 사용자·리텐션·거버넌스 참여 (20%)</div>
+      <div class="pillar-row"><div class="pillar-label">EG1~4</div><div class="pillar-bar"><div class="pillar-fill projected" style="width:0%"></div></div><div class="pillar-val muted">보강 가능</div></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Index Dashboard</h2>
+      <span class="sub">선택 연결</span>
+    </div>
+    <div class="row cols-3">
+      <div class="stat">
+        <div class="stat-label">현재 산출값</div>
+        <div class="stat-value"><span class="tier tier-T3">T3</span> 58</div>
+        <div class="stat-delta muted">기본 자료 기준</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Dataroom 연결 시</div>
+        <div class="stat-value tabular">+4~8</div>
+        <div class="stat-delta muted">CT·MR 보강 가능</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">LaunchPad 연결 시</div>
+        <div class="stat-value tabular">+10~18</div>
+        <div class="stat-delta muted">TB·CP·EG 보강 가능</div>
+      </div>
+    </div>
+    <div class="hint" style="margin-top:14px;">연결 데이터 검토 후 산출</div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Token 연결</h2>
+      <span class="sub">읽기 전용</span>
+    </div>
+
+    <div class="row cols-3">
+      <div class="stat">
+        <div class="stat-label">연결 상태</div>
+        <div class="stat-value">미연결</div>
+        <div class="stat-delta muted">LaunchPad 대기</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">연결 방식</div>
+        <div class="stat-value">2가지</div>
+        <div class="stat-delta muted">기업 자체 토큰 · LaunchPad 토큰</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">관리 위치</div>
+        <div class="stat-value">LaunchPad</div>
+        <div class="stat-delta muted">설정 · 발행 · Treasury</div>
+      </div>
+    </div>
+
+    <div class="callout info" style="margin-top:16px;">
+      <div class="callout-title">Treasury 데이터</div>
+      <div class="callout-body">Biyard LaunchPad 발행 토큰에서만 적립률과 정책을 표시합니다.</div>
+    </div>
+  </section>
+
+  <section class="panel" style="border-style:dashed; background:transparent;">
+    <div style="display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center;">
+      <div>
+        <div class="muted tiny" style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">LaunchPad</div>
+        <h3 class="h3" style="font-size:18px; margin:6px 0 4px">Token 설정 열기</h3>
+        <p class="soft tiny" style="margin:0">기업 자체 토큰 연결 또는 LaunchPad 발행</p>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <a href="#" class="btn btn-ghost">Index 리포트</a>
+        <a href="06-handoff.html" class="btn btn-primary">LaunchPad로 이동 →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="nav-actions">
+    <a href="04-dataroom.html" class="btn btn-ghost">← Dataroom</a>
+    <a href="issuer-workspace.html" class="btn btn-ghost">워크스페이스로</a>
+    <a href="06-handoff.html" class="btn btn-primary">LaunchPad로 이동 →</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>Index Dashboard</span>
+    <a href="06-handoff.html">LaunchPad 연결 →</a>
+  </div>
+
+  </div>
+</main>
+
+</body>
+</html>

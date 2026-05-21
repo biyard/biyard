@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard Assets — 발행사 정보</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="01-landing.html" class="brand-logo">
+      <span class="dot">B</span>
+      <span>Biyard</span>
+      <small class="sub">Assets</small>
+    </a>
+    <nav class="nav">
+      <a href="01-landing.html">Assets</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="#">Research</a>
+      <a href="#">Issuers</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  <div class="workspace-tabs">
+    <a href="05-valuation.html" class="workspace-tab">Index Dashboard</a>
+    <a href="02-intake.html" class="workspace-tab active">Issuer Profile</a>
+    <a href="03-asset.html" class="workspace-tab">Underlying Asset</a>
+    <a href="04-dataroom.html" class="workspace-tab">Dataroom</a>
+    <a href="06-handoff.html" class="workspace-tab">LaunchPad</a>
+  </div>
+
+  
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>발행사 정보 입력</h2>
+      <span class="sub">Workspace</span>
+    </div>
+
+    <p class="soft" style="margin-top:0">Biyard Index 등록 검토에 필요한 기본 정보입니다.</p>
+
+    <div class="callout info">
+      <div class="callout-title">발행사 정보 확인</div>
+      <div class="callout-body">법인명, 사업자등록번호, 대표자, 담당자 정보</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">법인명</label>
+        <input class="input" value="Sample Issuer A" />
+      </div>
+      <div class="field">
+        <label class="label">사업자등록번호</label>
+        <input class="input" placeholder="000-00-00000" value="000-00-00000" />
+      </div>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">대표자</label>
+        <input class="input" value="김민준" />
+      </div>
+      <div class="field">
+        <label class="label">대표 이메일</label>
+        <input class="input" value="issuer@example.co.kr" />
+      </div>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">산업</label>
+        <select class="select">
+          <option>선택...</option>
+          <option>부동산</option>
+          <option>미술품·아트</option>
+          <option>음악·엔터</option>
+          <option>IP·콘텐츠</option>
+          <option selected>축산·농수산</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label">본사 소재지</label>
+        <select class="select">
+          <option>선택...</option>
+          <option selected>제주특별자치도</option>
+          <option>서울특별시</option>
+          <option>경기도</option>
+          <option>해외</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">기업 소개 (선택)</label>
+      <textarea class="textarea" rows="3" placeholder="회사가 무엇을 하는지 한 문단으로...">지역 기반 프리미엄 농식품 브랜드를 운영하며, 정기배송 회원과 오프라인 유통 채널을 통해 반복 매출을 확보하고 있습니다.</textarea>
+      <div class="hint">Dataroom 자료 분류와 Index 입력값 검토의 컨텍스트로 사용됩니다.</div>
+    </div>
+
+    <div class="field">
+      <label class="label">웹사이트</label>
+      <input class="input" placeholder="https://" value="https://sample-issuer.co.kr" />
+    </div>
+
+  </section>
+
+  <div class="nav-actions">
+    <a href="01-landing.html" class="btn btn-ghost">← 이전</a>
+    <a href="issuer-workspace.html" class="btn btn-ghost">임시저장</a>
+    <a href="03-asset.html" class="btn btn-primary">기초자산 열기 →</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>Issuer Profile</span>
+    <a href="03-asset.html">다음 →</a>
+  </div>
+
+</main>
+
+</body>
+</html>

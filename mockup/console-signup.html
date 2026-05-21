@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard LaunchPad — Enterprise 설정</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="with-sidebar">
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="console-signup.html" class="brand-logo">
+      <span class="dot" style="background:var(--color-info); color:var(--color-bg)">B</span>
+      <span>Biyard</span>
+      <small class="sub">LaunchPad</small>
+    </a>
+    <nav class="nav">
+      <a href="01-landing.html" class="external">Assets</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
+    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
+    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
+    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
+    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Workspace</div>
+    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
+    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">LaunchPad</div>
+    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
+    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
+    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
+    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
+  </div>
+  <div class="sidebar-card">
+    <div class="muted tiny">현재 Index</div>
+    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
+    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  <div class="workspace-tabs">
+    <a href="console-signup.html" class="workspace-tab active">Enterprise</a>
+    <a href="console-token-new.html" class="workspace-tab">Token</a>
+    <a href="console-treasury.html" class="workspace-tab">Treasury</a>
+    <a href="console-overview.html" class="workspace-tab">Overview</a>
+  </div>
+
+  <section class="panel">
+    <div class="callout info">
+      <div class="callout-title">Assets 등록 정보 연결됨</div>
+      <div class="callout-body">발행사·기초자산 정보가 연결되었습니다.</div>
+    </div>
+
+    <div class="panel-head">
+      <h2>Enterprise 설정</h2>
+      <span class="sub">LaunchPad</span>
+    </div>
+
+    <div class="card" style="background:var(--color-bg-muted); margin-bottom:20px;">
+      <div class="h3" style="margin-bottom:6px">저장된 신청서에서 이어하기</div>
+      <div class="soft tiny">신청서, Dataroom, Index Dashboard 결과를 이어받았습니다.</div>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">법인명</label>
+        <input class="input" value="Sample Issuer A" />
+        <div class="hint">Assets에서 가져옴</div>
+      </div>
+      <div class="field">
+        <label class="label">사업자등록번호</label>
+        <input class="input" value="000-00-00000" />
+        <div class="hint">Assets에서 가져옴</div>
+      </div>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">이메일</label>
+        <input class="input" value="issuer@example.co.kr" />
+      </div>
+      <div class="field">
+        <label class="label">비밀번호</label>
+        <input class="input" type="password" value="••••••••••" />
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card" style="background:var(--color-bg-muted);">
+      <div class="h3" style="margin-bottom:6px">신청된 평가 자산</div>
+      <table class="tbl" style="margin-top:8px;">
+        <tbody>
+          <tr>
+            <td>프리미엄 농식품 정기배송 매출 기반 수익권</td>
+            <td><span class="tier tier-T3">T3</span> 58/100</td>
+            <td><span class="badge">연결 대기</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="hint" style="margin-top:10px">Token 설정 열기</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" checked />
+        <span class="soft tiny">이용약관 및 개인정보처리방침 동의</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-top:8px;">
+        <input type="checkbox" checked />
+        <span class="soft tiny">Assets 신청 정보 활용 동의</span>
+      </label>
+    </div>
+
+  </section>
+
+  <div class="nav-actions">
+    <a href="06-handoff.html" class="btn btn-ghost">← Assets로 돌아가기</a>
+    <a href="issuer-workspace.html" class="btn btn-ghost">워크스페이스로</a>
+    <a href="console-token-new.html" class="btn btn-primary">Enterprise 설정 완료 →</a>
+  </div>
+
+  <div class="flow-footer">
+    <a href="index.html">← 서비스 플로우</a>
+    <span>LaunchPad Console</span>
+    <a href="console-token-new.html">다음 →</a>
+  </div>
+
+</main>
+
+</body>
+</html>
