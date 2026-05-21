@@ -5,7 +5,7 @@ import { currentMetaUserId } from "@/lib/session";
 
 export async function GET(req: Request) {
   // SECURITY: meta_user_id from session, never from caller.
-  const metaUserId = currentMetaUserId();
+  const metaUserId = await currentMetaUserId();
   const url = new URL(req.url);
   const limit = url.searchParams.get("limit");
   const bookmark = url.searchParams.get("bookmark");

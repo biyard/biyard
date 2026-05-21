@@ -1,6 +1,6 @@
 import type { PointTransaction, TransactionType } from "@biyard/sdk";
 
-import { BiyardWidgetBase, escapeHtml, renderAttribution } from "./base";
+import { BiyardWidgetBase, escapeHtml, renderAttribution, renderBrandHeader } from "./base";
 import { strings } from "./i18n";
 import { WIDGET_STYLES } from "./styles";
 
@@ -93,6 +93,7 @@ export class BiyardTransactionsElement extends BiyardWidgetBase {
     this.root.innerHTML = `
       <style>${WIDGET_STYLES}</style>
       <div class="inline" part="card">
+        ${renderBrandHeader(this.getBranding())}
         <h3 class="title">${escapeHtml(title)}</h3>
         ${body}
         ${

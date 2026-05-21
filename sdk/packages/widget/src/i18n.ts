@@ -33,6 +33,8 @@ export interface WidgetStrings {
   pointsLabel: string;
   tokensLabel: string;
   connectWalletHint: string;
+  connectWalletCta: string;
+  connectingWallet: string;
   // Transactions widget
   transactionsTitle: string;
   txTypeAward: string;
@@ -58,8 +60,8 @@ const STRINGS: Record<Locale, WidgetStrings> = {
     reviewNetwork: "Network",
     reviewContract: "Contract",
     close: "Close",
-    attributionDefault: "Secured by Biyard ↗",
-    attributionMinimal: "via Biyard",
+    attributionDefault: "Powered by Biyard ↗",
+    attributionMinimal: "Powered by Biyard",
     loading: "Loading…",
     empty: "Nothing to show yet.",
     refresh: "Refresh",
@@ -68,7 +70,9 @@ const STRINGS: Record<Locale, WidgetStrings> = {
     pointsLabel: "Points",
     tokensLabel: "Tokens",
     connectWalletHint: "Connect your wallet to see on-chain balance.",
-    transactionsTitle: "Activity",
+    connectWalletCta: "Connect wallet",
+    connectingWallet: "Connecting…",
+    transactionsTitle: "Points history",
     txTypeAward: "Earned",
     txTypeDeduct: "Spent",
     txTypeTransfer: "Transfer",
@@ -89,8 +93,8 @@ const STRINGS: Record<Locale, WidgetStrings> = {
     reviewNetwork: "네트워크",
     reviewContract: "컨트랙트",
     close: "닫기",
-    attributionDefault: "Biyard 제공 ↗",
-    attributionMinimal: "via Biyard",
+    attributionDefault: "Powered by Biyard ↗",
+    attributionMinimal: "Powered by Biyard",
     loading: "불러오는 중…",
     empty: "내역이 없습니다.",
     refresh: "새로고침",
@@ -99,7 +103,9 @@ const STRINGS: Record<Locale, WidgetStrings> = {
     pointsLabel: "포인트",
     tokensLabel: "토큰",
     connectWalletHint: "온체인 잔액을 보려면 지갑을 연결하세요.",
-    transactionsTitle: "내역",
+    connectWalletCta: "지갑 연결",
+    connectingWallet: "연결 중…",
+    transactionsTitle: "포인트 내역",
     txTypeAward: "적립",
     txTypeDeduct: "차감",
     txTypeTransfer: "이체",
