@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Biyard Assets — 자산 상세 (동적 백서)</title>
+<title>Biyard Assets — STO 상세</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="surface-assets">
 
 <header class="topbar">
   <div class="topbar-inner">
@@ -16,41 +16,13 @@
       <small class="sub">Assets</small>
     </a>
     <nav class="nav">
-      <a href="01-landing.html">Assets</a>
-      <a href="methodology.html">Methodology</a>
-      <a href="#">Research</a>
-      <a href="#">Issuers</a>
+      <a href="01-landing.html">Explorer</a>
+      <a href="methodology.html">Biyard Index</a>
+      <a href="news.html">뉴스</a>
     </nav>
   </div>
 </header>
 
-<aside class="app-sidebar">
-  <div class="sidebar-section">
-    <div class="sidebar-title">Assets</div>
-    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
-    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
-    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
-    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
-    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-title">Workspace</div>
-    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
-    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-title">LaunchPad</div>
-    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
-    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
-    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
-    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
-  </div>
-  <div class="sidebar-card">
-    <div class="muted tiny">현재 Index</div>
-    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
-    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
-  </div>
-</aside>
 
 <main class="container">
 
@@ -58,19 +30,19 @@
 
   <!-- BREADCRUMB -->
   <div style="margin:0 0 16px; font-size:13px; color:var(--color-fg-muted);">
-    <a href="01-landing.html" style="color:var(--color-fg-soft)">Assets</a> ›
-    <span class="muted">Music IP</span> ›
-    <span>NCT DREAM — ANL 후속</span>
+    <a href="01-landing.html" style="color:var(--color-fg-soft)">Explorer</a> ›
+    <span class="muted">음악 IP</span> ›
+    <span>리버라이트 — Echo Rights</span>
   </div>
 
   <!-- HEADER -->
   <section class="panel" style="background: linear-gradient(135deg, var(--color-panel) 0%, var(--color-panel-muted) 100%);">
-    <div style="display:grid; grid-template-columns: 1fr auto; gap:32px; align-items:center;">
+    <div style="display:grid; grid-template-columns: 1fr; gap:32px; align-items:center;">
       <div>
-        <span class="badge">🎵 Music IP</span>
+        <span class="badge">음악 IP</span>
         <span class="badge brand" style="margin-left:6px">진행 중 · 청약</span>
-        <h1 class="h1" style="margin-top:12px">NCT DREAM — ANL 후속 음원 IP</h1>
-        <div class="muted" style="margin-bottom:14px">발행사 <b class="soft">뮤직카우 (Musicow)</b> · 중개 다온증권</div>
+        <h1 class="h1" style="margin-top:12px">리버라이트 — Echo Rights 음원 IP</h1>
+        <div class="muted" style="margin-bottom:14px">기업 <b class="soft">리듬IP</b> · 중개 라온증권</div>
         <div class="row cols-4" style="max-width:600px;">
           <div><div class="muted tiny">청약 마감</div><div class="h3">05.25</div></div>
           <div><div class="muted tiny">모집액</div><div class="h3 tabular brand">3.2억</div></div>
@@ -78,137 +50,73 @@
           <div><div class="muted tiny">기준가</div><div class="h3 tabular">320원</div></div>
         </div>
       </div>
-      <div style="text-align:center; padding:0 24px;">
-        <div class="muted tiny">Biyard Index</div>
-        <div style="font-size:64px; font-weight:800; line-height:1; margin:8px 0;">
-          <span class="tier tier-T2">T2</span>
-        </div>
-        <div class="h2 tabular brand" style="margin:0">71.5</div>
-        <div class="muted tiny">상위 18%</div>
-      </div>
     </div>
   </section>
 
-  <!-- 5-Pillar 게이지 -->
-  <div class="row cols-2" style="align-items:start;">
+  <div class="row cols-2">
     <section class="panel">
       <div class="panel-head">
-        <h2>5-Pillar 입력값</h2>
-        <a href="methodology.html" class="btn btn-ghost btn-sm">방법론 보기 →</a>
+        <h2>발행 개요</h2>
       </div>
-
-      <div class="pillar-row" style="grid-template-columns:120px 1fr 80px;">
-        <div class="pillar-label">TB · 트레저리</div>
-        <div class="pillar-bar"><div class="pillar-fill" style="width:68%"></div></div>
-        <div class="pillar-val">68 / 100</div>
-      </div>
-      <div class="pillar-row" style="grid-template-columns:120px 1fr 80px;">
-        <div class="pillar-label">CP · 커뮤니티</div>
-        <div class="pillar-bar"><div class="pillar-fill" style="width:82%"></div></div>
-        <div class="pillar-val">82 / 100</div>
-      </div>
-      <div class="pillar-row" style="grid-template-columns:120px 1fr 80px;">
-        <div class="pillar-label">EG · 참여도</div>
-        <div class="pillar-bar"><div class="pillar-fill" style="width:75%"></div></div>
-        <div class="pillar-val">75 / 100</div>
-      </div>
-      <div class="pillar-row" style="grid-template-columns:120px 1fr 80px;">
-        <div class="pillar-label">CT · 매출</div>
-        <div class="pillar-bar"><div class="pillar-fill" style="width:64%"></div></div>
-        <div class="pillar-val">64 / 100</div>
-      </div>
-      <div class="pillar-row" style="grid-template-columns:120px 1fr 80px;">
-        <div class="pillar-label">MR · 시장준비</div>
-        <div class="pillar-bar"><div class="pillar-fill" style="width:70%"></div></div>
-        <div class="pillar-val">70 / 100</div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="callout">
-        <div class="callout-title">Index 산출 근거</div>
-        <div class="callout-body">현재 Index는 공개 공시, 온체인 트레저리, 홀더 분포, 매출 오라클 입력값을 Methodology 기준으로 산출한 결과입니다.</div>
+      <div class="row cols-2">
+        <div class="stat"><div class="stat-label">종목명</div><div class="stat-value" style="font-size:18px">리버라이트 — Echo Rights</div></div>
+        <div class="stat"><div class="stat-label">기초자산</div><div class="stat-value" style="font-size:18px">음원 저작권료 수익권</div></div>
+        <div class="stat"><div class="stat-label">증권 유형</div><div class="stat-value" style="font-size:18px">투자계약증권</div></div>
+        <div class="stat"><div class="stat-label">모집 상태</div><div class="stat-value" style="font-size:18px">모집 진행</div></div>
       </div>
     </section>
 
     <section class="panel">
       <div class="panel-head">
-        <h2>트레저리 현황</h2>
-        <span class="badge brand">온체인 검증</span>
+        <h2>공모 조건</h2>
       </div>
-
-      <div class="row cols-2" style="margin-bottom:14px;">
-        <div class="stat">
-          <div class="stat-label">백킹 비율</div>
-          <div class="stat-value brand">32%</div>
-          <div class="stat-delta">▲ +18%p (12m)</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">토큰당 백킹 기준가</div>
-          <div class="stat-value tabular">104원</div>
-          <div class="stat-delta">시장가 320원 대비</div>
-        </div>
+      <div class="row cols-2">
+        <div class="stat"><div class="stat-label">공모총액</div><div class="stat-value tabular" style="font-size:18px">3.2억 KRW</div></div>
+        <div class="stat"><div class="stat-label">공모가</div><div class="stat-value tabular" style="font-size:18px">320원</div></div>
+        <div class="stat"><div class="stat-label">발행 수량</div><div class="stat-value tabular" style="font-size:18px">1,000,000좌</div></div>
+        <div class="stat"><div class="stat-label">청약 기간</div><div class="stat-value tabular" style="font-size:18px">05.12 ~ 05.25</div></div>
       </div>
+    </section>
+  </div>
 
+  <div class="row cols-2">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>공모 구조</h2>
+      </div>
       <table class="tbl">
-        <thead>
-          <tr><th>월</th><th class="num">매출</th><th class="num">적립</th></tr>
-        </thead>
         <tbody>
-          <tr><td>2026-04</td><td class="num tabular">8.4억</td><td class="num tabular brand">+420만</td></tr>
-          <tr><td>2026-03</td><td class="num tabular">7.8억</td><td class="num tabular brand">+390만</td></tr>
-          <tr><td>2026-02</td><td class="num tabular">7.2억</td><td class="num tabular brand">+360만</td></tr>
-          <tr><td>2026-01</td><td class="num tabular">6.5억</td><td class="num tabular brand">+325만</td></tr>
+          <tr><td>발행사</td><td>리듬IP</td></tr>
+          <tr><td>신탁업자</td><td>샘플신탁</td></tr>
+          <tr><td>주관 증권사</td><td>라온증권</td></tr>
+          <tr><td>계좌관리기관</td><td>라온증권</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>근거 자료</h2>
+      </div>
+      <table class="tbl">
+        <tbody>
+          <tr><td>증권신고서</td><td><span class="brand">원문 보기 ↗</span></td></tr>
+          <tr><td>정정신고서</td><td><span class="muted">등록 전</span></td></tr>
+          <tr><td>발행사 페이지</td><td><span class="brand">원문 보기 ↗</span></td></tr>
         </tbody>
       </table>
     </section>
   </div>
 
-  <!-- HOLDER DISTRIBUTION -->
-  <section class="panel">
-    <div class="panel-head">
-      <h2>홀더 분포 (CP축 입력)</h2>
-      <span class="sub">온체인 데이터</span>
-    </div>
-
-    <div class="row cols-4">
-      <div class="stat">
-        <div class="stat-label">활성 홀더</div>
-        <div class="stat-value tabular">14,820</div>
-        <div class="stat-delta">▲ +12% (30d)</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">평균 홀딩</div>
-        <div class="stat-value tabular">7.4개월</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Gini 분포</div>
-        <div class="stat-value tabular">0.42</div>
-        <div class="stat-delta brand">건전</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">월 신규 유입</div>
-        <div class="stat-value tabular">2,140</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
   <section class="panel" style="background: linear-gradient(135deg, var(--color-brand-soft), transparent); border-color:var(--color-brand);">
     <div style="display:grid; grid-template-columns: 1fr auto; gap:24px; align-items:center;">
       <div>
-        <h2 class="h2" style="margin-top:0">기초자산을 보유한 기업인가요?</h2>
-        <p class="soft" style="margin:0">Dataroom 자료를 연결하고 Biyard Index 등록 가능 여부를 검토해보세요.</p>
+        <h2 class="h2" style="margin-top:0">이런 자산의 발행을 준비 중인가요?</h2>
+        <p class="soft" style="margin:0">기업 정보 · Data Room · Biyard Index</p>
       </div>
-      <a href="02-intake.html" class="btn btn-primary btn-lg">Index 등록 신청 →</a>
+      <a href="console-signup.html" class="btn btn-primary btn-lg">기업평가 시작 →</a>
     </div>
   </section>
-
-  <div class="flow-footer">
-    <a href="index.html">← 서비스 플로우</a>
-    <span>Asset Detail</span>
-    <a href="01-landing.html">Assets으로 →</a>
-  </div>
 
   </div>
 

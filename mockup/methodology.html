@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Biyard Assets — Methodology</title>
+<title>Biyard Assets — Biyard Index 산정 방식</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="surface-assets">
 
 <header class="topbar">
   <div class="topbar-inner">
@@ -16,78 +16,29 @@
       <small class="sub">Assets</small>
     </a>
     <nav class="nav">
-      <a href="01-landing.html">Assets</a>
-      <a href="methodology.html" class="active">Methodology</a>
-      <a href="#">Research</a>
-      <a href="#">Issuers</a>
+      <a href="01-landing.html">Explorer</a>
+      <a href="methodology.html" class="active">Biyard Index</a>
+      <a href="news.html">뉴스</a>
     </nav>
   </div>
 </header>
 
-<aside class="app-sidebar">
-  <div class="sidebar-section">
-    <div class="sidebar-title">Assets</div>
-    <a href="01-landing.html" class="sidebar-link">자산 목록 <span class="state">Index</span></a>
-    <a href="02-intake.html" class="sidebar-link">발행사 정보 <span class="state">기본</span></a>
-    <a href="03-asset.html" class="sidebar-link">기초자산 <span class="state">자산</span></a>
-    <a href="04-dataroom.html" class="sidebar-link">Dataroom <span class="state">선택</span></a>
-    <a href="05-valuation.html" class="sidebar-link active">Index Dashboard <span class="state">58</span></a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-title">Workspace</div>
-    <a href="issuer-workspace.html" class="sidebar-link">발행사 워크스페이스 <span class="state">저장됨</span></a>
-    <a href="06-handoff.html" class="sidebar-link">LaunchPad 연결 <span class="state">선택</span></a>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-title">LaunchPad</div>
-    <a href="console-signup.html" class="sidebar-link">Enterprise 설정</a>
-    <a href="console-token-new.html" class="sidebar-link">Token 설정</a>
-    <a href="console-treasury.html" class="sidebar-link">Treasury 설정</a>
-    <a href="console-overview.html" class="sidebar-link">Assets 반영</a>
-  </div>
-  <div class="sidebar-card">
-    <div class="muted tiny">현재 Index</div>
-    <div class="score"><span class="tier tier-T3">T3</span><b class="tabular">58 / 100</b></div>
-    <div class="hint">Dataroom +4~8 · LaunchPad +10~18 보강 가능</div>
-  </div>
-</aside>
-
 <main class="container-narrow">
 
   <div class="hero">
-    <span class="badge">BIYARD INDEX</span>
-    <h1 style="margin-top:12px">Biyard Index Methodology</h1>
-    <p>Biyard Index는 STO 기초자산과 발행사 데이터를 5-Pillar로 정량화하는 지표입니다. 공식과 가중치는 백서 기준을 따르며, 데이터 출처와 미확보 항목은 산출 근거에 함께 표시됩니다. 검증 데이터가 추가되면 같은 공식 안에서 입력값이 보완되어 산출값이 달라질 수 있습니다.</p>
+    <span class="badge">Methodology</span>
+    <h1 style="margin-top:12px">Biyard Launchpad Index는 무엇을, 어떻게 측정하는가</h1>
+    <p>Biyard Launchpad의 토큰 가치 인덱스는 기업이 web3 상에서 보유한 신뢰·관계·자산의 가치를 정량화합니다. 트레져리 백킹 메커니즘과 그 위에서 생성되는 온체인·오라클 데이터를 결합해, 기존 평가체계가 보지 못하던 가치를 단일 점수(0–100)로 환산합니다.</p>
     <div class="cta-row">
-      <a href="02-intake.html" class="btn btn-ghost">Index 등록 신청 →</a>
-      <a href="#formula" class="btn btn-ghost">백서 기준 보기</a>
+      <a href="console-signup.html" class="btn btn-ghost">기업평가 시작 →</a>
+      <a href="#formula" class="btn btn-ghost">최종 점수</a>
     </div>
   </div>
-
-  <section class="panel">
-    <div class="panel-head">
-      <h2>왜 Biyard Index인가</h2>
-    </div>
-    <div class="row cols-3">
-      <div class="card">
-        <div class="h3">기존 평가의 빈칸</div>
-        <p class="soft tiny" style="margin:0">전통 평가는 재무제표와 공시를 중심으로 봅니다. Biyard Index는 여기에 트레저리, 홀더 분포, 토큰 활동, 매출 오라클 같은 Web3 입력 데이터를 함께 반영합니다.</p>
-      </div>
-      <div class="card">
-        <div class="h3">선택형 데이터 보강</div>
-        <p class="soft tiny" style="margin:0">공개·제출 자료만으로도 Index 산출은 가능하지만, Dataroom은 CT·MR의 신뢰도를 높이고 LaunchPad는 TB·CP·EG 입력값을 검증 가능한 형태로 보강합니다.</p>
-      </div>
-      <div class="card">
-        <div class="h3">근거 중심 표시</div>
-        <p class="soft tiny" style="margin:0">Index 화면은 점수만 보여주지 않고 어떤 데이터가 확인되었고 어떤 항목이 미확보인지 함께 표시합니다.</p>
-      </div>
-    </div>
-  </section>
 
   <!-- FORMULA -->
   <section class="panel" id="formula">
     <div class="panel-head">
-      <h2>최종 점수 공식</h2>
+      <h2>최종 점수</h2>
     </div>
     <div class="card" style="text-align:center; padding:32px; background:var(--color-bg-muted);">
       <div style="font-family:var(--font-mono, monospace); font-size:18px; letter-spacing:0.02em;">
@@ -98,26 +49,8 @@
         0.15 · CT +
         0.15 · MR
       </div>
-      <div class="muted tiny" style="margin-top:10px">각 Pillar를 0~100으로 정규화 후 가중합</div>
+      <div class="muted tiny" style="margin-top:10px">각 메트릭을 0–100으로 정규화 후 가중합. 등급 표기는 T1 (80+) / T2 (65+) / T3 (50+) / T4 (35+) / T5.</div>
     </div>
-
-    <div class="divider"></div>
-
-    <div class="section-title">
-      <h3>등급 매핑</h3>
-    </div>
-    <table class="tbl">
-      <thead>
-        <tr><th>등급</th><th>점수 구간</th><th>의미</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><span class="tier tier-T1">T1</span></td><td class="tabular">80~100</td><td>입력 데이터 신뢰도와 운영 성숙도가 매우 높음.</td></tr>
-        <tr><td><span class="tier tier-T2">T2</span></td><td class="tabular">65~79</td><td>대부분의 핵심 입력 데이터가 확인됨.</td></tr>
-        <tr><td><span class="tier tier-T3">T3</span></td><td class="tabular">50~64</td><td>주요 입력 데이터는 확인되나 보완 항목 존재.</td></tr>
-        <tr><td><span class="tier tier-T4">T4</span></td><td class="tabular">35~49</td><td>핵심 입력 데이터 일부 미확보.</td></tr>
-        <tr><td><span class="tier tier-T5">T5</span></td><td class="tabular">~34</td><td>공개 지표 산출에 필요한 데이터가 부족함.</td></tr>
-      </tbody>
-    </table>
   </section>
 
   <!-- 5 PILLARS -->
@@ -131,126 +64,134 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
           <div>
-            <div class="h3">TB · Treasury Backing <span class="badge brand">25%</span></div>
-            <div class="muted tiny">스테이블코인 트레저리 충당 수준</div>
+            <div class="h3">TB · 트레져리 백킹 <span class="badge brand">25%</span></div>
+            <div class="muted tiny">토큰의 바닥가를 떠받치는 스테이블코인 트레져리의 규모, 약속 준수율, 인출 투명성. 우리 서비스의 차별화 코어.</div>
           </div>
-          <div class="tier tier-T1" style="font-size:14px">발행 후</div>
         </div>
         <ul class="dot-list" style="margin-top:8px;">
-          <li>TB1: Treasury / Market cap</li>
-          <li>TB2: 월간 순적립 속도</li>
-          <li>TB3: 약속 준수율 (실제 / 약속)</li>
-          <li>TB4: 월별 발생률</li>
-          <li>TB5: 사전 공지 비율</li>
+          <li>TB1 백킹 비율 — Treasury / Market cap</li>
+          <li>TB2 트레져리 성장률 — 월간 순적립 속도</li>
+          <li>TB3 약속 준수율 — 실제 / 약속</li>
+          <li>TB4 적립 일관성 — 월별 발생률</li>
+          <li>TB5 인출 투명성 — 사전 공지 비율</li>
         </ul>
       </div>
 
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
           <div>
-            <div class="h3">CP · Community Power <span class="badge brand">25%</span></div>
-            <div class="muted tiny">홀더 분포·홀딩 지속성</div>
+            <div class="h3">CP · 커뮤니티 파워 <span class="badge brand">25%</span></div>
+            <div class="muted tiny">토큰 홀더의 두께와 분포, 평균 홀딩 기간. 기업이 가진 web3 상의 '주주층'의 질.</div>
           </div>
-          <div class="tier tier-T1" style="font-size:14px">발행 후</div>
         </div>
         <ul class="dot-list" style="margin-top:8px;">
-          <li>CP1: 30일 잔고 &gt;0 활성 홀더 수</li>
-          <li>CP2: Gini⁻¹ 분포 평등성</li>
-          <li>CP3: 평균 홀딩 기간 (개월)</li>
-          <li>CP4: 월간 신규 홀더 유입률</li>
+          <li>CP1 활성 홀더 — 30일 잔고&gt;0</li>
+          <li>CP2 분포 평등성 — Gini⁻¹</li>
+          <li>CP3 평균 홀딩 기간 — Months</li>
+          <li>CP4 신규 홀더 유입률 — 월간</li>
         </ul>
       </div>
 
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
           <div>
-            <div class="h3">EG · Engagement <span class="badge brand">20%</span></div>
-            <div class="muted tiny">토큰 활성 사용·거버넌스 참여</div>
+            <div class="h3">EG · 참여도 <span class="badge brand">20%</span></div>
+            <div class="muted tiny">토큰을 실제로 쓰는 사용자 수와 빈도. 토큰이 단순 보유에 그치지 않고 제품·커뮤니티에 녹아있는 정도.</div>
           </div>
-          <div class="tier tier-T1" style="font-size:14px">발행 후</div>
         </div>
         <ul class="dot-list" style="margin-top:8px;">
-          <li>EG1: 월간 활성 토큰 사용자 (MAU)</li>
-          <li>EG2: 30일 리텐션 (D30)</li>
-          <li>EG3: 사용자당 TX 빈도</li>
-          <li>EG4: 거버넌스·커뮤니티 참여</li>
+          <li>EG1 월간 활성 토큰 사용자 — MAU</li>
+          <li>EG2 리텐션 — D30</li>
+          <li>EG3 토큰 트랜잭션 빈도 — TX / user</li>
+          <li>EG4 커뮤니티 참여 — 거버넌스 등</li>
         </ul>
       </div>
 
-      <div class="card" style="border-color:var(--color-brand);">
+      <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
           <div>
-            <div class="h3">CT · Cash flow / Traction <span class="badge brand">15%</span></div>
-            <div class="muted tiny">매출·성장률·트래픽 — <b>발행 전 실측 가능</b></div>
+            <div class="h3">CT · 현금흐름·트랙션 <span class="badge brand">15%</span></div>
+            <div class="muted tiny">오라클로 들어오는 실제 매출·트래픽. 토큰 외부의 사업 실체를 평가에 반영.</div>
           </div>
-          <div class="brand" style="font-size:14px; font-weight:700;">발행 전 ✓</div>
         </div>
         <ul class="dot-list" style="margin-top:8px;">
-          <li>CT1: 오라클 매출 (PG·ERP·회계 SaaS)</li>
-          <li>CT2: 분기별 성장률 (QoQ)</li>
-          <li>CT3: web2 MAU·앱 다운로드</li>
-          <li>CT4: 토큰 거래량·유동성 (발행 후)</li>
+          <li>CT1 반복 현금흐름 — 오라클 매출</li>
+          <li>CT2 매출 성장률 — QoQ</li>
+          <li>CT3 web2 MAU — GA·앱</li>
+          <li>CT4 토큰 거래량 / 시총 — 유동성</li>
         </ul>
       </div>
 
-      <div class="card" style="border-color:var(--color-brand);">
+      <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
           <div>
-            <div class="h3">MR · Market Readiness <span class="badge brand">15%</span></div>
-            <div class="muted tiny">공시·감사·규제 — <b>발행 전 실측 가능</b></div>
+            <div class="h3">MR · 시장 준비도 <span class="badge brand">15%</span></div>
+            <div class="muted tiny">공시·감사·법적 준비도. STO/ICO 상장 시장으로 갈 수 있는 운영 성숙도.</div>
           </div>
-          <div class="brand" style="font-size:14px; font-weight:700;">발행 전 ✓</div>
         </div>
         <ul class="dot-list" style="margin-top:8px;">
-          <li>MR1: 공시 빈도</li>
-          <li>MR2: 감사사 수</li>
-          <li>MR3: 고객확인·AML 준비도</li>
-          <li>MR4: 락업 등 토큰 이코노믹스 공개</li>
+          <li>MR1 거버넌스 투명성 — 공시 빈도</li>
+          <li>MR2 컨트랙트 감사 — 감사사 수</li>
+          <li>MR3 법적 준비도 — KYC/AML</li>
+          <li>MR4 토큰 이코노믹스 — 락업 등 공개</li>
         </ul>
       </div>
 
     </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Treasury Mechanism</h2>
+      <span class="sub">Biyard Launchpad의 신뢰 코어</span>
+    </div>
+    <ol class="dot-list">
+      <li><b>적립 룰 설정</b> — 기업은 매월 매출의 X% · 마케팅비의 Y% · 또는 고정 금액을 USDC로 환전·락인할 것을 약속합니다.</li>
+      <li><b>오라클 검증 · 자동 환전</b> — PG·ERP 오라클이 매월 정해진 날 실적을 검증하면, 트레져리 컨트랙트가 USDC를 자동으로 매입해 락인합니다.</li>
+      <li><b>플로어 가격 산출</b> — 이론적 플로어 가격 = 트레져리 USDC 잔고 / 유통 토큰 수. 온체인 검증</li>
+      <li><b>환매 (Redemption)</b> — 플로어 가격 환매</li>
+      <li><b>인출 투명성</b> — 기업이 트레져리에서 인출할 경우 사전 공지와 사유 명시가 필수입니다. 모든 이력은 공개 페이지에 자동 기록됩니다.</li>
+    </ol>
   </section>
 
   <!-- TRUST TIER -->
   <section class="panel">
     <div class="panel-head">
-      <h2>데이터 출처 표기</h2>
-      <span class="sub">Index 산출 근거를 설명하기 위한 출처 라벨</span>
+      <h2>Oracle Integration</h2>
+      <span class="sub">web2에서 검증된 파생 메트릭만 온체인에 기록</span>
     </div>
 
     <div class="row cols-3">
       <div class="card" style="border-color:var(--color-brand); text-align:center;">
-        <div class="muted tiny">최상위</div>
-        <div style="font-size:36px; font-weight:800; color:var(--color-brand); margin:8px 0;">Trust100</div>
+        <div class="muted tiny">온체인</div>
+        <div style="font-size:36px; font-weight:800; color:var(--color-brand); margin:8px 0;">Trust 100</div>
         <div class="h3">온체인</div>
-        <div class="muted tiny">토큰·트레저리 컨트랙트 직접 검증</div>
+        <div class="muted tiny">토큰 컨트랙트 · 트레져리 컨트랙트 직접 조회</div>
       </div>
       <div class="card" style="text-align:center;">
-        <div class="muted tiny">검증 가능</div>
-        <div style="font-size:36px; font-weight:800; color:var(--color-info); margin:8px 0;">Trust75</div>
+        <div class="muted tiny">오라클 (web2)</div>
+        <div style="font-size:36px; font-weight:800; color:var(--color-info); margin:8px 0;">Trust 75</div>
         <div class="h3">오라클</div>
-        <div class="muted tiny">결제·ERP·트래픽 시스템 직접 연결</div>
+        <div class="muted tiny">PG 결제 · ERP 매출 · GA 트래픽</div>
       </div>
       <div class="card" style="text-align:center;">
-        <div class="muted tiny">참고</div>
-        <div style="font-size:36px; font-weight:800; color:var(--color-warning); margin:8px 0;">Trust55</div>
+        <div class="muted tiny">자기보고</div>
+        <div style="font-size:36px; font-weight:800; color:var(--color-warning); margin:8px 0;">Trust 55</div>
         <div class="h3">자기보고</div>
-        <div class="muted tiny">감사보고서·법인 서류 (검증된 기관 인증분만)</div>
+        <div class="muted tiny">감사 보고서 · 법인 서류</div>
       </div>
     </div>
 
     <div class="callout" style="margin-top:16px;">
-      <div class="callout-title">데이터 입력 경로별 신뢰도</div>
-      <div class="callout-body">Google Drive·Notion·SharePoint에서 추출된 일반 문서는 기본 Trust55로 분류됩니다. KAB·삼정 등 인증기관 발행 감정평가서·감사보고서는 Trust75로 승격됩니다. 결제·ERP·회계 시스템에 API로 직접 연결한 데이터도 Trust75로 산정됩니다.</div>
+      <div class="callout-title">영업기밀 보호</div>
+      <div class="callout-body">web2에서 검증된 파생 메트릭만 온체인에 기록해, 영업기밀을 보호하면서도 평가 신뢰도를 유지합니다.</div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <div class="callout-title">예시 수치</div>
+      <div class="callout-body">예시 수치 · 가중치 변경 이력 공개</div>
     </div>
   </section>
-
-  <div class="flow-footer">
-    <a href="index.html">← 서비스 플로우</a>
-    <span>Methodology · Biyard Index</span>
-    <a href="01-landing.html">Assets로 →</a>
-  </div>
 
 </main>
 
