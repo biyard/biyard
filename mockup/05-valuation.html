@@ -123,7 +123,7 @@
           <div>
             <div class="muted tiny" style="text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">토큰</div>
             <div class="h3" style="font-size:18px; margin:6px 0 4px;">토큰 데이터 연결</div>
-            <div class="muted tiny">LaunchPad 발행 토큰 또는 외부 토큰의 온체인 데이터를 연결합니다.</div>
+            <div class="muted tiny">Token · Treasury · Points · Sales log</div>
           </div>
           <span class="badge info">검토 중</span>
         </div>
@@ -135,8 +135,8 @@
           </div>
           <div class="stat">
             <div class="stat-label">핵심 지표</div>
-            <div class="stat-value" style="font-size:18px;">보유자 · 활동</div>
-            <div class="stat-delta muted">보유 기간 · 팬덤 전환</div>
+            <div class="stat-value" style="font-size:18px;">Points · Claim</div>
+            <div class="stat-delta muted">보유자 · 활동 데이터</div>
           </div>
         </div>
         <a href="console-token-new.html" class="btn btn-primary" style="width:100%;">토큰 연결</a>
@@ -175,6 +175,22 @@
           <td>CT · MR</td>
           <td><span class="badge">토큰 없음</span></td>
         </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>LaunchPad 입력 데이터</h2>
+      <span class="sub">Assets Index 입력값</span>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Console 기능</th><th>입력 데이터</th><th>Index 반영</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td>Token</td><td>컨트랙트 · 월 발행량 · Distribution slot</td><td>TB · CP</td><td><span class="badge brand">반영 중</span></td></tr>
+        <tr><td>Treasury</td><td>Reserve balance · Floor price · 적립 정책</td><td>TB · CT</td><td><span class="badge brand">반영 중</span></td></tr>
+        <tr><td>Points</td><td>포인트 지급 · Claim · 활동 내역</td><td>CP · EG</td><td><span class="badge info">검토 중</span></td></tr>
+        <tr><td>Sales Log</td><td>월 매출 · 적립 산정 근거</td><td>CT</td><td><span class="badge info">검토 중</span></td></tr>
       </tbody>
     </table>
   </section>

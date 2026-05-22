@@ -104,14 +104,46 @@
         <div class="stat-delta">외부 토큰 기준</div>
       </div>
     </div>
-
     <div class="card" style="margin-top:16px; display:flex; justify-content:space-between; gap:16px; align-items:center;">
       <div>
-        <div class="h3">외부 토큰 관리</div>
-        <div class="muted tiny">외부에서 발행된 토큰입니다. Assets에서는 읽기 전용 데이터만 확인합니다.</div>
+        <div class="h3">Console 관리 항목</div>
+        <div class="muted tiny">발행 · 배포 · 분배 슬롯 · 트레저리 정책</div>
       </div>
-      <a href="console-overview.html" class="btn btn-ghost">토큰 요약 보기</a>
+      <a href="console-overview.html" class="btn btn-ghost">토큰 운영 현황</a>
     </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">
+      <h3>토큰 설정</h3>
+      <span class="muted tiny">Console 기능</span>
+    </div>
+
+    <div class="row cols-4" style="margin-bottom:16px;">
+      <div class="stat"><div class="stat-label">월 발행량</div><div class="stat-value tabular">1,000,000</div><div class="stat-delta muted">Monthly emission</div></div>
+      <div class="stat"><div class="stat-label">Decay rate</div><div class="stat-value tabular">5%</div><div class="stat-delta muted">월별 감소율</div></div>
+      <div class="stat"><div class="stat-label">Distribution slot</div><div class="stat-value tabular">2</div><div class="stat-delta muted">파트너 지갑</div></div>
+      <div class="stat"><div class="stat-label">Start month</div><div class="stat-value tabular">2026-05</div><div class="stat-delta muted">발행 시작월</div></div>
+    </div>
+
+    <div class="row cols-3" style="margin-bottom:16px;">
+      <div class="card"><div class="h3">유저 클레임 풀</div><div class="muted tiny" style="margin-top:6px;">82% · 포인트 기반 월별 클레임</div></div>
+      <div class="card"><div class="h3">파트너 분배</div><div class="muted tiny" style="margin-top:6px;">18% · 지정 지갑 distribution slot</div></div>
+      <div class="card"><div class="h3">Stable token</div><div class="muted tiny tabular" style="margin-top:6px;">USDC · 0xd077...4fdb</div></div>
+    </div>
+
+    <div class="section-title">
+      <h3>배포 상태</h3>
+      <span class="badge brand">배포 완료</span>
+    </div>
+
+    <table class="tbl" style="margin-bottom:16px;">
+      <tbody>
+        <tr><td>Token contract</td><td class="tabular">0x7a31...d20f</td><td><span class="badge brand">완료</span></td></tr>
+        <tr><td>Treasury contract</td><td class="tabular">0x4f83...91ac</td><td><span class="badge brand">완료</span></td></tr>
+        <tr><td>Deployment tx</td><td class="tabular">0x91b2...fa18</td><td><span class="brand">익스플로러 ↗</span></td></tr>
+      </tbody>
+    </table>
 
     <div class="divider"></div>
 
