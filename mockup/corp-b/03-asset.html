@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biyard 런치패드 — 기초자산 등록</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="with-sidebar surface-assets">
+
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="../01-landing.html" class="brand-logo">
+      <span class="dot">B</span>
+      <span>Biyard</span>
+      <small class="sub">Assets</small>
+    </a>
+    <nav class="nav">
+      <a href="console-token-new.html" class="external">토큰 연결</a>
+    </nav>
+  </div>
+</header>
+
+<aside class="app-sidebar assets-sidebar">
+  <div class="sidebar-card enterprise-card">
+    <div class="muted tiny">기업</div>
+    <div class="h3" style="margin:4px 0">로컬스테이</div>
+    <div class="score"><span class="tier tier-T4">T4</span><b class="tabular">43 / 100</b></div>
+    <div class="hint">Biyard Index</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-title">Assets</div>
+    <a href="05-valuation.html" class="sidebar-link">Index 리포트</a>
+    <a href="04-dataroom.html" class="sidebar-link">Data Room</a>
+    <a href="03-asset.html" class="sidebar-link active">기초자산</a>
+    <a href="02-intake.html" class="sidebar-link">기업 정보</a>
+  </div>
+  <div class="sidebar-section sidebar-secondary">
+    <div class="sidebar-title">LaunchPad</div>
+    <a href="console-token-new.html" class="sidebar-link sidebar-bridge">토큰 관리</a>
+  </div>
+</aside>
+
+<main class="container-narrow">
+
+  
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>기초자산 등록</h2>
+      <span class="sub">기업 프로필</span>
+    </div>
+
+    <p class="soft" style="margin-top:0">토큰화 대상 · 권리 구조 · 현금흐름</p>
+
+    <div class="section-title">
+      <h3>자산 카테고리 선택</h3>
+    </div>
+
+    <div class="row cols-4">
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🏢</div>
+        <div class="h3">부동산</div>
+        <div class="muted tiny">상업·주거·물류·창업공간</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🎨</div>
+        <div class="h3">미술품·아트</div>
+        <div class="muted tiny">회화·조각·NFT 연계</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🎵</div>
+        <div class="h3">음악·IP</div>
+        <div class="muted tiny">음원 저작권·아티스트 IP</div>
+      </div>
+      <div class="card selected">
+        <div style="font-size:32px; margin-bottom:8px">🐂</div>
+        <div class="h3">축산·농수산</div>
+        <div class="muted tiny">한우·작물·양식</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">📚</div>
+        <div class="h3">콘텐츠 IP</div>
+        <div class="muted tiny">웹툰·게임·드라마</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">💎</div>
+        <div class="h3">럭셔리·소비재</div>
+        <div class="muted tiny">시계·와인·위스키</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">🏭</div>
+        <div class="h3">실물 인프라</div>
+        <div class="muted tiny">에너지·설비·기계</div>
+      </div>
+      <div class="card card-hover">
+        <div style="font-size:32px; margin-bottom:8px">…</div>
+        <div class="h3">기타</div>
+        <div class="muted tiny">위에 없는 경우</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">
+      <h3>자산 상세</h3>
+      <span class="badge brand">축산·농수산 카테고리 기준</span>
+    </div>
+
+    <div class="row cols-2">
+      <div class="field">
+        <label class="label">자산명</label>
+        <input class="input" value="프리미엄 농식품 정기배송 매출 기반 수익권" />
+      </div>
+      <div class="field">
+        <label class="label">감정평가가치 (KRW)</label>
+        <input class="input" value="1,200,000,000" />
+        <div class="hint">감정평가서나 계약 자료가 데이터 소스에 있다면 데이터로 분류됩니다.</div>
+      </div>
+    </div>
+
+    <div class="row cols-3">
+      <div class="field">
+        <label class="label">대상 기간</label>
+        <input class="input" value="2026.07 ~ 2029.06" />
+      </div>
+      <div class="field">
+        <label class="label">검토 중인 모집 규모</label>
+        <input class="input" value="3억 KRW" />
+      </div>
+      <div class="field">
+        <label class="label">발행 시점 (예정)</label>
+        <input class="input" value="2026 Q3" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">자산 설명</label>
+      <textarea class="textarea" rows="3">정기배송 회원과 오프라인 유통 채널에서 발생하는 프리미엄 농식품 매출 일부를 기초로 한 수익권입니다. 대상 매출, 비용 구조, 상환 재원, 보유자 혜택을 데이터에서 함께 검토합니다.</textarea>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Data Room</div>
+      <div class="callout-body">Data Room에 감정평가서·계약서·재무자료를 추가하면 Index 입력 데이터로 분류됩니다.</div>
+    </div>
+
+  </section>
+
+  <div class="nav-actions">
+    <a href="02-intake.html" class="btn btn-ghost">← 기업 정보</a>
+    <a href="console-overview.html" class="btn btn-ghost">변경사항 저장</a>
+    <a href="04-dataroom.html" class="btn btn-primary">Data Room</a>
+  </div>
+
+</main>
+
+</body>
+</html>
